@@ -73,17 +73,36 @@ ZIP/`.skill` upload or exact manual copy remains a fallback if GitHub import is 
 
 Remove/disable any obsolete `airix-*` skills if they exist.
 
-## 5. Backend choice
+## 5. Read the foundation compatibility guardrails
+Before asking Lovable to install or copy UI dependencies, make these two public files part of the FOUND-001 context:
+
+- `10-build/ui-stack-installation.md`
+- `10-build/foundation-engineering-guardrails.md`
+
+They define the current Tailwind/shadcn/Untitled/Tremor compatibility path, dependency/source licensing, package-manager/lockfile rules, environment validation, CI, error-boundary/observability foundation, locale/timezone/currency readiness, theme/typography/icon governance and UI provenance requirements.
+
+Important defaults include:
+- inspect the generated stack before running any initializer;
+- remain on a Tailwind v4-compatible path;
+- prefer shadcn's React Aria base for a fresh compatible project;
+- integrate Untitled UI component-by-component rather than scaffolding a second application;
+- prefer Tremor Raw/current copy-paste components rather than the legacy `@tremor/react` path;
+- use free/open-source UI sources by default unless a separate license is explicitly approved;
+- do not downgrade the stack to satisfy a component library.
+
+## 6. Backend choice
 Do not create the complete future database before the first slice.
 
 When FOUND-001 needs auth/demo identity, allow Lovable to use its current preferred Supabase/Lovable development flow. Create only the minimal Workspace/Operating Entity/User/Membership/Organisation/capability data required by FOUND-001.
 
-## 6. Send FOUND-001
+## 7. Send FOUND-001
 Open:
 
 `10-build/prompts/FOUND-001-foundation.md`
 
-Send the complete slice prompt with its required skills attached. Do not append requests for Dashboard/CRM/Properties/etc.
+Send the complete slice prompt with its required skills attached. Tell Lovable that `10-build/ui-stack-installation.md` and `10-build/foundation-engineering-guardrails.md` are mandatory companion specifications for this foundation slice.
+
+Do not append requests for Dashboard/CRM/Properties/etc.
 
 The first meaningful build should result in:
 - source-controlled app foundation;
@@ -94,9 +113,15 @@ The first meaningful build should result in:
 - polished Portal shell;
 - strong Sidebar/TopBar/Avatar/Notifications/Search/Quick Create/Àríyá foundation;
 - minimal identity/permission demonstration;
-- responsive/PWA/accessibility/test foundation.
+- responsive/PWA/accessibility/test foundation;
+- deterministic package/runtime setup;
+- environment example/validation boundary;
+- minimal CI/source-build gate;
+- UI provenance/license ledger;
+- locale-aware formatting foundation;
+- coherent light/dark/system theme foundation.
 
-## 7. Do not accept the first render automatically
+## 8. Do not accept the first render automatically
 Run the review sequence:
 1. `/resolve-design-review`
 2. `/resolve-security-review`
@@ -106,11 +131,13 @@ Run the review sequence:
 6. `/self-host-check`
 7. `/resolve-release`
 
-Use `FOUND-001-REVIEW.md` as the human checklist.
+Use both human review checklists:
+- `FOUND-001-REVIEW.md`
+- `FOUND-001-ENGINEERING-REVIEW.md`
 
-If the shell looks generic or navigation/application chrome is weak, refine FOUND-001 before building any business module.
+If the shell looks generic, navigation/application chrome is weak, source build/CI fails, UI licensing is unclear, or the generated stack had to be downgraded to accommodate a library, refine FOUND-001 before building any business module.
 
-## 8. Stop after FOUND-001
+## 9. Stop after FOUND-001
 Do not ask Lovable for the next feature immediately.
 
 Capture:
@@ -118,7 +145,11 @@ Capture:
 - stack/dependencies selected;
 - routes/components created;
 - schema/migrations;
-- test results;
+- test/CI results;
+- UI source/license provenance;
+- runtime/package manager/Tailwind/shadcn base;
+- theme/typography/icon decisions;
+- locale/timezone/currency formatting approach;
 - screenshots/visual notes if useful;
 - portability concerns;
 - Product Bible ambiguities;
@@ -126,7 +157,7 @@ Capture:
 
 Only then author the next bounded slice based on the real generated application.
 
-## 9. Repository naming transition
+## 10. Repository naming transition
 If FOUND-001 passes, review `GITHUB-TRANSITION.md`. Repository renaming/archive actions require explicit owner approval and are not part of FOUND-001 itself.
 
 ## Current official Lovable references
