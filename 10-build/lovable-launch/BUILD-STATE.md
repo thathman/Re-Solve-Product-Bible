@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 CONDITIONAL (FINAL CONTRACT CLEANUP REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 ACCEPTED + CLOSED — FOUND-001C4 READY**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -39,6 +39,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 Never store credentials/secrets in this file.
 
 ## Accepted slices
+
 ### FOUND-001A — Stack & Repository Foundation
 **Status: ACCEPTED**
 
@@ -49,132 +50,16 @@ Accepted foundation includes TanStack Start v1 + React 19.2, Vite 8.2, TypeScrip
 
 Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/system theming, self-hosted Inter Variable + JetBrains Mono Variable, density/layout/elevation/focus/safe-area/motion contracts, accessible status/destructive semantics, chart tokens, shadcn compatibility mappings and visually approved responsive token preview.
 
-### FOUND-001B closure
-- Source route remains `src/routes/__dev/ui.tsx`; TanStack browser path is `/ui` because `__dev` is pathless.
-- Normal accepted behavior is a production redirect guard on `/ui`.
-- Lovable embedded Preview has previously evaluated production-like, so supervised visual review may temporarily require explicit exposure.
+Normal Component Gallery behavior:
+- source route: `src/routes/__dev/ui.tsx`;
+- browser path: `/ui` because `__dev` is pathless;
+- production guard: TanStack `beforeLoad` + `import.meta.env.PROD` redirect to `/`;
+- local/non-production development access remains intended.
 
-### FOUND-001C1 — Core UI primitive foundation + Component Gallery infrastructure
-**Status: ACCEPTED — CANONICAL/FROZEN FOR DOWNSTREAM USE**
+### FOUND-001C1 — Core UI primitive foundation
+**Status: ACCEPTED — CANONICAL/FROZEN**
 
-Supervisor verified on application-repository `main`:
-- canonical Re:Solve Core boundary exists under `src/components/core/`;
-- public export surface exists at `src/components/core/index.ts`;
-- accepted C1 set: Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric and MetricDelta;
-- Component Gallery consumes the public Core boundary;
-- Button loading/accessibility/reduced-motion behavior accepted;
-- IconButton requires an accessible label and consumes Core Tooltip;
-- Tooltip, Separator, StatusBadge and Avatar gallery evidence accepted;
-- ResolveAvatar uses a discriminated meaningful/decorative accessibility contract and a single accessible identity;
-- Metric materially adapts Tremor Card v1.0.0 structural behavior with Apache-2.0 provenance;
-- MetricDelta separates direction from sentiment;
-- Untitled UI Avatar and Tremor Card provenance is auditable;
-- no new parallel design system, package manager or lockfile was introduced.
-
-C1 APIs are canonical and frozen for downstream use.
-
-### FOUND-001C2 — Canonical form and control primitives
-**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN FOR DOWNSTREAM USE**
-
-Supervisor verified on application `main` and owner accepted the rendered visual result:
-- C2 components remain under `src/components/core/forms/` and are exported through `@/components/core`;
-- accepted C2 set: Input, Textarea, Checkbox, RadioGroup / RadioGroupItem, Switch, Select family, FormField and FieldGroup;
-- FormField uses typed context rather than cloneElement injection;
-- Input/Textarea consume field control ID, described-by, invalid, required and disabled semantics while still supporting standalone use;
-- FormField renders description and error together when both exist so every ID in `aria-describedby` maps to a real node;
-- FieldGroup preserves fieldset/legend semantics and likewise renders/associates description and error consistently;
-- Checkbox Root itself is 24×24 and supports checked/indeterminate/disabled states;
-- RadioGroupItem itself is 24×24;
-- Switch Root itself is 24px high with coherent thumb sizing/movement;
-- Input/Textarea and Select triggers keep 16px text on narrow/mobile viewports and reduce typography only from the larger breakpoint;
-- form controls use accepted Re:Solve token vocabulary and explicit accepted focus-variable contract;
-- invalid/error treatment uses `rs-status-danger-foreground`;
-- Select is a Re:Solve wrapper around Radix Root and consumes FormField required/disabled context;
-- SelectTrigger consumes field ID, described-by, invalid, required and disabled semantics;
-- gallery includes selected Select, required placeholder/error Select, disabled trigger, disabled option and a long option label;
-- gallery Switch labels use stable IDs/htmlFor association and explicit disabled text styling;
-- gallery includes FieldGroup description + error evidence;
-- Untitled UI influence for C2 remains DESIGN REFERENCE ONLY;
-- no new dependencies or lockfiles were introduced;
-- owner accepted visual hierarchy/readability/responsiveness for C2;
-- Lovable reports build/lint/type success with only existing Fast Refresh warnings.
-
-### FOUND-001C2 closure
-- `/ui` was temporarily exposed for supervised visual review.
-- Supervisor verified the owner-requested production guard is restored in `src/routes/__dev/ui.tsx` using TanStack `beforeLoad` + `import.meta.env.PROD` redirect to `/`.
-- Production `/ui` is therefore re-secured before C3.
-- Local/non-production development access remains the intended Component Gallery workflow.
-
-C2 APIs are canonical and frozen for downstream use.
-
-## FOUND-001C3 — Interaction & Overlay Core UI Pack
-**Status: CONDITIONAL — FINAL CONTRACT CLEANUP REQUIRED BEFORE C4**
-
-### Verified C3 implementation now present after normalization fix
-Supervisor verified on application `main`:
-- Core C3 public boundary exists under `src/components/core/overlays/`, `src/components/core/disclosure/` and `src/components/core/utils/`;
-- `@/components/core` exports Dialog, AlertDialog, Sheet, Drawer, Popover, HoverCard, DropdownMenu, ContextMenu, Accordion, Collapsible, Tabs and ScrollArea families;
-- shared Re:Solve backdrop token now exists as `--rs-backdrop`, mapped to `bg-rs-backdrop`, with restrained light/dark scrim opacity;
-- Dialog and AlertDialog now use `bg-rs-surface-raised`, `shadow-rs-overlay`, constrained mobile width/max-height and 200ms transition timing;
-- AlertDialog action/cancel styling now consumes canonical Core Button `buttonVariants` instead of stock low-level shadcn button variants;
-- Sheet now uses Re:Solve surface/backdrop/elevation, 200ms close / 300ms open timing, flex-column composition and exported `SheetBody` for independent scrolling;
-- Sheet gallery no longer uses an absolutely positioned footer and instead composes Header → SheetBody → Footer;
-- Drawer now uses the shared backdrop, Re:Solve raised/border/elevation treatment and bottom safe-area padding on its footer;
-- Popover and HoverCard use Re:Solve raised surface/border/elevation treatment;
-- DropdownMenu and ContextMenu now expose a `variant="destructive"` item API and gallery examples use it;
-- Accordion trigger and Tabs use the accepted explicit focus-ring contract;
-- ScrollArea thumb uses Re:Solve border semantics;
-- `/ui` remains protected by the accepted production `beforeLoad` redirect guard;
-- no Vue runtime/package exists;
-- no new dependency was added by the normalization fix; `vaul ^1.1.2` remains a pre-existing dependency first consumed by Drawer in C3.
-
-### Remaining verified C3 findings
-1. **Destructive menu variants use the wrong semantic text token.** `DropdownMenuItem` and `ContextMenuItem` currently use `text-rs-status-danger` and `focus:text-rs-status-danger`; `rs-status-danger` is the soft status surface. Destructive text must use the high-contrast `rs-status-danger-foreground`, with the soft danger surface reserved for background/focus treatment.
-2. **Tabs still hides its overflow affordance.** `TabsList` itself still contains `overflow-x-auto no-scrollbar`, so the canonical component hides the scrollbar even though the FIX explicitly required discoverable horizontal overflow.
-3. **Horizontal ScrollArea evidence is still absent.** The Component Gallery demonstrates only vertical `ScrollArea`; it does not import/use `ScrollBar` or demonstrate a visible horizontal scrollbar.
-4. **Drawer max-height/scroll-body contract is incomplete.** `DrawerContent` remains `h-auto` without a sensible viewport max-height or canonical independently scrollable body. The C3 contract requires long drawer content to remain usable on small screens while footer/actions and safe areas remain coherent.
-5. **Sheet safe-area treatment is incomplete.** The new structural composition is correct, but `SheetFooter`/right-side content do not yet explicitly respect bottom/right safe-area variables as required by the C3 contract.
-6. **Provenance still omits the pre-existing/first-consumed distinction for Vaul.** `docs/ui-sources.md` lists Vaul 1.1.2 as a Drawer dependency, but must state that the dependency existed before C3 and was first consumed by Re:Solve Drawer in C3. The shadcn C3 component list should also record the Drawer wrapper pattern explicitly.
-7. **One accepted C2 gallery detail regressed.** The disabled `Terms accepted` label again uses `disabled:opacity-50` on a `<label>`, which cannot reflect sibling disabled state. Restore explicit `text-rs-text-disabled` and do not reopen the C2 API.
-
-### Review classification
-The C3 normalization is substantially correct and does not require another broad normalization pass. Execute one final narrow C3 cleanup covering only the seven findings above. If clean, C3 can be accepted/frozen and C4 can begin.
-
-## shadcn ecosystem direction now canonical
-- `shadcn-vue` is approved as a visual/composition/block-pattern source only; Re:Solve remains React/TanStack and must use React shadcn equivalents where available rather than Vue runtime code.
-- approved future intake includes core interaction primitives, advanced controls, conversation/Àríyá primitives, questionnaire/review-style composition and QR presentation patterns subject to exact source verification.
-- two-column form + cover-image auth blocks are the preferred composition reference for desktop login/signup/recovery/OTP/step-up surfaces with a deliberate single-column mobile transformation.
-- shadcn dashboard blocks are approved composition references but do not override Re:Solve dashboard, Attention Engine, TanStack DataTable, Tremor/Recharts or navigation architecture.
-
-## Current architecture facts
-- framework/build tool: TanStack Start v1 + Vite;
-- routing: TanStack file-based routes;
-- React: 19.2.0;
-- package manager: bun@1.3.3;
-- Tailwind: 4.2.1;
-- shadcn: initialized `new-york`, source-owned registry; do not rerun init;
-- current primitive base: Radix + shadcn source components;
-- primary icon family: Lucide 0.575.0;
-- typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0;
-- query/server state: TanStack Query;
-- form/validation libraries already available: React Hook Form + Zod;
-- chart foundation: Recharts;
-- environment security: public VITE boundary + createServerOnlyFn private boundary;
-- testing stack: not configured;
-- PWA tooling: not configured;
-- auth/domain setup: not yet implemented.
-
-## UI-source incorporation state
-- shadcn/ui: incorporated/source-owned starter foundation; C3 visual normalization is now materially present, with a final overflow/destructive-token cleanup pending.
-- shadcn-vue: approved pattern/block reference only; never a runtime dependency.
-- Radix: incorporated beneath current shadcn and Core components.
-- Vaul: pre-existing dependency first consumed by Drawer in C3; MIT; raised/backdrop/safe-area normalization now present, max-height/scroll-body completion pending.
-- Lucide: incorporated as primary icon family.
-- Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only.
-- Tremor Raw: material Metric incorporation accepted in C1.
-
-## Current Core UI inventory
-Accepted/frozen C1:
+Accepted Core inventory:
 - Button
 - IconButton
 - Badge
@@ -186,7 +71,19 @@ Accepted/frozen C1:
 - Metric
 - MetricDelta
 
-Accepted/frozen C2:
+Key accepted contracts:
+- public Core boundary under `src/components/core/` and `src/components/core/index.ts`;
+- Button loading/a11y/reduced-motion contract;
+- IconButton accessible-label + Core Tooltip contract;
+- ResolveAvatar meaningful/decorative discriminated accessibility API;
+- Metric materially adapts Tremor Card v1.0.0 structural behavior with Apache-2.0 provenance;
+- MetricDelta separates direction from sentiment;
+- Untitled Avatar and Tremor provenance is auditable.
+
+### FOUND-001C2 — Canonical form and control primitives
+**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
+
+Accepted Core inventory:
 - Input
 - Textarea
 - Checkbox
@@ -196,11 +93,27 @@ Accepted/frozen C2:
 - FormField
 - FieldGroup
 
-C3 exists but is not canonical/frozen yet:
+Key accepted contracts:
+- typed `FormFieldContext`; no generic cloneElement bridging;
+- coherent control ID, required, disabled, invalid and described-by semantics;
+- descriptions/errors render consistently when referenced;
+- native fieldset/legend behavior for FieldGroup;
+- Checkbox and Radio actual controls are 24×24; Switch actual Root is at least 24px high;
+- mobile text-entry/select typography remains at least 16px;
+- accepted Re:Solve token vocabulary and explicit focus-variable contract;
+- high-contrast danger foreground for invalid/error text;
+- Select Root and Trigger consume field context correctly;
+- C2 visual hierarchy/readability/responsiveness owner-approved;
+- Untitled influence for C2 is design reference only.
+
+### FOUND-001C3 — Interaction & Overlay Core UI Pack
+**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
+
+Accepted Core inventory:
 - Dialog
 - AlertDialog
 - Sheet / SheetBody
-- Drawer
+- Drawer / DrawerBody
 - Popover
 - HoverCard
 - DropdownMenu
@@ -208,7 +121,70 @@ C3 exists but is not canonical/frozen yet:
 - Accordion
 - Collapsible
 - Tabs
-- ScrollArea
+- ScrollArea / ScrollBar
+
+Verified accepted contracts:
+- Radix/shadcn remains the accessible source foundation; Vaul 1.1.2 is used for Drawer;
+- Vaul was already present before C3 and was first consumed by Re:Solve in C3; C3 did not install it;
+- shared `--rs-backdrop`/`bg-rs-backdrop` contract exists with restrained light/dark scrim opacity;
+- major overlay surfaces use explicit Re:Solve raised surfaces, borders and `shadow-rs-overlay`;
+- Dialog/AlertDialog use constrained narrow-screen width/max-height and restrained transition timing;
+- AlertDialog action/cancel treatment consumes canonical Core Button variants;
+- Sheet uses Header → independently scrollable SheetBody → non-overlapping Footer composition and right/bottom safe-area treatment;
+- Drawer uses viewport max-height, independently scrollable DrawerBody and bottom safe-area footer treatment;
+- DropdownMenuItem and ContextMenuItem expose canonical `variant="destructive"` with high-contrast danger foreground and soft danger focus background;
+- Popover/HoverCard use Re:Solve raised surface/border/elevation treatment;
+- Accordion and Tabs use accepted focus-variable contract;
+- Tabs long-label overflow is demonstrated through Core ScrollArea + visible horizontal ScrollBar; canonical TabsList does not hide its scrollbar;
+- Component Gallery proves both vertical and horizontal ScrollArea behavior;
+- accepted C1 Skeleton gallery evidence remains present;
+- `/ui` production guard remains secured;
+- no Vue runtime/package or parallel component system was introduced;
+- no new dependency or lockfile was added in the C3 normalization/closure work.
+
+C3 closure hygiene:
+- leaked Lovable/supervisor prompt text was removed from the current home route;
+- current `/` remains only a temporary starter placeholder and no product homepage was built;
+- current home placeholder is clean but not byte-for-byte identical to the older C2 baseline; this trivial wrapper/alt-text deviation was reviewed and accepted as non-blocking;
+- Skeleton evidence was restored after an intermediate gallery regression;
+- dedicated horizontal ScrollArea evidence now lives under C3 Layout Utilities;
+- `docs/ui-sources.md` records the shadcn Drawer wrapper and correct Vaul history/license without duplication.
+
+## shadcn ecosystem direction now canonical
+- `shadcn-vue` is approved as a visual/composition/block-pattern source only; Re:Solve remains React/TanStack and must use React shadcn equivalents where available rather than Vue runtime code.
+- approved future intake includes core interaction/utility primitives, advanced controls, conversation/Àríyá primitives, questionnaire/review-style composition and QR presentation patterns subject to exact source verification.
+- two-column form + cover-image auth blocks are the preferred composition reference for desktop login/signup/recovery/OTP/step-up surfaces with a deliberate single-column mobile transformation.
+- shadcn dashboard blocks are approved composition references but do not override Re:Solve dashboard, Attention Engine, TanStack DataTable, Tremor/Recharts or navigation architecture.
+- Questionnaire is intended as a higher-order review/form composition above canonical FormField/FieldGroup primitives, not a separate forms framework.
+- QR is an approved utility/presentation pattern; security-sensitive QR flows must use signed/short-lived references rather than raw secrets.
+
+## Current architecture facts
+- framework/build tool: TanStack Start v1 + Vite;
+- routing: TanStack file-based routes;
+- React: 19.2.0;
+- package manager: bun@1.3.3;
+- Tailwind: 4.2.1;
+- shadcn: initialized `new-york`, source-owned registry; do not rerun init;
+- current primitive base: Radix + shadcn source components;
+- Drawer primitive: Vaul 1.1.2;
+- primary icon family: Lucide 0.575.0;
+- typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0;
+- query/server state: TanStack Query;
+- form/validation libraries already available: React Hook Form + Zod;
+- chart foundation: Recharts;
+- environment security: public VITE boundary + createServerOnlyFn private boundary;
+- testing stack: not configured;
+- PWA tooling: not configured;
+- auth/domain setup: not yet implemented.
+
+## UI-source incorporation state
+- shadcn/ui: incorporated/source-owned starter foundation and materially normalized through Re:Solve Core across C1-C3.
+- shadcn-vue: approved visual/composition/block reference only; never a runtime dependency.
+- Radix: incorporated beneath current shadcn and Core components.
+- Vaul: pre-existing dependency first consumed by Drawer in C3; MIT; Re:Solve surface/scroll/safe-area normalization accepted.
+- Lucide: incorporated as primary icon family.
+- Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only.
+- Tremor Raw: material Metric incorporation accepted in C1.
 
 ## Current database/domain inventory
 None.
@@ -217,10 +193,9 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- C3 requires one final narrow contract cleanup before acceptance;
-- questionnaire/review and QR patterns are approved future source candidates but exact React/source implementations have not yet been selected;
-- auth, application states and broader composites remain future FOUND-001 substeps by design;
-- shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
+- utility/composition and application-state Core primitives are not yet canonical;
+- Questionnaire/review and QR patterns are approved future source candidates but exact React/source implementations have not yet been selected;
+- advanced input/scheduling, conversation/Àríyá primitives, auth, application shell, PWA, CI and testing remain future FOUND-001 substeps by design.
 
 ## Next action
-Execute supervisor-provided `FOUND-001C3-FIX2` only: correct destructive menu foreground semantics, make Tabs overflow discoverable, add horizontal ScrollArea evidence, complete Drawer max-height/scroll-body and Sheet safe-area contracts, correct Vaul/shadcn provenance wording, and restore the disabled C2 gallery label styling. Re-review repository afterward. Do not begin FOUND-001C4.
+Begin bounded `FOUND-001C4 — Utility & Composition Pack`. Preserve frozen C1-C3 APIs, use existing/current React shadcn source components where appropriate, normalize through Re:Solve Core, expand Component Gallery evidence, and STOP for supervisor review before advanced-input, questionnaire, QR, auth or shell work.
