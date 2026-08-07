@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**SETUP-001 REQUIRED — CLEAN STARTER VERIFIED — FOUND-001 NOT YET STARTED**
+**SETUP-001 COMPLETE — CLEAN STARTER VERIFIED — OWNER GITHUB IDENTITY LOOKUP PENDING — FOUND-001 NOT YET STARTED**
 
 ## Canonical Product Bible state
 - Product Bible planning/expansion/launch-readiness content is consolidated on `main`.
@@ -22,13 +22,13 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - Canonical workspace Skills installed: `YES — all 30 canonical Re:Solve skills plus self-host-check verified active by Lovable`
 - Platform default skill also active: `design-taste-frontend`.
 - No obsolete `airix-*` skills reported.
-- Duplicate project-local copies exist under `.agents/skills/`; remove them during SETUP-001 after workspace-skill verification.
+- Duplicate project-local skill drafts under `.agents/skills/`: `REMOVED — SETUP-001 complete`.
 
 ## Application repository
 - Legacy reference repository: `thathman/Re-Solve`
-- Lovable-created application repository: `UNVERIFIED`.
-- Lovable audit reported `thathman/Re-Solve-Product-Bible`, but explicitly stated this was derived from context because direct git remotes were not exposed. Do not treat that as application-repository truth.
-- Application repository visibility/default branch: `UNVERIFIED` until Lovable/GitHub integration reports the actual synced app repository.
+- Lovable-created application repository: `UNVERIFIED — owner must read Settings → GitHub Integration`.
+- Previous Lovable inference of `thathman/Re-Solve-Product-Bible` is invalid as application-repository evidence.
+- Application repository visibility/default branch: `UNVERIFIED` until owner confirms the actual connected app repository.
 - Root AGENTS.md: `NO`
 - Canonical-name transition performed: `NO`
 
@@ -45,12 +45,11 @@ Never store credentials/secrets in this file.
 None yet.
 
 ## Setup/restart audit observations
-Verified by Lovable restart audit:
+Verified by Lovable restart audit and SETUP-001:
 - clean-starter classification: `A — safe to begin supervised foundation sequence`;
 - framework/build stack: `TanStack Start v1`;
 - React: `19.2.0`;
 - package manager: `bun`;
-- lockfile: `bun.lockb` expected/current platform convention;
 - Tailwind: `4.2.1` using `@tailwindcss/vite`;
 - shadcn: initialized with standard primitives in `src/components/ui/`;
 - current dependencies include standard TanStack Start, Radix UI, Lucide, Zod and React Hook Form;
@@ -61,7 +60,9 @@ Verified by Lovable restart audit:
 - tests/CI: none;
 - AGENTS.md: none;
 - no database migrations/schema yet;
-- 30 canonical project-local skill drafts remain redundant under `.agents/skills/`.
+- duplicate `.agents/skills/` drafts were removed successfully;
+- starter still builds cleanly after cleanup (`BUILD_SUCCESS`);
+- workspace skills and Project Knowledge remain active.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1`
@@ -89,11 +90,9 @@ None currently blocking FOUND-001.
 
 ## Known implementation limitations
 - actual application GitHub repository identity is not yet verified;
-- duplicate `.agents/skills/` drafts remain and should be removed once workspace skills are reconfirmed;
 - no CI, tests, PWA, AGENTS.md or Re:Solve foundation exists yet.
 
 ## Next action
-1. Run `SETUP-001` cleanup/repository-identity verification.
-2. Remove duplicate `.agents/skills/` Re:Solve skill drafts only after reconfirming workspace skills are active.
-3. Confirm the real Lovable-created application GitHub repository/default branch from Lovable's GitHub integration state; do not infer it from Product Bible context.
-4. Begin `FOUND-001A — Stack & Repository Preflight` only after SETUP-001 passes.
+1. Owner reads the actual connected application repository owner/name and branch from Lovable Settings → GitHub Integration and reports it to the supervisor.
+2. Supervisor records that repository identity.
+3. Begin `FOUND-001A — Stack & Repository Preflight`.
