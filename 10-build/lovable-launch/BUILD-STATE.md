@@ -114,8 +114,8 @@ C2 APIs are canonical and frozen for downstream use.
 - Core C3 public files exist under `src/components/core/overlays/`, `src/components/core/disclosure/` and `src/components/core/utils/`;
 - `@/components/core` exports Dialog, AlertDialog, Sheet, Drawer, Popover, HoverCard, DropdownMenu, ContextMenu, Accordion, Collapsible, Tabs and ScrollArea families;
 - the Component Gallery consumes the public Core boundary and contains demonstrations for the requested C3 families;
-- underlying accessible primitives are Radix/shadcn source-owned implementations, with Vaul 1.1.2 used for Drawer;
-- `vaul` is the only new C3 runtime dependency visible in `package.json` and is recorded as MIT in `docs/ui-sources.md`;
+- underlying accessible primitives are Radix/shadcn source-owned implementations, with pre-existing `vaul` (`^1.1.2`) first consumed by Drawer in this slice;
+- C3 adds no new runtime dependency or lockfile; `vaul` was already present at the accepted C2 baseline and is recorded as MIT in `docs/ui-sources.md`;
 - `/ui` production redirect guard remains restored;
 - no Vue runtime/package is present.
 
@@ -162,7 +162,7 @@ C3 is structurally sound enough for a narrow correction rather than teardown. Pr
 - shadcn/ui: incorporated/source-owned starter foundation; C3 currently needs explicit Re:Solve normalization beyond compatibility-token mapping.
 - shadcn-vue: approved pattern/block reference only; never a runtime dependency.
 - Radix: incorporated beneath current shadcn and Core components.
-- Vaul: incorporated for Drawer in C3; MIT; visual normalization pending C3 correction.
+- Vaul: pre-existing dependency first consumed by Drawer in C3; MIT; visual normalization pending C3 correction.
 - Lucide: incorporated as primary icon family.
 - Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only.
 - Tremor Raw: material Metric incorporation accepted in C1.
