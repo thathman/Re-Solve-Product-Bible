@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C READY**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 CONDITIONAL**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -81,11 +81,35 @@ Accepted foundation includes:
 
 ### FOUND-001B closure — 2026-08-07
 - Source route remains `src/routes/__dev/ui.tsx` with generated browser path `/ui` because `__dev` is pathless in TanStack Router.
-- `beforeLoad` production redirect using `import.meta.env.PROD` has been restored.
-- Actual code therefore blocks `/ui` in production builds and preserves the source for future Component Gallery work.
+- `beforeLoad` production redirect using `import.meta.env.PROD` is restored.
+- Actual code blocks `/ui` in production builds and preserves the source for future Component Gallery work.
 - Important runtime fact: the same guard previously blocked Lovable's embedded Preview because Lovable Preview evaluated production-like. Do not claim `/ui` is reliably accessible in Lovable Preview while this guard is active.
 - Local/non-production development can use the route normally.
-- Any future Lovable visual-review exposure must be an explicit supervised temporary step rather than relying on an incorrect Preview-vs-production assumption.
+- Any future Lovable visual-review exposure must be an explicit supervised temporary step.
+
+## FOUND-001C1 — Core UI primitive foundation + Component Gallery infrastructure
+**Status: CONDITIONAL — correction required before C2**
+
+### Verified implementation present
+- Re:Solve-owned Core UI files now exist under `src/components/core/`;
+- initial set includes Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric and MetricDelta;
+- gallery source imports and demonstrates most new Core components;
+- Button variants/sizes/loading/disabled examples exist;
+- StatusBadge uses semantic status tokens and text labels;
+- ResolveAvatar has image/fallback and xs–xl sizing;
+- Metric/MetricDelta examples exist;
+- no new dependencies were required;
+- production `/ui` guard remains in place.
+
+### Remaining C1 supervisor findings
+1. **Core boundary leak:** `src/components/core/button/IconButton.tsx` imports stock `@/components/ui/tooltip` instead of the Re:Solve Core Tooltip that was created in this slice. Core components should consume Core components where the canonical pattern exists.
+2. **Gallery evidence incomplete:** Core Tooltip is not demonstrated in the gallery, and Core Separator is imported but not actually rendered. Every C1 component needs representative gallery evidence before acceptance.
+3. **Avatar accessible-name contract incomplete:** `ResolveAvatar` supports image alt text and visible fallback text, but fallback/initials-only states do not provide a reliable explicit full accessible name. `?` is not an acceptable identity label.
+4. **Untitled UI provenance/material incorporation is not sufficiently traceable:** the ledger points to the Untitled homepage, describes the license vaguely as `Free/Open Version (Reference)`, and claims material incorporation from generic size/shape/pill patterns. Current official Untitled UI free/open-source React components are MIT licensed. Record an exact free component source/CLI target and adapt a specific identifiable Avatar or Badge behavior/API pattern into Re:Solve while preserving the current Radix foundation unless a dependency is truly required.
+5. **Tremor Raw provenance/material incorporation is not sufficiently traceable:** the ledger points only to a broad components page, while `Metric`/`MetricDelta` contain only generic `Inspired by` comments. Tremor Raw is a copy-and-paste source model; adapt from an exact named/versioned Raw component source (for example the current Card source if appropriate), then document the exact source/component/version and Re:Solve modifications.
+6. **MetricDelta conflates direction with sentiment:** current `up` always maps to success and `down` always maps to danger. A reusable operations primitive must separate movement direction from positive/negative/neutral meaning because lower can be good and higher can be bad.
+7. **Loading/reduced-motion semantics need tightening:** Button loading should expose meaningful busy/loading semantics, and transform-based active feedback must honor the accepted reduced-motion contract.
+8. **Gallery currency example should use explicit currency code:** avoid bare `$` in a canonical reusable gallery; use an explicit code such as `USD 42,850.00` or another clearly labeled fictional example.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`;
@@ -107,14 +131,13 @@ Accepted foundation includes:
 
 ## UI-source incorporation state
 - shadcn/ui: incorporated/source-owned starter foundation.
-- Radix: incorporated beneath current shadcn components.
+- Radix: incorporated beneath current shadcn and Core components.
 - Lucide: incorporated as primary icon family.
-- Untitled UI React: `NOT INCORPORATED — DESIGN REFERENCE ONLY` as of end FOUND-001B.
-- Tremor: `NOT INCORPORATED — DESIGN REFERENCE ONLY` as of end FOUND-001B.
-- FOUND-001C must begin material, deliberate incorporation without creating parallel component systems.
+- Untitled UI React: C1 claims material incorporation, but supervisor acceptance is pending exact traceable source/license/adaptation evidence.
+- Tremor Raw: C1 claims material incorporation, but supervisor acceptance is pending exact traceable source/version/adaptation evidence.
 
 ## Current Core UI inventory
-No Re:Solve-owned reusable Core UI primitive/composite set is accepted yet. FOUND-001B supplies the accepted token/theme/typography foundation. FOUND-001C now begins canonical Re:Solve Core UI components and the Component Gallery.
+C1 implementation exists but is not yet accepted. Do not treat these components as frozen/canonical until the C1 correction passes.
 
 ## Current database/domain inventory
 None.
@@ -123,10 +146,13 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- broad Core UI components are not yet accepted;
-- Component Gallery is still only the token-preview foundation;
-- Untitled UI and Tremor are not yet materially incorporated;
+- C1 Core ownership boundary needs one internal import correction;
+- gallery coverage is incomplete for Tooltip/Separator;
+- Avatar accessible naming needs correction;
+- Untitled/Tremor material-source provenance needs to become exact/auditable;
+- MetricDelta direction/sentiment semantics need correction;
+- loading/reduced-motion semantics need tightening;
 - shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
 
 ## Next action
-Begin `FOUND-001C` as bounded substeps. First build a small canonical primitive set plus Component Gallery infrastructure, materially incorporate carefully selected Untitled UI and Tremor Raw patterns, verify source provenance/accessibility/responsiveness, then STOP for supervisor review before expanding the primitive set.
+Execute a narrowly scoped `FOUND-001C1-FIX` correction. Re-review repository and provenance afterward. Do not begin FOUND-001C2 until C1 passes.
