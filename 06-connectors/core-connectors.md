@@ -1,159 +1,200 @@
 # Core Connector Contracts
 
 ## Purpose
-Define the first connector set Re:Solve expects to support while preserving replaceability and consistent lifecycle behavior.
+Define the first connector/provider set Re:Solve expects to support while preserving replaceability, data authority and shared lifecycle behavior.
 
 ## Shared requirements
-Every connector implementation must define:
-- connector type
-- instance model
-- authentication method
-- secret-reference strategy
-- health check
-- capabilities
-- rate-limit behavior
-- sync/webhook/event behavior
-- retry/idempotency requirements
-- mapping model
-- permissions
-- audit events
-- logs/diagnostics
-- API/MCP exposure
-- uninstall/disable behavior
+Every Connector implementation declares:
+- Connector Type/capabilities;
+- Instance model;
+- authentication/protected credential reference;
+- Principal permissions;
+- mappings;
+- data authority/sync direction/conflict policy;
+- source/freshness expectations;
+- health check;
+- rate limits;
+- inbound/outbound event behavior;
+- verification/idempotency/retry/dead-letter;
+- registered Actions and risk levels;
+- Audit/log/diagnostics;
+- API/MCP/Àríyá exposure;
+- disable/disconnect/uninstall behavior.
 
-Connector configuration is managed through Re:Solve. Sensitive credentials are stored through approved secure-secret mechanisms, not ordinary settings fields.
+Credentials never live as ordinary plaintext settings.
 
 ## ChatwootConnector
 Purpose: managed client support.
 
-Owns/integrates:
-- inbox mapping
-- contact mapping
-- conversation references
-- teams/agents metadata where needed
-- labels/context
-- support metrics
-- widget/context launch
-- support knowledge boundary
-- incident/support context handoff
+Capabilities/context:
+- account/contact/inbox mappings;
+- conversation references/summaries;
+- team/agent references where operationally useful;
+- safe labels/custom context;
+- selected support metrics;
+- widget/deep-link launch;
+- webhooks;
+- health/freshness.
 
-Re:Solve must not recreate the Chatwoot agent console or Captain engine.
+Chatwoot owns conversation/message truth, support Knowledge and Captain. Re:Solve does not recreate the agent console or mirror every message.
 
 ## WhatsApp/BaileysConnector
-Purpose: Re:Solve-to-client operational communication.
+Purpose: Re:Solve-to-client operational communications.
 
 Use cases:
-- ticket/status notices
-- project updates
-- approval reminders
-- payment/receipt notifications
-- renewals
-- monitoring alerts
-- general operational messages
+- Project/Request updates;
+- reminders/Approvals;
+- invoice/payment/receipt;
+- Renewals;
+- Property outage/recovery/maintenance;
+- client onboarding/offboarding communication;
+- direct operational message.
 
-Requirements:
-- session/connection health
-- sender identity
-- recipient mapping
-- template/message policy
-- delivery state where available
-- throttling
-- retry
-- opt-out/communication preference rules where applicable
-- strict distinction from client-customer support handled by Chatwoot
+Requirements include session health, sender identity, authorized recipient mapping, communication eligibility/privacy, media policy, delivery state, throttling, retry and Audit.
+
+It is not the client's end-customer support inbox.
 
 ## PaymentConnector implementations
-Initial examples: Bachs; optional Paystack/Flutterwave modules/plugins.
+Examples: Bachs initially; optional Paystack/Flutterwave or future provider packages.
 
 Capabilities may include:
-- create payment intent/link
-- verify provider event
-- retrieve transaction
-- refund where supported/authorized
-- reconcile
-- health/configuration
+- create Payment intent/link;
+- verify/normalize provider event;
+- get transaction;
+- refund where supported/authorized;
+- settlement/reconciliation metadata;
+- health.
 
-Provider webhook truth supersedes browser-return assumptions. Core Billing remains provider-neutral.
+A provider implementation may be distributed as a Plugin registering a PaymentConnector.
 
-## OpenRouterConnector
-Purpose: provider implementation for Re:Solve AI only.
+Verified provider evidence establishes Payment truth; browser return pages never do.
+
+## OpenRouter AIConnector
+Purpose: initial provider implementation for Àríyá/Re:Solve AI.
 
 Capabilities:
-- model catalogue/config
-- chat/completion/tool-capable requests
-- model routing
-- usage/cost metadata
-- failure/fallback signaling
+- model catalogue/metadata;
+- completion/tool-capable request;
+- routing/fallback;
+- usage/cost evidence;
+- rate/provider health.
 
-Chatwoot Captain is not routed through the Re:Solve AI engine unless a future explicit integration says otherwise.
+Chatwoot Captain remains separate.
 
-## DocumensoConnector
-Purpose: specialist document-signing provider.
+## Documenso SignatureConnector
+Purpose: signature provider for Document Studio/Contracts and other approved signable documents.
 
-Re:Solve owns commercial records and signature status/context; Documenso performs envelope/signature workflows. Map document/envelope/signer/status/completion evidence and webhook events.
+Re:Solve owns business record, document Final Snapshot and signature status context. Provider owns envelope/signature transaction.
 
-## UptimeKumaConnector
-Purpose: monitoring provider.
+Mappings may cover document snapshot, envelope, signer, state, completed evidence and verified webhooks.
 
-Map monitors to Re:Solve properties/checks. Normalize status and events without treating connector availability as property health. Support incident creation and maintenance context through Re:Solve rules.
+## Cloudflare Connector
+Purpose: optional Domain/DNS/edge/monitoring context.
 
-## OpenBaoConnector
-Purpose: optional secure secret backend/provider.
+See `06-connectors/cloudflare.md`.
 
-May store or reference system/integration secrets and selected Vault credential payloads depending on architecture. Re:Solve permissions/audit remain authoritative for product access. Never expose backend paths/tokens to normal users.
+Capability groups may include:
+- Registrar: registration/expiry/auto-renew state where supported;
+- DNS: zones/nameservers/records/DNSSEC context;
+- Edge/TLS: selected certificate/zone health;
+- Monitoring/Alerts: health checks/alert events;
+- safe operational analytics where useful.
 
-## OJSConnector
-Purpose: publishing-system integration.
+Initial policy is read-first. DNS/registrar/security writes are high impact and use Action Registry, strong capability, confirmation and possibly step-up/Approval.
 
-Supports multiple instances and journal/property mapping.
+Cloudflare Connector failure is not equivalent to Property outage.
 
-Potential safe capabilities:
-- version/health
-- journals
-- public content/current issue
-- articles/metadata
-- authenticated role-aware submission/workflow data
+## Native Monitoring versus Uptime Kuma
+Re:Solve owns a native Monitoring Engine and Property Posture.
 
-AI/API/MCP tools must enforce OJS role boundaries. Never expose blind-review identities, confidential editor notes, unreleased decisions or other users' submissions without explicit authorization.
+### UptimeKumaConnector
+Optional compatibility connector for deployments already using Uptime Kuma. It can map existing monitors/events into normalized Monitoring Signals.
 
-## WordPressConnector
-Purpose: CMS/property context.
+Uptime Kuma is **not** a required Re:Solve dependency and is not necessary for a fresh installation to perform common HTTP/SSL/domain/heartbeat checks.
 
-Potential capabilities: site metadata, version, plugin/theme inventory, health, content references and safe management actions where authorized. Never store site passwords in connector record fields.
+## OpenBao VaultConnector
+Optional external secret backend. It may store/reference selected system/Connector/Vault secret material while Re:Solve permission/Audit policy remains authoritative.
 
-## WooCommerceConnector
-Purpose: commerce integration.
+No backend token/path is exposed casually.
 
-Initial emphasis: read-only client-safe operational data such as order/payment/fulfilment/delivery status. Write operations such as refunds/order changes are higher risk and added only with explicit scopes/confirmation.
+## OJS PublishingConnector
+Supports multiple installations and Property/Journal mappings.
+
+Potential capabilities:
+- version/health/scheduler signals;
+- journals;
+- public content/issues/articles;
+- role-aware workflow/submission metadata where authorized;
+- selected safe management Actions.
+
+Never expose blind-review identities, confidential editorial notes or unreleased decisions outside actual authorization.
+
+OJS health/version/scheduler signals may contribute to Property Posture.
+
+## WordPress CMSConnector
+Potential capabilities:
+- site metadata/version;
+- plugin/theme inventory/update state;
+- Site Health signals;
+- content references;
+- approved management Actions.
+
+Version/update/site-health evidence can contribute to Property Posture. Site credentials remain protected references.
+
+## WooCommerce CommerceConnector
+Initial emphasis is operational read context such as orders/payments/fulfilment/delivery/customer mappings.
+
+Refund/order-change writes are higher-risk registered Actions with explicit scope/confirmation. WooCommerce payment state must not override Re:Solve Billing truth unless the product workflow explicitly maps authoritative provider evidence.
 
 ## EmailConnector
-Purpose: transactional and operational email delivery.
+Transactional/operational delivery:
+- sender identities;
+- send;
+- accepted/delivered/bounce/failure evidence where supported;
+- suppressions;
+- domain/sender verification health;
+- template compatibility.
 
-Capabilities: sender identity, send, delivery metadata where provider supports it, suppression/bounce handling, template compatibility and health. Re:Solve owns notification intent/templates/preferences; provider owns delivery transport.
+Re:Solve owns communication/Notification intent. Provider owns transport evidence. Opens/clicks, if captured under privacy policy, are not absolute proof a human read the message.
 
 ## CalendarConnector
-Google/Microsoft implementations may synchronize selected Re:Solve events and external calendar events. Maintain external IDs, sync direction, conflict policy and duplicate protection.
+Google/Microsoft/future providers may offer:
+- free/busy;
+- selected event read;
+- Booking/event create/update;
+- external ID mapping;
+- sync health.
 
-## Connector instance UI
-Every instance page shows:
-- name
-- type
-- linked organisation/property scope where applicable
-- status/health
-- capabilities
-- auth state/expiry
-- last successful operation
-- last error
-- event backlog/dead-letter count
-- mappings
-- test connection
-- rotate/re-authorize
-- disable
-- logs
+Sync direction/conflict policy and data minimization are explicit. Re:Solve does not implement HR shifts/leave/attendance.
+
+## StorageConnector / provider abstraction
+File/Vault storage may use Supabase in development and other self-hostable/provider options later. Business File/Vault semantics remain independent of one storage provider.
+
+## Connector Instance UI
+Canonical detail tabs:
+- Overview
+- Configuration
+- Capabilities
+- Mappings
+- Sync / Authority
+- Events
+- Logs
+- Health
+- Permissions
+- Audit
+
+Summary shows name/type/provider, Operating Entity/Organisation/Property context, status/health, auth expiry, last success/sync, freshness, failures/dead-letter count and available registered Actions.
+
+## Attention / Notifications
+Persistent Connector failure, auth expiry, dead-letter buildup, stale sync and rate limitation may create Attention/Notifications. Avoid transient-noise alerts that recover automatically.
+
+## Core UI/navigation
+Connectors live under Platform -> Connectors with simple list/detail navigation. Individual providers do not add separate root apps merely because they are installed.
 
 ## Lovable build slices
-1. Connector registry/instance shell with mock connectors.
-2. Shared health/config/mapping/event patterns.
+1. Connector registry/Instance shell with fictional connectors.
+2. shared health/mapping/events/sync-authority patterns.
 3. Chatwoot + WhatsApp demo contracts.
-4. Payment + monitoring + AI connector demos.
-5. OJS/WordPress/WooCommerce and remaining provider instances.
+4. Payment + OpenRouter + Documenso demo contracts.
+5. Cloudflare + native-monitoring external-source integration.
+6. OJS/WordPress/WooCommerce/Calendar/Email and optional Uptime Kuma compatibility.
