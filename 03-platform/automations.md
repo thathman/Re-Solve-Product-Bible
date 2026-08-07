@@ -1,268 +1,193 @@
 # Re:Solve Automation Platform
 
 ## Purpose
+Automations let Re:Solve react to Domain Events, schedules, verified Connector events and explicit invocations without scattering hidden one-off business logic throughout the product.
 
-Automations let Re:Solve react to business events, time, connector events, and explicit user actions without embedding one-off rules throughout the product.
-
-The automation engine is a shared platform primitive. Plugins and connectors may contribute triggers/actions, but execution, permissions, retries, audit, and observability remain centralized.
+Plugins/Connectors may contribute triggers/actions, but execution, Action Registry policy, permissions, retries, Approval, Audit and observability remain centralized.
 
 ## Goals
-
-- make routine operational work configurable
-- keep automation logic visible and auditable
-- support deterministic actions first, AI-assisted actions where explicitly allowed
-- prevent hidden background logic from becoming impossible to debug
-- let plugins/connectors extend the engine safely
+- automate routine operational work visibly;
+- prefer deterministic workflows;
+- reuse registered Actions rather than duplicate mutations;
+- keep failure/retry/debugging understandable;
+- support AI-assisted classification/drafting only where controlled;
+- extend safely through Plugins/Connectors.
 
 ## Core concepts
+Workflow, Trigger, Condition, Branch, Registered Action/Automation Action, Delay/Wait, Approval Gate, Run, Step Run, Retry, Failure, Schedule and Context/Variables.
 
-- Workflow
-- Trigger
-- Condition
-- Branch
-- Action
-- Delay/Wait
-- Approval Step
-- Run
-- Step Run
-- Retry
-- Failure
-- Schedule
-- Variable/Context
-
-## Trigger classes
-
-### Record events
-- organisation.created/updated
-- contact.created/updated
-- property.created/health_changed
-- project.created/status_changed/completed
-- task.created/assigned/due/overdue/completed
-- invoice.created/sent/due/overdue/paid
-- payment.confirmed/failed/refunded
-- approval.requested/completed
-- vault.access_requested/granted/revoked/revealed
-- file.uploaded/shared
+## Triggers
+### Domain Events
+Examples:
+- organisation/client lifecycle changed;
+- request created/triaged/completed;
+- property.posture_changed;
+- property.renewal_due/completed;
+- monitoring.outage_confirmed/recovered;
+- incident created/updated/resolved;
+- project/task/milestone/client-action events;
+- proposal/contract events;
+- invoice/payment/billing events;
+- approval events;
+- Vault access/rotation events;
+- File/Knowledge events;
+- Attention created/resolved;
+- data-quality issue created/resolved.
 
 ### Time
-- fixed schedule
-- recurring schedule
-- relative to record date
-- inactivity duration
-- SLA threshold
+- fixed/recurring schedule;
+- relative to record date;
+- Reminder/cadence due;
+- inactivity duration;
+- SLA/renewal threshold.
 
 ### Connector
-Only verified normalized connector events may trigger workflows.
+Only verified/normalized Integration Events become Connector triggers.
 
-### Manual
-- button/action from UI
-- API request
-- MCP tool where permitted
+### Manual / API / MCP / Àríyá
+Allowed only through explicitly registered invocation/Action policy.
 
-### AI
-AI may propose or classify an automation input, but any write/action still follows normal permission and workflow controls.
+### AI-assisted
+AI may classify/extract/draft/score a bounded step. Downstream write still uses normal registered Action/permission/Approval.
 
-## Condition system
+## Conditions
+Inspect approved context such as record fields/status, related records, dates/amounts, Organisation/Property scope, tags/taxonomy, Property Posture, Renewal state, Connector freshness, Attention state and actor context.
 
-Conditions can inspect allowed workflow context such as:
-- record fields
-- related record fields
-- status
-- dates
-- amount ranges
-- organisation/property membership
-- tags
-- health state
-- connector state
-- actor role
-
-Avoid arbitrary code expressions in normal user-authored workflows.
+Avoid arbitrary unrestricted code in ordinary user-authored workflows.
 
 ## Actions
+Prefer `03-platform/action-registry.md` definitions for reusable consequential mutations.
 
-Core actions may include:
-- create/update record
-- assign owner
-- create task
-- create reminder
-- request approval
-- create notification
-- send email
-- send WhatsApp operational message
-- call permitted connector action
-- run plugin action
-- generate document
-- create portal action item
-- set status/tag/field
-- wait/delay
-- branch
-- stop workflow
+Examples:
+- create/update supported record;
+- assign owner/team;
+- create Task/Request/Reminder/Client Action;
+- request Approval;
+- create Notification;
+- create/resolve supported Attention when the domain rule permits;
+- send approved email/WhatsApp operational message;
+- generate Document Studio draft/render;
+- create Secure External Access grant;
+- invoke permitted Connector/Plugin Action;
+- update lifecycle/status/tag/custom field;
+- wait/delay/branch/stop.
 
-Potentially dangerous actions must declare confirmation/approval requirements.
+Dangerous financial, Vault, production DNS/registrar, access and destructive Actions inherit their confirmation/Approval/step-up requirements and cannot be weakened by Automation configuration.
 
-## Workflow states
+## Workflow / Run states
+Workflow: Draft, Validating, Active, Paused, Disabled, Error, Archived.
 
-- draft
-- validating
-- active
-- paused
-- disabled
-- error
-- archived
+Run: Queued, Running, Waiting, Awaiting Approval, Retrying, Succeeded, Partially Succeeded, Failed, Cancelled, Expired.
 
-## Run states
-
-- queued
-- running
-- waiting
-- awaiting_approval
-- retrying
-- succeeded
-- partially_succeeded
-- failed
-- cancelled
-- expired
-
-## Builder experience
-
-Admin > Automations should include:
+## Builder UX
+Operations -> Automations:
 - Workflows
-- Templates
+- Recipes/Templates
 - Runs
 - Scheduled Jobs
 - Failures
+- Action Catalogue
 
-Workflow builder should show a clear vertical or node-based flow without becoming visually gimmicky.
+Use Re:Solve Core UI. A clear vertical builder is preferred for simple flows; React Flow/node canvas may be used only where branching complexity genuinely benefits from it.
 
-Each step displays:
-- type
-- label
-- input summary
-- permission requirements
-- failure policy
-- output variables
+Each step displays type, label, input summary, source/target, required capability/risk, failure policy and output variables.
 
-## Testing
+## Validation / testing
+Before activation:
+- validate schemas/branches;
+- inspect missing permissions/Connector/Plugin dependencies;
+- detect unsafe recursion/cycles;
+- preview registered Actions/consequences;
+- test using fictional/sample record;
+- test Connector Action safely where supported;
+- identify stale/unavailable source assumptions.
 
-Before activation users should be able to:
-- validate workflow
-- inspect missing permissions/configuration
-- run against demo/sample record
-- preview resulting actions
-- test individual connector/action where safe
+## Run-as / authorization
+A Workflow has an explicit execution Principal/service identity or tightly defined run-as model.
 
-## Failure policy
+Creating/editing a Workflow does not grant arbitrary future execution authority.
 
-Per action/workflow:
-- stop immediately
-- retry
-- continue and mark partial failure
-- route to failure branch
-- request human intervention
+At execution, Actions recheck relevant capability/scope and current target conditions according to their contract.
 
-Retries use central job runtime.
+A user-triggered Automation must not elevate the invoking User merely because the workflow was authored by an administrator.
 
-## Idempotency
+## Failure / retry / idempotency
+Per step/workflow support stop, retry/backoff, continue/partial, failure branch or human intervention.
 
-Automations triggered by external events or retries must minimize duplicate side effects.
+External side effects use idempotency keys/Connector semantics where available. Retries must not duplicate invoices, messages, guest links, payments/refunds or other consequential effects.
 
-Actions that create external side effects should support idempotency keys where available.
+## Approval gates
+Approval captures exact proposed Action/evidence/version. Approval success allows workflow to resume, but downstream Action still verifies current state and may fail safely if context changed.
 
-## Human approvals
+## Attention
+Automation failure requiring human intervention may create Attention.
 
-Workflows may pause for approval. Approval records must preserve:
-- requested action
-- requester/workflow
-- approver
-- deadline
-- decision
-- comment
-- resulting run continuation
+Automations can react to Attention events or invoke supported domain Actions that resolve source conditions, but should not arbitrarily mark Attention resolved when the underlying condition remains true.
 
-## Notifications
+## Notifications / communications
+Automation requests delivery through core Notification/Communications platforms. It does not send directly through random SDKs.
 
-Automation notifications are generated through the Notification Platform. Workflow authors choose from permitted notification actions rather than implementing delivery directly.
+## Documents
+Document generation may create drafts/renders. Sending Proposal/Contract, executing signatures or accepting commercial terms remains controlled by corresponding Action/Approval policies.
+
+## Monitoring / Renewals
+Examples:
+- confirmed outage -> create/link Incident;
+- stable recovery -> update Incident/resolution workflow;
+- Renewal threshold -> assign owner/create Request/notify client;
+- stale backup heartbeat -> Technical Attention;
+- Maintenance begins -> annotate/suppress eligible alerts.
 
 ## Permissions
+Canonical examples:
+- `automations.read`
+- `automations.create`
+- `automations.edit`
+- `automations.activate`
+- `automations.run`
+- `automations.runs.read`
+- `automations.runs.retry`
+- `automations.settings.manage`
 
-Examples:
-- automations.read
-- automations.create
-- automations.edit
-- automations.activate
-- automations.run
-- automations.view_runs
-- automations.retry
+Underlying Actions require their own capabilities/service-identity grants.
 
-A workflow may execute only actions permitted by its service identity/configuration. User permissions to create a workflow do not automatically grant arbitrary execution rights.
+## Audit / observability
+Append-only Audit for Workflow lifecycle/permission/high-impact actions. Operational Run history shows step states, safe inputs/outputs, correlation, retries, provider/source references and errors without leaking secrets.
 
-## Audit
+## API / MCP / Àríyá
+APIs expose Workflow state, run history, manual triggers/retry/cancel/templates as permitted.
 
-Audit:
-- workflow created/edited
-- activated/paused
-- permission changed
-- manual run
-- retry/cancel
-- destructive action
-- approval step
+MCP/Àríyá may inspect/run only specifically allowed workflows/Actions; broad agent scopes do not receive arbitrary Workflow editing/execution by default.
 
-Run history remains operationally searchable.
+## Plugins / Connectors
+Plugins register namespaced triggers/Actions/validators/templates/renderers.
+Connectors register verified Event triggers and provider-backed Actions.
 
-## API
-
-Expose:
-- workflow listing/detail
-- enable/disable where permitted
-- run history
-- manual trigger
-- retry/cancel
-- templates
-
-## MCP
-
-MCP may:
-- list permitted workflows
-- inspect workflow status
-- run explicitly AI-allowed workflows
-- inspect runs
-
-Do not expose arbitrary workflow creation/editing to broad AI scopes by default.
-
-## Plugins/connectors
-
-Plugins can register triggers, actions, validators, templates, and step renderers.
-Connectors can register verified event triggers and permitted action capabilities.
-
-All contributions use central runtime, logs, permissions, and health.
+All contributions use central Principal/permission, Action, Audit, retry and health contracts.
 
 ## PWA/mobile
+Mobile supports list/status/run inspection, Approval/human intervention, pause/enable where permitted. Complex builder may be desktop/tablet optimized with explicit mobile read-only state.
 
-Mobile supports:
-- workflow list/status
-- run inspection
-- pause/enable where permitted
-- approval/action on failed runs
-
-Complex visual editing may use an optimized desktop/tablet builder with an explicit mobile read-only state rather than a broken canvas.
+## Explicit exclusions
+Automation does not introduce HR, employee scheduling, Timesheets/Time Tracking or Client Service Consumption workflows as core product concepts.
 
 ## Acceptance criteria
-
-- workflow has observable trigger, conditions, steps, and outputs
-- validation catches missing connector/plugin/configuration dependencies
-- failed runs are diagnosable and retryable
-- duplicate external events do not create duplicate business side effects when idempotency applies
-- approvals pause/resume correctly
-- every action passes permission/audit policies
-- plugin/connector actions run through central runtime
+- every Workflow is visible/diagnosable;
+- reusable mutations use Action Registry;
+- high-impact Action policy cannot be weakened by Automation;
+- retries are idempotent where required;
+- Approval gates preserve evidence and downstream revalidation;
+- Connector events are verified before trigger;
+- failures can create actionable Attention;
+- Plugin/Connector extensions inherit controls;
+- no excluded HR/Timesheet/service-consumption behavior appears.
 
 ## Lovable build slices
-
-1. workflow/run data model + list/detail
-2. simple trigger-condition-action builder
-3. execution engine for core deterministic actions
-4. schedules/delays
-5. retries/failures/run inspector
-6. approvals
-7. plugin/connector action registry
-8. templates and advanced branching
+1. Workflow/Run records + list/detail.
+2. simple event/condition/registered-action builder.
+3. deterministic execution runtime.
+4. schedules/delays/reminders.
+5. retry/failure/run inspector + Attention.
+6. Approval gates.
+7. Plugin/Connector Action contributions.
+8. templates + advanced branching/React Flow only if justified.
