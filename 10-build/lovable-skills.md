@@ -1,133 +1,113 @@
 # Re:Solve Lovable Skills
 
 ## Purpose
-Re:Solve uses reusable Lovable skills so recurring engineering/design work is handled consistently. Skill naming belongs to the reusable Re:Solve product, not the Airix Media deployment.
+Re:Solve uses source-controlled Lovable workspace skills so recurring engineering, design, security, platform and review work is handled consistently. Skill naming belongs to the reusable Re:Solve product, not the Airix Media deployment.
 
-All former `airix-*` skill names are deprecated. Canonical custom skill namespace is `resolve-*`, with `self-host-check` retained as a generic portability skill.
+All former `airix-*` skill names are deprecated. Canonical custom skill namespace is `resolve-*`, with `self-host-check` retained as a generic portability review.
+
+## Lovable behavior
+Lovable workspace skills are loaded on demand when their descriptions match or can be invoked directly with `/skill-name`. Descriptions therefore start with `Use when...` and are intentionally narrow enough to avoid accidental triggering.
+
+The Product Bible owns the canonical skill contents. Lovable must import them without rewriting or summarizing them.
 
 ## Skill authoring rules
-Each skill should:
-- have a narrow trigger;
-- read the applicable Product Bible source first;
-- produce bounded output;
-- use the Core UI Framework;
+Every skill must:
+- use lowercase/hyphenated permanent names;
+- have a clear `Use when...` trigger description;
+- read applicable Product Bible sources first;
+- produce bounded work/output;
+- preserve the Core UI Framework and canonical terminology;
 - include completion checks;
 - avoid silently implementing unrelated future work;
-- enforce explicit exclusions including no HR, timesheets or Client Service Consumption.
+- enforce explicit exclusions: no HR, payroll, recruitment, leave/attendance, performance management, timesheets/time tracking, or Client Service Consumption.
 
-## Required skills
+## Complete initial catalogue
 
-### `/resolve-feature`
-Implement one bounded feature slice. Identify actors, permissions, states, flows, data/provenance, UI components, responsive/PWA behavior, acceptance criteria and out-of-scope work.
+### Build and UI
+- `/resolve-feature` — bounded feature-slice implementation and scope discipline.
+- `/resolve-ui` — Core UI Framework implementation/refinement.
+- `/resolve-shell` — Sidebar, TopBar, Avatar/Account, Notifications, Search/Command, Quick Create, Àríyá and global chrome.
+- `/resolve-navigation` — simple route/navigation hierarchy and mobile navigation governance.
+- `/resolve-form` — forms, validation, sensitive fields and error/focus behavior.
+- `/resolve-data-table` — operational lists, filters, saved views, bulk actions and mobile alternatives.
+- `/resolve-record-workspace` — first-class 360/detail record workspaces.
+- `/resolve-dashboard` — Attention-led dashboards/overview surfaces and meaningful Tremor-style analytics.
+- `/resolve-responsive` — phone/tablet/laptop/desktop recomposition.
+- `/resolve-portal` — client-safe Portal projections and client-first UX.
 
-### `/resolve-ui`
-Create/refine Re:Solve interfaces using `09-design/core-ui-framework.md`, `design-direction.md` and navigation rules. shadcn, Untitled UI and Tremor are mandatory major sources/influences.
+### Design and quality
+- `/resolve-accessibility` — WCAG 2.2 AA and interaction accessibility review.
+- `/resolve-design-review` — visual hierarchy, Core UI consistency, library influence and non-generic design review.
+- `/resolve-security-review` — authorization, sensitive data, Vault, financial and integration security review.
+- `/resolve-pwa` — installability, service worker, offline/cache, push and PWA-specific behavior.
+- `/resolve-debug` — root-cause debugging and regression verification.
+- `/resolve-release` — final slice go/no-go review.
+- `/self-host-check` — architecture portability/self-hostability review.
 
-### `/resolve-form`
-Create forms with schema validation, help/defaults, sensitive handling, async/server errors, unsaved-change behavior, responsive layout and accessible focus/error states.
+### Platform primitives
+- `/resolve-notifications` — notification events, recipient/channel/delivery behavior and notification UI contracts.
+- `/resolve-attention` — current unresolved Attention Item creation, dedupe, resolve and presentation.
+- `/resolve-action-registry` — reusable business Action contracts and risk/permission behavior.
+- `/resolve-settings` — configuration ownership, scopes, defaults, forms, diagnostics and audit.
+- `/resolve-data-migration` — imports, exports, legacy migration, dedupe/merge/reassignment and schema/data migrations.
 
-### `/resolve-data-table`
-Create operational lists using the canonical Re:Solve DataTable/TanStack-style contract: search/filter/sort, saved views, bulk actions, permission-sensitive columns/actions, full states and mobile alternate presentation.
+### Extensions and machine interfaces
+- `/resolve-plugin` — plugin manifest/lifecycle/data/UI/events/jobs/API/MCP.
+- `/resolve-connector` — external integration instances, mapping, sync authority, health and event reliability.
+- `/resolve-automation` — triggers/conditions/actions/approvals/runs/retries.
+- `/resolve-api` — REST/API resources/actions, scopes, OpenAPI and webhooks.
+- `/resolve-mcp` — curated MCP tools/resources, risk, redaction and audit.
 
-### `/resolve-record-workspace`
-Build first-class record workspaces with RecordHeader, status, actions, tabs, related records, collaboration/activity, Attention, Files/Vault boundaries and extension slots.
+### High-value specialist domains
+- `/resolve-monitoring` — native Monitoring, Workers/Probes, Property Posture, Incidents and Renewal signals.
+- `/resolve-document` — Document Studio, proposals, estimates, contracts, generated financial documents and immutable Final Snapshots.
+- `/resolve-ai` — Àríyá provider/tools/actions/experience and Chatwoot Captain separation.
+- `/resolve-vault` — Secure Vault reveal/download/share/request/rotation and protected-content boundaries.
 
-### `/resolve-dashboard`
-Build summary surfaces from Attention/decisions/actions rather than generic card grids. Use Tremor-style data presentation only where it answers real operational questions.
-
-### `/resolve-notifications`
-Define events, recipients, priority, channels, grouping/dedupe, deep links, delivery state, escalation and PWA behavior. Distinguish Notification from Attention.
-
-### `/resolve-security-review`
-Review authorization, cross-scope isolation, sensitive data, Audit, step-up, Action Registry risk, connector/plugin boundaries and offline cache.
-
-### `/resolve-plugin`
-Design/implement a plugin manifest, compatibility, permissions, migrations, settings, routes/extension slots, events/jobs, notifications, actions, API/MCP and lifecycle.
-
-### `/resolve-connector`
-Design/implement connector contracts, instances, credentials references, mappings, provenance/sync direction, health, events, retries, rate limits and security.
-
-### `/resolve-automation`
-Design/implement trigger, conditions, actions, branches, delays, approval gates, run history, retry/idempotency and shared Action Registry use.
-
-### `/resolve-api`
-Versioned resources/actions, scopes, record authorization, idempotency, errors, audit, rate limits, OpenAPI and webhook implications.
-
-### `/resolve-mcp`
-MCP tools/resources with scope, read/write risk, permission inheritance, field redaction, confirmation, audit and no arbitrary SQL/unrestricted Vault access.
-
-### `/resolve-pwa`
-Installability, responsive behavior, cache data class, online-only sensitive operations, push/deep links, service-worker lifecycle, offline fallback and safe areas.
-
-### `/resolve-accessibility`
-WCAG 2.2 AA review for semantics, keyboard/focus, screen readers, contrast, reduced motion, touch targets, forms, tables and overlays.
-
-### `/resolve-debug`
-Reproduce complete affected flow, locate failure boundary, fix root cause, add regression coverage and verify adjacent states.
-
-### `/resolve-release`
-Run acceptance, type/lint/test/build where available, security, responsive/PWA, accessibility, Core UI/design QA, known limitation, migration/data and Product Bible drift review.
-
-### `/resolve-monitoring`
-Use when building native monitors, Monitoring Workers, Property Posture, Renewal/Expiry signals, Incidents or monitoring connectors. Preserve source/freshness and distinguish provider outage from target outage.
-
-### `/resolve-document`
-Use for Document Studio, Proposal, Estimate, Contract and generated documents. Preserve business record truth, template/version lifecycle, Secure External Access and immutable accepted/executed snapshots.
-
-### `/resolve-ai`
-Use for Àríyá surfaces/provider/tools/actions. Preserve user-facing Àríyá identity, caller permissions, evidence/freshness, Action Registry use and Chatwoot Captain separation.
-
-### `/resolve-shell`
-Use for Sidebar, TopBar, avatar/account, notifications chrome, Search/Command, Quick Create, Àríyá entry and mobile navigation. Enforce simple Perfex/Brevo-like navigation clarity and reject Odoo/Twenty-style navigation complexity.
-
-### `/self-host-check`
-Review Lovable-only runtime assumptions, provider lock-in, direct Supabase coupling, environment configuration and self-host portability without forcing premature production infrastructure.
-
-## Built-in Lovable skills
-Use Lovable's strongest available design/review/accessibility/skill-creation capabilities in addition to these custom rules. Custom skills complement rather than duplicate useful built-ins.
-
-## Skill sequencing examples
-
-### Admin record page
-1. `/resolve-feature`
-2. `/resolve-record-workspace`
-3. `/resolve-data-table` when needed
-4. `/resolve-security-review`
-5. `/resolve-accessibility`
-6. `/resolve-release`
-
-### New connector
-1. `/resolve-feature`
-2. `/resolve-connector`
-3. `/resolve-security-review`
-4. `/self-host-check`
-5. `/resolve-release`
-
-### Portal mobile flow
-1. `/resolve-feature`
-2. `/resolve-ui`
-3. `/resolve-pwa`
-4. `/resolve-accessibility`
-5. `/resolve-release`
-
-### Shell/Core UI
-1. `/resolve-shell`
-2. `/resolve-ui`
-3. `/resolve-pwa`
-4. `/resolve-accessibility`
-5. `/self-host-check`
-6. `/resolve-release`
-
-## Skill creation order
-Create first:
+## Skills required before FOUND-001
+Import and enable at minimum:
 1. resolve-feature
 2. resolve-ui
 3. resolve-shell
-4. resolve-form
-5. resolve-data-table
-6. resolve-security-review
-7. resolve-pwa
-8. resolve-release
-9. self-host-check
+4. resolve-navigation
+5. resolve-responsive
+6. resolve-accessibility
+7. resolve-design-review
+8. resolve-security-review
+9. resolve-pwa
+10. resolve-release
+11. self-host-check
 
-Add domain-specific skills when their first relevant build slice approaches.
+The remaining skills should also be imported before broad feature development so the workspace is ready for later slices. They do not increase prompt context unless Lovable selects them for a matching task.
+
+## Recommended FOUND-001 invocation
+The foundation prompt should explicitly invoke:
+`/resolve-feature /resolve-shell /resolve-ui /resolve-navigation /resolve-responsive /resolve-pwa /resolve-accessibility /self-host-check /resolve-release`
+
+Use `/resolve-design-review` after the first visual implementation pass or as part of the final foundation review.
+
+## Sequencing examples
+
+### Record page
+`resolve-feature → resolve-record-workspace → resolve-data-table/form as needed → resolve-responsive → resolve-security-review → resolve-accessibility → resolve-design-review → resolve-release`
+
+### Connector
+`resolve-feature → resolve-connector → resolve-action-registry when writes exist → resolve-security-review → self-host-check → resolve-release`
+
+### Portal flow
+`resolve-feature → resolve-portal → resolve-ui → resolve-responsive → resolve-pwa → resolve-accessibility → resolve-security-review → resolve-release`
+
+### Shell/Core UI
+`resolve-feature → resolve-shell → resolve-navigation → resolve-ui → resolve-responsive → resolve-pwa → resolve-accessibility → resolve-design-review → self-host-check → resolve-release`
+
+### Monitoring
+`resolve-feature → resolve-monitoring → resolve-attention → resolve-notifications → resolve-security-review → resolve-release`
+
+### Document workflow
+`resolve-feature → resolve-document → resolve-form/record-workspace as needed → resolve-action-registry → resolve-security-review → resolve-accessibility → resolve-release`
+
+## Built-in Lovable skills
+Use Lovable's maintained accessibility/redesign/other built-in skills when they add value, but Re:Solve custom skills and Product Bible rules remain authoritative for Re:Solve-specific behavior.
+
+## Governance
+When a recurring pattern repeatedly needs ad-hoc instructions, consider a new skill. Do not create overlapping skills merely to encode one page's details. Update source-controlled `SKILL.md` first, then refresh the Lovable workspace version.
