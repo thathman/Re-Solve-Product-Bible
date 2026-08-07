@@ -3,7 +3,8 @@
 Use this before sending FOUND-001. If a required item fails, fix setup first rather than spending build credits on avoidable rework.
 
 ## Product Bible
-- [ ] Foundation/experience/core/business/platform/breadth/execution/expansion/launch-readiness Product Bible PRs are merged or the exact canonical head is otherwise agreed.
+- [ ] Product Bible `main` is canonical and launch-readiness work is consolidated.
+- [ ] `thathman/Re-Solve-Product-Bible` is public and reachable for Lovable skill import/reference.
 - [ ] No unresolved contradiction on Operating Entity vs Organisation, Principal/User, Files/Vault, Chatwoot, Àríyá, Monitoring, Plugin/Connector, Payment truth or permission naming.
 - [ ] Explicit exclusions remain: no HR, Timesheets/Time Tracking, Client Service Consumption.
 
@@ -14,10 +15,11 @@ Use this before sending FOUND-001. If a required item fails, fix setup first rat
 
 ## GitHub
 - [ ] Correct GitHub installation/account is connected to Lovable.
-- [ ] Lovable-created repository exists and is private.
+- [ ] Lovable-created application repository exists and is private.
 - [ ] Two-way sync reports Connected.
 - [ ] Repository/default branch name is recorded.
 - [ ] Existing legacy `thathman/Re-Solve` remains unchanged.
+- [ ] Public Product Bible is treated as specification/reference, not the writable application repository.
 - [ ] No repository transfer/disconnect/reconnect is planned during FOUND-001.
 
 ## Project Knowledge
@@ -31,6 +33,7 @@ Use this before sending FOUND-001. If a required item fails, fix setup first rat
 - [ ] Saved Knowledge includes portability/self-host requirement.
 
 ## Skills
+- [ ] GitHub import from the public Product Bible is working.
 - [ ] `resolve-feature`
 - [ ] `resolve-ui`
 - [ ] `resolve-shell`
@@ -44,6 +47,7 @@ Use this before sending FOUND-001. If a required item fails, fix setup first rat
 - [ ] `self-host-check`
 - [ ] each required skill is enabled and appears in slash menu;
 - [ ] descriptions begin with `Use when...`;
+- [ ] imported contents match the canonical public `SKILL.md` files;
 - [ ] no deprecated `airix-*` skill remains active.
 
 ## FOUND-001 input
