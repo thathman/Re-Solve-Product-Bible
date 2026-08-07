@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 CONDITIONAL (FINAL AVATAR ENV/ACCESSIBILITY CLEANUP)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 READY**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -55,31 +55,33 @@ Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/sy
 - The same guard has previously blocked Lovable embedded Preview, so do not claim Preview access while the guard is active.
 - Local/non-production development can use the route.
 
-## FOUND-001C1 — Core UI primitive foundation + Component Gallery infrastructure
-**Status: CONDITIONAL — one final Avatar correction required before C2**
+### FOUND-001C1 — Core UI primitive foundation + Component Gallery infrastructure
+**Status: ACCEPTED — CANONICAL/FROZEN FOR DOWNSTREAM USE**
 
-### Verified C1 implementation now present
+Supervisor verified on application-repository `main`:
 - canonical Re:Solve Core boundary exists under `src/components/core/`;
 - public export surface exists at `src/components/core/index.ts`;
-- C1 set exists: Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric and MetricDelta;
-- Component Gallery imports through `@/components/core`;
-- IconButton consumes Core Tooltip rather than stock shadcn Tooltip;
-- Tooltip and Separator have explicit gallery examples;
-- Button loading exposes `aria-busy`, disables interaction, uses a decorative spinner, and active scaling is motion-safe;
-- MetricDelta separates `direction` (`up|down|flat`) from `sentiment` (`positive|negative|neutral`);
-- gallery demonstrates positive/negative/neutral combinations and uses explicit currency codes;
-- Untitled UI Avatar behavior is materially adapted: initials, placeholder icon, status indicator and normalized size/shape behavior while retaining Radix Avatar underneath;
-- Tremor Card provenance is corrected to Card v1.0.0 / Apache-2.0 and Metric now carries the traceable `relative w-full text-left` structural surface contract;
-- standalone Tooltip keyboard example no longer nests an IconButton-owned Tooltip;
-- no new dependencies were added;
-- production `/ui` guard remains in place;
-- Lovable reports build/lint/type success.
+- accepted C1 set: Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric and MetricDelta;
+- Component Gallery consumes the public Core boundary rather than importing low-level source components directly;
+- Button supports Re:Solve variants/sizing, disabled/loading behavior, `aria-busy`, decorative spinner semantics and motion-safe pressed feedback;
+- IconButton requires an accessible label and consumes Core Tooltip;
+- Core Tooltip remains Radix-backed and has pointer/keyboard/long-content gallery evidence;
+- Separator supports horizontal/vertical use and is demonstrated;
+- StatusBadge uses semantic color plus visible label/dot rather than color-only meaning;
+- ResolveAvatar materially adapts documented Untitled UI Avatar behavior while retaining Radix underneath: initials fallback, placeholder behavior, size/shape composition and visible status indicators;
+- ResolveAvatar uses a discriminated accessibility contract: meaningful avatars require `name`; decorative avatars explicitly use `decorative: true`;
+- meaningful avatar root owns the single accessible identity and includes status in the label when supplied; image/fallback/status children are hidden from assistive technology;
+- decorative avatars are removed from the accessibility tree;
+- no ordinary `process.env` access remains in ResolveAvatar;
+- Metric materially adapts Tremor Card v1.0.0 structural `relative w-full text-left` surface behavior while retaining a Re:Solve-owned API/tokens;
+- Tremor source provenance is recorded as Apache-2.0;
+- MetricDelta separates movement `direction` (`up|down|flat`) from semantic `sentiment` (`positive|negative|neutral`);
+- gallery demonstrates direction/sentiment combinations and explicit currency codes;
+- Untitled UI Avatar and Tremor Card provenance is auditable in `docs/ui-sources.md`;
+- no new parallel design system, package manager or lockfile was introduced;
+- Lovable reports build/lint/type success with only unrelated existing Fast Refresh warnings.
 
-### Remaining C1 supervisor finding after FIX2
-1. **ResolveAvatar reintroduced shared-module `process.env` access.** `src/components/core/avatar/ResolveAvatar.tsx` currently checks `process.env.NODE_ENV` inside a client/shared UI component. This violates the environment-boundary rule accepted in FOUND-001A. Remove all ordinary `process.env` access from the component.
-2. **Meaningful-vs-decorative naming should be enforced structurally, not by a development warning.** Prefer a TypeScript discriminated-union API where meaningful avatars require a full `name` and decorative avatars explicitly opt into `decorative: true`. Avoid a runtime warning as the primary enforcement mechanism.
-3. **Unify status with the single accessible avatar identity.** Meaningful avatars should expose one coherent accessible name such as the person's full name plus meaningful status when status is supplied. The visual status dot should then be `aria-hidden`. Avoid a separate `sr-only` status node that may be announced independently from the image identity.
-4. **Preserve the accepted visual status treatment.** Current high-contrast indicator colors and surface ring are acceptable; do not regress them while fixing semantics.
+C1 APIs are now the canonical Re:Solve Core consumption path. Future slices should extend these components deliberately rather than bypassing them with duplicate source-library primitives.
 
 ## Current architecture facts
 - framework/build tool: TanStack Start v1 + Vite;
@@ -92,7 +94,7 @@ Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/sy
 - primary icon family: Lucide 0.575.0;
 - typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0;
 - query/server state: TanStack Query;
-- form/validation: React Hook Form + Zod;
+- form/validation: React Hook Form + Zod already present;
 - chart foundation: Recharts;
 - environment security: public VITE boundary + createServerOnlyFn private boundary;
 - testing stack: not configured;
@@ -103,11 +105,23 @@ Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/sy
 - shadcn/ui: incorporated/source-owned starter foundation.
 - Radix: incorporated beneath current shadcn and Core components.
 - Lucide: incorporated as primary icon family.
-- Untitled UI React: material Avatar behavior adaptation is present; final C1 acceptance depends only on the remaining Avatar env/accessibility cleanup.
-- Tremor Raw: material incorporation accepted in principle for C1 after provenance correction to Card v1.0.0 / Apache-2.0 and traceable Metric structural adaptation.
+- Untitled UI React: materially incorporated through documented Avatar behavior/API adaptation; free/open-source source recorded in provenance ledger.
+- Tremor Raw: materially incorporated through Tremor Card v1.0.0 structural adaptation into Re:Solve Metric; Apache-2.0 provenance recorded.
 
 ## Current Core UI inventory
-C1 implementation exists but is not yet frozen/canonical. Do not begin C2 until the final Avatar correction passes.
+Accepted/frozen C1:
+- Button
+- IconButton
+- Badge
+- StatusBadge
+- ResolveAvatar
+- Tooltip
+- Separator
+- Skeleton
+- Metric
+- MetricDelta
+
+Next Core work should expand this inventory in bounded slices while preserving the public `@/components/core` boundary and accepted token/accessibility conventions.
 
 ## Current database/domain inventory
 None.
@@ -116,8 +130,10 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- final ResolveAvatar env/accessibility cleanup pending;
+- form/control primitives are not yet canonical;
+- overlay/menu/dialog primitives are not yet canonical;
+- application states and broader composites remain future C substeps;
 - shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
 
 ## Next action
-Execute supervisor-provided final FOUND-001C1 Avatar correction only. Re-review repository afterward. If accepted, freeze C1 as canonical and proceed to the next bounded C2 primitive set.
+Begin `FOUND-001C2` as a bounded form/control primitive slice. Build only the initial canonical field/control set plus Component Gallery evidence, preserve the accepted Core boundary, and STOP for supervisor review before overlays or additional primitive categories.
