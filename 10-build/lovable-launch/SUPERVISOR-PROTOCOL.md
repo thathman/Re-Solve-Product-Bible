@@ -30,6 +30,11 @@ A normal prompt should contain only:
 
 The implementation detail belongs in Project Knowledge, Skills and canonical Product Bible files.
 
+## Prompt delivery format
+Every user-facing Lovable prompt from the supervisor must be delivered as **one self-contained fenced code block** with no explanatory prose inside the block before or after the actual instruction. This gives the user a reliable built-in Copy button and prevents accidental omission of lines.
+
+Any supervisor commentary, review verdict or explanation should appear outside the code block.
+
 ## Umbrella slices and substeps
 Large acceptance specifications such as `FOUND-001` are **umbrella review contracts**, not a requirement to send one giant implementation prompt.
 
@@ -78,7 +83,7 @@ The supervisor may request:
 ## Skill use
 Let Lovable apply skills automatically when the trigger is unambiguous. Explicitly invoke critical review/build skills when consistency matters or the current step has a high-risk boundary.
 
-Do not attach every skill to every prompt. Install future domain skills just-in-time when practical; FOUND-001 only requires its designated foundation skills.
+Do not attach every skill to every prompt merely because all canonical skills are installed. Select only the skills relevant to the current bounded step.
 
 Workspace skills are canonical runtime instructions. Project-local `.agents/skills/` copies created during bootstrap are temporary only and should be removed once the corresponding workspace skills are verified, to prevent duplicate/drifting instruction sources.
 
