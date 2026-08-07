@@ -1,428 +1,166 @@
 # Re:Solve Design System
 
-## 1. Purpose
+## Purpose
+This specification defines the shared interaction and component system used by Admin OS and Client Portal. The canonical implementation layer is the Re:Solve Core UI Component Framework in `09-design/core-ui-framework.md`.
 
-This specification defines the shared interaction and component system used by both the Admin OS and Client Portal. It is intended to make the product feel coherent while still allowing different density and navigation patterns for staff and clients.
+## Mandatory component sources
+Re:Solve must heavily use and be influenced by:
+- shadcn/ui
+- Untitled UI React
+- Tremor
+- React Aria / Base UI / Radix according to primitive quality
+- TanStack Table / TanStack Query where appropriate
+- approved specialist libraries when genuinely required
 
-## 2. Core implementation principle
+The design system owns the final Re:Solve visual/interaction language. Feature pages should consume Re:Solve components rather than independently styling raw library components.
 
-Use high-quality accessible primitives first. Prefer shadcn/ui and its underlying Radix-compatible patterns, but allow equally strong alternatives when they materially improve a specific interaction, especially for:
-
-- advanced data grids;
-- command palettes;
-- rich text editing;
-- charts;
-- file viewers;
-- date/time scheduling;
-- drag-and-drop workspaces;
-- kanban;
-- complex filtering;
-- virtualized lists.
-
-Do not create bespoke controls simply to look different.
-
-## 3. Component hierarchy
-
-Components should be layered:
+## Component hierarchy
 
 ### Primitive layer
-Buttons, inputs, selects, dialog, sheet, popover, tooltip, tabs, accordion, dropdown, checkbox, radio, switch, calendar, toast, separator, avatar, badge, table primitives, command menu.
+Buttons, links, avatar, inputs, selects/comboboxes, overlays, tabs, form controls, calendars, badges/status, tables, command menu, alerts, skeletons and other canonical controls.
 
-### Re:Solve composite layer
-Examples:
-
-- `RecordHeader`
-- `RecordStatus`
-- `AttentionItem`
-- `ActivityTimeline`
-- `NotificationItem`
-- `PropertyHealth`
-- `ConnectorHealth`
-- `Money`
-- `DateTime`
-- `UserChip`
-- `OrganisationChip`
-- `PropertyChip`
-- `PermissionGate`
-- `QuickCreate`
-- `BulkActionBar`
-- `FilterBar`
-- `SavedViewPicker`
-- `DataViewSwitcher`
-- `EmptyState`
-- `FailureState`
-- `OfflineState`
-- `SensitiveValue`
-- `VaultFile`
-- `AuditEntry`
-- `ProgressState`
-- `ClientActionCard`
+### Application/composite layer
+Examples include:
+- AppShell / AdminSidebar / PortalNavigation / TopBar
+- ResolveAvatar / AccountMenu
+- GlobalSearch / CommandPalette / QuickCreate
+- NotificationTrigger / NotificationTray / NotificationItem
+- AriyaTrigger / AriyaPanel
+- PageHeader / RecordHeader / RecordTabs
+- AttentionItem
+- ActivityTimeline / AuditTimeline
+- PropertyPosture / ConnectorHealth
+- FilterBar / SavedViewPicker / ViewSwitcher / BulkActionBar
+- DataTable
+- PermissionGate / StepUpDialog
+- SensitiveValue / SensitiveFileCard
+- Metric / StatStrip / InsightPanel
+- Empty/Error/Permission/Offline/NotBuilt/Connection states
 
 ### Feature layer
-Feature screens compose primitives and shared composites. They should not silently redefine established behavior.
+Feature screens compose shared primitives and composites. They do not silently redefine established behavior.
 
-## 4. Layout tokens
+## Layout tokens
+Define consistent tokens for page gutters, content widths, sidebar/topbar dimensions, panel padding, table density, control heights, overlays, responsive breakpoints and mobile safe areas.
 
-Define consistent tokens for:
+Avoid excessive nested cards. Borders and whitespace should do most structural work; shadows remain restrained.
 
-- page gutters;
-- content max widths;
-- sidebar widths;
-- topbar heights;
-- panel padding;
-- table row density;
-- control heights;
-- modal widths;
-- drawer widths;
-- responsive breakpoints;
-- mobile safe-area spacing.
+## Typography
+Define tokens for page title, record title, section title, panel title, body, table body, metadata, label, helper, code/identifier and numeric emphasis. Financial/metric figures should use tabular numerals where possible.
 
-Compact and comfortable density modes may be supported later, but the default Admin density should already be efficient.
+## Iconography
+Use one coherent icon family by default. Pair unfamiliar icons with text. Status icons need accessible labels. Plugin icons must fit the system.
 
-## 5. Surface hierarchy
+Àríyá should have a recognizable Re:Solve-native mark/treatment rather than relying solely on a generic sparkle icon.
 
-Avoid excessive nested cards. Use these levels intentionally:
+## Semantic status
+Reusable semantic states include neutral, draft, pending, active, completed, paused, warning, overdue, failed, cancelled, archived, disconnected, degraded and unknown. Domain names map onto shared visual semantics.
 
-1. page canvas;
-2. section/panel surface;
-3. elevated overlay;
-4. selected/active state.
-
-Borders and whitespace should do most of the structural work. Shadows should be restrained.
-
-## 6. Typography scale
-
-Define tokens for:
-
-- app/page title;
-- record title;
-- section title;
-- card/panel title;
-- body;
-- table body;
-- metadata;
-- label;
-- helper text;
-- code/identifier;
-- numeric emphasis.
-
-Financial figures must use tabular numerals where possible.
-
-## 7. Icon system
-
-Use one coherent icon family by default, such as Lucide-compatible icons.
-
-Rules:
-
-- pair unfamiliar icons with text;
-- do not use multiple icon families casually;
-- destructive actions must not rely on red iconography alone;
-- status icons require accessible labels;
-- plugin-provided icons must fit the visual system.
-
-## 8. Status vocabulary
-
-Status treatments must be semantic and reusable.
-
-Minimum reusable states:
-
-- neutral;
-- draft;
-- pending;
-- active;
-- completed;
-- paused;
-- warning;
-- overdue;
-- failed;
-- cancelled;
-- archived;
-- disconnected;
-- degraded.
-
-Features may define domain-specific status names, but visual mappings should reuse shared semantic tokens.
-
-## 9. Buttons and actions
-
+## Buttons/actions
 Action priority:
+- primary
+- secondary
+- tertiary/ghost
+- destructive
+- inline/contextual
 
-- primary;
-- secondary;
-- tertiary/ghost;
-- destructive;
-- inline contextual action.
-
-A page should usually have one visually dominant primary action.
-
-High-risk actions require explicit language, not ambiguous labels such as `Confirm`.
-
-## 10. Forms
-
-Standard forms must support:
-
-- labels;
-- descriptions;
-- required indicators;
-- validation messages;
-- server errors;
-- disabled/read-only fields;
-- loading/saving states;
-- dirty-state protection when material;
-- keyboard submission where safe;
-- accessible help text;
-- conditional fields;
-- sensitive-field reveal behavior;
-- autosave only where loss/recovery semantics are clear.
+A page normally has one visually dominant primary action. High-risk actions use explicit language and Action Registry policy.
 
-Use Zod-style schema validation or Lovable's strongest compatible equivalent for consistent client/server rules.
+## Forms
+Forms support labels, help, validation, server errors, disabled/read-only, loading/saving, unsaved-change protection, keyboard/focus behavior, conditional fields, sensitive treatment and responsive composition.
 
-## 11. Data tables
+Use React Hook Form + Zod or Lovable's strongest compatible equivalent when appropriate.
 
-Operational tables are first-class interfaces, not static displays.
+## Data tables
+Operational tables are first-class interfaces.
 
-Where appropriate they must support:
+Default engine direction: TanStack Table or equivalent headless table behavior normalized into Re:Solve DataTable.
 
-- search;
-- filter chips;
-- advanced filters;
-- sorting;
-- pagination or virtualization;
-- selectable rows;
-- bulk actions;
-- configurable columns;
-- saved views;
-- export with permission checks;
-- row quick actions;
-- row open behavior;
-- empty results state;
-- loading skeleton;
-- stale/retrying state;
-- responsive transformation.
+Relevant capabilities:
+- search
+- quick/advanced filters
+- sorting
+- pagination/virtualization
+- selection
+- bulk actions
+- configurable/pinned columns
+- saved views
+- exports with permission checks
+- row actions
+- keyboard behavior
+- stale/retrying/error/empty/loading states
+- responsive transformation
 
-Mobile must not rely on shrinking a 10-column desktop table. Use priority columns, stacked record rows, drawers, or cards where necessary.
+Mobile must not simply shrink a 10-column table. Use priority data, stacked rows, drawers or cards.
 
-## 12. Filtering system
+A specialist enterprise grid is permitted only for workflows that genuinely require spreadsheet/grid behavior.
 
-Filters should be consistent across modules.
+## Filtering and saved views
+Filtering is consistent across modules. Support quick filters, advanced filters, active chips, clear all, date presets, ownership/status/organisation/property filters and personal/team/shared Saved Views where allowed.
 
-Standard concepts:
+## Command palette and search
+Global command/search supports navigation, record search, Quick Create, recent records, favorites, registered actions and Àríyá entry. Results show type, parent context, status and match reason where useful.
 
-- quick filters;
-- advanced filter builder;
-- active filter chips;
-- clear all;
-- saved view;
-- personal/shared views;
-- URL-shareable state where safe;
-- date presets;
-- ownership filters;
-- status filters;
-- organisation/property filters.
+## Record headers
+Canonical RecordHeader supports type/eyebrow, title, status, human reference, ownership, parent, key metadata, primary action, overflow actions, favorite and plugin actions while remaining compact.
 
-## 13. Command palette and global search
+## Tabs/subnavigation
+Use tabs for parallel views of one record/major area. Preserve deep links and counts when meaningful. Mobile uses scrollable/alternative selection rather than broken compression.
 
-Provide a global keyboard-accessible command/search surface capable of:
+## Overlays
+Use popover for lightweight choice, dialog for bounded decisions, drawer/sheet for side-context work and full pages for deep workflows. Avoid modal chains.
 
-- navigation;
-- record search;
-- quick create;
-- recent records;
-- saved/favorite destinations;
-- common actions;
-- AI entry point where appropriate.
+## Notifications
+Toasts are transient feedback only. Persistent user awareness lives in Notifications. Global Notification chrome must be a polished Core Framework experience with strong unread/group/action behavior.
 
-Search results should identify record type, parent organisation/property, status, and why the result matched.
+## Avatar/account
+ResolveAvatar and AccountMenu are canonical shell components. AccountMenu must include meaningful identity/context, profile/preferences/security/appearance/help and sign-out behavior rather than a minimal logout dropdown.
 
-## 14. Record header
+## Àríyá
+AriyaTrigger/AriyaPanel are canonical components. Avoid floating-bubble clichés and visually disconnected assistant styling.
 
-A standard record header should support:
+## Sensitive information
+Sensitive values/files are masked by default and use explicit reveal/copy/download actions, permission checks, optional step-up and audit.
 
-- record type eyebrow;
-- title/name;
-- status;
-- optional ID/reference;
-- ownership;
-- parent relationship;
-- key metadata;
-- primary action;
-- action menu;
-- favorite/save;
-- breadcrumbs or back context;
-- plugin actions.
+## Files
+File components support upload progress, drag/drop, mobile picker/camera, preview, metadata, version, replace, download, permission state, confidential routing, processing/failure states.
 
-## 15. Tabs and subnavigation
+## Charts/visualization
+Tremor should heavily influence chart/metric composition. Every visualization needs a real operational question, clear period/filter context, accessible representation and empty/error state. Prefer a number, tracker or small table when clearer than a chart.
 
-Use tabs when sections are parallel views of one record. Use nested navigation when sections represent major standalone areas.
+Do not casually mix chart libraries.
 
-Tabs should:
+## Drag/drop/canvas
+Use dnd-kit as preferred drag/reorder direction. Use React Flow for automation/process topology when a canvas materially improves the workflow.
 
-- preserve deep links;
-- expose counts when meaningful;
-- work on mobile using scrollable or dropdown fallback;
-- allow plugin extension slots without destroying hierarchy.
+## Responsive behavior
+Admin uses adaptive/collapsible navigation, persistent search/notification access, responsive table transformations and sheets for secondary controls.
 
-## 16. Drawers, dialogs, and full pages
+Portal prioritizes phone-first tasks, accessible primary actions, support, approvals, invoices, files and notifications. Installed PWA must feel native to the product.
 
-Use:
+## PWA states
+Shared components expose offline, reconnecting, update available, install available, push permission, queued safe action, sync failed and sync restored where relevant.
 
-- popover for lightweight contextual choices;
-- dialog for bounded decisions/forms;
-- sheet/drawer for side-context work without leaving a page;
-- full page for deep workflows, records, and long forms.
+## Accessibility
+Every shared component supports keyboard operation, semantic screen-reader behavior, focus order/return, reduced motion, text zoom, contrast, touch targets and announced errors. Target WCAG 2.2 AA.
 
-Avoid modal chains.
+## Themes/branding
+Tokens permit light/dark and controlled Operating Entity/Brand identity. Branding can affect logo, approved accents and selected portal/email/document surfaces without overriding core semantic accessibility.
 
-## 17. Notifications and toasts
+## Plugin extension contract
+Plugins may contribute navigation entries, record tabs, settings panels, dashboard widgets, actions, fields, columns and command actions only through approved slots and Core UI components.
 
-Toasts are transient confirmation only. They do not replace persistent notification records.
+## Component Gallery
+A development-only Component Gallery/Storybook-equivalent is mandatory from FOUND-001. It should demonstrate canonical components, realistic content, state variants and responsive behavior.
 
-Toast categories:
-
-- success;
-- neutral info;
-- warning;
-- error with retry when applicable.
-
-Critical failures should remain visible in page state or notification center.
-
-## 18. Empty states
-
-Empty states should explain:
-
-- what the area is;
-- why it may be empty;
-- the next meaningful action;
-- whether permissions or configuration are involved.
-
-Avoid generic `No data found` unless the context is self-evident.
-
-## 19. Sensitive information patterns
-
-Sensitive values and files need a dedicated pattern:
-
-- masked by default;
-- reveal requires appropriate permission;
-- step-up may be required;
-- reveal/copy/download actions are explicit;
-- audit consequences are visible when useful;
-- avoid leaking secrets into client-side logs or copied error messages.
-
-## 20. File patterns
-
-Shared file components should support:
-
-- upload progress;
-- drag/drop;
-- mobile file picker/camera when appropriate;
-- preview;
-- filename/type/size;
-- owner/context;
-- version;
-- download;
-- replace/new version;
-- permission state;
-- confidential classification;
-- scan/processing state;
-- failure/retry.
-
-## 21. Charts and visualization
-
-Charts must answer a real operational question. Every chart requires:
-
-- clear title;
-- period/filter context;
-- accessible data representation;
-- hover/focus details;
-- empty state;
-- no misleading axes or decorative complexity.
-
-Do not use a chart where a number, trend, or small table is clearer.
-
-## 22. Responsive behavior
-
-### Admin
-
-- collapsible navigation;
-- mobile command/search access;
-- priority content first;
-- advanced controls move into sheets or overflow menus;
-- table transformations;
-- sticky action bars only when useful;
-- no hover-only behavior.
-
-### Portal
-
-- phone-first navigation considerations;
-- bottom navigation may be used for highest-frequency areas;
-- primary actions remain reachable with one hand where practical;
-- attachments, approvals, invoices, notifications, and support must be fully usable on mobile;
-- installed PWA mode must feel native to the product, not like a desktop page inside a small browser.
-
-## 23. PWA component requirements
-
-Shared system components must expose states for:
-
-- offline;
-- reconnecting;
-- update available;
-- install available;
-- push permission;
-- background action queued;
-- sync failed;
-- sync restored.
-
-## 24. Accessibility requirements
-
-Every shared component must be designed for:
-
-- keyboard operation;
-- screen-reader semantics;
-- logical focus order;
-- focus return after overlays;
-- reduced motion;
-- text zoom;
-- high contrast viability;
-- touch target sizing;
-- error announcement.
-
-## 25. Theme support
-
-Design tokens should permit future light/dark themes and controlled branding without allowing arbitrary client branding to make the interface inaccessible.
-
-Brand customization may affect:
-
-- logo;
-- approved accent token;
-- login/portal identity;
-- selected email/document surfaces.
-
-Core semantic colors and interaction behavior remain system-controlled.
-
-## 26. Plugin extension contract
-
-The design system must anticipate plugin-provided:
-
-- sidebar/nav entries;
-- record tabs;
-- settings panels;
-- dashboard widgets;
-- actions;
-- form fields;
-- data-table columns;
-- status badges;
-- command palette actions.
-
-Plugin UI should consume Re:Solve components and tokens rather than shipping unrelated design systems into the product.
-
-## 27. Design acceptance gate
-
-Before a component becomes canonical:
-
-- verify desktop and mobile;
-- verify keyboard behavior;
-- verify empty/error/loading/read-only states;
-- verify dark-theme readiness if theme support is active;
+## Design acceptance gate
+Before a reusable component becomes canonical or a major UI slice is complete:
+- verify desktop/tablet/phone;
+- verify keyboard/focus;
+- verify empty/error/loading/read-only/offline/stale states;
 - verify accessibility;
-- verify real content lengths;
+- verify realistic content lengths;
 - verify it does not duplicate an existing component;
-- document unusual behavior.
+- verify shadcn/Untitled/Tremor/Core UI sourcing is appropriate;
+- verify it fits the navigation/application-chrome rules;
+- verify it appears correctly in Component Gallery when reusable.
