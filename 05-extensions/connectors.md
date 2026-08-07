@@ -1,28 +1,26 @@
 # Re:Solve Connector Platform
 
 ## Purpose
+Connectors integrate Re:Solve with specialist external systems while domain logic remains provider-neutral. Connectors are replaceable implementations of stable capability contracts.
 
-Connectors integrate Re:Solve with specialist external systems while keeping domain logic provider-neutral. Connectors are replaceable implementations of stable capability contracts.
+A Plugin adds business/product capability. A Connector integrates an external system. An optional provider package may be distributed as a Plugin that registers a Connector implementation.
 
-A connector does not add an unrelated business domain. A plugin may depend on a connector, but provider integration must remain separate from business logic.
-
-## Core goals
-
-- prevent provider SDKs from leaking across the product
-- support multiple instances of the same connector type
-- expose connection health, logs, events, credentials, rate limits, and sync state
-- centralize webhook verification, retry, idempotency, and diagnostics
-- support future provider substitution without rewriting business modules
-- make integrations manageable from Admin rather than environment variables alone
+## Goals
+- prevent provider SDK leakage across domains;
+- support multiple instances of one Connector Type;
+- expose health, mappings, events, sync state, credentials references, limits and diagnostics;
+- centralize event verification/idempotency/retry/dead-letter;
+- declare data authority/sync direction/conflict policy;
+- make provider substitution possible without rewriting core features.
 
 ## Connector categories
-
 - Support
 - Payment
 - AI
-- Vault
+- External Vault
 - Signature
 - Monitoring
+- Domain / DNS / Edge
 - Commerce
 - CMS
 - Publishing
@@ -32,298 +30,220 @@ A connector does not add an unrelated business domain. A plugin may depend on a 
 - Storage
 - Identity
 
-## Initial connector implementations
+## Initial/future implementations
+- Chatwoot -> SupportConnector
+- Bachs/Paystack/Flutterwave provider packages -> PaymentConnector implementations
+- OpenRouter -> AIConnector
+- OpenBao -> optional external VaultConnector
+- Documenso -> SignatureConnector
+- Cloudflare -> Domain/DNS/Monitoring/Edge capability connector
+- Uptime Kuma -> optional MonitoringConnector for existing deployments
+- OJS -> PublishingConnector
+- WordPress -> CMSConnector
+- WooCommerce -> CommerceConnector
+- WhatsApp/Baileys -> MessagingConnector
+- SMTP/transactional providers -> EmailConnector
+- Google/Microsoft/etc -> CalendarConnector
 
-- Chatwoot → SupportConnector
-- Bachs → PaymentConnector
-- Paystack → PaymentConnector
-- Flutterwave → PaymentConnector
-- OpenRouter → AIConnector
-- OpenBao → VaultConnector where configured
-- Documenso → SignatureConnector
-- Uptime Kuma → MonitoringConnector
-- OJS → PublishingConnector
-- WordPress → CMSConnector
-- WooCommerce → CommerceConnector
-- WhatsApp/Baileys → MessagingConnector
-- SMTP/Resend/other provider → EmailConnector
+Re:Solve native Monitoring does **not** require Uptime Kuma.
 
-## Connector contract
+## Capability contracts
+Each Connector Type exposes only relevant capabilities.
 
-Each connector type exposes only the capabilities relevant to its domain. Example conceptual contracts:
+Conceptual examples:
 
 ### SupportConnector
-- getConversations
-- getConversation
-- createConversation where supported
-- addContext
-- getUnreadCount
-- listInboxes
-- listTeams
+- get conversation summaries/reference
+- add safe context
+- list inbox/team references
 - health
 
 ### PaymentConnector
-- createPaymentIntent/link
-- verifyPayment
-- getPayment
-- refund where supported and permitted
-- parseWebhook
+- create payment intent/link
+- verify/get payment
+- refund where supported/authorized
+- parse verified event
 - health
 
 ### MessagingConnector
-- sendMessage
-- sendTemplate where supported
-- resolveDeliveryStatus
-- receiveInboundEvent
+- send message/template where supported
+- delivery status
+- inbound event where applicable
 - health
 
-Exact implementation signatures are deferred to technical planning.
+### MonitoringConnector
+- list/source monitor signals
+- health/status
+- ingest alert events
+- source freshness
+
+### DomainRegistrar/DNS capability
+- registration/expiry/auto-renew read where supported
+- zone/DNS metadata
+- controlled high-impact writes only when explicitly exposed/authorized
+
+Exact technical signatures remain implementation decisions.
 
 ## Connector instances
+One Type can have many Instances.
 
-One connector type may have many instances.
+Example OJS Instances:
+- Westbridge Journals
+- Meridian Research Review
 
-Example OJS instances:
-- Kampala University OJS
-- DOMJ OJS
-- AJTMBR OJS
-
-Each instance stores non-secret operational metadata:
-- connector type
-- provider
+Instance metadata:
+- type/provider
 - display name
-- organisation
-- property
-- endpoint
+- Operating Entity
+- Organisation/Property context where relevant
+- endpoint/account reference
 - environment
-- auth reference
-- status
-- health
+- protected auth reference
+- state/health
 - capabilities
-- allowed tools/actions
-- last successful call
-- last sync
-- version
-- rate limit state
-- created/updated metadata
+- allowed actions/tools
+- last successful call/sync
+- provider version
+- rate-limit state
+- freshness
 
-Raw credentials belong in approved secure storage; normal records store references only.
+Raw credentials live behind approved protected storage.
 
 ## Admin experience
-
-### Connector Overview
-
-Cards/rows show:
-- provider
-- type
-- instances
-- status
-- health
-- last event
-- failures
-- authentication expiry warning
-- configuration action
+### Overview
+Show provider/type/instances/status/health/last event/failures/auth expiry/configuration.
 
 ### Instance detail
-
 Tabs:
 - Overview
 - Configuration
 - Capabilities
 - Mappings
+- Sync / Authority
 - Events
 - Logs
 - Health
 - Permissions
 - Audit
 
-Actions:
-- test connection
-- enable/disable
-- rotate credentials
-- resync
-- replay failed event
-- view diagnostics
-- disconnect
+Actions may include test, enable/disable, reconnect, rotate credentials, resync, replay failed event, diagnostics and disconnect.
 
-## Shared integration event runtime
-
-All external events enter a common runtime.
-
-Flow:
+## Shared Integration Event runtime
 
 ```text
 External Provider
-→ Receiver
-→ Raw Event Record
-→ Signature/Auth Verification
-→ Idempotency Check
-→ Normalize
-→ Process
-→ Retry if needed
-→ Dead Letter if exhausted
+-> Receiver
+-> Raw Event Record
+-> Verification
+-> Idempotency
+-> Normalize
+-> Process
+-> Retry
+-> Dead Letter if exhausted
 ```
 
-Minimum event fields:
-- id
-- connector_instance_id
+Minimum metadata:
+- connector instance
 - provider
-- external_event_id
-- event_type
-- payload_hash
-- received_at
-- verified
-- verification_detail
-- status
-- attempt_count
-- next_retry_at
-- last_error
-- correlation_id
-- processing_started_at
-- processed_at
+- external event id
+- type
+- payload hash
+- received/verified state
+- processing state
+- attempts/next retry/error
+- correlation id
+- timestamps
 - retention class
 
-Do not expose full sensitive payloads to ordinary logs.
+Do not expose sensitive raw payloads in ordinary logs.
 
 ## Event states
+received, rejected, duplicate, pending, processing, processed, retrying, dead_letter and manually_replayed.
 
-- received
-- rejected
-- duplicate
-- pending
-- processing
-- processed
-- retrying
-- dead_letter
-- manually_replayed
+## Idempotency / retry
+Prefer provider event IDs; otherwise documented derived keys. Business mutations triggered by events should also be idempotent where practical.
 
-## Idempotency
-
-Where providers offer stable event IDs, enforce uniqueness per connector instance. Where they do not, use a documented derived idempotency key/payload hash strategy.
-
-Business mutations triggered by connector events must also be idempotent where practical.
-
-## Retry
-
-Central retry behavior should support:
-- exponential/backoff policy
-- max attempts
-- retryable vs terminal errors
-- next retry time
-- manual retry
-- dead-letter visibility
+Retry distinguishes retryable/terminal errors, uses bounded backoff and exposes dead-letter/manual replay.
 
 ## Mapping layer
+First-class mappings connect Re:Solve and provider identifiers, for example:
+- Organisation/Contact/Property -> Chatwoot references
+- Invoice -> payment-provider reference
+- Property -> Cloudflare zone/domain
+- Property -> OJS/WordPress/WooCommerce resource
 
-Connectors often need mappings between Re:Solve records and provider records.
+Mappings are auditable and repairable.
 
-Examples:
-- Organisation ↔ Chatwoot account/contact context
-- Property ↔ Chatwoot inbox/context
-- Invoice ↔ Bachs payment reference
-- Property ↔ OJS installation/journal
-- Organisation/contact ↔ WooCommerce customer
+## Data provenance and sync contract
+Each mapping/Connector must declare:
+- read/write direction;
+- authoritative source per field/resource;
+- trigger model;
+- conflict policy;
+- stale threshold;
+- create/update/delete/archive semantics.
 
-Mappings are first-class records with audit and repair tooling.
+Do not use silent newest-wins for consequential data.
 
 ## Secrets
+Credentials are references, masked in UI, rotatable, audited and never logged/displayed casually. Connection tests must not reveal raw credentials.
 
-Connector credentials must be referenced, not casually copied into settings records or logs.
-
-Rules:
-- mask secret values
-- allow rotation
-- record last rotation
-- audit credential changes
-- restrict reveal/export
-- test connection without exposing raw credential
-
-## Health model
-
-Health states:
-- connected
-- healthy
+## Health
+Possible connector states:
+- connected/healthy
 - degraded
 - authentication_required
 - rate_limited
 - misconfigured
-- unavailable
+- provider_unavailable
+- stale
 - disabled
 
-Health may consider:
-- authentication validity
-- endpoint reachability
-- recent successful operations
-- webhook delivery
-- sync freshness
-- rate limits
+Connector health is separate from target/business-record health. A Cloudflare/Uptime connector outage must not automatically mark every Property down.
 
 ## Permissions
+Canonical examples:
+- `connectors.read`
+- `connectors.configure`
+- `connectors.test`
+- `connectors.credentials.rotate`
+- `connectors.events.replay`
+- `connectors.disconnect`
 
-Examples:
-- connectors.read
-- connectors.configure
-- connectors.test
-- connectors.rotate_credentials
-- connectors.replay_events
-- connectors.disconnect
+Provider-specific dangerous operations may require additional capabilities/step-up/approval.
 
-Provider-specific sensitive actions may require additional permissions.
+## Notifications / Attention
+Persistent authentication failure, dead-letter accumulation, stale sync, rate limiting or provider outage can create Platform Attention/Notifications without noise from transient recovery.
 
-## Notifications
+## Automations / Action Registry
+Verified Connector events may trigger Automations. Connector-backed writes must register approved Actions rather than expose arbitrary provider calls.
 
-Notify appropriate administrators for:
-- authentication expiration
-- persistent connector failure
-- dead-letter accumulation
-- rate-limit degradation
-- credential rotation due
-- provider outage if materially affecting operations
+## API / MCP / Àríyá
+Expose safe health/instance/capability/operational actions. Machine/AI clients never receive provider credentials or arbitrary provider API access.
 
-Avoid noisy notifications for transient failures that recover automatically.
+## Special boundaries
+### Chatwoot
+Chatwoot remains support conversation/message truth.
 
-## Automations
+### WhatsApp/Baileys
+Operational Re:Solve-to-client messaging, not client-customer helpdesk.
 
-Connector events can be automation triggers after verification and normalization.
+### Payments
+Provider confirmation/event truth establishes Payment state; Billing remains provider-neutral.
 
-Connector actions can be automation actions only when explicitly registered and permissioned.
+### Monitoring
+Native Re:Solve Monitoring owns common monitoring/posture logic. External monitors contribute optional signals.
 
-## API and MCP
-
-API should expose connector health, instances, capability metadata, and permitted operational actions.
-
-MCP may expose safe connector-backed tools through Re:Solve's tool registry. AI clients must never receive unrestricted provider credentials or arbitrary provider API access.
-
-## Chatwoot special boundary
-
-Chatwoot remains support truth. Re:Solve surfaces selected business context and analytics without copying every message into Re:Solve as canonical data.
-
-## WhatsApp/Baileys special boundary
-
-WhatsApp/Baileys is primarily for Re:Solve-to-client operational messaging and notifications. It is not the helpdesk for a client's end customers.
-
-## Payment special boundary
-
-Provider confirmation/webhook truth, not browser-return success, establishes payment state. Re:Solve billing remains provider-neutral.
+### Cloudflare
+First-class optional source for domain/DNS/edge/health signals. High-impact DNS/security/registrar writes are strongly controlled.
 
 ## Acceptance criteria
-
-- multiple instances of a connector type are supported
-- credentials are not stored or logged as ordinary plaintext configuration
-- external events are verified, deduplicated, retryable, and diagnosable
-- connector health is visible and permission-controlled
-- domain code can consume connector contracts without provider-specific branching throughout the app
-- disabled connector cannot continue processing actions/events except explicitly required cleanup
-- mappings can be inspected and repaired
-- API/MCP exposure never bypasses connector permissions
-
-## Lovable build slices
-
-1. connector registry + overview
-2. connector instance record + detail page
-3. test connection + health model
-4. mapping records
-5. integration event store + event viewer
-6. retry/dead-letter/manual replay
-7. first real connector adapter implementation
-8. credential rotation and diagnostics
+- multiple Instances per Type;
+- credentials protected;
+- events verified/deduped/retryable/diagnosable;
+- sync authority/conflict policy explicit;
+- domain code consumes capability contracts rather than provider branching;
+- disabled Connector cannot keep normal processing;
+- mappings can be repaired;
+- health distinguishes provider failure from business target failure;
+- API/MCP/Àríyá cannot bypass permissions.
