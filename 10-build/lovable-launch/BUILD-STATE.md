@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A CONDITIONAL — FINAL FOUNDATION CLEANUP REQUIRED BEFORE FOUND-001B**
+**FOUND-001A CONDITIONAL — TWO VERIFIED CLEANUP ITEMS REMAIN BEFORE FOUND-001B**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -40,12 +40,14 @@ Keep this file updated after each accepted build slice so the next Product Bible
 Never store credentials/secrets in this file.
 
 ## Accepted slices
-None yet. `FOUND-001A` remains CONDITIONAL pending one final focused cleanup.
+None yet. `FOUND-001A` remains CONDITIONAL pending two final implementation corrections.
 
 ## Verified starter / FOUND-001A baseline
 - framework/build stack: `TanStack Start v1 + Vite`;
 - React: `19.2.0`;
 - package manager: `bun`;
+- verified Bun runtime: `1.3.3`;
+- `packageManager`: `bun@1.3.3`;
 - Tailwind: `4.2.1` using `@tailwindcss/vite`;
 - TypeScript: `5.8.3`;
 - Vite: `8.2.0`;
@@ -58,37 +60,34 @@ None yet. `FOUND-001A` remains CONDITIONAL pending one final focused cleanup.
 - Re:Solve business functionality: none;
 - PWA/tests/CI: not yet configured;
 - database migrations/schema: none;
-- `AGENTS.md` exists;
-- root `.env.example` now exists;
+- `AGENTS.md` exists and no longer locks production to Cloudflare;
+- root `.env.example` exists and contains only current foundation variables;
 - formatter layer no longer hard-codes universal locale/currency defaults;
-- UI provenance ledger moved to `docs/ui-sources.md`;
-- `.bun-version` exists;
-- Lovable reported `bun run build` success and `bun run lint` success with 6 existing react-refresh warnings.
+- UI provenance ledger is `docs/ui-sources.md` and correctly records `lucide-react@0.575.0`, source-owned shadcn registry components, granular Radix provenance, and Untitled UI/Tremor as not incorporated;
+- `.bun-version` is `1.3.3` and aligns with package metadata;
+- Lovable reported build/type/lint success, with only stock shadcn react-refresh warnings.
 
 ## Remaining FOUND-001A supervisor review findings
-Most earlier findings were corrected, but GitHub verification found these remaining issues:
-1. `.gitignore` is unchanged and still does not ignore `.env` / `.env.*`; this must be committed, with `.env.example` explicitly allowed.
-2. The current env module uses a manual `typeof window` guard in shared code. For TanStack Start, server-only environment access should use the framework's server-only execution boundary such as `createServerOnlyFn` / `createServerFn`, and server env should be read in server-only/per-request execution. Avoid shared-module secret access that can drift into client bundles.
-3. Root `.env.example` still contains speculative future provider variables (`CHATWOOT_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`) despite the instruction not to invent future provider variables. Remove them until a real slice introduces them.
-4. `docs/ui-sources.md` contains incorrect Lucide version provenance (`^0.475.0`), while `package.json` currently has `^0.575.0`. Correct provenance from the actual repository. For source-owned shadcn registry components, do not invent a singular package version when none exists.
-5. Bun metadata is inconsistent: `.bun-version` currently contains `1.3.3`, while Lovable reported `1.2.2`. Verify with `bun --version` in the actual build environment and then align `.bun-version` and any package/runtime declaration to that verified value. Do not guess.
+GitHub verification after FIX2 found only these remaining items:
+1. Root `.gitignore` is still unchanged and does not contain the requested `.env`, `.env.*`, `!.env.example` rules. The rules must be committed to the actual file, not only reported as intended.
+2. `getServerEnv` currently uses `createServerFn`. That creates a client-callable RPC boundary and is not the correct reusable abstraction for a secret/config reader. Use TanStack Start `createServerOnlyFn` (or an equivalent true server-only boundary) for private environment access so client-side calls throw and the server implementation is excluded from the client bundle. `createServerFn` remains appropriate later for explicit RPC operations that deliberately return safe data to the client.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
 - routing: `TanStack file-based routes`
 - React: `19.2.0`
-- package manager: `bun`
+- package manager: `bun@1.3.3`
 - Tailwind: `4.2.1`
 - shadcn: `initialized; do not rerun init without explicit migration decision`
 - current UI primitives: `Radix + shadcn source components`
-- primary icon library: `Lucide`
+- primary icon library: `Lucide 0.575.0`
 - query/server state: `TanStack Query`
 - form/validation: `React Hook Form + Zod`
 - chart foundation: `Recharts`
 - testing stack: `not configured`
 - PWA tooling: `not configured`
 - auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
-- service/repository boundaries: `initial directories established; acceptance pending final cleanup`
+- service/repository boundaries: `initial directories established; acceptance pending two final corrections`
 
 ## Current Core UI inventory
 None beyond stock/generated shadcn primitives. No Re:Solve Core UI components accepted yet.
@@ -97,15 +96,12 @@ None beyond stock/generated shadcn primitives. No Re:Solve Core UI components ac
 None.
 
 ## Open Product Bible deltas
-None requiring a product decision. Current issues are implementation corrections.
+None requiring a product decision. Current issues are implementation corrections only.
 
 ## Known implementation limitations
 - `.gitignore` env protection still not committed;
-- server-only env boundary needs a TanStack-native implementation;
-- speculative env examples remain;
-- UI provenance contains a version mismatch;
-- Bun runtime metadata is inconsistent;
+- private env reader still uses a client-callable server function rather than a true server-only environment function;
 - no CI/tests/PWA yet by design.
 
 ## Next action
-Execute supervisor-provided final `FOUND-001A-FIX2` only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
+Execute supervisor-provided `FOUND-001A-FIX3` only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
