@@ -1,6 +1,6 @@
 ---
 name: resolve-pwa
-description: Review or implement Re:Solve installability, responsive/mobile behavior, offline state, caching, push/deep-links, safe areas, and service-worker lifecycle.
+description: Use when implementing or reviewing Re:Solve installability, service-worker behavior, offline/stale states, cache policy, push/deep links, reconnect/update lifecycle, safe areas, or PWA-specific mobile behavior.
 ---
 
 # Re:Solve PWA
@@ -18,3 +18,5 @@ Verify:
 - push/deep-link behavior where in scope;
 - queued replay only for actions whose idempotency/conflict behavior is safe;
 - reconnect/sync failure/success state.
+
+PWA is a product capability, not permission to cache authenticated data indiscriminately.
