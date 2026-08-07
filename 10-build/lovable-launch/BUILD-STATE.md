@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A CONDITIONAL — ONE VERIFIED ENVIRONMENT-BOUNDARY ITEM REMAINS BEFORE FOUND-001B**
+**FOUND-001A ACCEPTED — FOUND-001B UI STACK & DESIGN TOKENS NEXT**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -27,7 +27,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - GitHub access verified independently by supervisor.
 - Legacy reference repository remains: `thathman/Re-Solve`.
 - Product Bible repository is specification/reference only, not application source.
-- Root `AGENTS.md`: `YES — created in FOUND-001A`.
+- Root `AGENTS.md`: `YES — created and accepted in FOUND-001A`.
 - Canonical-name transition performed: `NO`.
 
 ## Backend
@@ -40,37 +40,26 @@ Keep this file updated after each accepted build slice so the next Product Bible
 Never store credentials/secrets in this file.
 
 ## Accepted slices
-None yet. `FOUND-001A` remains CONDITIONAL pending one final implementation correction.
+### FOUND-001A — Stack & Repository Foundation
+**Status: ACCEPTED**
 
-## Verified starter / FOUND-001A baseline
-- framework/build stack: `TanStack Start v1 + Vite`;
-- React: `19.2.0`;
-- package manager: `bun`;
-- verified Bun runtime: `1.3.3`;
-- `packageManager`: `bun@1.3.3`;
-- Tailwind: `4.2.1` using `@tailwindcss/vite`;
-- TypeScript: `5.8.3`;
-- Vite: `8.2.0`;
-- shadcn: already initialized (`new-york`, CSS variables, Lucide icon library, standard `src/components/ui/` aliases);
-- primitive base: generated Radix-based starter; do not reinitialize shadcn blindly;
-- TanStack Query already installed;
-- React Hook Form + Zod already installed;
-- Recharts already installed;
-- routes remain starter-only;
-- Re:Solve business functionality: none;
-- PWA/tests/CI: not yet configured;
-- database migrations/schema: none;
-- `AGENTS.md` exists and no longer locks production to Cloudflare;
-- root `.env.example` exists and contains only current foundation variables;
-- root `.gitignore` now correctly contains `.env`, `.env.*`, `!.env.example`;
-- formatter layer no longer hard-codes universal locale/currency defaults;
-- UI provenance ledger is `docs/ui-sources.md` and correctly records `lucide-react@0.575.0`, source-owned shadcn registry components, granular Radix provenance, and Untitled UI/Tremor as not incorporated;
-- `.bun-version` is `1.3.3` and aligns with package metadata;
-- Lovable reported build/type/lint success, with only stock shadcn react-refresh warnings.
-
-## Remaining FOUND-001A supervisor review finding
-GitHub verification after FIX3 found only one remaining issue:
-1. `getServerEnv` reverted to a manual `typeof window` runtime guard. This does not use TanStack Start's compiler-recognized server-only execution boundary. Use `createServerOnlyFn` from `@tanstack/react-start` (or an equivalent true server-only mechanism provided by the installed version) so the server implementation is removed/replaced in the client bundle and client-side invocation fails by design. Keep `createServerFn` for deliberate RPC endpoints, not for exposing a reusable private environment reader.
+Supervisor verified on application-repository `main`:
+- TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8;
+- Bun `1.3.3` is the single package manager/runtime declaration, with `packageManager: bun@1.3.3` and one Bun lockfile;
+- Tailwind CSS 4.2.1 using `@tailwindcss/vite`;
+- existing shadcn `new-york` source-owned registry setup preserved; no re-initialization or base migration;
+- current primitive foundation remains Radix-based;
+- TanStack Query, React Hook Form, Zod and Recharts already present;
+- root `AGENTS.md` established;
+- root `.env.example` contains only current foundation variables;
+- root `.gitignore` protects `.env` / `.env.*` while allowing `.env.example`;
+- public/server environment boundary established with Zod and TanStack `createServerOnlyFn`; `process.env` access is contained inside the server-only function;
+- locale/currency formatting utilities do not impose a universal locale or currency;
+- UI-source provenance ledger lives at `docs/ui-sources.md`;
+- current provenance correctly records source-owned shadcn components, `lucide-react@0.575.0`, granular Radix packages, and Untitled UI/Tremor as not yet incorporated;
+- production runtime remains portable/TanStack-Nitro compatible and is not locked to Cloudflare;
+- no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice;
+- Lovable reported build, lint and type-check success; remaining react-refresh warnings are limited to stock shadcn source components.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
@@ -78,29 +67,35 @@ GitHub verification after FIX3 found only one remaining issue:
 - React: `19.2.0`
 - package manager: `bun@1.3.3`
 - Tailwind: `4.2.1`
-- shadcn: `initialized; do not rerun init without explicit migration decision`
-- current UI primitives: `Radix + shadcn source components`
+- shadcn: `initialized — new-york, CSS variables, source-owned registry components; do not rerun init without explicit migration decision`
+- current primitive base: `Radix + shadcn source components`
 - primary icon library: `Lucide 0.575.0`
 - query/server state: `TanStack Query`
 - form/validation: `React Hook Form + Zod`
 - chart foundation: `Recharts`
+- environment security: `public VITE boundary + createServerOnlyFn private boundary`
 - testing stack: `not configured`
 - PWA tooling: `not configured`
 - auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
-- service/repository boundaries: `initial directories established; acceptance pending one final environment-boundary correction`
+- service/repository boundaries: `initial FOUND-001A boundaries established`
 
 ## Current Core UI inventory
-None beyond stock/generated shadcn primitives. No Re:Solve Core UI components accepted yet.
+None beyond stock/generated shadcn primitives. No Re:Solve-owned Core UI components are accepted yet.
 
 ## Current database/domain inventory
 None.
 
 ## Open Product Bible deltas
-None requiring a product decision. Current issue is an implementation correction only.
+None blocking FOUND-001B.
 
 ## Known implementation limitations
-- private env reader still uses a manual runtime guard rather than a TanStack compiler-recognized server-only environment function;
-- no CI/tests/PWA yet by design.
+- Untitled UI is not yet incorporated;
+- Tremor Raw is not yet incorporated;
+- Re:Solve semantic tokens/theme system are not yet established;
+- no Component Gallery yet;
+- no shell, PWA, CI or test foundation yet by design.
 
 ## Next action
-Execute supervisor-provided final environment-boundary correction only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
+Execute supervisor-provided `FOUND-001B — UI Stack & Design Tokens` only.
+
+FOUND-001B should establish the coherent Re:Solve-owned visual/token foundation and only the minimal targeted Untitled UI/Tremor incorporation needed to prove compatibility. It must preserve the existing Radix-based shadcn setup rather than forcing a primitive-base migration. Do not build Admin/Portal shell, Component Gallery breadth, business modules, PWA or database work in FOUND-001B.
