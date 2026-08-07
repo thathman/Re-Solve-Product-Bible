@@ -1,10 +1,11 @@
 # Start Re:Solve in Lovable
 
-Use this document when the Product Bible planning PR stack is merged and you are ready to spend the first Lovable build credits.
+Use this document when the Product Bible planning stack is merged and you are ready to spend the first Lovable build credits.
 
 ## Before opening the first build prompt
 Confirm:
 - Product Bible is merged/canonical;
+- `thathman/Re-Solve-Product-Bible` is public and available for Lovable skill import/reference;
 - you have owner/admin access to the intended Lovable workspace;
 - the correct GitHub account is connected/available;
 - you understand that Lovable creates a new GitHub repository rather than importing the existing legacy `thathman/Re-Solve` repository;
@@ -18,11 +19,13 @@ Create a fresh project named **Re:Solve**.
 Do not ask Lovable to build the OS in the initial project-creation description. Keep the first creation/setup prompt minimal if the UI requires one; substantive work starts only after Knowledge and Skills are configured.
 
 ## 2. Connect GitHub
-Connect the Re:Solve project to the correct GitHub installation. Allow Lovable to create a new private repository and start two-way sync.
+Connect the Re:Solve project to the correct GitHub installation. Allow Lovable to create a new private application repository and start two-way sync.
 
 Do not attempt to attach/import the existing `thathman/Re-Solve` repository.
 
-Record the new repository name in `BUILD-STATE.md` or your project notes. Keep the old repository unchanged until the post-FOUND-001 transition gate.
+The public Product Bible is a specification/reference repository and is **not** the application repository Lovable should write application code into.
+
+Record the new application repository name in `BUILD-STATE.md` or your project notes. Keep the old repository unchanged until the post-FOUND-001 transition gate.
 
 ## 3. Add Project Knowledge
 Open **Project settings → Knowledge** and paste the contents of:
@@ -30,6 +33,8 @@ Open **Project settings → Knowledge** and paste the contents of:
 `10-build/lovable-launch/PROJECT-KNOWLEDGE.md`
 
 Do not paste the entire Product Bible.
+
+The public Product Bible may be linked/referenced when a build slice needs an exact supporting spec, but always-on rules belong in Project Knowledge and task-specific rules belong in Skills/current build prompts.
 
 Verify the saved Knowledge includes these unmistakable phrases/concepts:
 - `Àríyá`;
@@ -42,10 +47,14 @@ Verify the saved Knowledge includes these unmistakable phrases/concepts:
 - Chatwoot boundary;
 - portable/self-hostable after export.
 
-## 4. Install canonical Skills
+## 4. Install canonical Skills from GitHub
 Follow `10-build/lovable-skills/INSTALL.md` and `manifest.md`.
 
-Because the Product Bible is private, use ZIP/`.skill` upload or exact manual copy unless a dedicated public skills mirror is created later.
+Preferred method: **Settings → Skills → Add → Import from GitHub**.
+
+Import each required skill from its public Product Bible subdirectory:
+
+`https://github.com/thathman/Re-Solve-Product-Bible/tree/main/10-build/lovable-skills/<skill-name>`
 
 For FOUND-001, verify at least:
 - resolve-feature
@@ -59,6 +68,8 @@ For FOUND-001, verify at least:
 - resolve-pwa
 - resolve-release
 - self-host-check
+
+ZIP/`.skill` upload or exact manual copy remains a fallback if GitHub import is temporarily unavailable.
 
 Remove/disable any obsolete `airix-*` skills if they exist.
 
