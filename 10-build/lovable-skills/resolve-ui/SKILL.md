@@ -1,6 +1,6 @@
 ---
 name: resolve-ui
-description: Create or refine Re:Solve pages, navigation, panels, dashboards, record workspaces, Portal experiences, and shared visual components using the Core UI Framework.
+description: Use when creating or refining a Re:Solve page, panel, dashboard, record workspace, Portal surface, shared visual component, or interaction that must follow the Core UI Framework and non-generic product design language.
 ---
 
 # Re:Solve UI
