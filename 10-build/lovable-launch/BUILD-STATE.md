@@ -7,6 +7,9 @@ Keep this file updated after each accepted build slice so the next Product Bible
 
 ## Canonical Product Bible state
 - Product Bible planning/expansion/launch-readiness content is consolidated on `main`.
+- Repository: `thathman/Re-Solve-Product-Bible`.
+- Visibility: `public`.
+- Public GitHub skill import is the preferred Lovable installation path.
 - No open Product Bible pull requests remain from the initial planning stack.
 - Pre-consolidation safety branch: `backup/pre-lovable-consolidation-main`.
 - First build slice: `FOUND-001 — Re:Solve Application + Core UI Foundation`.
@@ -64,7 +67,7 @@ None yet; application build has not started.
 1. Create/configure the Re:Solve Lovable workspace/project.
 2. Connect GitHub and allow Lovable to create the new private synced application repository; leave legacy `thathman/Re-Solve` unchanged.
 3. Paste `PROJECT-KNOWLEDGE.md` into Project settings → Knowledge.
-4. Install the required canonical Skills using `INSTALL.md` and `manifest.md`.
+4. Import the required canonical Skills from the public Product Bible using `INSTALL.md` and `manifest.md`.
 5. Complete `READINESS-CHECKLIST.md`.
 6. Execute FOUND-001 only.
 7. Run `FOUND-001-REVIEW.md` and the required review skills.
