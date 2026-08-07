@@ -1,198 +1,246 @@
 # Re:Solve Lovable Build Slice Protocol
 
 ## Purpose
-The Product Bible may describe the entire operating system. Lovable must receive only the smallest coherent slice needed for the current build step.
+The Product Bible can describe the whole OS. Lovable receives only the smallest coherent current slice required to create one reviewable outcome.
 
-This protocol prevents broad prompts, premature implementation, architectural drift, and half-finished feature breadth.
+This prevents broad prompts, premature schema/UI sprawl, design drift and half-built module breadth.
 
-## Definition of a build slice
-A build slice is the smallest independently reviewable unit that completes one meaningful user flow or one bounded platform capability.
+## Build slice definition
+A slice is the smallest independently reviewable unit that completes one meaningful user flow or bounded platform capability while remaining architecturally honest.
 
-A slice may include multiple files/components when required to complete that flow, but it must not become a disguised module rewrite.
+A slice may touch multiple components/services when required to complete that outcome, but must not become a disguised module rewrite.
 
-## Slice rules
-Every slice must have:
-- one objective
-- one primary actor or tightly related actor set
-- one bounded route/surface or platform capability
-- explicit in-scope work
-- explicit out-of-scope work
-- source Product Bible references
-- data requirements
-- permission requirements
-- states
-- acceptance criteria
-- responsive/PWA expectations
-- completion evidence
+## Mandatory slice contents
+Every slice defines:
+- stable Slice ID;
+- objective;
+- exact Product Bible sources;
+- actor/Principal and goal;
+- in scope;
+- explicit out of scope;
+- existing foundation/Core UI to reuse;
+- data/demo requirements;
+- permissions/scope/negative cases;
+- states;
+- responsive/PWA behavior;
+- accessibility;
+- API/service/provenance boundaries;
+- Attention/Notification/Action implications where relevant;
+- Plugin/Connector implications where relevant;
+- acceptance criteria;
+- verification/release checks;
+- stop condition/completion report.
+
+## Global non-negotiables for every slice
+- preserve canonical terminology;
+- use Re:Solve Core UI Component Framework;
+- shadcn/Untitled UI/Tremor sourcing rules apply;
+- simple navigation/application-chrome rules apply;
+- authorization is server-side, not merely hidden UI;
+- source/provenance/freshness is truthful where material;
+- consequential writes use Action Registry when the capability is shared/cross-interface;
+- Notification and Attention are not conflated;
+- provider SDKs stay behind Connector/service boundaries;
+- no arbitrary Vault secret/search/cache exposure;
+- no HR, payroll, leave/attendance, recruitment, employee-performance, Timesheet/Time Tracking or Client Service Consumption feature can be introduced accidentally.
 
 ## Forbidden prompt style
-Do not send prompts such as:
-- "Build the CRM"
-- "Build billing"
-- "Implement the client portal"
-- "Add the settings page"
-- "Create the full dashboard and all modules"
-
-These prompts are too broad.
+Do not send:
+- `Build the CRM`;
+- `Build Billing`;
+- `Implement the Client Portal`;
+- `Create full Settings`;
+- `Build all Property monitoring`;
+- `Create the dashboard and every module`;
+- `Make the whole UI look like shadcn/Tremor` without a bounded Core UI contract.
 
 ## Preferred prompt style
 Examples:
-- Build the Admin application shell only.
-- Build the Organisations list only, including filters, saved views, empty/loading/error states, and responsive behavior. Do not build Organisation 360 yet.
-- Build Organisation 360 Overview tab only. Do not build Billing, Support, Vault, or plugin tabs yet; show future tabs as disabled only if the spec explicitly requires it.
-- Build notification preference matrix only; do not implement email/WhatsApp delivery yet.
+- Build Property list + Saved Views only using existing DataTable/Core UI; do not build Property Workspace.
+- Build Property Workspace Overview with fictional Posture evidence only; do not execute real monitoring.
+- Build Proposal rendered web view + immutable-version model only; do not implement signature/payment.
+- Build Notification personal preference matrix only; do not implement channel delivery.
+- Build one Cloudflare read-only Zone/Property mapping flow; do not add production DNS writes.
 
-## Standard slice template
+## Standard template
 
 ### Slice ID
-Use a stable identifier, e.g. `FOUND-001`, `ORG-002`, `PROP-004`.
+Examples: `FOUND-001`, `ORG-002`, `PROP-004`, `DOC-003`.
 
 ### Objective
-One sentence describing what becomes usable after the slice.
+One sentence describing the usable result.
 
 ### Product Bible sources
-List exact spec files/sections Lovable should follow.
+List exact files/sections, not the whole Bible.
 
 ### Actor and goal
-Use Flow-by-Flow framing:
 `<actor> can <measurable goal> without <current friction>`.
 
 ### In scope
-Exact functionality to implement.
+Exact flow/capability.
 
 ### Out of scope
-Explicit adjacent features not to implement.
+Adjacent domains/advanced behavior specifically prohibited in this slice.
 
 ### Existing foundation to reuse
-List existing components, patterns, schemas, services, routes, and skills to reuse.
+List relevant:
+- Core UI components;
+- App shell/navigation;
+- services/repositories;
+- schemas/migrations;
+- Action definitions;
+- shared states;
+- skills;
+- test/demo utilities.
+
+### Core UI / design requirements
+State which canonical primitives/composites are used and whether a new reusable component must be added to Component Gallery.
+
+Do not allow the slice to invent a second button/table/sidebar/notification/avatar pattern.
 
 ### Data requirements
-Specify realistic demo data needed for this slice only.
+Only realistic fictional subset needed by the slice. Preserve canonical demo universe names/ids.
 
-### Permissions
-List capabilities and denial cases.
+### Permissions / negative cases
+Specify Principal, capabilities, scope, denial, read-only, step-up/Approval/confirmation where applicable.
+
+### Data/provenance
+Specify authoritative record/source, connector ownership, freshness/stale behavior and conflict policy when relevant.
 
 ### States
 At minimum consider:
-- default
-- loading
-- skeleton
-- empty
-- first-use
-- success
-- error
-- partial data
-- permission denied
-- read-only/disabled
-- mobile
-- offline/online-only where relevant
+- default;
+- loading/skeleton;
+- empty/first-use;
+- success;
+- error;
+- partial/stale/unknown;
+- permission denied;
+- read-only/disabled;
+- disconnected/provider unavailable;
+- mobile;
+- offline/online-only when relevant.
 
 ### Responsive/PWA
-Define phone/tablet/desktop behavior and safe offline assumptions.
+Define phone/tablet/laptop/desktop composition and cache/network safety.
 
 ### Accessibility
-Define keyboard/focus/semantic/touch requirements.
+Keyboard/focus/semantics/touch/error-announcement requirements.
 
 ### API/service boundaries
-State whether this slice creates or uses data/service/API abstractions.
+State any new domain/service/repository/API/Action contracts. Do not scatter direct provider/Supabase operations through UI.
 
-### Notifications/automation
-Only include if the slice creates or consumes them.
+### Attention / Notifications / Activity / Audit
+Specify only the relevant platform effects and distinguish their responsibilities.
 
-### Plugin/connector extension points
-Only include where required by the source spec.
+### Automations / Plugins / Connectors
+Include only when needed by the slice.
 
 ### Acceptance criteria
-Observable outcomes.
+Observable outcomes, including negative/security/design states.
 
 ### Verification
-Specify what Lovable should inspect/test before reporting completion.
+Use `resolve-release` and relevant specialist skill(s) to inspect tests, security, responsive/PWA, accessibility, Core UI, visual polish, performance/degraded state, portability and Product Bible drift.
 
 ### Completion report
-Lovable must return:
-- what was built
-- files/surfaces materially changed
-- data/schema changes
-- tests/checks performed
-- known limitations
-- out-of-scope items deliberately left untouched
-- any conflict found with Product Bible
+Lovable returns:
+- what was built;
+- meaningful files/surfaces;
+- components/Core UI additions;
+- data/schema/migration changes;
+- dependencies;
+- tests/checks and results;
+- responsive/accessibility/PWA/design QA;
+- provenance/security concerns;
+- known limitations;
+- Product Bible contradictions;
+- explicit out-of-scope items left untouched.
 
-## Slice sizing guidance
-A slice is probably too large if it:
-- creates more than one major record workspace
-- implements both list and full multi-tab record detail with several domains
-- introduces multiple unrelated data models
-- implements more than one external connector
-- combines architecture foundation and a business module
-- requires a long prompt containing many future features
+## Slice sizing
+Likely too large when it:
+- creates several major record workspaces;
+- combines list + many unrelated record tabs/domains;
+- introduces multiple unrelated business models;
+- implements more than one substantial real external Connector;
+- combines foundation architecture with a business module;
+- creates a large collection of future placeholder schemas/routes;
+- requires a prompt mostly describing future capability rather than current user outcome.
 
-A slice may be too small if it:
-- produces no traversable user outcome
-- creates only decorative components without a real flow
-- splits tightly coupled behavior so the intermediate build is broken
+Potentially too small when it:
+- has no traversable user outcome;
+- creates only decoration with no reusable foundation value;
+- leaves a tightly coupled flow broken;
+- intentionally ships throwaway shell/UI that will immediately be replaced.
+
+FOUND-001 is allowed to establish several closely coupled shell/Core UI primitives because together they are one coherent application-foundation outcome.
 
 ## Build sequence policy
 Prefer vertical progress:
-1. shared foundation
-2. one visible flow
-3. complete states
-4. review
-5. next adjacent flow
+1. shared foundation;
+2. one visible flow;
+3. complete states/negative cases;
+4. design/security/portability review;
+5. next adjacent flow.
 
-Do not horizontally scaffold dozens of empty pages before proving the shell and one or two core workflows.
+Do not horizontally scaffold dozens of empty modules.
 
 ## Review gate
-No next slice until the current slice is reviewed against:
-- Product Bible
-- design system
-- permission model
-- state completeness
-- responsive/PWA behavior
-- accessibility
-- portability
+No next slice until current slice passes:
+- Product Bible;
+- Core UI/design/navigation;
+- permission/security;
+- state completeness;
+- responsive/PWA;
+- accessibility;
+- data/provenance truthfulness;
+- portability;
+- test/quality expectations.
 
 ## Spec drift
-If implementation reveals a genuine product ambiguity:
-- do not silently decide in code
-- record the ambiguity
-- update Product Bible if needed
-- then continue
+If implementation reveals genuine ambiguity/contradiction:
+1. stop;
+2. report it;
+3. update Product Bible/product decision;
+4. continue only after canonical truth is clear.
 
 ## Prototype gate
-Use the Flow Prototype skill before implementation when a slice includes a novel or high-impact interaction such as:
-- complex dashboard composition
-- advanced table interactions
-- multi-step onboarding
-- approval workflows
-- Vault reveal/share flows
-- plugin installation
-- automation builder
-- connector setup
-- mobile navigation changes
+Use Flow Prototype before high-impact/novel interaction such as:
+- shell/mobile navigation change;
+- Dashboard/Attention composition;
+- complex DataTable interaction;
+- multi-step onboarding/offboarding;
+- Proposal/Contract acceptance;
+- Vault reveal/share;
+- Plugin install/update;
+- Automation builder;
+- Connector auth/setup;
+- production DNS/registrar Action;
+- complex Approval flow.
 
-## Build-slice numbering
-Suggested prefixes:
-- `FOUND` foundation
+## Suggested slice prefixes
+- `FOUND` foundation/Core UI/shell
 - `AUTH` identity/access
-- `NAV` shell/navigation
-- `DASH` dashboard
-- `ORG` organisations
-- `CONTACT` contacts
-- `PROP` properties
-- `PROJ` projects
-- `SALE` sales
-- `BILL` billing
-- `SUP` support
-- `VAULT` secure vault
-- `FILE` files
-- `KB` knowledge
-- `NOTIF` notifications
-- `AUTO` automations
-- `PLUGIN` plugins
-- `CONN` connectors
-- `API` API/webhooks
+- `DASH` Dashboard/Attention
+- `ORG` Organisations/Clients
+- `CONTACT` Contacts
+- `PROP` Properties/Posture
+- `MON` native Monitoring/Incidents
+- `RENEW` Renewals
+- `PROJ` Projects
+- `REQ` Requests
+- `SALE` CRM/Sales
+- `DOC` Document Studio
+- `BILL` Billing
+- `SUP` Support
+- `VAULT` Secure Vault
+- `FILE` Files
+- `KB` Knowledge
+- `NOTIF` Notifications
+- `AUTO` Automations
+- `PLUGIN` Plugins
+- `CONN` Connectors
+- `API` API/Webhooks
 - `MCP` MCP
-- `AI` Re:Solve AI
-- `PORTAL` client portal
-- `SYS` system operations
+- `ARIYA` Àríyá
+- `PORTAL` Client Portal
+- `SYS` System Operations
