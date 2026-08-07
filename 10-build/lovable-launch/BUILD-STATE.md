@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A CONDITIONAL — FOUNDATION CORRECTION REQUIRED BEFORE FOUND-001B**
+**FOUND-001A CONDITIONAL — FINAL FOUNDATION CLEANUP REQUIRED BEFORE FOUND-001B**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -40,7 +40,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 Never store credentials/secrets in this file.
 
 ## Accepted slices
-None yet. `FOUND-001A` is currently CONDITIONAL pending focused corrections.
+None yet. `FOUND-001A` remains CONDITIONAL pending one final focused cleanup.
 
 ## Verified starter / FOUND-001A baseline
 - framework/build stack: `TanStack Start v1 + Vite`;
@@ -59,18 +59,19 @@ None yet. `FOUND-001A` is currently CONDITIONAL pending focused corrections.
 - PWA/tests/CI: not yet configured;
 - database migrations/schema: none;
 - `AGENTS.md` exists;
-- initial environment, formatter and UI provenance files exist;
+- root `.env.example` now exists;
+- formatter layer no longer hard-codes universal locale/currency defaults;
+- UI provenance ledger moved to `docs/ui-sources.md`;
+- `.bun-version` exists;
 - Lovable reported `bun run build` success and `bun run lint` success with 6 existing react-refresh warnings.
 
-## FOUND-001A supervisor review findings
-The structural direction is acceptable, but the following must be corrected before acceptance:
-1. `.env.example` was created under `src/`; it must live at repository root for the app/tooling convention.
-2. `.gitignore` does not currently protect `.env` / `.env.*`; add safe env ignore rules while explicitly allowing `.env.example`.
-3. `src/lib/env/index.ts` mixes server `process.env` and browser `import.meta.env` in one shared module; establish explicit server/client environment boundaries so server-only secrets cannot be imported into browser code by design.
-4. `src/lib/formatters/index.ts` hard-codes `en-US` and `USD` as universal defaults, contradicting the Product Bible. Locale/currency must come from runtime/user/Operating Entity context or explicit caller input; no universal business currency.
-5. `src/lib/UI-PROVENANCE.md` is not sufficiently auditable: replace vague `Latest compatible` wording with source URL, license and actual package/component provenance where known. Prefer a documentation location outside runtime library code, e.g. `docs/ui-sources.md`.
-6. Package/runtime metadata claimed in the completion report was not found in `package.json`; record Bun/package-manager/runtime expectation explicitly in a portable way without creating conflicting lockfiles/tooling.
-7. `AGENTS.md` currently states `Cloudflare Workers / Nitro` as the runtime. Keep runtime guidance factual to the generated TanStack/Nitro-compatible stack and avoid making Cloudflare a production requirement unless the repository configuration actually establishes that decision.
+## Remaining FOUND-001A supervisor review findings
+Most earlier findings were corrected, but GitHub verification found these remaining issues:
+1. `.gitignore` is unchanged and still does not ignore `.env` / `.env.*`; this must be committed, with `.env.example` explicitly allowed.
+2. The current env module uses a manual `typeof window` guard in shared code. For TanStack Start, server-only environment access should use the framework's server-only execution boundary such as `createServerOnlyFn` / `createServerFn`, and server env should be read in server-only/per-request execution. Avoid shared-module secret access that can drift into client bundles.
+3. Root `.env.example` still contains speculative future provider variables (`CHATWOOT_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`) despite the instruction not to invent future provider variables. Remove them until a real slice introduces them.
+4. `docs/ui-sources.md` contains incorrect Lucide version provenance (`^0.475.0`), while `package.json` currently has `^0.575.0`. Correct provenance from the actual repository. For source-owned shadcn registry components, do not invent a singular package version when none exists.
+5. Bun metadata is inconsistent: `.bun-version` currently contains `1.3.3`, while Lovable reported `1.2.2`. Verify with `bun --version` in the actual build environment and then align `.bun-version` and any package/runtime declaration to that verified value. Do not guess.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
@@ -87,7 +88,7 @@ The structural direction is acceptable, but the following must be corrected befo
 - testing stack: `not configured`
 - PWA tooling: `not configured`
 - auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
-- service/repository boundaries: `initial directories established; acceptance pending focused cleanup`
+- service/repository boundaries: `initial directories established; acceptance pending final cleanup`
 
 ## Current Core UI inventory
 None beyond stock/generated shadcn primitives. No Re:Solve Core UI components accepted yet.
@@ -99,11 +100,12 @@ None.
 None requiring a product decision. Current issues are implementation corrections.
 
 ## Known implementation limitations
-- environment boundary/security hygiene needs correction;
-- locale/currency defaults violate canonical rules;
-- UI provenance needs stronger auditability;
-- runtime/package-manager declaration needs correction;
+- `.gitignore` env protection still not committed;
+- server-only env boundary needs a TanStack-native implementation;
+- speculative env examples remain;
+- UI provenance contains a version mismatch;
+- Bun runtime metadata is inconsistent;
 - no CI/tests/PWA yet by design.
 
 ## Next action
-Execute supervisor-provided `FOUND-001A-FIX` only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
+Execute supervisor-provided final `FOUND-001A-FIX2` only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
