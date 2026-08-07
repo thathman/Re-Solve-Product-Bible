@@ -40,6 +40,19 @@ The product may be specified comprehensively here, but implementation must be de
 ### Client Portal
 - [Client Portal Home](02-portal/home.md)
 
+## Business Operations
+
+### Admin
+- [Projects](01-admin/projects.md)
+- [Sales & Commercial](01-admin/sales-and-commercial.md)
+- [Billing & Finance Operations](01-admin/billing.md)
+- [Support Operations & Chatwoot](01-admin/support.md)
+- [Secure Vault](01-admin/secure-vault.md)
+
+### Platform
+- [Files Platform](03-platform/files.md)
+- [Re:Solve Knowledge Platform](03-platform/knowledge.md)
+
 ## Governing Workflow
 
 Product specifications should follow the installed Re:Solve spec and flow skills:
