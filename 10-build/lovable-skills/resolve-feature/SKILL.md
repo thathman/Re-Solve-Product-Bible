@@ -1,6 +1,6 @@
 ---
 name: resolve-feature
-description: Implement one bounded Re:Solve feature slice from the Product Bible. Use for a specific page, flow, record workspace, platform capability, or small feature in Lovable.
+description: Use when implementing one bounded Re:Solve feature slice, page, flow, platform capability, or small Product Bible-defined increment in Lovable without expanding into adjacent future work.
 ---
 
 # Re:Solve Feature
