@@ -1,229 +1,202 @@
 # My Work
 
 ## Purpose
+My Work is the staff User's personal execution center. It consolidates assigned/owned actionable work from source records without creating shadow records or requiring module hopping.
 
-My Work is the staff member's personal execution center. It consolidates assigned tasks, reminders, approvals, mentions, client actions, scheduled follow-ups, calendar commitments, and other personally actionable items into one coherent queue.
+It is distinct from Notifications and from the broader Attention Engine:
+- Notification = awareness/delivery;
+- Attention = unresolved condition;
+- My Work = current user's responsibility/action projection.
 
-It must reduce context switching. Users should not need to visit Projects, CRM, Billing, Approvals, and Notifications separately just to understand what they personally owe.
+## Primary inputs
+My Work may project permitted items from:
+- Tasks / recurring Task occurrences;
+- Approvals;
+- Requests;
+- Client Actions;
+- Reminders;
+- Mentions;
+- Renewal/Expiry Obligations;
+- onboarding/offboarding steps;
+- commercial follow-up/cadences;
+- Incidents assigned to the user;
+- Data Quality issues assigned for review;
+- plugin-provided work providers.
 
-## Primary users
-
-All authenticated staff users with assigned work.
+No Timesheet, Time Entry, employee utilization or HR work items exist.
 
 ## Core principles
+- personal accountability first;
+- every item links to an authoritative source record;
+- completing work updates the source record through registered Actions;
+- projections are deduplicated/grouped when one source appears in several contexts;
+- waiting versus actionable versus overdue is explicit;
+- inaccessible source data never leaks through title/count/context;
+- My Work can consume Attention but does not replace it.
 
-- Personal accountability first.
-- Every item has a source record.
-- One work item should not be duplicated across multiple categories unless explicitly grouped.
-- Due state and urgency must be explainable.
-- Completing work from My Work must update the source record, not create a shadow status.
-- Notifications may bring a user to My Work, but My Work is not a notification inbox.
+## Main views
 
-## Main sections
+### Focus
+Small, ranked set of highest-priority actionable items. Strong mobile/default workflow.
 
 ### Today
-
-Includes:
-- due today
-- scheduled today
-- reminders due today
-- approvals due today
-- follow-ups due today
+Due/scheduled today:
+- Tasks;
+- Reminders;
+- Approvals;
+- Requests/follow-ups;
+- Renewal actions;
+- meetings/bookings/calendar commitments.
 
 ### Overdue
-
-Always visible when non-empty.
-
-Each item displays:
-- item type
-- title
-- related organisation
-- related property/project
-- due date/time
-- overdue duration
-- priority
-- owner
-- source
-- next action
+Always prominent when non-empty. Show source type, title, Organisation/Property/Project context, due age, priority, owner/source and next action.
 
 ### Upcoming
-
-Default horizon configurable, e.g. 7 days.
+Configurable horizon such as next 7 days.
 
 ### Waiting
-
-Items where the user cannot proceed because another actor or dependency is outstanding.
+Cannot proceed because another person/system/dependency is outstanding.
 
 Examples:
-- waiting for client approval
-- waiting for payment
-- waiting for credential
-- waiting for teammate
+- waiting on client approval/file/credential;
+- waiting on payment;
+- waiting on external Connector/provider;
+- waiting on teammate decision.
 
-Waiting items should not look overdue unless an explicit wait deadline has passed.
+Waiting is not overdue unless its explicit waiting deadline/threshold is exceeded.
 
 ### Approvals
+Current User's pending decisions.
 
-Approvals requiring the current user's decision.
+### Requests
+Assigned Requests, clarification needed and triage work.
 
-### Mentions & Requests
+### Renewals
+Renewal/Expiry Obligations for which the current User is responsible.
 
-Includes meaningful @mentions and direct requests for action, not every conversational mention.
+### Mentions
+Meaningful direct Mentions from shared Collaboration.
 
 ### Reminders
-
-User-created and system-created reminders.
+Personal/system Reminders, including snoozed items reaching their time.
 
 ### Recently Completed
+Short optional confirmation/reopen history where source workflow permits.
 
-Short, optional retrospective view to confirm completion and allow quick reopen where permitted.
-
-## Views
-
-Users can switch between:
+## Presentation modes
 - Focus
 - List
-- Calendar
-- Grouped by source
+- Calendar/Agenda
+- Group by source/Organisation/Property
 
-Focus mode shows a small number of highest-priority actionable items.
+Saved Views may persist filters/presentation without expanding root navigation.
 
 ## Filters
+Type, due state, priority, Organisation, Property, Project, Team, source domain, waiting/actionable, created/requested by and Saved View.
 
-- type
-- due state
-- priority
-- client
-- property
-- project
-- team
-- source module
-- waiting/actionable
-- created by
+## Normalized projection contract
+A projection may include:
+- source type/id/reference;
+- work type;
+- assigned Principal/User/Team;
+- title/summary;
+- due/start time;
+- priority;
+- actionable/waiting state;
+- Organisation/Property/Project context;
+- Attention link where relevant;
+- primary Action id/capability;
+- deep link;
+- source freshness/provenance when relevant;
+- created/updated.
 
-Saved views supported.
+Do not copy sensitive source bodies merely to render a work item.
 
-## Item actions
+## Actions
+Depending on source and permission:
+- complete;
+- start;
+- acknowledge;
+- snooze Reminder;
+- reschedule;
+- reassign;
+- comment/reply;
+- request clarification;
+- approve/reject/request changes;
+- open Renewal action;
+- open source.
 
-Depending on type and permission:
-- complete
-- start
-- snooze reminder
-- reschedule
-- reassign
-- comment
-- request clarification
-- approve/reject
-- open source
+Every mutation routes to the source record/Action Registry and rechecks authorization.
 
-Destructive or materially consequential actions require confirmation where appropriate.
+## Calendar / Agenda
+May aggregate:
+- Task due dates;
+- meetings/bookings;
+- Milestones;
+- Reminders;
+- Renewal dates;
+- Maintenance windows;
+- scheduled commercial/client follow-ups.
 
-## Work item model
+External calendar items show provider/source and read-only/editable authority clearly.
 
-My Work should be an aggregation contract rather than one universal table replacing source records.
+No employee shift/leave/attendance scheduling.
 
-A normalized work projection should support:
-- source_type
-- source_id
-- work_type
-- assigned_user/team
-- title
-- due_at
-- priority
-- state
-- organisation_id
-- property_id
-- project_id
-- action capability
-- deep link
-- created_at
-- updated_at
+## Attention relationship
+If an Attention Item is personally assigned/relevant, My Work can project it or its source action. Resolution follows the underlying source condition.
 
-## Calendar interaction
-
-Calendar view may include:
-- task due dates
-- meetings
-- milestones
-- scheduled follow-ups
-- reminders
-- maintenance windows
-
-External calendar data may be connected, but Re:Solve must identify which items are editable in Re:Solve and which are external/read-only.
+Example: `Domain renewal due` remains Attention until renewed/closed, even if the User opened or snoozed its My Work projection.
 
 ## Notifications
+Assignments, due/overdue, reassignments, direct Mentions, Approval, dependency resolution and Reminder events may create Notifications according to policy. My Work itself is not an inbox.
 
-Relevant events:
-- item assigned
-- due soon
-- overdue
-- reassigned
-- comment/request directed to user
-- approval requested
-- waiting dependency resolved
+## Àríyá
+Àríyá may:
+- summarize today's work;
+- explain why an item is prioritized;
+- help draft a response/update;
+- propose reschedule/reassignment/registered action.
 
-Users may configure delivery rules except for mandatory critical/security items.
+It uses current source permission and evidence.
 
-## API
+## API / MCP
+Expose personal/team permitted work projection, complete/action endpoints via source Actions, Reminder creation, filters/Saved Views and agenda.
 
-Expose:
-- list my work
-- list team work with permission
-- complete supported work
-- reschedule
-- reassign
-- create reminder
-- saved views
-
-## MCP candidates
-
+MCP candidates:
 - get_my_work
 - get_overdue_work
 - get_today_schedule
+- get_my_renewals
+- get_my_requests
 - complete_task
 - reschedule_task
 - create_reminder
 
-Write operations need scoped permission and source-level authorization.
-
 ## Responsive/PWA
+Mobile Focus is a primary experience. Use touch-friendly rows/cards and contextual sheets, not dense desktop tables.
 
-Mobile is a primary use case. The Focus view should be especially strong on mobile.
-
-Offline:
-- safely cached work list can display stale
-- completion may be queued only for explicitly offline-safe actions
-- conflicting updates require resolution when reconnecting
+Safe cached work can display with stale timestamp. Offline mutation is queued only when the specific Action is replay-safe/idempotent; otherwise show online requirement.
 
 ## Accessibility
+Keyboard-operable items/actions, semantic priority/status, screen-reader announcements and accessible list alternative for Calendar.
 
-- keyboard-completable work items
-- screen-reader state announcements
-- priority not conveyed by color alone
-- calendar has accessible list alternative
-
-## Extension slots
-
-Plugins may contribute work providers if they map to the normalized work contract and supply source links/actions.
+## Plugins
+Plugins may register work providers only when they map to the normalized projection and provide secure source links/Actions.
 
 ## Acceptance criteria
-
-- User can see all personally actionable work across modules in one place.
-- Completing an item updates its source record.
-- Waiting items are distinguishable from overdue actionable work.
-- No inaccessible source data leaks through work projections.
-- Mobile Focus view is fully usable without desktop tables.
-- Duplicate projections are grouped or deduplicated.
-
-## Demo data
-
-Include tasks, a project approval, a client follow-up, an overdue milestone action, a waiting credential request, a reminder, and recently completed work across at least three organisations.
+- User sees personally actionable work across domains;
+- source records remain authoritative;
+- Waiting/Overdue/Actionable are distinct;
+- Requests/Renewals/Reminders integrate without duplicate shadow data;
+- hidden source data cannot leak;
+- mobile Focus is excellent;
+- no Timesheet/HR/Client Service Consumption work appears.
 
 ## Lovable build slices
-
-1. Focus + Today + Overdue with demo projections.
+1. Focus + Today + Overdue with fictional projections.
 2. Upcoming + Waiting.
-3. Approvals + Mentions + Reminders.
-4. Filters/saved views.
-5. Calendar view.
-6. Mobile/PWA and offline behavior.
+3. Approvals + Requests + Renewals + Mentions + Reminders.
+4. filters/Saved Views.
+5. Agenda/Calendar integration.
+6. Attention/Àríyá summary integration.
+7. mobile/PWA/offline-safe behavior.
