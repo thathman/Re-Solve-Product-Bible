@@ -1,138 +1,154 @@
 # Re:Solve Lovable Setup Sequence
 
 ## Purpose
-This sequence prepares Lovable for Re:Solve without asking it to build the operating system all at once.
+Prepare Lovable to build Re:Solve gradually without asking it to generate the entire OS at once.
 
 ## Step 1 — Connect source control
-Connect Lovable to the Re:Solve application repository.
+Connect Lovable to `thathman/Re-Solve`.
 
 Rules:
-- GitHub remains the source-controlled record of exported application code.
-- Do not rewrite the full product immediately.
-- Inspect the existing Re-Solve repository as behavior/reference material.
-- Prefer Lovable-compatible architecture for new work.
+- GitHub is the source-controlled application record;
+- inspect legacy Re-Solve only as behavior/reference;
+- prefer Lovable's strongest current compatible architecture;
+- do not rewrite/build every future feature during setup.
 
 ## Step 2 — Add persistent Knowledge
-Add the contents/rules from `10-build/lovable-knowledge.md` to Lovable Workspace/Project Knowledge in a concise persistent form.
+Load/refine `10-build/lovable-knowledge.md` as durable Project/Workspace Knowledge.
 
-Knowledge should include only durable rules, not every feature specification.
+It should include canonical product boundaries, Core UI/navigation requirements, portability, Principal/permissions, exclusions, provider boundaries and build-slice discipline—not every page specification.
 
-## Step 3 — Establish design foundation
-Before business pages:
-- initialize the preferred Lovable React application structure
-- establish Tailwind/design tokens
-- establish shadcn/ui or equivalent accessible primitive layer
-- define typography, spacing, radii, shadows, surfaces, status colors, focus states, and responsive breakpoints
-- install specialist libraries only when justified by an actual slice
+## Step 3 — Prepare mandatory Core UI direction
+Before business modules, Lovable must know:
+- Re:Solve Core UI Component Framework is non-negotiable;
+- shadcn/ui, Untitled UI React and Tremor are primary mandatory sources/influences;
+- React Aria/Base UI/Radix provide strongest accessible primitive behavior where appropriate;
+- TanStack Table/Query are preferred headless operational foundations where appropriate;
+- final components are Re:Solve-owned/normalized rather than library soup;
+- navigation is simple/shallow and must avoid Odoo/Twenty-style app/module navigation;
+- Sidebar, TopBar, avatar/account, Notifications, Search/Command, Quick Create, Àríyá and mobile nav are first-class product work.
 
-Do not install a large dependency catalogue preemptively.
+Do not install every possible specialist dependency preemptively. Add libraries when FOUND-001/current slice actually uses them.
 
 ## Step 4 — Create initial custom skills
-Create first:
-1. airix-feature
-2. airix-ui
-3. airix-form
-4. airix-data-table
-5. airix-security-review
-6. airix-pwa
-7. airix-release
-8. self-host-check
+Canonical initial skills:
+1. `resolve-feature`
+2. `resolve-ui`
+3. `resolve-shell`
+4. `resolve-form`
+5. `resolve-data-table`
+6. `resolve-security-review`
+7. `resolve-pwa`
+8. `resolve-release`
+9. `self-host-check`
 
-Use Lovable's skill-creation capability where available.
-Descriptions must be specific enough for reliable auto-selection.
+Source templates live under `10-build/lovable-skills/`.
 
-## Step 5 — Connect Supabase
-Use Supabase for development data/auth/storage where useful.
+Do not create/use deprecated `airix-*` names. Re:Solve is the product; Airix Media is the first Operating Entity/deployment.
+
+Domain-specific skills such as `resolve-monitoring`, `resolve-document`, `resolve-ai`, `resolve-connector`, `resolve-plugin`, `resolve-api` and `resolve-mcp` are added when their first relevant slice approaches.
+
+## Step 5 — Connect development Supabase
+Use Supabase where useful for development auth/data/storage.
 
 Initial expectations:
-- canonical user/profile/membership foundation
-- clean migrations/schema history
-- realistic demo data
-- safe storage buckets/policies
-- explicit permission model
+- one Workspace;
+- Airix Media Operating Entity;
+- Human User/Profile/Membership foundation;
+- canonical permission/scope pattern;
+- clean migration history;
+- fictional demo data;
+- safe storage policies;
+- data/provider access centralized behind services/repositories where feasible.
 
-Do not create the full future schema in one pass.
-Only create data models required by the current slice plus truly foundational identity/platform tables.
+Do not create the full future Re:Solve schema.
 
-## Step 6 — Establish application shells
-Create only the shared app foundation:
-- global providers
-- Admin shell route/layout
-- Client Portal shell route/layout
-- authenticated route gates
-- role/membership resolution
-- design-system primitives
-- error boundary
-- loading patterns
-- global responsive behavior
-- PWA base
+Do not introduce HR, Timesheets/Time Tracking or Client Service Consumption tables.
 
-Do not build business modules yet.
+## Step 6 — Execute `FOUND-001` only
+`10-build/prompts/FOUND-001-foundation.md` is the first application build instruction.
 
-## Step 7 — PWA base
-From the start establish:
-- web app manifest
-- installability
-- app icons/placeholders
-- service-worker strategy
-- update lifecycle placeholder
-- safe offline shell
-- push-ready architecture
-- no Vault/secret caching
+FOUND-001 itself establishes:
+- architecture boundaries;
+- Core UI Framework/tokens/primitives;
+- Component Gallery;
+- production-quality Admin shell;
+- production-quality Portal shell;
+- strong Sidebar/TopBar/avatar/Notifications/Search/Quick Create/Àríyá foundation;
+- minimal identity/Membership/permission gates;
+- PWA base;
+- shared states;
+- accessibility and quality baseline.
 
-Full push delivery can wait for Notifications slices.
+Do not split these foundational shell components into low-quality temporary slices merely to move faster.
 
-## Step 8 — Developer quality baseline
-Configure the quality tools that fit the generated stack:
-- strict TypeScript
-- linting/formatting
-- unit/component tests
-- Playwright or equivalent flow tests
-- accessibility checks where practical
+## Step 7 — PWA from foundation
+FOUND-001 includes manifest/installability/service-worker/offline-shell/update foundation and cache safety.
 
-Avoid test-suite ceremony without behavior coverage.
+Full push/Notification delivery comes later, but shell/mobile/PWA composition starts immediately.
 
-## Step 9 — First demo universe
-Seed only the subset needed to render the shell and identity states:
-- Airix Media internal organisation
-- a few staff identities/roles
-- Kampala University client organisation
-- a few client users and memberships
+## Step 8 — Quality baseline
+Use stack-appropriate:
+- strict TypeScript;
+- lint/format checks;
+- unit/component tests;
+- browser/flow tests such as Playwright where compatible;
+- accessibility checks;
+- development Component Gallery/visual review.
 
-Do not seed every project/invoice/property until those slices arrive.
+Functional tests are not the only release gate; use `09-design/performance-device-and-design-qa.md`.
 
-## Step 10 — Review foundation
-Before building the first business list:
-- inspect generated architecture
-- inspect routing
-- inspect auth
-- inspect responsive behavior
-- inspect component consistency
-- inspect dependency choices
-- run `/self-host-check`
-- verify no future modules were prematurely implemented
+## Step 9 — First fictional demo universe
+FOUND-001 seeds only what it needs:
+- `Re:Solve Demo Workspace`;
+- Operating Entity `Airix Media`;
+- fictional staff `Amina Bello` and `Chidi Okafor`;
+- fictional client Organisation `Westbridge University`;
+- fictional client Users/Memberships.
 
-## Step 11 — Begin bounded slices
-Recommended sequence after the foundation:
-1. `FOUND-001` application/design foundation
-2. `FOUND-002` identity, memberships, permission gates
-3. `NAV-001` Admin shell navigation
-4. `PORTAL-001` Client Portal shell navigation
-5. `DASH-001` Admin Dashboard structural prototype
-6. `ORG-001` Organisations list
-7. `ORG-002` Organisation 360 Overview
-8. `CONTACT-001` Contacts list
-9. `PROP-001` Properties list/tree
-10. `PROP-002` Property 360 Overview
+Later slices add canonical demo Properties/Projects/Requests/Billing/etc. from `demo-data-blueprint.md`.
 
-Later slices proceed from the Product Bible rather than from this list alone.
+Never seed real credentials, clients or staff identities.
 
-## Rule for every setup/build conversation
-Lovable should be told:
-- the exact current slice
-- exact Product Bible references
-- what must not be built
-- what existing patterns to reuse
-- acceptance criteria
+## Step 10 — Foundation review gate
+Before authoring the next build slice, inspect:
+- architecture/service/data boundaries;
+- routing/auth/permission denial;
+- Core UI quality;
+- simple navigation comprehension;
+- Sidebar/TopBar/avatar/Notification/Àríyá polish;
+- Component Gallery coverage;
+- phone/tablet/laptop/desktop;
+- PWA/offline/update state;
+- accessibility;
+- dependency choices;
+- test/quality output;
+- `self-host-check`;
+- whether any future module was prematurely scaffolded;
+- whether any Product Bible contradiction surfaced.
 
-Do not paste the entire Product Bible into a build prompt.
+If the foundation is visually weak, fix the foundation before adding business modules.
+
+## Step 11 — Author the next slice from actual FOUND-001 output
+Do **not** pre-commit Lovable to a long sequence before seeing the generated foundation.
+
+Likely early business progression may include:
+- Dashboard deterministic Attention shell/prototype;
+- Organisations/Clients;
+- Contacts/Memberships;
+- Properties hierarchy/Posture foundation;
+
+But the exact `FOUND-002`/next slice must be written only after reviewing FOUND-001's real code and UX.
+
+## Rule for every Lovable build conversation
+Provide:
+- exact slice id/objective;
+- exact Product Bible references;
+- actors/permissions;
+- in scope;
+- explicitly out of scope;
+- required Core UI components/patterns to reuse;
+- data/provenance/Attention/Notification/PWA implications;
+- acceptance criteria;
+- stop condition/completion report.
+
+Never dump the entire Product Bible into one prompt and never tell Lovable `build the CRM` or `build the OS`.
