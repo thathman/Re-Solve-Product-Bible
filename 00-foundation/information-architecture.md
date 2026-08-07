@@ -1,1014 +1,577 @@
 # Re:Solve Information Architecture
 
 ## Purpose
+This document defines the complete Re:Solve surface hierarchy while keeping daily navigation simple.
 
-This document defines the initial navigation and surface hierarchy for the complete Re:Solve operating system. It is intentionally broad enough to support the loaded OS vision while remaining structured enough that detailed page specifications can be written section by section.
+This is not a build order. The Product Bible can be broad while Lovable implementation remains slice-by-slice.
 
-This is not a build order. It is the intended product map.
+## Product surfaces
+1. **Admin OS** — staff-facing operations.
+2. **Client Portal** — client-facing collaboration/self-service.
+3. **Secure External Access** — narrow guest actions/documents/forms.
+4. **Public/API surface**.
+5. **MCP surface**.
+6. **Plugin extension surface**.
+7. **Connector surface**.
 
-## Product Surfaces
+## Navigation rule
+The product may contain many capabilities without exposing them all as root navigation.
 
-Re:Solve has two primary human-facing surfaces:
+Admin root navigation must remain shallow, obvious and closer to straightforward service-CRM navigation than app-launcher/module-grid systems.
 
-1. **Admin OS** — staff-facing operations
-2. **Client Portal** — client-facing collaboration and self-service
-
-It also has machine-facing surfaces:
-
-3. **Public/API surface**
-4. **MCP surface**
-5. **Plugin extension surface**
-6. **Connector surface**
+Do not use Odoo-style app-grid navigation or Twenty-style object/app switching as the primary user model.
 
 ## Admin OS — Primary Navigation
 
 ```text
-Dashboard
-
-My Work
-├── Tasks
-├── Calendar
-├── Mentions
-├── Approvals
-├── Reminders
-├── Saved Items
-└── Drafts / Pending Work
-
-CRM
-├── Overview
-├── Leads
-├── Opportunities
-├── Pipelines
-├── Organisations
-├── Contacts
-├── Activities
-├── Segments
-└── Imports
+Home
+  Dashboard
+  My Work
 
 Clients
-├── Overview
-├── Organisations
-├── Client Health
-├── Portal Access
-├── Services
-├── Renewals
-└── Client Activity
-
+CRM
 Properties
-├── Overview
-├── All Properties
-├── Websites
-├── Journals
-├── OJS Installations
-├── Domains
-├── Servers
-├── Hosting
-├── Stores
-├── Infrastructure
-├── Property Health
-├── Renewals
-└── Maintenance
-
 Projects
-├── Overview
-├── Active Projects
-├── My Projects
-├── Templates
-├── Tasks
-├── Milestones
-├── Deliverables
-├── Client Actions
-├── Approvals
-├── Change Requests
-├── Risks / Issues
-├── Time
-├── Expenses
-└── Completed
-
 Sales
-├── Overview
-├── Opportunities
-├── Pipelines
-├── Service Catalogue
-├── Proposals
-├── Estimates / Quotes
-├── Contracts
-├── Templates
-└── Sales Activity
-
 Billing
-├── Overview
-├── Invoices
-├── Payments
-├── Subscriptions
-├── Recurring Services
-├── Credit Notes
-├── Refunds
-├── Receipts
-├── Expenses
-├── Reconciliation
-├── Revenue / Receivables
-└── Financial Activity
-
 Support
-├── Overview
-├── Conversations
-├── Clients
-├── Properties
-├── Incidents
-├── Entitlements
-├── SLA
-├── Support Health
-└── Analytics
 
-Communications
-├── Overview
-├── Messages
-├── WhatsApp
-├── Email
-├── SMS
-├── Templates
-├── Sender Identities
-├── Delivery Logs
-└── Campaign / Broadcast capability if later approved
+Operations
+  Monitoring
+  Renewals
+  Requests
+  Knowledge
+  Files
+  Vault
+  Automations
+  Reports
 
-Knowledge
-├── Overview
-├── Articles
-├── Spaces
-├── Categories
-├── Sources
-├── Drafts
-├── Review Queue
-├── Client Knowledge
-├── AI Knowledge
-└── Suggestions
-
-Vault
-├── Overview
-├── All Items
-├── Credentials
-├── Confidential Files
-├── Sensitive Notes
-├── Shared With Me
-├── Access Requests
-├── Expiring Access
-├── Rotation
-└── Audit
-
-Monitoring
-├── Overview
-├── Properties
-├── Uptime
-├── Performance
-├── Domains
-├── SSL
-├── Backups
-├── Email Health
-├── Incidents
-├── Maintenance
-└── Alert Rules
-
-Files
-├── Overview
-├── All Files
-├── Recent
-├── Shared
-├── Client Files
-├── Project Files
-├── Property Files
-├── Vault Files
-├── Storage
-└── Trash / Retention
-
-Forms
-├── Overview
-├── Forms
-├── Templates
-├── Submissions
-├── Routing
-└── Analytics
-
-Automations
-├── Overview
-├── Workflows
-├── Templates
-├── Runs
-├── Scheduled Jobs
-├── Failures
-├── Event Explorer
-└── Action Catalogue
-
-AI
-├── Home / Copilot
-├── Briefings
-├── Conversations
-├── Saved Prompts / Recipes
-├── Tools
-├── AI Activity
-├── Usage
-└── Admin Configuration shortcut
-
-Reports
-├── Overview
-├── Clients
-├── CRM / Sales
-├── Projects
-├── Finance
-├── Support
-├── Properties
-├── Services
-├── Team / Workload
-├── AI
-├── Custom Reports
-└── Scheduled Reports
-
-Plugins
-├── Installed
-├── Available
-├── Updates
-├── Configuration
-├── Permissions
-├── Health
-├── Development
-└── Activity
-
-Connectors
-├── Overview
-├── Instances
-├── Catalogue
-├── Events
-├── Failures
-├── Health
-├── Logs
-├── Credentials
-└── Activity
-
-Audit
-├── Audit Explorer
-├── Security Events
-├── Data Access
-├── Vault Access
-├── API / MCP Activity
-├── Plugin / Connector Activity
-└── Export
-
-Settings
+Platform
+  Connectors
+  Plugins
+  Audit
+  Settings
 ```
 
-## Admin OS — Dashboard
+TopBar/global chrome provides Search/Command, Quick Create, Àríyá, Notifications, connection state and Account rather than adding them to root navigation.
 
-The Dashboard is a summary and attention surface, not a duplicate navigation page.
+## Home
 
-It should ultimately provide role-aware access to:
-- AI briefing
-- items requiring attention
-- my work
+### Dashboard
+Role-aware operational summary:
+- Àríyá briefing
+- Attention
+- My Work
 - client health
-- project risk
-- property incidents/renewals
-- financial state
+- project state
+- Property Posture/incidents/renewals
+- receivables/commercial state
 - support state
-- recent important activity
+- important recent activity
 - quick actions
 
-Dashboard details will be specified separately.
+Dashboard is not a page of interchangeable KPI cards.
 
-## Admin OS — My Work
+### My Work
+Views may include:
+- Tasks
+- Approvals
+- Reminders
+- Mentions
+- Client Actions requiring coordination
+- Requests assigned to me
+- Renewals assigned to me
+- Saved/Favorites
+- Draft/Pending work
+- Calendar/deadlines
 
-My Work is personal operational focus rather than business-wide reporting.
+Re:Solve does **not** include timesheets or employee HR workflows.
 
-### Tasks
-- assigned to me
-- assigned by me
-- due today
-- overdue
-- upcoming
-- blocked
-- waiting on client
-- completed recently
+## Clients
+Clients is the post-sale relationship area.
 
-### Calendar
-- tasks/deadlines
-- milestones
-- meetings
-- renewals
-- client dates
-- external calendar overlays
+Views:
+- Overview
+- Organisations
+- Client Health
+- Onboarding
+- Renewals
+- Relationship Reviews
+- Portal Access
+- Active Services
+- Client Activity
+- Offboarding/Former Clients
 
-### Mentions
-- comments
-- notes
-- project discussions
-- records mentioning user
-
-### Approvals
-- internal approvals
-- client approvals awaiting coordination
-- decisions needing action
-
-### Reminders
-- personal reminders
-- record follow-ups
-- snoozed notifications
-
-### Saved Items
-- pinned clients
-- properties
-- projects
-- reports
-- files
-- knowledge
-
-## Admin OS — CRM
-
-CRM is the acquisition and relationship management domain.
-
-### Overview
-Cross-pipeline summary, follow-ups, activity, conversion, stale relationships, and sales tasks.
-
-### Leads
-Early-stage potential clients and contacts.
-
-### Opportunities
-Qualified commercial opportunities.
-
-### Pipelines
-Visual and list-based pipeline management.
-
-### Organisations
-All organisation records, including non-client lifecycle states.
-
-### Contacts
-People directory with organisation relationships.
-
-### Activities
-Calls, meetings, notes, interactions, follow-up history.
-
-### Segments
-Saved dynamic/static groups for workflow, reporting, and communication.
-
-### Imports
-Controlled import history, mapping, validation, and duplicate handling.
-
-## Admin OS — Clients
-
-Clients presents the operational relationship after an organisation becomes an active customer.
-
-### Overview
-Portfolio health, renewals, service state, outstanding actions, risk, recent activity.
-
-### Organisations
-Client-filtered organisation directory.
-
-### Client Health
-Derived health indicators and attention reasons.
-
-### Portal Access
-Client memberships, invitations, roles, access state, last sign-in, issues.
-
-### Services
-Active client services and entitlements.
-
-### Renewals
-Upcoming contract/service/property renewals requiring client/account action.
-
-### Client Activity
-Cross-domain timeline.
-
-## Admin OS — Properties
-
-Properties is a central operational area.
-
-### Overview
-Portfolio health and attention state.
-
-### All Properties
-Unified searchable property list.
-
-### Type Views
-Type-specific views such as Websites, Journals, OJS, Domains, Servers, Hosting, Stores, and Infrastructure.
-
-### Property Health
-Cross-property health explorer.
-
-### Renewals
-Expiry/renewal calendar and workflow.
-
-### Maintenance
-Planned maintenance and recurring maintenance schedules.
-
-Each Property record should have a workspace capable of showing, as relevant:
+Organisation 360 may include:
 - overview
-- relationships
-- health
-- projects
+- contacts/memberships
+- account team
+- properties
 - services
-- support
-- monitoring
-- renewals
-- credentials/vault
-- files
-- activity
+- projects
+- requests
+- commercial records
+- billing
+- support context
+- documents/files
+- Vault metadata/access
+- knowledge
+- collaboration/activity
+- attention
+- portal access
 - connectors
 - custom/plugin tabs
 
-## Admin OS — Projects
+## CRM
+CRM covers acquisition and relationship development before/around active-client state.
 
-Projects is the complete delivery workspace.
+Views:
+- Overview
+- Leads
+- Opportunities
+- Pipeline
+- Organisations
+- Contacts
+- Activities
+- Cadences/Follow-up
+- Segments
+- Imports
+- Forecast
 
-A project record may include:
+Lead conversion must preserve/deduplicate Organisation and Contact identities rather than blindly creating duplicates.
+
+## Properties
+Properties is a first-class operational area.
+
+Views:
+- Overview
+- All Properties
+- Health / Property Posture
+- Renewals
+- Maintenance
+- Incidents
+- optional saved/type views such as Websites, Domains, Journals, OJS, Hosting, Servers, Stores
+
+Property workspace may include:
 - overview
-- plan/timeline
+- hierarchy/relationships
+- health/posture and source freshness
+- native monitors
+- incidents
+- renewal/expiry obligations
+- maintenance
+- projects
+- services
+- support context
+- requests
+- Vault
+- files
+- knowledge
+- collaboration/activity
+- connector mappings
+- plugin tabs
+
+Property type filters should normally be views, not permanent root navigation.
+
+## Projects
+Views:
+- Overview
+- Active
+- My Projects
+- Completed
+- Templates
+
+Project workspace may include:
+- overview
+- milestones
 - tasks
+- deliverables
+- approvals
+- client actions
+- requests/change requests
+- risks/issues
+- files
+- collaboration/activity
+- related properties/services
+- commercial/billing records
+- expenses where enabled
+- client visibility
+- automation history
+
+No Timesheet/Time Tracking feature is part of Re:Solve.
+
+## Sales
+Views:
+- Overview
+- Opportunities / Pipeline shortcuts
+- Service Catalogue
+- Proposals
+- Estimates / Quotes
+- Contracts
+- Document Studio
+- Templates
+- Sales Activity/Cadences
+- Forecast/Goals
+
+Commercial chain:
+`Lead -> Opportunity -> Proposal/Estimate -> Contract -> Client Service -> Project/Delivery -> Billing/Renewal`.
+
+## Billing
+Views may include:
+- Overview
+- Invoices
+- Payments
+- Receipts
+- Credit Notes
+- Refunds
+- Recurring Billing / Subscriptions
+- Payment Schedules / Deposits
+- Reconciliation
+- Account Statements
+- Credit Control / Receivables
+- Expenses/Spend where enabled
+
+Client Service Consumption/usage-credit tracking is explicitly out of scope.
+
+## Support
+Support is the Re:Solve operational/context surface around Chatwoot.
+
+Views:
+- Overview
+- Conversation References / Open in Chatwoot
+- Clients
+- Properties
+- Incidents
+- Entitlements
+- SLA/Commercial Context
+- Support Health
+- Analytics
+
+Re:Solve does not recreate Chatwoot's message/helpdesk console, routing, agents, support KB or Captain.
+
+## Monitoring
+Monitoring is a native Re:Solve platform capability.
+
+Views:
+- Overview
+- Properties
+- Native Monitors
+- Incidents
+- Domains / SSL
+- Backups / Heartbeats
+- Performance
+- Maintenance
+- Alert Rules
+- Probe/Worker Health
+- External Monitoring Sources
+
+Uptime Kuma is optional connector territory, not required infrastructure.
+
+## Renewals
+Renewal Desk provides cross-domain obligations:
+- Domains
+- Hosting
+- Certificates
+- Services
+- Contracts
+- Licenses/provider obligations
+- other Property dependencies
+
+Views:
+- Overdue
+- Next 7 / 30 / 60 / 90 Days
+- Client Decision Required
+- Payment Required
+- Auto-renew Unknown/Off
+- Completed / Verification Required
+
+## Requests
+Views:
+- Overview
+- New / Triage
+- Assigned
+- Waiting on Client
+- In Progress
+- Completed
+- Request Types / Templates where authorized
+
+Requests may convert/link into Tasks, Projects, Support, Approvals, Opportunities/Estimates, Change Requests or Vault access flows.
+
+## Knowledge
+Re:Solve Knowledge is separate from Chatwoot support Knowledge.
+
+Views:
+- Home
+- Articles
+- Spaces
+- Categories
+- Drafts
+- Review Queue
+- Client Knowledge
+- Suggestions
+- Sources / AI indexing controls
+
+## Files
+Views:
+- All Files
+- Recent
+- Shared
+- By Client
+- By Property
+- By Project
+- Storage / Retention
+- Trash where supported
+
+Protected confidential documents belong in Secure Vault rather than being simultaneously exposed as ordinary Files.
+
+## Vault
+Views:
+- My Access
+- Authorized Items
+- Credentials
+- Confidential Files/Documents
+- Shared With Clients
+- Access Requests
+- Expiring/Rotation Due
+- Audit
+
+## Automations
+Views:
+- Overview
+- Workflows
+- Recipes/Templates
+- Runs
+- Scheduled Jobs
+- Failures / Retry
+- Event Explorer
+- Action Catalogue
+
+Automation actions reuse the shared Action Registry and connector/plugin contracts.
+
+## Reports
+Views may include:
+- Overview
+- Clients
+- CRM/Sales
+- Projects
+- Finance
+- Support
+- Properties/Monitoring/Renewals
+- Services
+- AI/Àríyá usage
+- Custom Reports
+- Scheduled Reports
+
+No HR/timesheet/workforce-performance reporting.
+
+## Connectors
+Views:
+- Overview
+- Instances
+- Catalogue
+- Mappings
+- Events
+- Failures / Dead Letter
+- Health
+- Logs
+- Credential references
+
+Initial/future connectors include Chatwoot, WhatsApp/Baileys, payment providers, OpenRouter, Documenso, Cloudflare, optional Uptime Kuma, OJS, WordPress, WooCommerce, email, calendar, storage and others.
+
+## Plugins
+Views:
+- Installed
+- Available/Sources
+- Updates
+- Permissions
+- Health
+- Configuration
+- Development
+- Activity
+
+Plugins add capability; connectors integrate external systems.
+
+## Audit
+Views:
+- Audit Explorer
+- Security Events
+- Data Access
+- Vault Access
+- API/MCP Activity
+- Plugin/Connector Activity
+- Export where permitted
+
+Audit is append-only evidence, distinct from Activity.
+
+## Settings
+Top-level groups:
+- General / Workspace
+- Operating Entities & Brands
+- People & Access
+- Client Portal
+- CRM
+- Clients / Lifecycle
+- Properties / Monitoring / Renewals
+- Projects
+- Sales / Document Studio
+- Billing
+- Support / Chatwoot
+- Requests / Forms
+- Notifications
+- Communications
+- Àríyá / AI
+- Vault
+- Files
+- Automations
+- Data / Custom Fields / Imports
+- Plugins
+- Connectors
+- API & MCP
+- Security / Privacy
+- System
+
+Settings is deep, but ordinary navigation remains simple.
+
+## Global platform primitives not necessarily root navigation
+These capabilities can appear contextually across the OS:
+- Attention Engine
+- Command and Action Registry
+- Notifications
+- Collaboration/comments/mentions/following
+- Reminders/cadences
+- Saved Views/Favorites/Recents
+- Custom Fields/Taxonomy
+- Data Provenance/Freshness
+- Import/Export/Data Quality
+- Human Reference Numbering
+- Archive/Trash/Restore lifecycle
+- Secure External Access
+- Document Studio
+- Forms
+- Approvals
+- Calendar/Booking
+- Feedback/Surveys
+- Business Goals/Forecasting
+- Operational Communications/Announcements
+
+## Client Portal — Primary Navigation
+Recommended default:
+
+```text
+Home
+Properties
+Projects
+Support
+Billing
+Approvals
+Files
+Knowledge
+Organisation
+```
+
+Conditional destinations:
+- Requests
+- Vault, only when client has authorized secure access
+
+Notifications and Account remain in global chrome rather than main navigation.
+
+## Client Portal areas
+
+### Home
+- client-safe Attention/actions
+- project summary
+- Property Posture
+- incidents/maintenance
+- invoices/renewals
+- approvals
+- requested files/actions
+- recent meaningful updates
+
+### Properties
+- hierarchy/summary
+- client-safe posture
+- incidents/maintenance
+- renewal actions
+- related projects/services/files/knowledge
+
+### Projects
+- status
 - milestones
 - deliverables
 - approvals
 - client actions
 - files
-- discussions/activity
-- risks/issues
-- change requests
-- time
-- expenses
-- related properties
-- related services
-- commercial records
-- financial records
-- client portal visibility
-- automation history
+- client-visible collaboration
 
-## Admin OS — Sales
-
-Sales manages commercial conversion and documents.
-
-### Service Catalogue
-Reusable services, plans, pricing structures, scope defaults, tax behavior, billing frequency, SLA defaults, and delivery defaults.
-
-### Proposals / Estimates / Contracts
-Each should support templates, versions, related opportunity/client, approval/signature status, files, activity, and connector references.
-
-## Admin OS — Billing
-
-Billing is operational finance, not necessarily full statutory accounting.
-
-It should cover:
-- receivables
-- provider-independent payment records
-- recurring billing
-- subscriptions
-- credit/refund lifecycle
-- verified receipts
-- reconciliation
-- revenue/receivable reporting
-
-Payment providers attach through plugins/connectors.
-
-## Admin OS — Support
-
-Support is the Re:Solve operational view over Chatwoot-managed support.
-
-It should not duplicate the Chatwoot agent workspace unnecessarily.
-
-The Re:Solve view should emphasize:
-- client context
-- property context
+### Support
 - support entitlement
-- SLA/risk
-- incidents
-- related project/service/finance state
-- analytics
-- deep links to Chatwoot
-
-## Admin OS — Communications
-
-Communications is for Re:Solve-originated client operations.
-
-Primary channels:
-- WhatsApp/Baileys
-- email
-- SMS
-- push/in-app notification relationships where relevant
-
-This area should not become a second Chatwoot inbox.
-
-## Admin OS — Knowledge
-
-Re:Solve Knowledge is internal/controlled operational knowledge, separate from Chatwoot support knowledge.
-
-Potential uses:
-- SOPs
-- service playbooks
-- project procedures
-- client documentation
-- reusable knowledge for built-in Re:Solve AI
-
-## Admin OS — Vault
-
-Vault is a secure collaboration space for confidential information and files.
-
-Vault navigation should make security state visible without exposing secret values unnecessarily.
-
-## Admin OS — Monitoring
-
-Monitoring aggregates operational health from connectors and internal checks.
-
-It should focus on actionable state and incidents rather than recreating every specialist monitoring UI.
-
-## Admin OS — Automations
-
-Automations provides no-code/low-code orchestration over domain events and connector/plugin actions.
-
-The UI should eventually include:
-- visual workflow builder or structured step builder
-- trigger selection
-- conditions
-- branches
-- delays
-- actions
-- approvals
-- run history
-- failures/retry
-
-## Admin OS — Plugins
-
-Plugins UI manages installed business extensions.
-
-Plugin record surfaces should include:
-- overview
-- version
-- compatibility
-- permissions
-- extension points
-- configuration
-- migrations
-- health
-- activity/logs
-- update state
-
-## Admin OS — Connectors
-
-Connector UI manages external integrations.
-
-Connector Type view:
-- description
-- capabilities
-- setup requirements
-- instances
-- docs
-
-Connector Instance view:
-- status
-- authentication state
-- mapped organisation/property
-- capabilities
-- last sync/call
-- health
-- recent events
-- failures
-- credentials reference
-- configuration
-- logs
-- disable/remove
-
-## Admin OS — Settings
-
-Settings is intentionally deep and will receive its own full specification.
-
-Initial hierarchy:
-
-```text
-General
-├── Workspace
-├── Branding
-├── Locale
-├── Currency
-├── Dates & Time
-└── Defaults
-
-People & Access
-├── Staff
-├── Teams
-├── Roles
-├── Permissions
-├── Invitations
-├── Sessions
-└── Security Access
-
-Client Portal
-├── Portal Defaults
-├── Client Roles
-├── Navigation
-├── Permissions
-├── Invitations
-├── Registration
-└── Branding
-
-CRM
-├── Lead Sources
-├── Pipelines
-├── Stages
-├── Custom Fields
-├── Activities
-└── Defaults
-
-Properties
-├── Types
-├── Relationships
-├── Statuses
-├── Health Rules
-├── Renewal Rules
-├── Maintenance
-└── Custom Fields
-
-Projects
-├── Statuses
-├── Priorities
-├── Task Types
-├── Templates
-├── Time Tracking
-├── Approvals
-└── Defaults
-
-Sales
-├── Services
-├── Proposal Defaults
-├── Estimate Defaults
-├── Contract Defaults
-├── Numbering
-└── Templates
-
-Billing
-├── Invoice Defaults
-├── Numbering
-├── Currencies
-├── Taxes
-├── Payment Terms
-├── Credit Notes
-├── Subscriptions
-├── Receipts
-└── Reconciliation
-
-Support
-├── Chatwoot
-├── Support Plans
-├── Entitlements
-├── SLA
-├── Categories
-├── Routing
-├── Business Hours
-└── Branding
-
-Notifications
-├── Channels
-├── Policies
-├── Delivery Rules
-├── Templates
-├── Digests
-├── Priorities
-└── Defaults
-
-Communications
-├── WhatsApp
-├── Email
-├── SMS
-├── Sender Identities
-├── Templates
-└── Delivery
-
-AI
-├── Provider
-├── Models
-├── Profiles
-├── Features
-├── Tools
-├── Usage
-├── Limits
-├── Guardrails
-└── Audit
-
-Vault
-├── Policies
-├── Access
-├── Step-up Authentication
-├── Retention
-├── Categories
-└── Rotation Defaults
-
-Files
-├── Provider
-├── Limits
-├── Types
-├── Retention
-└── Security
-
-Automations
-├── Defaults
-├── Limits
-├── Schedules
-├── Failure Policy
-└── Action Permissions
-
-Plugins
-├── Installed Sources
-├── Permissions
-├── Updates
-├── Development
-└── Policy
-
-Connectors
-├── Defaults
-├── Authentication
-├── Health
-├── Events
-├── Retry
-├── Secrets
-└── Policy
-
-API & MCP
-├── REST API
-├── API Tokens
-├── Scopes
-├── Webhooks
-├── MCP
-├── AI Clients
-├── Rate Limits
-└── Audit
-
-Security
-├── Authentication
-├── MFA
-├── Password Policy
-├── Sessions
-├── Devices
-├── IP Policy
-├── Rate Limits
-└── Security Events
-
-System
-├── Health
-├── Jobs
-├── Queue
-├── Logs
-├── Backups
-├── Updates
-├── Feature Flags
-├── Diagnostics
-└── About
-```
-
-## Client Portal — Primary Navigation
-
-```text
-Home
-
-Properties
-├── Overview
-└── Property Workspace
-
-Projects
-├── Active
-├── Completed
-└── Project Workspace
-
-Support
-├── Overview
-├── Conversations
-├── Service Status
-└── Support Entitlement
-
-Billing
-├── Overview
-├── Invoices
-├── Payments
-├── Receipts
-├── Services
-├── Subscriptions
-└── Renewals
-
-Approvals
-├── Awaiting Me
-├── Completed
-└── Approval Detail
-
-Files
-├── All Files
-├── Recent
-├── Shared
-└── Project / Property Files
-
-Vault
-├── Shared With Me
-├── Credentials
-├── Confidential Files
-├── Access Requests
-└── Expiring Access
-
-Knowledge
-├── Home
-├── Articles
-├── Categories / Spaces
-└── Saved
-
-Organisation
-├── Profile
-├── Team
-├── Invitations
-├── Access
-└── Billing Contacts
-
-Notifications
-
-Account
-├── Profile
-├── Security
-├── Devices / Sessions
-├── Notification Preferences
-└── Appearance / Accessibility Preferences where supported
-```
-
-## Client Portal — Home
-
-The Client Portal home should ultimately summarize:
-- greeting/context
-- actions requiring attention
-- project status
-- property health
-- support state
-- billing state
-- renewals
-- recent files/activity
-- notifications
-
-It must not expose internal-only staff data.
-
-## Client Portal — Properties
-
-Client property access is permission-scoped.
-
-A client-safe Property workspace may include:
-- overview
-- health/status
-- related projects
-- services
-- support
-- renewals
-- monitoring summary
-- approved files
-- approved vault items
-- activity
-
-## Client Portal — Projects
-
-Client-safe project workspaces may include:
-- status/progress
-- timeline/milestones
-- deliverables
-- approvals
-- client actions
-- files
-- project updates
-- allowed discussions
-- change requests
-
-Internal-only notes, costs, risks, staff-only tasks, and private operational details must remain hidden unless explicitly configured otherwise.
-
-## Client Portal — Support
-
-Support uses Chatwoot as the conversation engine.
-
-Portal should provide:
-- support entry point
-- recent/open conversation references where useful
-- service/support entitlement
-- incidents/status relevant to client
-- global Chatwoot widget or approved embedded experience
-
-The portal should not recreate a full helpdesk agent UI.
-
-## Client Portal — Billing
-
-The client should be able to understand:
-- what they owe
-- what has been paid
-- what renews next
-- what services are active
-- what receipts/documents are available
-
-Billing actions must respect payment-provider availability and permissions.
-
-## Client Portal — Vault
-
-Client Vault access should support secure, explicit sharing rather than broad folder inheritance by default.
-
-Likely client flows:
-- view shared confidential item metadata
-- request access
-- step-up authenticate
-- reveal/copy/download
-- upload requested credentials/files
-- see expiry/revocation state
-
-## Client Portal — Organisation
-
-Organisation owners/admins may manage:
-- organisation profile fields allowed for self-service
-- members
-- invitations
-- roles
-- property access
-- billing contacts
-- approvers
-- vault-related access where permitted
-
-## Global Surfaces
-
-### Global Search
-
-Admin search should support cross-domain discovery with permissions applied before results are returned.
-
-Potential result groups:
-- organisations
-- contacts
-- properties
-- projects
-- tasks
-- opportunities
-- commercial records
+- active incidents
+- recent safe conversation references
+- open/continue support in Chatwoot
+- service status
+
+### Billing
 - invoices
-- files
-- knowledge
-- vault metadata
-- support references
+- payments
+- receipts
+- account statement
+- active services
+- renewals
+- accepted client-safe commercial documents
 
-### Command Palette
+### Approvals
+- awaiting me
+- completed
+- approval detail
 
-Admin may expose keyboard-first navigation/actions.
+### Files
+- shared files
+- project/property files
+- requested uploads
 
-### Notification Center
+### Knowledge
+- client-visible articles and property/project guidance
 
-Both Admin and Portal require a global notification entry point.
+### Organisation
+- profile
+- members/access/invitations for authorized client admins
+- billing contacts
+- communication preferences
 
-### Quick Create
+### Requests
+If enabled, simple request submission/status/clarification.
 
-Admin may expose context-aware creation actions.
+### Vault
+Only explicitly authorized secure items and access requests.
 
-### Activity Timeline
+## Secure External Access
+Guest/lead/third-party surfaces may include:
+- proposal/estimate view/acceptance
+- contract signature handoff
+- file upload request
+- form/survey
+- deliverable approval
+- controlled report/handover package
 
-Reusable timeline pattern across organisations, properties, projects, and other major records.
+These pages are branded, narrow and do not expose the full Portal shell.
 
-## Machine-Facing Information Architecture
+## Machine-facing surfaces
 
-### REST API
-
-Primary resource areas should mirror durable product domains rather than frontend routes.
-
-### Webhooks
-
-Outbound subscriptions should expose approved domain events.
+### API
+Versioned provider-neutral resources/actions with capability and record-level authorization.
 
 ### MCP
+Curated tools/resources for approved AI/agent clients. No arbitrary SQL or unrestricted Vault access.
 
-MCP tools/resources should be grouped by capability/domain and clearly label read vs write actions.
+### Àríyá
+User-facing AI consumes controlled tools/actions and source evidence while inheriting caller permissions.
 
-### Plugin Extensions
+## Explicit product exclusions
+The following are not Re:Solve product areas:
+- HR management
+- payroll
+- leave/attendance/recruitment/performance reviews
+- timesheets/time-tracking
+- Client Service Consumption/credit-hour metering
 
-Documented extension points should exist for:
-- navigation
-- dashboard
-- record tabs
-- settings
-- actions
-- API
-- MCP
-- reports
-- automations
-- notifications
-
-### Connector Interfaces
-
-Connector capabilities should be discoverable through Admin and machine APIs.
-
-## Navigation Principles
-
-1. Navigation groups should map to real operational domains.
-2. Avoid duplicate concepts appearing in multiple areas unless one is clearly a contextual view.
-3. Record workspaces should reduce unnecessary cross-navigation.
-4. Admin supports dense information and power-user movement.
-5. Portal supports clarity and confidence.
-6. Plugin navigation must use approved extension slots.
-7. Connector-specific navigation should not overwhelm core navigation.
-8. Mobile portal navigation may use a different presentation pattern while preserving the same information hierarchy.
-9. Permissions may hide inaccessible areas, but hidden navigation never replaces authorization.
-10. Search and command surfaces must obey permissions and redaction.
-
-## Open Decisions for Detailed Specs
-
-- exact top-level Admin navigation grouping and ordering
-- whether Clients remains separate from CRM or becomes a filtered client-focused workspace
-- whether Communications is top-level or nested under Clients/Operations
-- whether AI is top-level or primarily accessed through global command/assistant UI
-- degree of customization allowed for Admin and Portal navigation
-- mobile Portal bottom-navigation choices
-- plugin navigation limits
-- custom dashboards and saved workspace layouts
+The architecture should not create placeholder navigation or schemas for them.
