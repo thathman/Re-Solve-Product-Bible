@@ -1,6 +1,6 @@
 ---
 name: resolve-release
-description: Run the final Re:Solve build-slice completion review across acceptance, tests, security, responsive/PWA, accessibility, Core UI/design quality, portability, and Product Bible drift.
+description: Use at the end of every Re:Solve Lovable build slice to run the go/no-go completion review across Product Bible acceptance criteria, tests, security, responsive/PWA, accessibility, Core UI/design quality, portability, and scope drift.
 ---
 
 # Re:Solve Release Review
@@ -21,4 +21,4 @@ Before declaring a slice complete, report:
 - Product Bible contradictions/drift;
 - explicit adjacent features left unbuilt.
 
-Functional correctness alone is not release completion.
+Functional correctness alone is not release completion. Return PASS, CONDITIONAL PASS, or FAIL with blockers.
