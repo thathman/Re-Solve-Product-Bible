@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**SETUP COMPLETE — CLEAN STARTER VERIFIED — FOUND-001A NEXT**
+**FOUND-001A CONDITIONAL — FOUNDATION CORRECTION REQUIRED BEFORE FOUND-001B**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -27,7 +27,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - GitHub access verified independently by supervisor.
 - Legacy reference repository remains: `thathman/Re-Solve`.
 - Product Bible repository is specification/reference only, not application source.
-- Root `AGENTS.md`: `NO — create during FOUND-001A`.
+- Root `AGENTS.md`: `YES — created in FOUND-001A`.
 - Canonical-name transition performed: `NO`.
 
 ## Backend
@@ -40,28 +40,37 @@ Keep this file updated after each accepted build slice so the next Product Bible
 Never store credentials/secrets in this file.
 
 ## Accepted slices
-None yet.
+None yet. `FOUND-001A` is currently CONDITIONAL pending focused corrections.
 
-## Verified starter baseline
-- clean-starter classification: `A — safe to begin supervised foundation sequence`;
-- framework/build stack: `TanStack Start v1`;
+## Verified starter / FOUND-001A baseline
+- framework/build stack: `TanStack Start v1 + Vite`;
 - React: `19.2.0`;
 - package manager: `bun`;
 - Tailwind: `4.2.1` using `@tailwindcss/vite`;
 - TypeScript: `5.8.3`;
 - Vite: `8.2.0`;
 - shadcn: already initialized (`new-york`, CSS variables, Lucide icon library, standard `src/components/ui/` aliases);
-- primitive base currently represented by installed Radix packages; do not reinitialize shadcn blindly;
-- TanStack Query already installed (`@tanstack/react-query`);
+- primitive base: generated Radix-based starter; do not reinitialize shadcn blindly;
+- TanStack Query already installed;
 - React Hook Form + Zod already installed;
 - Recharts already installed;
-- routes: only `src/routes/__root.tsx` and placeholder `src/routes/index.tsx`;
-- Re:Solve-specific UI/components: none;
-- business functionality: none;
-- PWA files: none;
-- tests/CI: none;
-- no database migrations/schema yet;
-- starter builds cleanly (`BUILD_SUCCESS`).
+- routes remain starter-only;
+- Re:Solve business functionality: none;
+- PWA/tests/CI: not yet configured;
+- database migrations/schema: none;
+- `AGENTS.md` exists;
+- initial environment, formatter and UI provenance files exist;
+- Lovable reported `bun run build` success and `bun run lint` success with 6 existing react-refresh warnings.
+
+## FOUND-001A supervisor review findings
+The structural direction is acceptable, but the following must be corrected before acceptance:
+1. `.env.example` was created under `src/`; it must live at repository root for the app/tooling convention.
+2. `.gitignore` does not currently protect `.env` / `.env.*`; add safe env ignore rules while explicitly allowing `.env.example`.
+3. `src/lib/env/index.ts` mixes server `process.env` and browser `import.meta.env` in one shared module; establish explicit server/client environment boundaries so server-only secrets cannot be imported into browser code by design.
+4. `src/lib/formatters/index.ts` hard-codes `en-US` and `USD` as universal defaults, contradicting the Product Bible. Locale/currency must come from runtime/user/Operating Entity context or explicit caller input; no universal business currency.
+5. `src/lib/UI-PROVENANCE.md` is not sufficiently auditable: replace vague `Latest compatible` wording with source URL, license and actual package/component provenance where known. Prefer a documentation location outside runtime library code, e.g. `docs/ui-sources.md`.
+6. Package/runtime metadata claimed in the completion report was not found in `package.json`; record Bun/package-manager/runtime expectation explicitly in a portable way without creating conflicting lockfiles/tooling.
+7. `AGENTS.md` currently states `Cloudflare Workers / Nitro` as the runtime. Keep runtime guidance factual to the generated TanStack/Nitro-compatible stack and avoid making Cloudflare a production requirement unless the repository configuration actually establishes that decision.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
@@ -69,16 +78,16 @@ None yet.
 - React: `19.2.0`
 - package manager: `bun`
 - Tailwind: `4.2.1`
-- shadcn: `initialized; do not rerun init without an explicit migration decision`
+- shadcn: `initialized; do not rerun init without explicit migration decision`
 - current UI primitives: `Radix + shadcn source components`
 - primary icon library: `Lucide`
-- query/server state: `TanStack Query already installed`
-- form/validation: `React Hook Form + Zod already installed`
-- chart foundation: `Recharts already installed`
+- query/server state: `TanStack Query`
+- form/validation: `React Hook Form + Zod`
+- chart foundation: `Recharts`
 - testing stack: `not configured`
 - PWA tooling: `not configured`
 - auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
-- service/repository boundaries: `not established`
+- service/repository boundaries: `initial directories established; acceptance pending focused cleanup`
 
 ## Current Core UI inventory
 None beyond stock/generated shadcn primitives. No Re:Solve Core UI components accepted yet.
@@ -87,11 +96,14 @@ None beyond stock/generated shadcn primitives. No Re:Solve Core UI components ac
 None.
 
 ## Open Product Bible deltas
-None currently blocking FOUND-001A.
+None requiring a product decision. Current issues are implementation corrections.
 
 ## Known implementation limitations
-- no CI/tests/PWA/AGENTS.md/Re:Solve architecture foundation yet;
-- shadcn is already configured around the generated Radix-based starter, so any React Aria migration must be deliberate rather than automatic.
+- environment boundary/security hygiene needs correction;
+- locale/currency defaults violate canonical rules;
+- UI provenance needs stronger auditability;
+- runtime/package-manager declaration needs correction;
+- no CI/tests/PWA yet by design.
 
 ## Next action
-Execute `FOUND-001A — Stack & Repository Preflight` only.
+Execute supervisor-provided `FOUND-001A-FIX` only. Re-review the actual repository afterward. Do not begin FOUND-001B until FOUND-001A passes.
