@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B CONDITIONAL — FINAL THEME/FONT/ACCESSIBILITY CLEANUP + VISUAL ACCEPTANCE REQUIRED BEFORE FOUND-001C**
+**FOUND-001A ACCEPTED — FOUND-001B IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING BEFORE FOUND-001C**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -13,7 +13,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - FOUND-001 is supervised through bounded substeps.
 
 ## Lovable project
-- Project: `Re:Solve`
+- Project: `Re:Solve`.
 - Project Knowledge installed: `YES`.
 - Canonical workspace Skills installed: `YES — all 30 Re:Solve skills plus self-host-check`.
 - Platform default skill active: `design-taste-frontend`.
@@ -60,75 +60,77 @@ Supervisor verified on application-repository `main`:
 - no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice.
 
 ## FOUND-001B — UI Stack & Design Tokens
-**Status: CONDITIONAL — final implementation cleanup required, then visual acceptance**
+**Status: IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING**
 
-### Verified implementation now present
+### Supervisor-verified implementation
 - Re:Solve-owned OKLCH semantic palette in `src/styles.css`;
-- light/dark values for core surfaces, text, borders, actions, statuses, selected, disabled and 6 Re:Solve chart series;
-- shadcn sidebar compatibility vocabulary restored and mapped onto Re:Solve authority tokens;
-- shadcn chart `chart-1..5` compatibility restored and mapped onto Re:Solve chart tokens;
-- page gutter, content measure, panel padding, compact/default/touch control height, density rhythm, restrained elevation, shell reservation and safe-area contracts now exist;
-- self-hosted Fontsource dependencies are installed for Inter Variable and JetBrains Mono Variable;
+- intentional light/dark values for core surfaces, text, borders, primary actions, destructive actions, selected/disabled states, semantic statuses and six chart series;
+- destructive action semantics are separate from soft danger-status semantics;
+- shadcn `destructive` / `destructive-foreground` map to Re:Solve destructive-action tokens;
+- shadcn sidebar compatibility vocabulary maps onto Re:Solve authority tokens;
+- shadcn `chart-1..5` vocabulary maps onto Re:Solve chart tokens while Re:Solve retains series 6;
+- page gutters, content measures, panel padding, compact/default/touch heights, density rhythm, restrained elevation, future shell reservations, focus contracts and safe-area contracts exist;
+- Inter Variable and JetBrains Mono Variable are self-hosted through Fontsource and imported through a single application path;
 - no Google Fonts runtime links remain;
-- reusable `ThemeProvider` supports light/dark/system, localStorage persistence and live `prefers-color-scheme` updates after hydration;
-- root shell contains a pre-hydration theme bootstrap attempt;
-- `/__dev/ui` has a production `beforeLoad` guard;
-- root metadata uses provisional Re:Solve strings rather than Lovable starter metadata;
-- reduced-motion media handling exists;
-- Untitled UI and Tremor provenance is correctly `NOT INCORPORATED — DESIGN REFERENCE ONLY`;
-- font provenance records declared `^5.3.0` ranges;
-- build/lint/type success reported by Lovable.
+- `src/lib/theme/contract.ts` is the shared theme contract with `rs-theme`, validation, resolver and bootstrap generation;
+- runtime `ThemeProvider` uses the shared `resolveTheme()` contract and preserves live system-theme updates;
+- root shell runs the generated pre-hydration theme bootstrap;
+- `/__dev/ui` is guarded from production access;
+- reduced-motion handling exists;
+- semantic status surfaces use explicit accessible foreground tokens rather than one universal inverse foreground;
+- focus offset has an explicit Re:Solve token;
+- `/__dev/ui` demonstrates all six Re:Solve chart series and the destructive action treatment;
+- Untitled UI and Tremor remain `NOT INCORPORATED — DESIGN REFERENCE ONLY`;
+- Fontsource provenance records declared `^5.3.0` and resolved `5.3.0` versions;
+- Lovable reports build, lint and type-check success, with only standard Fast Refresh warnings.
 
-### Remaining FOUND-001B supervisor findings after FIX2
-1. **Pre-hydration `system` logic is wrong and storage validation is duplicated.** `src/routes/__root.tsx` currently treats OS dark mode only when there is no stored value. A valid stored value of `system` therefore resolves light even when the OS is dark until hydration. Invalid non-empty stored values also resolve as light rather than falling back to `system`. The bootstrap hard-codes the storage key/validation separately from `ThemeProvider`, directly creating the drift the previous correction was intended to prevent. Establish one shared theme storage key/validation/resolution contract usable by both bootstrap generation and runtime provider logic.
-2. **Fontsource CSS is still imported twice.** `src/styles.css` imports both Fontsource packages and `src/routes/__root.tsx` imports the same packages again. Keep exactly one canonical import path.
-3. **Focus-offset contract is incomplete.** Focus ring width/color and offset width exist, but there is no explicit Re:Solve focus-offset color/surface token. Add one and use it in the preview/canonical focus treatment rather than implicitly hard-wiring canvas as the offset surface.
-4. **Status foreground accessibility is not established.** `/__dev/ui` uses `text-rs-text-inverse` on every status-color icon block. With the current bright light-mode success/warning tokens, a single inverse foreground is not a safe universal contrast treatment. Define/use accessible status foreground or soft-status treatment so information/success/warning/danger/critical states remain legible and WCAG-safe; do not rely on one foreground color for every status background.
-5. **Preview dropped Re:Solve chart series 6.** The token exists and should remain visibly represented in the foundation preview even though shadcn compatibility only requires chart 1–5.
-6. **Font provenance should record resolved versions when available from `bun.lock`.** Keep the declared range and add the truthful lockfile-resolved version rather than implying the range is the installed version.
-
-### Visual acceptance still required after code cleanup
-Before FOUND-001B becomes ACCEPTED, supervisor will review actual `/__dev/ui` appearance in at least:
+### Remaining FOUND-001B acceptance gate
+Code/architecture review is complete. Before FOUND-001B becomes fully ACCEPTED, supervisor must review actual `/__dev/ui` visuals in at least:
 - light desktop;
 - dark desktop;
-- a narrow/mobile viewport.
+- narrow/mobile viewport.
 
-The visual review will check hierarchy, density, palette restraint, focus visibility, status semantics, typography, long-content behavior, responsive composition and whether the foundation feels like a high-trust operations workspace rather than stock shadcn/generic SaaS.
+Visual review checks:
+- hierarchy and information density;
+- palette restraint and high-trust operational tone;
+- typography and numeric presentation;
+- status/destructive distinction;
+- focus visibility;
+- surface/elevation/radius discipline;
+- responsive composition and overflow behavior;
+- whether the system feels Re:Solve-owned rather than stock shadcn/generic SaaS.
 
 ## Current architecture facts
-- framework/build tool: `TanStack Start v1 + Vite`
-- routing: `TanStack file-based routes`
-- React: `19.2.0`
-- package manager: `bun@1.3.3`
-- Tailwind: `4.2.1`
-- shadcn: `initialized — new-york, CSS variables, source-owned registry components; do not rerun init without explicit migration decision`
-- current primitive base: `Radix + shadcn source components`
-- primary icon library: `Lucide 0.575.0`
-- typography packages: `@fontsource-variable/inter`, `@fontsource-variable/jetbrains-mono`;
-- query/server state: `TanStack Query`
-- form/validation: `React Hook Form + Zod`
-- chart foundation: `Recharts`
-- environment security: `public VITE boundary + createServerOnlyFn private boundary`
-- testing stack: `not configured`
-- PWA tooling: `not configured`
-- auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
+- framework/build tool: `TanStack Start v1 + Vite`;
+- routing: `TanStack file-based routes`;
+- React: `19.2.0`;
+- package manager: `bun@1.3.3`;
+- Tailwind: `4.2.1`;
+- shadcn: `initialized — new-york, CSS variables, source-owned registry components; do not rerun init without explicit migration decision`;
+- current primitive base: `Radix + shadcn source components`;
+- primary icon library: `Lucide 0.575.0`;
+- typography: `Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0`;
+- query/server state: `TanStack Query`;
+- form/validation: `React Hook Form + Zod`;
+- chart foundation: `Recharts`;
+- environment security: `public VITE boundary + createServerOnlyFn private boundary`;
+- testing stack: `not configured`;
+- PWA tooling: `not configured`;
+- auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`;
 - service/repository boundaries: `initial FOUND-001A boundaries established`.
 
 ## Current Core UI inventory
-No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme foundation remains conditional. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
+No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme implementation has passed code review, but visual acceptance is still pending. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
 
 ## Current database/domain inventory
 None.
 
 ## Open Product Bible deltas
-None requiring an owner product decision. Current FOUND-001B issues are implementation/acceptance corrections.
+None requiring an owner product decision.
 
 ## Known implementation limitations
-- pre-hydration theme bootstrap disagrees with runtime theme behavior for stored `system`/invalid values;
-- Fontsource CSS remains imported twice;
-- focus offset/status foreground contracts need final accessibility cleanup;
 - visual acceptance screenshots are still pending;
 - no broad Component Gallery, shell, PWA, CI or test foundation yet by design.
 
 ## Next action
-Execute supervisor-provided final FOUND-001B implementation correction only. Re-review repository afterward, then perform visual acceptance of `/__dev/ui`. Do not begin FOUND-001C until FOUND-001B passes.
+Perform FOUND-001B visual acceptance of `/__dev/ui` using light desktop, dark desktop and narrow/mobile screenshots. Do not begin FOUND-001C until visual acceptance passes.
