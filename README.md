@@ -29,6 +29,17 @@ The product may be specified comprehensively here, but implementation must be de
 ### Platform
 - [Notifications Platform](03-platform/notifications.md)
 
+## Core Product Flows
+
+### Admin
+- [Admin Dashboard](01-admin/dashboard.md)
+- [My Work](01-admin/my-work.md)
+- [Organisations and Contacts](01-admin/organisations-and-contacts.md)
+- [Properties](01-admin/properties.md)
+
+### Client Portal
+- [Client Portal Home](02-portal/home.md)
+
 ## Governing Workflow
 
 Product specifications should follow the installed Re:Solve spec and flow skills:
