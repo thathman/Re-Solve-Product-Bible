@@ -1,6 +1,6 @@
 ---
 name: resolve-shell
-description: Build or review the Re:Solve application shell, including Sidebar, TopBar, avatar/account, notifications chrome, Search/Command, Quick Create, Àríyá entry, responsive navigation, and global app states.
+description: Use when building or reviewing the Re:Solve application shell or global chrome, including Sidebar, TopBar, avatar/account, Notifications, Search/Command, Quick Create, Àríyá entry, responsive navigation, breadcrumbs, and global app states.
 ---
 
 # Re:Solve Shell
