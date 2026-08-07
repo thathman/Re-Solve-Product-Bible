@@ -1,321 +1,191 @@
 # Re:Solve Plugin Platform
 
 ## Purpose
+Plugins extend Re:Solve with business/product capability that is not universally core, while preserving one coherent application and avoiding forks.
 
-Plugins extend Re:Solve with business capabilities that are not universally required by core. The plugin platform must allow Re:Solve to remain opinionated and coherent while supporting first-party, private, client-specific, and future third-party extensions.
+A Plugin adds capability. A Connector integrates an external system. A provider package may be distributed as a Plugin that registers one or more Connector implementations, but business domains still depend on provider-neutral Connector contracts.
 
-A plugin adds product behavior. A connector integrates an external system. A plugin may depend on one or more connectors, but the two concepts must remain distinct.
-
-## Core goals
-
-- extend business capability without forking core
-- preserve one coherent Admin and Client Portal experience
-- support lifecycle management, compatibility checks, permissions, migrations, health, and audit
-- expose stable extension points for UI, data, workflows, notifications, API, MCP, search, reports, and automation
-- keep plugins portable with the final self-hosted application
-- allow plugins to be authored incrementally in Lovable without coupling them to Lovable runtime services
+## Goals
+- extend capability without forking core;
+- preserve coherent Admin/Portal UX;
+- support compatibility, lifecycle, permissions, migrations, settings, health and Audit;
+- expose controlled UI, data, Event, Action, Automation, Notification, Search, Report, API and MCP extension points;
+- remain portable/self-hostable;
+- integrate with Core UI Framework and simple navigation rather than creating a separate app shell.
 
 ## Non-goals
+- arbitrary unrestricted code/database access;
+- making every core feature a Plugin;
+- allowing bypass of Principal/permission, Vault/File, Notification, Attention, Action Registry, Connector or Audit contracts;
+- allowing each Plugin to add an Odoo-like mini app launcher/navigation system;
+- promising a public marketplace in v1.
 
-- arbitrary unrestricted code execution without platform contracts
-- letting every feature become a plugin
-- allowing plugins to bypass core permission, audit, notification, Vault, or connector policies
-- promising a public marketplace in v1
+## Core remains core
+Core includes Workspace/Operating Entity/identity/access, Organisations/Contacts, Properties, Projects, Requests, CRM, Services, Billing, Files, Vault, Knowledge, Attention, Notifications, Actions, Automations, Monitoring/Posture/Renewals, Settings, Audit, Search, API/MCP and extension infrastructure.
 
-## What remains core
+Plugins should not reimplement these foundations.
 
-Core owns identity, users, organisations, contacts, memberships, permissions, properties, projects, files, notifications, audit, settings, events, automation primitives, plugin management, connector management, API foundations, and MCP foundations.
+## Suitable examples
+- OJS / advanced Journal Operations;
+- Hosting Operations;
+- SEO Toolkit;
+- WooCommerce Operations;
+- Advanced Accounting;
+- Procurement/Vendor Operations;
+- Asset Management;
+- Advanced Reporting;
+- specialized Import Packs;
+- Airix Food operational domain;
+- provider packages that register Connectors.
 
-Core business domains may also include CRM, billing, and knowledge where they are required across the operating model.
+Explicitly out of scope as core Plugin targets unless a future deliberate product decision changes it: HR, payroll, Timesheets and Client Service Consumption.
 
-## Suitable plugin examples
+## Manifest contract
+Every Plugin declares at least:
+- id/name/description/vendor/version/license;
+- core compatibility;
+- dependencies;
+- requested canonical permissions;
+- settings schema;
+- migrations/data ownership;
+- navigation/record/UI extension contributions;
+- Action definitions;
+- Event subscriptions/publications;
+- Automation triggers/actions;
+- scheduled jobs;
+- Notification/Attention providers;
+- Search/Report contributions;
+- API/MCP contributions;
+- Connector implementations/dependencies where applicable;
+- health/diagnostics;
+- update/rollback/uninstall policy.
 
-- OJS Publishing
-- Journal Operations
-- Hosting Operations
-- SEO Toolkit
-- WooCommerce Operations
-- Advanced Accounting
-- Asset Management
-- Advanced Reporting
-- Data Import Packs
+Exact package format remains technical planning.
 
-## Plugin package contract
-
-Every plugin declares a manifest with at least:
-
-- id
-- name
-- description
-- version
-- vendor
-- core compatibility range
-- dependencies
-- requested permissions
-- navigation contributions
-- UI extension points
-- API contributions
-- MCP contributions
-- event subscriptions
-- automation triggers/actions
-- scheduled jobs
-- migrations
-- settings schema
-- health checks
-- uninstall policy
-
-Conceptual manifest:
-
-```json
-{
-  "id": "resolve-ojs",
-  "name": "Re:Solve OJS",
-  "version": "1.0.0",
-  "requiresCore": ">=1.0.0",
-  "permissions": ["properties.read", "ojs.read", "ojs.manage"],
-  "navigation": ["journals"],
-  "migrations": true,
-  "serverEntry": "./server/index",
-  "uiEntry": "./ui/index"
-}
+## Provider package pattern
+Example:
+```text
+Billing Core
+  -> PaymentConnector capability
+      -> Bachs Provider Plugin registers BachsPaymentConnector
+      -> Paystack Provider Plugin registers PaystackPaymentConnector
 ```
 
-Exact implementation format is not locked by this product spec; capability semantics are.
+This pattern may also apply to optional specialist provider implementations for other Connector Types. Installing a provider package does not make the provider name part of core domain data.
 
 ## Lifecycle
+States may include available, installed, config_required, enabled, disabled, update_available, upgrading, error, incompatible, rollback_available, uninstalling and removed.
 
-Supported lifecycle states:
+Operations include install, inspect permissions, configure, enable/disable, update, rollback, repair, diagnostics and uninstall.
 
-- available
-- installed
-- enabled
-- disabled
-- update available
-- upgrading
-- error
-- incompatible
-- rollback available
-- uninstalling
-- removed
+Uninstall policy explicitly states retain/archive/export/delete behavior for Plugin-owned data. Destructive removal requires confirmation and Audit.
 
-Supported operations:
-
-- install
-- inspect requested permissions
-- configure
-- enable
-- disable
-- update
-- rollback
-- repair
-- export diagnostic bundle
-- uninstall
-
-Uninstall must declare whether plugin-owned records are retained, archived, exported, or deleted. Destructive removal requires explicit confirmation and audit.
-
-## Admin experience
-
+## Admin UX
 ### Installed
+Show identity/vendor/version, compatibility, health, requested/effective permissions, update state, migrations, Connector registrations/dependencies, last failure, configure/enable/disable/diagnostics.
 
-Show:
-- plugin name and icon
-- vendor
-- version
-- status
-- core compatibility
-- health
-- permissions summary
-- update state
-- last migration
-- last error
-- configure action
-- enable/disable action
-- diagnostics
+### Available/Sources
+Initially bundled first-party and configured private sources. Future registry/marketplace can reuse the same package contract.
 
-### Available
+### Update review
+Show changelog, compatibility, migrations, newly requested permissions, new Actions/Connector capabilities and rollback before activation.
 
-Initially this can represent bundled first-party packages and explicitly configured private sources. Future registry/marketplace support must not require a redesign of the package model.
+## UI extension contract
+Plugins use named slots and `09-design/core-ui-framework.md`.
 
-### Updates
+Possible slots:
+- Organisation/Property/Project/Request record tabs/widgets/actions;
+- Dashboard secondary modules/Attention provider;
+- Reports datasets/views;
+- Settings sections;
+- Client Portal entries/widgets;
+- Search/Command Actions;
+- Quick Create only when genuinely frequent.
 
-Show changelog, compatibility, required migrations, permission changes, and rollback availability before upgrade.
+### Navigation governance
+Default answer is **not** `add a root Sidebar item`.
 
-### Development
+A Plugin must first determine whether capability belongs as:
+- a tab/view under an existing major area;
+- a record extension;
+- a Settings subsection;
+- a Search/Command action;
+- a secondary Operations destination.
 
-For trusted development environments, allow local/private plugin packages to be registered for testing. Production policy may disable development-source installation.
+Any root navigation contribution uses approved slots, simple human labels and mobile rules. Plugins cannot introduce app grids, nested module launchers or unrelated shell chrome.
 
-## UI extension points
+## Core UI
+Plugin UI must consume approved Re:Solve tokens/components/composites. If a reusable pattern is missing, contribute it to the Core Framework rather than shipping a visually unrelated component system.
 
-Core pages expose named slots rather than inviting plugin forks.
-
-Examples:
-
-### Organisation 360
-- overview widgets
-- secondary tabs
-- contextual actions
-
-### Property 360
-- summary widgets
-- tabs
-- status indicators
-- actions
-
-### Project 360
-- tabs
-- widgets
-- actions
-- reports
-
-### Dashboard
-- optional widgets
-- attention providers
-
-### Client Portal
-- navigation entries where permitted
-- property/project tabs
-- portal widgets
-
-Plugins must use approved Re:Solve design primitives and responsive contracts.
-
-## Permissions
-
-Plugins request explicit platform permissions such as:
-
-- organisations.read
-- contacts.read
-- properties.read
-- properties.manage
-- projects.read
-- billing.read
-- notifications.create
-- vault.metadata.read
-- api.tools.register
-
-Install/upgrade UI must show requested capabilities and highlight newly added permissions.
-
-A plugin must not gain unrestricted access merely because it is installed.
-
-## Data ownership
-
-Plugins may define namespaced data structures and declared migrations.
-
-Rules:
-- plugin tables/collections must be namespaced
-- core schema mutation must occur only through approved extension mechanisms
-- cross-domain links use stable core identifiers
-- plugin migrations are versioned
-- failed migrations place the plugin into a recoverable error state
-- disabling a plugin does not silently delete data
-
-## Events and hooks
-
-Plugins subscribe to the shared event bus rather than patching core modules.
+## Permissions / Principal
+Plugin is a Principal when acting. Requested canonical capabilities are reviewed on install/upgrade and checked at execution.
 
 Examples:
-- organisation.created
-- property.created
-- property.updated
-- project.created
-- project.completed
-- invoice.created
-- invoice.paid
-- approval.requested
-- approval.completed
-- credential.revealed
-- connector.health_changed
+- `organisations.read`
+- `properties.read`
+- `projects.read`
+- `billing.read`
+- `vault.metadata.read`
+- `notifications.create`
+- `actions.register`
 
-Plugins may also publish namespaced events.
+Installation does not grant unrestricted data access.
 
-## Jobs
+## Data ownership / migrations
+- Plugin data structures namespaced;
+- cross-domain links use stable core ids;
+- core schema mutation only through approved mechanisms;
+- migrations versioned/recoverable;
+- failed migration yields diagnosable error state;
+- disable does not delete data;
+- imported/synced data retains provenance where relevant.
 
-Plugins register jobs with the central job runtime. They must not create unmanaged cron processes.
+## Events / Actions / Jobs
+Plugins subscribe/publish through shared Event runtime.
 
-Jobs declare:
-- schedule/event trigger
-- concurrency
-- timeout
-- retry policy
-- idempotency behavior
-- health/metrics
+Plugin writes/actions register through Action Registry with permission/risk/confirmation/approval semantics.
 
-## Notifications
+Jobs use central job runtime with trigger/schedule, concurrency, timeout, retry, idempotency and health—no unmanaged cron processes.
 
-Plugins may register notification event types, templates, default delivery policies, and preference controls. All actual delivery goes through the core Notification Platform.
+## Attention / Notifications
+Plugins may register namespaced Attention providers and Notification events/templates/default policies. Delivery remains core Notification Platform responsibility.
 
-## API and MCP
+## Search / Reports
+Plugin Search/Report contributions declare fields, sensitivity, permission, source/freshness and Core UI renderer. No unrestricted SQL.
 
-Plugins may register API resources/actions and MCP tools through core registries.
+## API / MCP / Àríyá
+Plugin API/MCP tools inherit core auth/scope/Audit and registered Actions. Àríyá can use plugin-provided tools/actions only through approved registries.
 
-Rules:
-- inherit core authentication and permission systems
-- declare scopes
-- use platform audit
-- never expose unrestricted storage/database access
-- dangerous actions may require confirmation or approval
+No unrestricted storage/database/provider credentials.
 
 ## Security
+Minimum:
+- declared permissions;
+- namespaced routes/data;
+- migration validation;
+- secret access only through approved Vault/Connector interfaces;
+- no secret logs;
+- dependency/compatibility checks;
+- enable/disable kill switch;
+- append-only Audit for consequential lifecycle/permission actions.
 
-Minimum controls:
-- declared permissions
-- namespaced routes and data
-- migration validation
-- secret access only through approved Vault/connector interfaces
-- no raw secret display in logs
-- dependency and compatibility checks
-- enable/disable kill switch
-- audit trail
+Full sandboxing may be deferred, but unrestricted access must never become the normalized extension contract.
 
-Full sandboxing is not required for v1, but the architecture must not normalize unrestricted access.
+## Health / diagnostics
+States: healthy, degraded, misconfigured, incompatible, migration_required, failed.
 
-## Health
+Health appears in Plugins/System Health and can produce Attention for persistent actionable failure.
 
-Each plugin can report:
-- healthy
-- degraded
-- misconfigured
-- incompatible
-- migration required
-- failed
-
-Health detail belongs in Plugins, System Health, and diagnostics.
-
-## Notifications and audit events
-
-Audit:
-- installed
-- enabled
-- disabled
-- configured
-- upgraded
-- rollback
-- permission changed
-- migration run
-- uninstall requested/completed
-
-Important failure states may create notifications for administrators.
-
-## PWA/mobile
-
-Plugin UI must support the same responsive and accessibility standards as core. Unsupported desktop-only plugin functionality must present an explicit mobile limitation rather than broken layout.
+## Responsive/PWA/accessibility
+Plugin surfaces meet the same responsive/PWA/WCAG/Core UI requirements as core. Desktop-only limitation, when truly unavoidable, is explicit—not broken layout.
 
 ## Acceptance criteria
-
-- plugin can be installed, configured, enabled, disabled, updated, rolled back, and removed through declared lifecycle
-- newly requested permissions are visible before activation
-- disabling plugin removes its UI/actions without corrupting core records
-- plugin data remains namespaced and recoverable
-- plugin failures are visible in health and logs
-- plugin notifications use core notification delivery
-- plugin APIs/MCP tools obey platform permissions and audit
-- portal contributions remain permission- and organisation-scoped
-
-## Lovable build slices
-
-1. Plugin registry records + Installed list UI
-2. Plugin detail/configuration/health UI
-3. lifecycle enable/disable and compatibility model
-4. named UI extension-slot registry
-5. event/job/notification contribution contracts
-6. migration/update/rollback model
-7. private-source/development installation support
+- lifecycle is controlled/recoverable;
+- newly requested permissions/actions/connectors visible before activation;
+- disabling removes contributions without corrupting core;
+- provider Plugins register Connectors without leaking provider assumptions into domains;
+- navigation remains simple;
+- Core UI coherence is enforced;
+- Plugin Attention/Notifications use core systems;
+- API/MCP/Àríyá obey scope and Audit;
+- no HR/Timesheet/service-consumption assumptions enter core through a Plugin.
