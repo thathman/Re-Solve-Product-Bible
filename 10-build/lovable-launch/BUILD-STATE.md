@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 CONDITIONAL (FIX2 REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 IMPLEMENTATION PASS / VISUAL ACCEPTANCE PENDING**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -75,34 +75,59 @@ Supervisor verified on application-repository `main`:
 C1 APIs are canonical and frozen for downstream use.
 
 ## FOUND-001C2 — Canonical form and control primitives
-**Status: CONDITIONAL — FIX2 REQUIRED BEFORE VISUAL ACCEPTANCE/C3**
+**Status: IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING**
 
-### Verified implementation now present after first correction
-- C2 Core forms exist under `src/components/core/forms/` and remain exported through `@/components/core`;
-- Input and Textarea consume a typed FormField context rather than generic `cloneElement` injection;
-- SelectTrigger consumes the same field context and receives control ID, described-by, invalid and required ARIA state;
-- most invented form-token vocabulary was normalized to accepted Re:Solve authority tokens and explicit focus variables;
-- Input/Textarea use mobile `text-base` with smaller typography only from the `md` breakpoint;
-- invalid/error text now uses `rs-status-danger-foreground`;
-- no new dependencies or lockfiles were added;
-- C2 remains Radix/native based with Untitled form composition as design reference only.
+### Verified implementation on application `main`
+- C2 components remain under `src/components/core/forms/` and are exported through `@/components/core`;
+- canonical set implemented: Input, Textarea, Checkbox, RadioGroup / RadioGroupItem, Switch, Select family, FormField and FieldGroup;
+- FormField uses typed context rather than cloneElement injection;
+- Input/Textarea consume field control ID, described-by, invalid, required and disabled semantics while still supporting standalone use;
+- FormField renders description and error together when both exist so every ID in `aria-describedby` maps to a real node;
+- FieldGroup preserves fieldset/legend semantics and likewise renders/associates description and error consistently;
+- Checkbox Root itself is 24×24 and supports checked/indeterminate/disabled states;
+- RadioGroupItem itself is 24×24;
+- Switch Root itself is 24px high with coherent thumb sizing/movement;
+- Input/Textarea and Select triggers keep 16px text on narrow/mobile viewports and reduce typography only from the larger breakpoint;
+- form controls use accepted Re:Solve token vocabulary and explicit accepted focus-variable contract;
+- invalid/error treatment uses `rs-status-danger-foreground`;
+- Select is now a Re:Solve wrapper around Radix Root and consumes FormField required/disabled context;
+- SelectTrigger consumes field ID, described-by, invalid, required and disabled semantics;
+- gallery includes selected Select, required placeholder/error Select, disabled trigger, disabled option and a long option label;
+- gallery Switch labels use stable IDs/htmlFor association and explicit disabled text styling;
+- gallery includes FieldGroup description + error evidence;
+- Untitled UI influence for C2 remains DESIGN REFERENCE ONLY; no false material-incorporation claim is added;
+- no new dependencies or lockfiles were introduced;
+- Lovable reports build/lint/type success with only existing Fast Refresh warnings.
 
-### Remaining supervisor findings after first C2 correction
-1. **FormField still references a missing description node when both description and error exist.** `descriptionId` is created whenever description exists and included in `describedBy`, but the description is rendered only under `description && !error`. Either render description and error together or compute `describedBy` only from nodes actually rendered.
-2. **FieldGroup has the same missing-node defect.** It includes `descriptionId` whenever description exists but suppresses the description node when error exists.
-3. **Checkbox touch-target fix is only visual-wrapper size.** A 24×24 non-interactive wrapper surrounds a Radix Root that remains 16×16. The actual interactive control must be at least 24×24; a smaller visible glyph may sit inside it. Remove the `as any` checked-state cast if a proper Radix checked-state type can be expressed directly.
-4. **RadioGroupItem has the same wrapper-only touch-target problem.** The Radix interactive item remains 16×16 inside a 24×24 non-interactive wrapper.
-5. **Switch has the same wrapper-only issue.** Its Radix Root remains 20px high inside a 24px wrapper. Make the Root itself at least 24px high and adjust thumb/translation coherently.
-6. **Gallery Switch labels are still not programmatically associated.** `Automatic Backups` and `Maintenance Mode` labels still have no `htmlFor`, and Switch instances have no matching IDs.
-7. **Gallery still contains stale `text-rs-text-tertiary`.** Remove it and use an accepted Re:Solve text token. The disabled checkbox label also still uses a `disabled:` variant on a `<label>`, which cannot reflect sibling disabled state; use explicit disabled text styling.
-8. **Promised Select gallery evidence is missing.** Current gallery lacks a placeholder-only example, disabled trigger, disabled option and genuinely long option label. Add exactly these evidence cases without turning the gallery into a business form.
-9. **Required Select native/form semantics remain incomplete.** `Select` is still a direct alias to `SelectPrimitive.Root`, so FormField `required`/`disabled` state reaches only the trigger. Wrap the Radix Root in a Core `Select` component that consumes FormField context and passes required/disabled to the Root while preserving the existing public API as much as possible.
-10. **FieldGroup error evidence is still absent.** Add one small gallery example proving the group description/error association after the missing-node fix.
+### Visual review gate
+The owner has temporarily exposed `/ui` for supervised visual review. Do not start C3 until C2 visual acceptance is complete.
 
-### Visual review status
-- Pre-fix screenshots confirmed the overall desktop/mobile composition is strong and should not be redesigned.
-- C2 visual acceptance is deferred until the remaining semantic/touch-target fixes above are committed.
-- After implementation passes, request only focused Fields & Controls screenshots in light desktop, dark desktop, and dark/narrow mobile plus an error/select/control close-up.
+Review only the updated Fields & Controls surface rather than re-reviewing the entire gallery. Required evidence:
+1. Fields & Controls — light desktop;
+2. Fields & Controls — dark desktop;
+3. Fields & Controls — dark/narrow mobile;
+4. one close-up with an invalid field, Checkbox/Radio/Switch, and an open Select menu showing selected/disabled/long-option behavior.
+
+Review for:
+- field hierarchy and readability;
+- error/helper contrast in light and dark;
+- read-only vs disabled distinction;
+- touch-control visual proportion after 24px target changes;
+- Switch alignment/label relationship;
+- Select trigger/content/selected/disabled/long-option behavior;
+- mobile 16px text behavior and absence of overflow;
+- no generic stock-shadcn visual regression.
+
+After visual PASS:
+1. mark C2 ACCEPTED/FROZEN;
+2. re-secure `/ui` before C3;
+3. begin the bounded C3 interaction/overlay intake.
+
+## shadcn ecosystem direction now canonical
+- `shadcn-vue` is approved as a visual/composition/block-pattern source only; Re:Solve remains React/TanStack and must use React shadcn equivalents where available rather than Vue runtime code.
+- approved future intake includes core interaction primitives, advanced controls, conversation/Àríyá primitives, questionnaire/review-style composition and QR presentation patterns subject to exact source verification.
+- two-column form + cover-image auth blocks are the preferred composition reference for desktop login/signup/recovery/OTP/step-up surfaces with a deliberate single-column mobile transformation.
+- shadcn dashboard blocks are approved composition references but do not override Re:Solve dashboard, Attention Engine, TanStack DataTable, Tremor/Recharts or navigation architecture.
 
 ## Current architecture facts
 - framework/build tool: TanStack Start v1 + Vite;
@@ -124,9 +149,10 @@ C1 APIs are canonical and frozen for downstream use.
 
 ## UI-source incorporation state
 - shadcn/ui: incorporated/source-owned starter foundation.
+- shadcn-vue: approved pattern/block reference only; never a runtime dependency.
 - Radix: incorporated beneath current shadcn and Core components.
 - Lucide: incorporated as primary icon family.
-- Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only unless later code proves a specific material adaptation.
+- Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only.
 - Tremor Raw: material Metric incorporation accepted in C1.
 
 ## Current Core UI inventory
@@ -142,7 +168,7 @@ Accepted/frozen C1:
 - Metric
 - MetricDelta
 
-C2 exists but is not canonical/frozen yet:
+C2 implementation passed but awaits visual acceptance before freezing:
 - Input
 - Textarea
 - Checkbox
@@ -159,13 +185,11 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- C2 described-by node consistency still needs correction;
-- actual interactive touch targets for Checkbox/Radio/Switch remain undersized;
-- Select Root required/disabled propagation and gallery evidence remain incomplete;
-- gallery contains one stale non-canonical token and unassociated Switch labels;
+- C2 requires focused visual acceptance and `/ui` re-securing before C3;
 - overlay/menu/dialog primitives are not yet canonical;
-- application states and broader composites remain future C substeps;
+- questionnaire/review and QR patterns are approved future source candidates but exact React/source implementations have not yet been selected;
+- auth, application states and broader composites remain future FOUND-001 substeps by design;
 - shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
 
 ## Next action
-Execute supervisor-provided `FOUND-001C2-FIX2` only. Re-review repository afterward. If implementation passes, perform focused C2 visual acceptance while `/ui` is temporarily exposed, then re-secure `/ui` before starting C3.
+Perform focused C2 visual review from the temporarily exposed `/ui` surface. Do not begin C3 until visual PASS and `/ui` re-secure closure.
