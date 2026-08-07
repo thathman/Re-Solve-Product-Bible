@@ -1,61 +1,188 @@
 # Client Portal — Properties
 
 ## Purpose
-Give client users a clear, role-appropriate view of every property Re:Solve manages for their organisation without exposing staff-only operational complexity.
+Give client Users a clear, safe view of permitted managed Properties, current **Property Posture**, work/Support context and Renewal actions without exposing internal monitoring/provider complexity.
 
 ## Primary flows
-1. Browse permitted properties.
-2. Understand current property health and service status.
-3. Open a property workspace.
-4. Review related projects, support context, files, renewals, monitoring summaries, maintenance and approved Vault items.
-5. Take required client actions.
+1. Browse/search permitted Properties.
+2. Understand current client-safe Posture and what is being managed.
+3. Open a Property workspace.
+4. Review Projects, Requests, Support, Services, Files/Knowledge, Monitoring summary, Incidents/Maintenance and Renewals.
+5. Complete an Approval/Request/File/renewal action where authorized.
+6. Access explicitly shared Vault Items separately when granted.
 
 ## Property list
-Each card/row may show: name, type, parent, status, health, current service, active project count, open client actions, next renewal, recent incident, and last update. Users only see properties permitted by organisation membership and property grants.
+Each row/card may show:
+- name/type;
+- parent/hierarchy context;
+- lifecycle status;
+- client-safe Posture;
+- current Service;
+- active Project/Request indicator;
+- client action count;
+- next Renewal;
+- active Incident/Maintenance;
+- last updated/freshness where material.
 
-Filters: type, status, health, service, parent property, requires action. Search matches name, domain, code and aliases.
+Filters:
+- type;
+- lifecycle status;
+- Posture;
+- Service;
+- parent;
+- requires my action;
+- Renewal window.
+
+Search name, domain, human reference and permitted aliases.
+
+Users see only Properties allowed by Membership + Property grants. Hidden descendants cannot leak through counts/search.
 
 ## Property workspace
-Tabs/sections:
+Recommended sections:
 - Overview
-- Projects
+- Projects / Requests
 - Support
 - Services
-- Files
-- Monitoring
+- Files / Knowledge
+- Status & Monitoring
 - Renewals
-- Vault
+- Vault when authorized
 - Activity
 
-Overview prioritizes: current status, what is being managed, what requires client attention, recent changes, active work, known incidents, next maintenance and renewals.
+Keep client navigation simple; sections may combine when content is light.
+
+## Overview
+Prioritize:
+- what the Property is;
+- lifecycle status;
+- client-safe Property Posture and explanation;
+- current client Attention/actions;
+- active Project/Request;
+- Service/support coverage;
+- active Incident/Maintenance;
+- next Renewal;
+- recent meaningful update.
+
+## Property Posture
+Portal presents a simplified state such as:
+- Healthy
+- Attention needed
+- Degraded
+- Maintenance
+- Unknown / awaiting fresh status
+
+Reasons may include `Website responding slowly`, `Domain renewal due`, `Backup status needs attention`, `Active incident`, etc.
+
+Do **not** expose internal topology, private endpoints, credentials, raw monitor errors, Connector logs or irrelevant provider implementation.
+
+### Source/freshness
+Show `Last updated` and safe source context when it matters, especially when status is stale/unknown.
+
+A Cloudflare/Uptime Kuma/other Connector failure should appear as `Status data unavailable/stale` when appropriate—not falsely as `Property down`.
+
+## Native Monitoring summary
+Client-safe summary may include:
+- availability/uptime trend where policy allows;
+- current response state;
+- recent confirmed Incident;
+- certificate/domain expiry;
+- backup/heartbeat freshness where client-relevant;
+- Maintenance.
+
+Raw samples/technical diagnostics stay staff-only.
+
+## Incidents / Maintenance
+Client can see permitted:
+- status/severity language;
+- affected Property;
+- detected/update/resolved times;
+- client-safe updates;
+- planned Maintenance window;
+- recovery state.
+
+Incident internal root-cause work/technical notes are staff-only until deliberately published.
+
+## Renewals
+Show first-class Renewal/Expiry Obligations such as Domain, Hosting, Certificate, Service/Contract where related.
+
+Client-safe fields/actions:
+- item;
+- expiry/renewal date;
+- state;
+- auto-renew status if relevant and safe;
+- whether client decision/payment is required;
+- next action;
+- related Invoice/Proposal/Contract where authorized;
+- completion/verification state.
+
+Do not show a bare red expiry badge without workflow/context.
+
+## Requests
+Property workspace can provide `New Request`/existing Requests for changes, access, maintenance or service asks. Request triage remains separate from Chatwoot Support and Projects.
 
 ## Support
-Do not recreate Chatwoot. Surface selected support state and provide a clear action to open/start support through the configured Chatwoot experience.
+Show Support Entitlement, active Incident/safe references and clear `Open/Start Support` action through Chatwoot. Do not recreate Chatwoot conversation UI.
 
-## Monitoring
-Expose client-safe summaries only: uptime, recent incidents, certificate/domain expiry, backups and maintenance where relevant. Hide internal diagnostics, credentials, provider internals and noisy raw checks.
+## Services
+Show client-visible Service name, scope summary, covered Property, status and renewal. No hours/credits consumed or Client Service Consumption.
+
+## Files / Knowledge
+Ordinary shared Files and client-visible Knowledge follow their own permission models.
+
+Protected confidential documents/items belong in Vault and must not appear as a parallel ordinary File download.
 
 ## Vault
-Only items explicitly shared with the client and permitted to the current user are visible. Reveals/downloads remain audited and may require step-up authentication.
+Only explicitly granted Items/actions appear. Reveal/download may require step-up and are audited. No offline cache.
 
-## States
-Support loading, empty organisation, no permitted properties, healthy, degraded, incident, maintenance, archived, partially configured connector data, offline/PWA stale-cache state, permission denied and connector unavailable.
+## Activity
+Client-safe meaningful chronology only. Internal Notes/Audit/provider logs remain hidden.
 
-## Notifications
-Property-related notifications deep-link into the relevant property and section. Urgent outage/expiry events may also use push/email/WhatsApp according to policy.
+## Attention / Notifications
+Property client Attention may include:
+- Renewal decision/payment;
+- requested File/access;
+- Approval;
+- active Incident requiring awareness/action;
+- maintenance acknowledgement where configured.
+
+Notifications deliver awareness/deep links; reading one does not resolve the source Attention.
+
+## Àríyá
+Optional Portal Àríyá may answer `Why is this Property marked Attention?` or `When does my domain renew?` using client-safe evidence/freshness.
+
+It cannot expose staff-only diagnostics/Vault/provider credentials.
 
 ## API / MCP
-API exposes only caller-authorized client-safe property representations. MCP read tools may include list_my_properties, get_my_property, get_property_status, get_property_upcoming_renewals. No hidden monitoring details or Vault data through generic tools.
+Client APIs/tools expose authorized safe projections:
+- list_my_properties
+- get_my_property
+- get_property_posture
+- get_property_upcoming_renewals
+- list_property_incidents
+- list_property_requests
+
+No generic hidden monitor/Vault details.
 
 ## Mobile/PWA
-Property cards become the primary mobile representation. Critical status/action information remains visible without horizontal scrolling. Selected summaries may be cached read-only for offline access.
+Cards/stacked rows are primary mobile representation. Status/action remains visible without horizontal scrolling. Safe summaries may cache read-only with last-refresh state; payments, Approvals, Vault and high-impact actions require connectivity according to policy.
 
-## Extension points
-Plugins may add approved property tabs/cards/actions. Connectors may contribute typed health summaries and external references but may not bypass visibility rules.
+## Plugins / Connectors
+Plugins may add portal-safe Core UI tabs/cards/actions in approved slots. Connectors contribute normalized evidence/references, not raw provider consoles.
+
+## Acceptance criteria
+- only permitted Properties/descendants appear;
+- Posture is understandable/client-safe/explainable;
+- stale source differs from confirmed outage;
+- Renewal is actionable workflow;
+- Chatwoot remains Support engine;
+- Vault/ordinary Files remain separate;
+- mobile is excellent;
+- no Timesheet/HR/Client Service Consumption concept appears.
 
 ## Lovable build slices
-1. Property list + responsive cards/filtering with demo data.
-2. Property workspace overview.
-3. Projects/support/services tabs.
-4. Monitoring/renewals/files/activity.
-5. Vault and permission-sensitive states.
+1. Property list + responsive cards/Saved filters.
+2. workspace Overview + Posture demo.
+3. Projects/Requests/Support/Services.
+4. Monitoring/Incidents/Maintenance/Renewals.
+5. Files/Knowledge/Activity.
+6. Vault + permission/stale/offline states.
