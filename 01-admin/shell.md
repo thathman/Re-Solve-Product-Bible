@@ -1,353 +1,256 @@
 # Admin OS Shell
 
-## 1. Purpose
+## Purpose
+The Admin OS shell is the staff-facing operational frame for Re:Solve. It must make a large operating system feel simple.
 
-The Admin OS shell is the staff-facing operational frame for Re:Solve. It must support high-frequency work across clients, properties, projects, finance, support, automations, AI, plugins, connectors, and system administration without becoming a permanently expanded navigation tree.
+The shell is a first-class product feature. Sidebar, top bar, avatar/account, notifications, search/command, Quick Create and Àríyá must be production-quality Core UI components before broad business modules are built.
 
-## 2. Primary users
+## Navigation philosophy
+Navigation is organized by obvious business intent, not implementation modules.
 
-- workspace owner;
-- administrator;
-- operations staff;
-- client success/account staff;
-- project/delivery staff;
-- finance staff;
-- technical staff;
-- support staff where Re:Solve context is needed around Chatwoot;
-- restricted specialist roles.
+The preferred mental model is a clear persistent service-CRM navigation similar in legibility to Perfex/Brevo: users can see the major business areas and predict where work belongs.
 
-## 3. Core shell responsibilities
+Do not use:
+- Odoo-style app-launcher/module-grid navigation;
+- Twenty-style object/app switching as the ordinary navigation model;
+- deeply nested expanding trees;
+- icon-only root navigation;
+- every possible sub-route permanently visible.
 
-The shell owns:
+## Recommended desktop primary navigation
 
-- global navigation;
-- global search/command palette;
-- quick create;
-- notifications;
-- user/workspace context;
-- breadcrumbs/context path;
-- responsive navigation;
-- persistent system banners;
-- offline/reconnecting state;
-- update available state;
-- permission-aware route exposure;
-- plugin navigation slots.
+```text
+Home
+  Dashboard
+  My Work
 
-## 4. Desktop structure
+Clients
+CRM
+Properties
+Projects
+Sales
+Billing
+Support
 
-Recommended anatomy:
+Operations
+  Monitoring
+  Renewals
+  Requests
+  Knowledge
+  Files
+  Vault
+  Automations
+  Reports
 
-- left navigation rail/sidebar;
-- top utility bar;
-- contextual page header inside content area;
-- main work canvas;
-- optional right-side contextual drawer for transient detail.
+Platform
+  Connectors
+  Plugins
+  Audit
+  Settings
+```
 
-The shell should support a compact/collapsed navigation state for power users.
+This is a clarity contract, not a requirement that every label be hard-coded forever. New features should usually become views/tabs inside these areas instead of new root destinations.
 
-## 5. Navigation philosophy
+Examples:
+- Billing contains Invoices, Payments, Receipts, Credit Notes, recurring billing and account statements.
+- Properties contains All Properties, Health/Posture, Renewals and Maintenance, with property type filters/views.
+- Sales contains Opportunities, Pipeline, Services, Proposals, Estimates/Quotes, Contracts and Document Studio entry points.
 
-Navigation should be organized by user intent, not implementation module names.
+## Desktop anatomy
+- strong left sidebar;
+- strong top utility bar;
+- compact page/record header inside content;
+- primary work canvas;
+- optional contextual drawer/panel for bounded secondary work.
 
-Primary groups:
+## Sidebar contract
+AdminSidebar must support:
+- Re:Solve/product identity;
+- clear section grouping;
+- obvious active route and active area;
+- text labels by default;
+- compact/collapsed power-user mode;
+- tooltips and retained discoverability when collapsed;
+- meaningful counts only when actionable;
+- permission-aware visibility;
+- plugin entries only in approved slots;
+- long-label handling;
+- keyboard navigation;
+- stable scroll behavior;
+- responsive conversion to mobile navigation.
 
-### Home
-- Dashboard
-- My Work
+Collapsed mode is an enhancement for experienced users, not a substitute for understandable labels.
 
-### Relationships
-- Clients
-- Contacts
-- CRM / Sales pipeline
+## Top bar contract
+TopBar should provide, where applicable:
+- compact current context/breadcrumb;
+- global search/CommandPalette trigger;
+- Quick Create;
+- Àríyá trigger;
+- NotificationTrigger;
+- degraded/offline/update indicator only when relevant;
+- ResolveAvatar/AccountMenu;
+- Operating Entity/context switch only when the deployment actually needs one.
 
-### Delivery
-- Properties
-- Projects
-- Services
-- Support
+Avoid feature-specific shortcut clutter.
 
-### Commercial
-- Sales
-- Billing
+## Global search / Command Palette
+Accessible globally through visible UI and keyboard shortcut.
 
-### Operations
-- Knowledge
-- Vault
-- Monitoring
-- Files
-- Automations
-- Reports
-
-### Platform
-- Plugins
-- Connectors
-- Audit
-- Settings
-
-Exact group labels may evolve after flow prototyping, but the information architecture should avoid surfacing every child route in the root sidebar.
-
-## 6. Navigation behavior
-
-- current section clearly highlighted;
-- children appear only when relevant or expanded;
-- counts only when actionable or meaningful;
-- permission-hidden destinations should not appear;
-- disabled/configuration-required areas may appear with clear setup state when the user has permission to configure them;
-- plugins may add entries only into approved extension slots;
-- recent/favorite destinations may appear in command palette rather than permanently bloating navigation.
-
-## 7. Top utility bar
-
-Must provide:
-
-- global search / command palette entry;
-- quick create;
-- notifications;
-- system state indicator when degraded/offline;
-- user menu;
-- optional workspace switcher if multi-workspace operation is later enabled.
-
-Avoid filling the top bar with feature-specific shortcuts.
-
-## 8. Global search and command palette
-
-Keyboard shortcut should open a unified surface supporting:
-
-- navigate to section;
+Capabilities:
+- navigate to major area;
 - search records;
-- quick create;
-- open recent record;
-- run permitted common action;
-- access AI assistant;
-- open notification;
-- plugin-provided commands.
+- open recent/favorite record;
+- Quick Create;
+- run permitted Action Registry commands;
+- open Àríyá;
+- plugin-provided approved commands.
 
-Search result display should show:
+Results identify record type, parent Organisation/Property context, status and secondary reference where useful.
 
-- record name/title;
-- record type;
-- organisation/property context;
-- status where helpful;
-- secondary identifier;
-- match explanation when useful.
+## Quick Create
+Quick Create is permission/context aware and contains only useful common creates rather than every record type.
 
-## 9. Quick Create
+Potential actions:
+- Organisation/Client
+- Contact
+- Lead/Opportunity
+- Property
+- Project/Task
+- Request
+- Proposal/Estimate
+- Invoice
+- reminder/note
+- Vault Item where authorized
 
-Quick Create should be permission aware and context aware.
+Recent/frequent actions may rank higher.
 
-Potential objects:
+## Notification chrome
+NotificationTrigger must communicate unread/urgent state without badge noise.
 
-- organisation/client;
-- contact;
-- lead/opportunity;
-- property;
-- project;
-- task;
-- service;
-- proposal/estimate;
-- invoice;
-- note/activity;
-- vault item;
-- automation.
+NotificationTray supports:
+- compact All/Unread/action distinction;
+- grouped items;
+- priority cues;
+- context;
+- primary deep-link/action;
+- mark read/unread;
+- snooze/archive when relevant;
+- link to full Notification Center;
+- preferences shortcut.
 
-The menu should rank recently/frequently used actions instead of showing all objects equally.
+## Avatar and AccountMenu
+ResolveAvatar should be visually strong and clearly interactive.
 
-## 10. Page header contract
-
-Every major page should supply the shell with:
-
-- page/record title;
-- optional eyebrow/breadcrumb;
-- optional status;
-- optional summary metadata;
-- primary action;
-- secondary actions;
-- optional view controls;
-- optional saved view/filter state.
-
-Page headers should remain compact enough for operational use.
-
-## 11. Context drawers
-
-Use a right-side drawer for bounded secondary work such as:
-
-- quick record preview;
-- edit small metadata set;
-- task detail;
-- activity detail;
-- notification detail;
-- connector event detail;
-- audit entry detail.
-
-Deep record work should open the full record workspace.
-
-## 12. Persistent banners
-
-The shell may show persistent banners for:
-
-- offline/reconnecting;
-- system degraded;
-- connector outage affecting active workflow;
-- maintenance mode;
-- update available;
-- trial/license state if such a product mode exists later;
-- security action required.
-
-Banners must be targeted and dismissible only when appropriate.
-
-## 13. User menu
-
-Include:
-
+AccountMenu includes:
+- avatar/name;
+- current role/context summary;
 - profile;
-- personal notification preferences;
-- appearance/preferences;
-- devices/sessions shortcut;
-- keyboard shortcuts;
-- help/documentation;
+- preferences;
+- notification preferences;
+- security/devices/sessions;
+- appearance;
+- keyboard shortcuts/help;
+- Portal/Admin switch where authorized;
+- workspace/settings shortcut where authorized;
 - sign out.
 
-Administrative settings should not be mixed into the personal menu except as a clear `Workspace settings` shortcut for authorized users.
+Do not ship a minimal avatar dropdown with only profile/logout.
 
-## 14. Mobile Admin shell
+## Àríyá integration
+Àríyá has a stable global TopBar/Command entry and contextual entry in records.
 
-The mobile shell must support meaningful staff work, but should not imitate desktop density.
+It must not dominate the shell or use a generic floating bubble. AriyaPanel follows `04-ai/ariya-experience.md` and the Core UI Framework.
+
+## Page header contract
+Major pages provide:
+- page/record title;
+- optional eyebrow/breadcrumb;
+- optional status/reference;
+- concise key metadata;
+- primary action;
+- secondary/overflow actions;
+- view/filter controls when relevant.
+
+Keep headers operationally compact.
+
+## Area subnavigation
+After entering a major area, use tabs/views rather than root-nav expansion.
+
+Example Billing:
+`Overview | Invoices | Payments | Receipts | Credit Notes | Recurring`
+
+Example Properties:
+`Overview | All Properties | Health | Renewals | Maintenance`
+
+## Context drawers
+Use right-side drawers for bounded secondary work such as quick preview, small edit, task detail, notification detail, connector event and audit detail. Deep record work opens the full workspace.
+
+## Persistent application state
+The shell may show targeted persistent state for:
+- offline/reconnecting;
+- system degradation;
+- connector problem materially affecting the current flow;
+- maintenance mode;
+- update ready;
+- security action required.
+
+Shell remains usable when an individual feature fails.
+
+## Mobile Admin
+Do not shrink the desktop sidebar.
 
 Requirements:
+- deliberate mobile destination menu/sheet;
+- compact top bar;
+- persistent search, notifications and Account access;
+- Àríyá reachable without obstructing content;
+- Quick Create reachable;
+- condensed informative record headers;
+- filters/secondary controls in sheets;
+- no hover dependency;
+- safe-area support in installed PWA.
 
-- mobile navigation drawer or compact destination switcher;
-- persistent search access;
-- notification access;
-- quick create access;
-- no hover dependencies;
-- action menus reachable by touch;
-- table/list transformations;
-- record headers condensed but informative;
-- sheets used for filters and secondary controls;
-- safe-area support in PWA mode.
+## Tablet
+Tablet is a first-class operational target and should support a compact/collapsed nav with near-desktop record workflows where space permits.
 
-## 15. Tablet Admin shell
+## Keyboard
+Document/support shortcuts for command/search, Quick Create, notifications, overlay close and selected safe navigation/actions. Keyboard shortcuts must not conflict unnecessarily with browser conventions.
 
-Tablet should support a collapsed sidebar and near-desktop record workspaces. It is a first-class operational target, especially for client meetings and field/technical work.
+## Permissions
+Shell visibility mirrors authorization but is never the security boundary. Deep links and Action Registry executions perform server-side authorization.
 
-## 16. Keyboard behavior
-
-The shell should eventually document and support shortcuts for:
-
-- command palette;
-- quick create;
-- notifications;
-- next/previous list item where safe;
-- close drawer/modal;
-- save form when appropriate;
-- go-to navigation shortcuts if they do not conflict with browser conventions.
-
-A keyboard shortcut reference should be available in-product.
-
-## 17. Permissions
-
-The shell itself must not be the security boundary. Route/menu visibility mirrors server-side permissions.
-
-Navigation rules:
-
-- hide destinations user cannot access;
-- distinguish `cannot access` from `not configured`;
-- direct deep-link access must still enforce permission;
-- plugin routes inherit the same permission contract.
-
-## 18. Notifications integration
-
-The shell must expose:
-
-- unread count;
-- urgent/critical distinction without excessive badge noise;
-- notification drawer/preview;
-- link to full notification center;
-- mark read/unread;
-- notification preferences shortcut.
-
-## 19. AI integration
-
-Re:Solve AI may have a global entry point, but must not dominate the shell.
-
-Possible entry patterns:
-
-- command palette action;
-- dedicated assistant button;
-- contextual AI actions inside records.
-
-AI access is permission and feature-policy controlled.
-
-## 20. PWA states
-
-The shell must expose:
-
-- offline indicator;
-- queued action count when offline-safe actions exist;
-- reconnecting;
-- sync restored;
-- app update ready;
-- install prompt only when appropriate;
-- push permission education without nagging.
-
-## 21. Plugin extension points
-
+## Plugins
 Approved shell extension points:
+- designated navigation area entry;
+- command action;
+- Quick Create item;
+- globally relevant status indicator only under strict policy.
 
-- navigation section entry;
-- command palette action;
-- quick create item;
-- page-level status indicator if globally relevant.
+Plugins cannot inject arbitrary TopBar controls or create their own root navigation system.
 
-Plugins must not arbitrarily inject controls into the top bar.
+## Component Gallery
+All foundational shell components appear in the development Component Gallery with normal/focus/active/collapsed/mobile/long-label/unread/degraded variants.
 
-## 22. Loading and failure
+## Acceptance criteria
+- a new staff user can predict where major work lives;
+- root navigation stays compact as the OS expands;
+- Sidebar, TopBar, avatar/account, notifications, search and Àríyá are visually strong;
+- staff can reach permitted major areas without an app launcher;
+- mobile/tablet are deliberately designed;
+- shell survives page-level failures;
+- plugin growth cannot destroy navigation simplicity;
+- deep links remain permission enforced.
 
-The shell should render independently of most page data so navigation remains usable during feature failures.
+## Initial Lovable build slices
+### Slice A — production-quality shell foundation
+Sidebar, TopBar, avatar/account, search/command entry, Quick Create, Notification entry, Àríyá entry, responsive behavior and placeholder routes. No business module implementation.
 
-If a page/module fails:
+### Slice B — command/search behavior
+Navigation commands and realistic read-only demo records.
 
-- shell remains stable;
-- page shows bounded failure;
-- retry is available;
-- global degradation appears only if impact is broader than one page.
+### Slice C — notification tray behavior
+Unread/group/deep-link/personal preference entry using demo notifications.
 
-## 23. Acceptance criteria
-
-The Admin shell is acceptable when:
-
-- staff can reach any permitted major area without navigation overload;
-- global search/command works from every admin screen;
-- quick create is context/permission aware;
-- notifications are reachable from every admin screen;
-- mobile and tablet navigation are usable without desktop assumptions;
-- deep links enforce permissions;
-- offline/degraded states are visible;
-- plugin navigation can be added through a controlled extension point;
-- the shell feels operational rather than template-driven.
-
-## 24. Initial Lovable build slices
-
-### Slice A — visual shell only
-- navigation frame;
-- topbar;
-- responsive collapse;
-- placeholder routes;
-- no real feature data.
-
-### Slice B — command/search shell
-- open/close interaction;
-- navigation commands;
-- realistic demo records;
-- no write actions yet.
-
-### Slice C — notifications entry
-- unread indicator;
-- drawer preview;
-- link to full notification page.
-
-### Slice D — mobile/PWA shell pass
-- phone/tablet layouts;
-- safe areas;
-- offline/update banners;
-- touch interaction review.
+### Slice D — mobile/PWA polish
+Phone/tablet navigation, safe areas, offline/update state and touch review.
