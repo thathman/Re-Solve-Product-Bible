@@ -1,6 +1,6 @@
 ---
 name: resolve-form
-description: Build Re:Solve create/edit/configuration/intake forms using canonical fields, validation, permissions, Core UI form components, and responsive/accessibility rules.
+description: Use when building or refining a Re:Solve create, edit, intake, configuration, settings, onboarding, request, or other form that needs canonical fields, validation, permissions, responsive behavior, and accessible error handling.
 ---
 
 # Re:Solve Form
