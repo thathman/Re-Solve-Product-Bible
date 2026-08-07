@@ -1,66 +1,245 @@
 # Admin — Reports & Analytics
 
 ## Purpose
-Turn Re:Solve operational data into trustworthy, permission-aware reporting without forcing every module to invent its own analytics model.
+Turn Re:Solve operational/commercial data into trustworthy permission-aware reporting without every domain inventing incompatible metrics.
 
 ## Navigation
-Reports
+Within Reports:
 - Executive
 - Clients
 - Sales
 - Projects
 - Finance
 - Support
-- Properties
-- Team & Workload
-- Automations
-- AI Usage
-- Custom/Saved Reports
+- Properties & Renewals
+- Requests / Lifecycle
+- Automations / Platform
+- Àríyá / AI Usage
+- Data Quality
+- Custom / Saved Reports
+
+There is no Team & Workload, HR, Timesheet or employee-utilization reporting area.
 
 ## Principles
-- every metric has a defined source and formula
-- live operational counters are distinguished from period reporting
-- connector-derived metrics show source/freshness
-- role and organisation/property permissions apply to report rows and aggregates
-- charts exist only when they improve comprehension
-- every visual has a table/detail path where practical
+- every metric has a defined source/formula/period;
+- authoritative versus derived/synced metrics are identifiable;
+- connector data shows source/freshness;
+- permissions apply to rows **and aggregates**;
+- live operational counters are distinguished from historical period reporting;
+- charts answer a real question and have accessible detail/table paths;
+- Tremor strongly influences metrics/visualization composition while Re:Solve Core UI remains authoritative;
+- no dashboard/report should invent a metric that cannot be explained.
 
-## Executive report
-Potential sections: client portfolio health, active work, delivery risk, receivables, recurring services, support pressure, property incidents, renewals, staff capacity and material changes over the selected period.
+## Metric definition contract
+A reusable metric/report definition should declare:
+- stable id/name;
+- purpose/question answered;
+- source records;
+- filters/date semantics;
+- formula/aggregation;
+- currency/units;
+- freshness expectation;
+- authority/provenance;
+- required permissions;
+- client-safe availability;
+- drill-down path;
+- null/unknown behavior.
 
-## Client analytics
-Client health distribution, revenue/service mix, active projects, support load, overdue client actions, upcoming renewals, relationship inactivity, risk flags and portfolio trends.
+Do not render `0` when the truth is unavailable/stale.
+
+## Executive
+Potential sections:
+- client portfolio Health/Attention;
+- onboarding/offboarding status;
+- active Project/delivery risk;
+- Sales Pipeline/forecast;
+- receivables/collections;
+- recurring Billing/renewal exposure;
+- Property Posture/Incidents;
+- Renewal Desk exposure;
+- Support escalations;
+- major operational/platform changes.
+
+No staff capacity/utilization/Timesheet metrics.
+
+## Clients / Client Success
+- Client Health distribution with explainable drivers;
+- onboarding status/blockers;
+- relationship reviews due/completed;
+- active Services/Projects;
+- Property Posture exposure;
+- overdue receivables;
+- renewals;
+- Support/Incident pressure;
+- relationship inactivity/follow-up;
+- expansion/Renewal Opportunity trends.
 
 ## Sales
-Pipeline value, conversion, win/loss, source, cycle duration, forecast, proposal/estimate outcomes, service mix and salesperson/team performance where relevant.
+- Pipeline value by stage/period;
+- qualified volume;
+- conversion/win-loss;
+- lead/source;
+- cycle duration;
+- weighted forecast/target comparison;
+- Proposal/Estimate acceptance/expiry;
+- Contract execution;
+- Service mix;
+- renewal/expansion pipeline;
+- activity/cadence outcome where meaningful.
+
+Reporting by owner/team is acceptable operationally, but Re:Solve does not provide employee performance-review scoring.
 
 ## Projects
-On-time delivery, milestone performance, cycle time, client-action delay, change requests, risk/issues, utilisation/time where enabled, outcome completion and project health trends.
+- active/completed/at-risk;
+- milestone performance;
+- cycle duration;
+- Client Action delay;
+- Deliverable approval duration;
+- Change Request frequency/value;
+- Requests converted to Project work;
+- Risks/Issues;
+- project health trends;
+- approved Expenses/commercial value where permitted.
+
+Explicitly exclude Timesheets, hours logged and utilization.
 
 ## Finance
-Invoiced, collected, outstanding, overdue aging, payment method/provider, recurring revenue, credits/refunds, expenses and reconciliation exceptions. Accounting-specific reports belong to an accounting plugin if full accounting is enabled.
+- invoiced/issued;
+- collected;
+- outstanding;
+- overdue aging;
+- payment-provider/method summary;
+- unmatched/reconciliation exceptions;
+- recurring Billing;
+- deposits/payment schedules;
+- Credit Notes/Refunds;
+- approved operational Spend;
+- client concentration;
+- Account Statement/balance reporting;
+- credit-control exposure.
+
+Statutory accounting reports remain optional Accounting Plugin territory.
 
 ## Support
-Use normalized Chatwoot/support connector metrics plus Re:Solve business context: conversation volume, response/resolution trends, support by client/property/service, escalations, incidents and entitlement consumption. Do not recreate Chatwoot's agent-console reporting unnecessarily.
+Use Chatwoot/SupportConnector normalized metrics plus Re:Solve context:
+- safe conversation volume/trends;
+- escalation/SLA risk;
+- Support by Organisation/Property/Service;
+- Incidents;
+- entitlement/plan distribution;
+- repeated support patterns.
 
-## Properties
-Health distribution, uptime summaries, incidents, expiry risk, backup freshness, maintenance, recurring issues and service coverage.
+Do not report employee agent productivity or recreate Chatwoot's native agent-console analytics unnecessarily.
+
+Do not include Client Service Consumption hours/credits.
+
+## Properties & Renewals
+- Posture distribution;
+- native Monitoring availability/latency summaries;
+- Incidents/recovery;
+- Domains/Hosting/SSL Renewal exposure;
+- auto-renew unknown/off;
+- backup/heartbeat freshness;
+- Maintenance;
+- recurring Posture causes;
+- connector/source freshness;
+- client decision/payment blockers;
+- renewal completion/verification.
+
+Cloudflare/Uptime Kuma/provider-derived metrics identify source.
+
+## Requests / Client Lifecycle
+- Requests by type/source/state;
+- triage/clarification/completion duration;
+- conversion outcomes;
+- onboarding completion/blockers;
+- offboarding/open access-review state;
+- account-review cadence.
+
+## Documents / Commercial performance
+May appear in Sales/Executive or custom reports:
+- Proposals sent/accepted/declined/expired;
+- Estimate outcomes;
+- Contracts awaiting/executed;
+- document delivery/render failures;
+- Secure External Access completion.
+
+## Feedback / Goals
+Where enabled:
+- survey response/score distributions;
+- project/service feedback trends;
+- business goal progress;
+- forecast versus goal.
+
+Chatwoot remains owner of its support CSAT source.
+
+## Automations / Platform
+Authorized views may include:
+- Automation success/failure;
+- retry/dead-letter trends;
+- Connector health/freshness;
+- Monitoring Worker health;
+- notification delivery failures;
+- Plugin health;
+- API/MCP usage/limits.
+
+## Àríyá / AI usage
+Authorized administration only:
+- usage/cost by period/model/feature;
+- provider/fallback failures;
+- tool/action invocation;
+- confirmation/denial rate where useful;
+- user feedback;
+- budget state.
+
+Do not expose sensitive prompt bodies simply for analytics.
+
+## Data Quality
+- duplicate candidates;
+- missing required data;
+- stale Contacts;
+- broken Connector Mappings;
+- stale syncs;
+- missing Renewal ownership;
+- orphan/invalid relationships;
+- resolution trend.
 
 ## Saved reports
-Users can save filters/date ranges/groupings/columns where permitted. Sharing a saved report never grants data permissions the recipient lacks.
+Save permitted filters, date ranges, groupings, columns and visualization choice. Visibility can be private/team/workspace. Sharing never grants underlying data access.
 
-## Export
-CSV/XLSX/PDF where justified; large exports become background jobs with notification on completion. Sensitive exports are audited and expire when delivered as files.
+## Custom report framework
+A later controlled report builder may choose approved datasets, fields, aggregations and visualization types. It must not become unrestricted SQL.
 
-## API / MCP
-Report APIs expose defined metric endpoints and permission-filtered datasets. MCP may answer analytical questions using approved report tools rather than unrestricted database queries.
+Plugin-provided datasets/metrics declare permissions and provenance.
+
+## Export / scheduled delivery
+CSV/XLSX/PDF where useful. Large exports are background jobs with expiry/revocation and Audit for sensitive exports.
+
+Document Studio may render formal branded reports/statements.
+
+Scheduled report delivery uses Notifications/Communications and evaluates permissions at generation time.
+
+## API / MCP / Àríyá
+Report APIs expose defined metric/dataset contracts.
+MCP uses approved analytical tools rather than arbitrary database query.
+Àríyá may explain/trend/summarize authorized report data with source/formula/freshness visible.
 
 ## PWA/mobile
-Key summaries and drill-down lists work on mobile; large custom report building may be desktop-optimized while remaining readable on tablet.
+Key summaries and drill-down lists are excellent on mobile. Complex custom-report authoring may optimize for large screens while output remains readable.
+
+## Acceptance criteria
+- metrics have explicit source/formula/freshness;
+- inaccessible data does not leak through aggregates;
+- stale/unavailable is distinct from zero;
+- charts are purposeful and Core UI/Tremor-aligned;
+- Report Saved Views do not grant access;
+- native Monitoring/Renewal/Client Success/Data Quality are covered;
+- no HR, Timesheet, utilization or Client Service Consumption reporting exists.
 
 ## Lovable build slices
-1. Reports shell + Executive report.
-2. Client/Project/Finance reports.
-3. Support/Properties reports.
-4. Saved reports/export.
-5. Custom report framework and mobile polish.
+1. Reports shell + metric contract + Executive.
+2. Clients / Sales / Projects / Finance.
+3. Support / Properties & Renewals / Requests.
+4. platform / Àríyá / Data Quality.
+5. Saved Reports + export/scheduling.
+6. controlled custom-report framework + mobile polish.
