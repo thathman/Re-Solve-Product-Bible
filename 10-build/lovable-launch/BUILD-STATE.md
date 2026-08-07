@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 IMPLEMENTATION PASS / VISUAL ACCEPTANCE PENDING**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 READY**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -52,8 +52,7 @@ Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/sy
 ### FOUND-001B closure
 - Source route remains `src/routes/__dev/ui.tsx`; TanStack browser path is `/ui` because `__dev` is pathless.
 - Normal accepted behavior is a production redirect guard on `/ui`.
-- The owner temporarily disabled that guard for C2 visual review; re-secure it after C2 visual acceptance and before C3 proceeds.
-- Lovable embedded Preview has previously evaluated production-like, so visual review may temporarily require explicit supervised exposure.
+- Lovable embedded Preview has previously evaluated production-like, so supervised visual review may temporarily require explicit exposure.
 
 ### FOUND-001C1 — Core UI primitive foundation + Component Gallery infrastructure
 **Status: ACCEPTED — CANONICAL/FROZEN FOR DOWNSTREAM USE**
@@ -74,12 +73,12 @@ Supervisor verified on application-repository `main`:
 
 C1 APIs are canonical and frozen for downstream use.
 
-## FOUND-001C2 — Canonical form and control primitives
-**Status: IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING**
+### FOUND-001C2 — Canonical form and control primitives
+**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN FOR DOWNSTREAM USE**
 
-### Verified implementation on application `main`
+Supervisor verified on application `main` and owner accepted the rendered visual result:
 - C2 components remain under `src/components/core/forms/` and are exported through `@/components/core`;
-- canonical set implemented: Input, Textarea, Checkbox, RadioGroup / RadioGroupItem, Switch, Select family, FormField and FieldGroup;
+- accepted C2 set: Input, Textarea, Checkbox, RadioGroup / RadioGroupItem, Switch, Select family, FormField and FieldGroup;
 - FormField uses typed context rather than cloneElement injection;
 - Input/Textarea consume field control ID, described-by, invalid, required and disabled semantics while still supporting standalone use;
 - FormField renders description and error together when both exist so every ID in `aria-describedby` maps to a real node;
@@ -90,38 +89,23 @@ C1 APIs are canonical and frozen for downstream use.
 - Input/Textarea and Select triggers keep 16px text on narrow/mobile viewports and reduce typography only from the larger breakpoint;
 - form controls use accepted Re:Solve token vocabulary and explicit accepted focus-variable contract;
 - invalid/error treatment uses `rs-status-danger-foreground`;
-- Select is now a Re:Solve wrapper around Radix Root and consumes FormField required/disabled context;
+- Select is a Re:Solve wrapper around Radix Root and consumes FormField required/disabled context;
 - SelectTrigger consumes field ID, described-by, invalid, required and disabled semantics;
 - gallery includes selected Select, required placeholder/error Select, disabled trigger, disabled option and a long option label;
 - gallery Switch labels use stable IDs/htmlFor association and explicit disabled text styling;
 - gallery includes FieldGroup description + error evidence;
-- Untitled UI influence for C2 remains DESIGN REFERENCE ONLY; no false material-incorporation claim is added;
+- Untitled UI influence for C2 remains DESIGN REFERENCE ONLY;
 - no new dependencies or lockfiles were introduced;
+- owner accepted visual hierarchy/readability/responsiveness for C2;
 - Lovable reports build/lint/type success with only existing Fast Refresh warnings.
 
-### Visual review gate
-The owner has temporarily exposed `/ui` for supervised visual review. Do not start C3 until C2 visual acceptance is complete.
+### FOUND-001C2 closure
+- `/ui` was temporarily exposed for supervised visual review.
+- Supervisor verified the owner-requested production guard is restored in `src/routes/__dev/ui.tsx` using TanStack `beforeLoad` + `import.meta.env.PROD` redirect to `/`.
+- Production `/ui` is therefore re-secured before C3.
+- Local/non-production development access remains the intended Component Gallery workflow.
 
-Review only the updated Fields & Controls surface rather than re-reviewing the entire gallery. Required evidence:
-1. Fields & Controls — light desktop;
-2. Fields & Controls — dark desktop;
-3. Fields & Controls — dark/narrow mobile;
-4. one close-up with an invalid field, Checkbox/Radio/Switch, and an open Select menu showing selected/disabled/long-option behavior.
-
-Review for:
-- field hierarchy and readability;
-- error/helper contrast in light and dark;
-- read-only vs disabled distinction;
-- touch-control visual proportion after 24px target changes;
-- Switch alignment/label relationship;
-- Select trigger/content/selected/disabled/long-option behavior;
-- mobile 16px text behavior and absence of overflow;
-- no generic stock-shadcn visual regression.
-
-After visual PASS:
-1. mark C2 ACCEPTED/FROZEN;
-2. re-secure `/ui` before C3;
-3. begin the bounded C3 interaction/overlay intake.
+C2 APIs are canonical and frozen for downstream use.
 
 ## shadcn ecosystem direction now canonical
 - `shadcn-vue` is approved as a visual/composition/block-pattern source only; Re:Solve remains React/TanStack and must use React shadcn equivalents where available rather than Vue runtime code.
@@ -168,7 +152,7 @@ Accepted/frozen C1:
 - Metric
 - MetricDelta
 
-C2 implementation passed but awaits visual acceptance before freezing:
+Accepted/frozen C2:
 - Input
 - Textarea
 - Checkbox
@@ -185,11 +169,10 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- C2 requires focused visual acceptance and `/ui` re-securing before C3;
-- overlay/menu/dialog primitives are not yet canonical;
+- interaction/overlay primitives are not yet canonical;
 - questionnaire/review and QR patterns are approved future source candidates but exact React/source implementations have not yet been selected;
 - auth, application states and broader composites remain future FOUND-001 substeps by design;
 - shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
 
 ## Next action
-Perform focused C2 visual review from the temporarily exposed `/ui` surface. Do not begin C3 until visual PASS and `/ui` re-secure closure.
+Begin bounded `FOUND-001C3` interaction/overlay intake. Preserve accepted/frozen C1/C2 APIs, use React shadcn/Radix source-owned equivalents where appropriate, normalize everything through Re:Solve Core UI, expand Component Gallery evidence, and STOP for supervisor review before any later utility/advanced-input/auth/shell work.
