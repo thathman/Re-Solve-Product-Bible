@@ -1,204 +1,133 @@
-# Re:Solve Actors and Roles
+# Re:Solve Actors, Principals, Roles and Access
 
 ## Purpose
+This document defines people/machine actors and establishes the difference between Principal, User, Role, Permission, Team and Scope.
 
-This document defines the people and machine actors Re:Solve must support and establishes the difference between actors, roles, permissions, teams, and scopes.
+The final authorization model is capability + scope. Roles are reusable permission bundles, not hard-coded authorization logic.
 
-The final permission model is capability-based. Roles are reusable bundles of permissions, not hard-coded authorization logic.
+## Principal classes
 
-## Actor Classes
+### Human User
+Authenticated person. Context may be:
+- Staff User
+- Client User
+- Contractor / External Collaborator
 
-### Staff User
-
-A person working inside the organisation operating Re:Solve.
-
-Typical responsibilities may include:
-- client management
-- sales
-- project delivery
-- technical operations
-- finance
-- support oversight
-- content/knowledge management
-- system administration
-
-Staff access primarily uses the Admin OS.
-
-### Client User
-
-A member of a client organisation with authenticated access to the Client Portal.
-
-Client users may have different responsibilities and scopes, including:
-- organisation administration
-- billing
-- approvals
-- project collaboration
-- property management
-- confidential information access
-- support visibility
-
-### Contractor / External Collaborator
-
-A trusted non-staff user given limited access to specific projects, properties, tasks, files, or other approved records.
-
-Contractors should not inherit broad staff visibility by default.
+A User may have multiple memberships/grants but remains one human identity.
 
 ### Service Account
-
-A non-human identity used by trusted systems, background workers, plugins, connectors, or integrations.
-
-Service accounts require explicit scopes and auditability.
+Non-human system/background identity with explicit scopes and auditability.
 
 ### API Client
-
-A non-human client using the public Re:Solve API.
-
-API clients may use personal, service, or application credentials and must be scoped independently from human UI sessions.
+Non-human Principal using the public Re:Solve API.
 
 ### MCP Client
-
-A trusted AI/agent client using Re:Solve MCP tools and resources.
-
-Examples may include Claude, ChatGPT, Codex, OpenClaw/Hermes, and future agent systems.
-
-MCP access must not imply unrestricted API access.
+AI/agent Principal using approved MCP tools/resources.
 
 ### Plugin
-
-An installed extension acting through declared plugin permissions and extension points.
-
-Plugins are actors when they read data, perform actions, register jobs, emit events, or invoke connectors.
+Installed extension acting through declared permissions/extension points.
 
 ### Connector
+Configured external-system integration acting through declared connector capabilities/permissions.
 
-A configured external-system integration acting through declared connector permissions.
+## Human contexts
 
-## Role Model
+### Staff User
+Works inside an Operating Entity and primarily uses Admin OS.
 
-Roles provide named permission bundles for convenience.
+Typical responsibilities include client/account operations, sales, projects, technical operations, finance, support oversight, knowledge and system administration.
 
-The product should ship with sensible defaults while allowing administrators to create or modify roles where permitted.
+This role model is operational access only and does not create HR records.
 
-### Suggested Staff Roles
+### Client User
+Member of a client Organisation using Client Portal with organisation/property/project/billing/Vault scope as granted.
 
-#### Owner
+### Contractor / External Collaborator
+Trusted limited User with explicit project/property/task/file grants. No broad staff visibility by default.
 
-Full strategic and administrative access, including highly sensitive configuration.
+## Suggested staff roles
+Roles are defaults/convenience bundles and may be customized.
 
-Typical capabilities:
-- all business records
-- system settings
-- security
-- plugins
-- connectors
-- API/MCP configuration
-- vault administration
-- billing administration
-- role administration
+### Owner
+Broad strategic/system access including protected administration. Step-up may still be required.
 
-Certain destructive or security-sensitive actions may still require step-up authentication.
+### Administrator
+Broad platform/operational administration without protected ownership/break-glass powers.
 
-#### Administrator
+### Client Success / Account Manager
+Organisations, Contacts, Services, Projects, Requests, Renewals, relationship reviews and client health.
 
-Broad operational and system administration without necessarily inheriting ownership-level controls such as ownership transfer or protected break-glass functions.
+### Project / Delivery Manager
+Projects, Tasks, Milestones, Deliverables, Client Actions, Approvals, Changes, Files and delivery reporting.
 
-#### Client Success / Account Manager
+No Timesheet responsibility exists.
 
-Focuses on client relationships, organisations, contacts, services, projects, communication, renewals, and client health.
+### Technical Operations
+Properties, Monitoring, Incidents, Maintenance, connector context and authorized Vault access.
 
-#### Project / Delivery Manager
+### Sales
+Leads, Opportunities, Pipeline, Services, Proposals, Estimates, Contracts, follow-up/cadences and forecast.
 
-Focuses on projects, tasks, milestones, deliverables, client actions, approvals, risks, files, and delivery reporting.
+### Finance
+Invoices, Payments, Receipts, Subscriptions/recurring billing, Credit Notes, Refunds, reconciliation, statements and approved operational spend.
 
-#### Technical Operations
+### Knowledge / Content Manager
+Re:Solve Knowledge, templates, Forms and content-related capabilities.
 
-Focuses on properties, monitoring, incidents, credentials where authorized, maintenance, connectors, technical tasks, and infrastructure context.
+### Analyst / Read-only Staff
+Approved read/report access without mutation capabilities.
 
-#### Sales
+## Suggested client roles
 
-Focuses on leads, opportunities, pipelines, services, proposals, estimates, follow-up activity, and conversion.
+### Organisation Owner
+Highest client-side role for an Organisation, including permitted membership/access administration.
 
-#### Finance
+### Organisation Administrator
+Broad client administration without protected owner-only actions.
 
-Focuses on invoices, payments, receipts, subscriptions, recurring services, credit notes, reconciliation, and financial reporting.
+### Project Collaborator
+Assigned Projects/Tasks/Deliverables/Files/Collaboration/Approvals.
 
-#### Knowledge / Content Manager
+### Approver
+Assigned Approval decisions.
 
-Focuses on Re:Solve knowledge, templates, internal documentation, forms, and content-related modules.
+### Billing Contact
+Permitted financial records/notifications.
 
-#### Analyst / Read-Only Staff
+### Property Manager
+Approved Property status/Requests/Files/renewal/monitoring visibility and actions.
 
-Can inspect approved business records and reports without mutation capabilities.
+### Vault User
+Only explicitly authorized Vault Items/actions.
 
-### Suggested Client Roles
+### Read-only Client Member
+View-only approved Portal information.
 
-#### Organisation Owner
-
-Highest client-side role for an organisation.
-
-Typical capabilities:
-- manage client organisation profile where allowed
-- manage client users and invitations
-- assign client-side roles
-- manage property access within granted scope
-- designate billing contacts
-- designate approvers
-- manage vault access where permitted
-
-#### Organisation Administrator
-
-Broad client-side administration without protected owner-only actions.
-
-#### Project Collaborator
-
-Access to assigned projects, tasks, deliverables, files, approvals, and project communication.
-
-#### Approver
-
-Can review and decide assigned approvals.
-
-#### Billing Contact
-
-Can view financial records permitted to the organisation and receive billing-related notifications.
-
-#### Property Manager
-
-Can view/manage approved property information, property files, related requests, monitoring status, and other granted actions.
-
-#### Vault User
-
-Can access specifically shared vault items according to explicit grants.
-
-#### Read-Only Client Member
-
-Can view approved portal information without mutation rights.
-
-## Permission Structure
-
-Permissions should use stable capability names.
+## Permission grammar
+Canonical capability naming:
+- `domain.action`
+- `domain.resource.action` when a meaningful sub-resource exists.
 
 Examples:
 
-### Organisations
+### Organisations / Contacts
 - `organisations.read`
 - `organisations.create`
 - `organisations.update`
 - `organisations.archive`
-- `organisations.manage_members`
-
-### Contacts
+- `organisations.members.manage`
 - `contacts.read`
 - `contacts.create`
 - `contacts.update`
-- `contacts.archive`
 
 ### Properties
 - `properties.read`
 - `properties.create`
 - `properties.update`
 - `properties.archive`
-- `properties.manage_access`
-- `properties.manage_connectors`
+- `properties.access.manage`
+- `properties.connectors.manage`
+- `properties.monitoring.manage`
 
 ### Projects
 - `projects.read`
@@ -207,22 +136,27 @@ Examples:
 - `projects.archive`
 - `projects.approve`
 
+No Timesheet/Time permission family exists.
+
 ### Billing
 - `billing.read`
 - `billing.manage`
-- `billing.issue_invoice`
-- `billing.record_payment`
-- `billing.refund`
-- `billing.manage_subscriptions`
+- `billing.invoices.issue`
+- `billing.payments.record`
+- `billing.refunds.manage`
+- `billing.subscriptions.manage`
 
 ### Vault
-- `vault.read_metadata`
-- `vault.create`
-- `vault.reveal`
-- `vault.download`
-- `vault.share`
-- `vault.manage_access`
-- `vault.delete`
+- `vault.metadata.read`
+- `vault.items.create`
+- `vault.secret.reveal`
+- `vault.secret.copy`
+- `vault.file.download`
+- `vault.access.request`
+- `vault.access.approve`
+- `vault.access.manage`
+- `vault.audit.read`
+- `vault.items.delete`
 
 ### Plugins / Connectors
 - `plugins.read`
@@ -231,144 +165,76 @@ Examples:
 - `plugins.disable`
 - `connectors.read`
 - `connectors.configure`
-- `connectors.rotate_credentials`
-- `connectors.replay_events`
+- `connectors.credentials.rotate`
+- `connectors.events.replay`
 
 ### API / MCP
-- `api.manage_tokens`
-- `api.manage_webhooks`
-- `mcp.manage_clients`
-- `mcp.manage_tools`
-- `mcp.invoke_write_tools`
+- `api.tokens.manage`
+- `api.webhooks.manage`
+- `mcp.clients.manage`
+- `mcp.tools.manage`
+- `mcp.tools.write.invoke`
 
-## Scope Model
-
-Permissions alone are not enough. Access must also be scoped.
+## Scope model
+Permissions are always combined with scope.
 
 Scopes may include:
-- workspace
-- organisation
-- property
-- project
-- service
-- team
+- Workspace
+- Operating Entity
+- Organisation
+- Property
+- Project
+- Service
+- Team
 - owned/assigned records
+- specific protected record
 
-A user with `properties.read` should not automatically be able to read every property if their membership or grant limits them to specific organisations/properties.
+A Principal with `properties.read` does not automatically read every Property when grants limit scope.
 
-## Property-Level Access
+## Property-level access
+Property grants may specify descendants, expiration, source/grantor and capability bundle.
 
-Property access must be independently enforceable because one organisation may contain multiple properties with different teams and confidentiality boundaries.
+## Team-based access
+Teams support assignment/routing/ownership/notification/access defaults. Team membership must not silently bypass explicit scope/security boundaries.
 
-A grant may specify:
-- property
-- descendant inheritance
-- permission bundle
-- expiration
-- source/owner of grant
+## Temporary/delegated access
+Time-bound grants support contractors, incidents and Vault sharing. Record start/end, grantor, reason where required, Audit and revocation.
 
-## Team-Based Access
+## Step-up authentication
+Likely actions:
+- reveal sensitive Vault secret;
+- protected download/export;
+- rotate connector credentials;
+- create/revoke privileged API/MCP credentials;
+- security/MFA changes;
+- ownership transfer;
+- destructive/high-impact system actions.
 
-Teams can be used for:
-- assignment
-- routing
-- ownership
-- notification targeting
-- reporting
-- access defaults
+## Break-glass
+Emergency access must be rare, strongly authenticated, highly visible, append-only audited and notified to appropriate administrators.
 
-Team membership should not silently bypass explicit security boundaries.
+## Client Portal visibility
+Portal access is determined by Membership plus record/property grants. Hidden records cannot leak through counts, search, URLs, Notifications, API, Àríyá or MCP.
 
-## Temporary and Delegated Access
+## Àríyá rules
+Àríyá acts on behalf of the initiating Principal/User unless an explicitly authorized service workflow is used. It inherits permissions/scope/redaction/confirmation/audit and cannot elevate access.
 
-The system should support time-bound access for sensitive workflows such as:
-- temporary vault sharing
-- contractor access
-- incident response
-- project-specific access
+## Plugin/Connector rules
+Plugins/connectors request declared capabilities and do not receive broad database access merely because installed/configured.
 
-Temporary grants require:
-- start/end time
-- grantor
-- reason where required
-- audit event
-- revocation
+## Role administration
+Admins can inspect, clone, compare and understand roles/effective access and detect dangerous combinations. High-risk permissions require clear explanation.
 
-## Step-Up Authentication
+## Product exclusions
+People & Access is not HR. Do not add employee HR records, payroll, recruitment, attendance, leave, performance review or Timesheets.
 
-Certain actions should be able to require recent stronger authentication even when the user is already signed in.
-
-Likely examples:
-- reveal highly sensitive vault secret
-- download protected credential bundle
-- rotate connector credentials
-- create/revoke privileged API tokens
-- change MFA/security settings
-- transfer ownership
-- destructive system actions
-
-## Break-Glass Access
-
-A future system-security spec should define emergency access for owner/admin recovery.
-
-Break-glass access must be:
-- rare
-- strongly authenticated
-- highly visible
-- fully audited
-- notified to appropriate administrators
-
-## Client Portal Visibility
-
-Portal access should be determined by both:
-- organisation membership
-- record/property grants
-
-Client users must never infer hidden records through counts, search, notifications, URLs, API responses, or AI/MCP outputs.
-
-## AI Actor Rules
-
-Re:Solve AI acts on behalf of the initiating user unless explicitly operating as a separately authorized service workflow.
-
-AI must inherit:
-- user permissions
-- user scope
-- redaction rules
-- confirmation policy
-- audit policy
-
-AI cannot elevate access.
-
-## Plugin and Connector Actor Rules
-
-Plugins/connectors should request declared capabilities.
-
-They should not receive broad database access merely because they are installed.
-
-Their activity should be attributable through audit/event metadata.
-
-## Role Administration Principles
-
-Administrators should be able to:
-- inspect role permissions
-- clone roles
-- create custom roles where allowed
-- compare roles
-- view members assigned to roles
-- understand inherited versus direct access
-- detect dangerous permission combinations
-
-Role editing must clearly explain high-risk permissions.
-
-## Acceptance Rules for Future Specs
-
-Every major feature spec must identify:
-- actors
-- required permissions
-- applicable scope
-- client/staff differences
-- read-only behavior
-- permission-denied state
-- audit requirements
-- step-up requirements
-- API/MCP scope implications
+## Acceptance rule for future specs
+Every major feature identifies:
+- actor/Principal;
+- required capability;
+- scope;
+- client/staff differences;
+- read-only/denied state;
+- Audit;
+- step-up/confirmation/approval where applicable;
+- API/MCP/Àríyá implications.
