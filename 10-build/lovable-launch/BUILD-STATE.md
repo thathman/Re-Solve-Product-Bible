@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING BEFORE FOUND-001C**
+**FOUND-001A ACCEPTED — FOUND-001B IMPLEMENTATION PASS — VISUAL CONDITIONAL — FINAL PREVIEW CORRECTION REQUIRED BEFORE FOUND-001C**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -60,7 +60,7 @@ Supervisor verified on application-repository `main`:
 - no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice.
 
 ## FOUND-001B — UI Stack & Design Tokens
-**Status: IMPLEMENTATION PASS — VISUAL ACCEPTANCE PENDING**
+**Status: IMPLEMENTATION PASS — VISUAL CONDITIONAL**
 
 ### Supervisor-verified implementation
 - Re:Solve-owned OKLCH semantic palette in `src/styles.css`;
@@ -75,30 +75,36 @@ Supervisor verified on application-repository `main`:
 - `src/lib/theme/contract.ts` is the shared theme contract with `rs-theme`, validation, resolver and bootstrap generation;
 - runtime `ThemeProvider` uses the shared `resolveTheme()` contract and preserves live system-theme updates;
 - root shell runs the generated pre-hydration theme bootstrap;
-- `/__dev/ui` is guarded from production access;
 - reduced-motion handling exists;
 - semantic status surfaces use explicit accessible foreground tokens rather than one universal inverse foreground;
 - focus offset has an explicit Re:Solve token;
-- `/__dev/ui` demonstrates all six Re:Solve chart series and the destructive action treatment;
 - Untitled UI and Tremor remain `NOT INCORPORATED — DESIGN REFERENCE ONLY`;
 - Fontsource provenance records declared `^5.3.0` and resolved `5.3.0` versions;
 - Lovable reports build, lint and type-check success, with only standard Fast Refresh warnings.
 
-### Remaining FOUND-001B acceptance gate
-Code/architecture review is complete. Before FOUND-001B becomes fully ACCEPTED, supervisor must review actual `/__dev/ui` visuals in at least:
-- light desktop;
-- dark desktop;
-- narrow/mobile viewport.
+### Development preview routing fact
+- Source route id/file: `src/routes/__dev/ui.tsx` / `/__dev/ui`.
+- TanStack generated browser path: `/ui` because `__dev` is pathless in the generated route tree.
+- Lovable Preview evaluates the prior production guard as production-like, so the route guard was temporarily removed for visual acceptance.
+- `/ui` must be re-secured or removed from production access after visual acceptance is complete.
 
-Visual review checks:
-- hierarchy and information density;
-- palette restraint and high-trust operational tone;
-- typography and numeric presentation;
-- status/destructive distinction;
-- focus visibility;
-- surface/elevation/radius discipline;
-- responsive composition and overflow behavior;
-- whether the system feels Re:Solve-owned rather than stock shadcn/generic SaaS.
+### Visual review — 2026-08-07
+Supervisor reviewed light desktop, dark desktop and narrow/mobile captures.
+
+**Direction approved:**
+- light/dark hierarchy is coherent and restrained;
+- operational typography reads clearly;
+- semantic surfaces and selected/disabled distinction are legible;
+- primary/destructive/status semantics are visually distinguishable;
+- density/elevation treatment is restrained rather than card-heavy;
+- narrow/mobile layout fundamentally reflows without horizontal overflow;
+- overall foundation feels materially more like a high-trust operations workspace than a stock starter.
+
+**Final visual-gate findings:**
+1. **Chart-series swatches are not visually showing six distinct series colors.** In both light and dark captures the six Data Visualization cards appear effectively neutral/surface-colored. The preview currently constructs `bg-rs-chart-${i}` dynamically, which is not a reliable Tailwind static class source. Render the six chart swatches from an explicit static class map or another token-safe implementation so all six actual colors are visible.
+2. **Theme toggle accessibility:** icon-only light/dark/system buttons need accessible names and selected/pressed state (`aria-label`, `aria-pressed` or equivalent) while preserving the compact visual treatment.
+3. **Narrow Actions & Status density:** the two-column grid at the captured mobile width forces token identifiers into cramped wrapping. Use one column at the narrowest width, then two columns when space permits, without changing desktop composition.
+4. **Temporary preview exposure:** keep `/ui` available only long enough to verify the final visual correction, then restore an appropriate production-safe guard/removal strategy after FOUND-001B is accepted.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`;
@@ -120,7 +126,7 @@ Visual review checks:
 - service/repository boundaries: `initial FOUND-001A boundaries established`.
 
 ## Current Core UI inventory
-No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme implementation has passed code review, but visual acceptance is still pending. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
+No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B implementation has passed code review, but visual acceptance remains conditional on the small preview corrections above. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
 
 ## Current database/domain inventory
 None.
@@ -129,8 +135,11 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- visual acceptance screenshots are still pending;
+- chart-series preview colors are not rendering distinctly;
+- theme toggle accessible names/selection semantics need correction;
+- narrow mobile Actions & Status density needs one small responsive adjustment;
+- `/ui` is temporarily exposed for Lovable visual review and must be re-secured after acceptance;
 - no broad Component Gallery, shell, PWA, CI or test foundation yet by design.
 
 ## Next action
-Perform FOUND-001B visual acceptance of `/__dev/ui` using light desktop, dark desktop and narrow/mobile screenshots. Do not begin FOUND-001C until visual acceptance passes.
+Execute the supervisor-provided final FOUND-001B visual-gate correction only. Re-review the corrected `/ui` preview, then either accept FOUND-001B or issue one narrowly scoped visual correction. Do not begin FOUND-001C until FOUND-001B passes.
