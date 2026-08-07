@@ -1,601 +1,252 @@
 # Notifications Platform
 
-## 1. Purpose
+## Purpose
+Notifications are a core Re:Solve platform primitive coordinating awareness across staff, clients, Properties, Projects, finance, support, security, connectors, plugins, automations and PWA channels.
 
-Notifications are a core Re:Solve platform primitive. They coordinate attention across staff, clients, properties, projects, finance, support, security, connectors, plugins, automations, and the PWA.
+A Notification is durable awareness/delivery that something happened. It is **not** the same as an Attention Item, which represents a condition that still requires action/awareness now.
 
-A notification is not merely a bell item. It is a durable attention record with policy, delivery, deep-link, preference, and audit behavior.
-
-## 2. Goals
-
-The system must:
-
-- surface the right event to the right person;
-- distinguish informational updates from urgent action;
-- support in-app, push, email, WhatsApp, and future channels;
+## Goals
+- surface the right event to the right User;
+- distinguish information from action/urgency;
+- support in-app, push, email, WhatsApp and future channels;
 - avoid duplicate/noisy delivery;
-- preserve a searchable notification history where appropriate;
-- deep-link directly to the relevant action/state;
-- support individual preferences without allowing critical security notices to be disabled;
+- preserve useful history;
+- deep-link to exact context;
+- respect user preferences while preserving mandatory events;
 - support digests;
 - support client-safe language;
-- expose API and MCP access;
-- support plugins and connectors registering new event types;
-- work consistently in Admin and Portal.
+- expose API/MCP/Àríyá access under permissions;
+- support plugin/connector event registration.
 
-## 3. Non-goals
-
+## Non-goals
 Notifications do not replace:
-
+- Attention;
 - Chatwoot conversations;
-- email marketing;
-- system audit logs;
-- activity timelines;
-- project comments;
-- monitoring incident records.
+- marketing campaigns;
+- Audit;
+- Activity/Comments;
+- monitoring Incidents.
 
-A notification may reference these records but should not duplicate their full content.
-
-## 4. Core concepts
-
+## Core concepts
 ### Notification Event
-The business/system event that can produce attention.
+Business/system event eligible to create notifications.
 
 ### Notification Policy
-Rules determining recipients, urgency, channels, grouping, timing, and mutability.
+Rules for User recipients, delivery destinations/channels, urgency, grouping, timing and mandatory behavior.
 
 ### Notification Record
-The durable user-facing notification instance.
+Durable in-app/user-facing awareness instance.
+
+### Delivery Destination
+A verified/authorized endpoint such as an email address, phone/WhatsApp identity, push device or future channel target. A Contact without a Re:Solve User may receive an external operational message/delivery but is not an in-app Notification recipient.
 
 ### Delivery Attempt
-A channel-specific delivery attempt and its outcome.
+Channel/provider-specific attempt/outcome.
 
 ### Preference
-A user's configurable delivery choices.
+User delivery choices.
 
 ### Digest
-A scheduled summary of multiple eligible notifications.
+Scheduled grouping of eligible notifications.
 
-## 5. Notification record fields
-
-Conceptually include:
-
+## Notification record fields
+Conceptually:
 - id;
 - event type;
 - category;
 - priority;
-- recipient user/contact;
-- recipient surface (staff/client);
-- organisation context;
-- property context;
-- project context;
-- related record type/id;
-- actor;
-- title;
-- short summary;
-- optional body;
-- primary action label;
-- deep link;
-- secondary action where justified;
-- created at;
-- seen at;
-- read at;
-- archived at;
-- snoozed until;
-- expires at;
+- recipient User;
+- surface: staff/client;
+- Organisation/Property/Project context;
+- related record;
+- actor Principal;
+- title/summary/body;
+- primary action/deep link;
+- created/seen/read/archive/snooze/expiry timestamps;
 - mandatory flag;
-- grouping key;
-- deduplication key;
-- delivery policy id/version;
-- data sensitivity classification.
+- grouping/dedupe key;
+- policy id/version;
+- data sensitivity;
+- source provenance when relevant.
 
-## 6. Priorities
+## Priorities
+Canonical:
+- Informational
+- Normal
+- Important
+- Urgent
+- Critical
 
-Canonical priority levels:
+Features should not invent arbitrary visual scales.
 
-### Informational
-No action expected. Useful history/status only.
-
-### Normal
-Relevant update; may merit attention.
-
-### Important
-Action or awareness expected soon.
-
-### Urgent
-Time-sensitive action or degradation.
-
-### Critical
-Immediate attention required; may invoke mandatory multi-channel delivery.
-
-Features must not invent arbitrary visual priority scales.
-
-## 7. Categories
-
-Initial categories:
-
+## Categories
 ### Work
-- task assigned;
-- mention;
-- reminder;
-- action requested;
-- approval assigned;
-- approval outcome.
+Task, mention, reminder, approval, action requested.
 
 ### Projects
-- project created/started;
-- milestone approaching/overdue;
-- deliverable ready;
-- deliverable approved/rejected/requested changes;
-- client action due;
-- risk raised;
-- project completed.
+Milestone, deliverable, Client Action, project risk/completion.
 
 ### Properties
-- outage;
-- degraded state;
-- recovery;
-- SSL/domain/hosting renewal;
-- maintenance;
-- backup failure;
-- health check stale.
+Outage/recovery, degradation, maintenance, backup, domain/hosting/SSL renewal.
 
 ### Finance
-- invoice issued;
-- invoice due;
-- invoice overdue;
-- payment received;
-- payment failed;
-- payment reconciled;
-- credit note;
-- refund;
-- subscription renewal/change.
+Invoice, payment, reconciliation, credit/refund, recurring billing.
 
 ### Support
-- important support escalation mirrored from Chatwoot where policy allows;
-- SLA risk;
-- linked incident;
-- support resolution requiring client/staff awareness.
-
-Re:Solve must not mirror every Chatwoot message into its notification center by default.
+Meaningful Chatwoot-linked escalation/status/Incident only; never message-by-message mirror.
 
 ### Security & Vault
-- credential access requested;
-- access granted/denied;
-- secret revealed;
-- confidential file shared;
-- access revoked;
-- MFA/security change;
-- suspicious login;
-- API/MCP token created/revoked;
-- privileged plugin/connector change.
+Access request/grant/revoke, reveal/download policy event, MFA/security, privileged API/MCP/Plugin/Connector changes.
 
 ### Platform
-- connector disconnected;
-- connector authentication expiring;
-- webhook processing failure;
-- plugin failure/update;
-- automation failure;
-- background job failure;
-- backup issue;
-- system update available;
-- service health degradation.
+Connector/plugin/automation/job/probe/backup/update/system degradation.
 
-## 8. Recipient resolution
+### Requests / Commercial
+Request assignment/outcome, proposal/contract acceptance/expiry/signature state where useful.
 
-Recipients may be determined by:
-
-- explicit user;
-- record owner;
-- assigned staff;
-- role/capability;
-- client organisation role;
-- property grant;
-- billing contact;
+## Recipient resolution
+In-app recipients are authenticated Users resolved through:
+- explicit User;
+- owner/assignee;
+- Team;
+- Role/capability;
+- client Membership;
+- Property grant;
 - project approver;
-- vault administrator;
-- team;
+- billing role;
+- Vault admin/owner;
 - escalation policy;
-- subscription/following relationship.
+- follow/watch subscription.
 
-Recipient resolution must occur server-side and respect current permissions.
+Resolution occurs server-side and respects current access.
 
-## 9. Channels
+External operational delivery may target an authorized Contact/destination even when no User exists, but this is a Delivery Destination/Outbound Message relationship rather than an in-app recipient.
 
+## Channels
 ### In-app
-Default durable channel for eligible events.
+Durable default channel for authenticated Users where eligible.
 
 ### Push
-PWA/browser push for time-sensitive attention.
+PWA/browser push for time-sensitive awareness.
 
 ### Email
-Formal, asynchronous delivery for important events and summaries.
+Formal asynchronous delivery and digests.
 
 ### WhatsApp/Baileys
-Primarily operational communication between Re:Solve operator and clients. Use for permitted client notifications, reminders, ticket/status updates, and selected staff alerts where configured.
+Primarily Re:Solve-to-client operational delivery such as approvals, reminders, billing, renewal/property alerts and status updates.
 
-### Future channels
-Plugins/connectors may register additional channels through a controlled contract.
+### Future
+Approved channel adapters via Connector/Plugin contracts.
 
-## 10. Channel matrix concept
+## Channel eligibility
+Every event defines eligible/default/mandatory channels via policy rather than hard-coded feature logic.
 
-Every event specification must define channel eligibility, not hard-coded delivery.
+## Preferences
+User preferences may include event group, channel, immediate/digest, quiet hours and push devices.
 
-Example policy:
+Mandatory security/compliance/system notices cannot be disabled when policy requires them.
 
-| Event | In-app | Push | Email | WhatsApp | Mandatory |
-|---|---|---|---|---|---|
-| Mention | yes | optional | optional | no | no |
-| Client approval due | yes | optional | yes | optional | no |
-| Invoice issued | yes | optional | yes | optional | no |
-| Production outage | yes | yes | yes | optional | policy-based |
-| MFA disabled | yes | yes | yes | no | yes |
+## Quiet hours
+Support configurable quiet hours with urgent/critical mandatory exceptions.
 
-## 11. Preferences
+## Digests
+Support hourly/daily/weekly where useful. Group by action required, overdue/urgent, Projects, Properties, Finance and informational changes.
 
-Users may configure notification preferences by:
+Àríyá may summarize eligible digest content; underlying records remain deterministic.
 
-- event group;
-- channel;
-- immediate vs digest;
-- quiet hours;
-- push device;
-- WhatsApp eligibility where applicable.
+## Grouping and deduplication
+Use dedupe keys, grouping windows, transition awareness, replace/update behavior and Incident grouping to prevent storms.
 
-Preferences must distinguish:
+Repeated monitor failures for one confirmed outage should not generate dozens of independent client notifications.
 
-- optional notifications;
-- recommended notifications;
-- mandatory notifications.
+## Attention relationship
+An event may create both an Attention Item and one/more Notifications.
 
-Mandatory security and compliance notices cannot be disabled.
+Examples:
+- Invoice becomes overdue -> Attention remains open until paid/resolved; Notification tells responsible Users/client.
+- Domain renewal due -> Attention persists through workflow; reminders/notifications may repeat according to policy.
+- Approval completed -> Approval Attention resolves; outcome Notification may remain in history.
 
-## 12. Quiet hours
+Reading/archiving a Notification never automatically resolves the underlying Attention condition.
 
-Support configurable quiet hours with exceptions for urgent/critical mandatory events.
+## Escalation
+Policies may escalate unread/action-incomplete/deadline/Incident states by changing User recipient, channel or priority, or triggering an Automation.
 
-Client and staff defaults may differ.
+## Admin Notification Center
+Views:
+- All
+- Unread
+- Mentions
+- Approvals / Actions
+- Finance
+- Properties
+- System
+- Security
 
-## 13. Digests
+Controls include search/filter, read/unread, archive, snooze, bulk actions, deep links and preference shortcut.
 
-Support:
+## Portal Notification Center
+Simplified:
+- All
+- Action Required
+- Projects
+- Properties
+- Billing
+- Security
 
-- hourly digest where useful;
-- daily digest;
-- weekly recap.
+Client wording avoids internal implementation/provider jargon.
 
-Digest eligibility is event-specific.
+## Global Notification Tray
+Core UI provides a polished trigger/tray with unread count, grouping, priority restraint, context, primary action, read/archive/snooze where relevant and link to the full center.
 
-Digest content should group by:
+## Deep links
+Open the exact actionable context where possible. If access changed, show safe revoked/permission state without leaking title/details.
 
-- actions required;
-- overdue/urgent;
-- projects;
-- properties;
-- finance;
-- informational changes.
+## Templates
+Channel-specific templates support variables, client/staff variants, locale-ready structure, preview/testing and versioning for sensitive events. Complex business logic belongs outside templates.
 
-Re:Solve AI may summarize eligible digest content, but the underlying records remain deterministic and auditable.
+## Delivery reliability
+Delivery Attempt should record channel, provider/connector, destination reference, attempts, queue/send/provider acknowledgment, failure class, retry and final state.
 
-## 14. Grouping and deduplication
+Failures remain truthful. Durable in-app awareness stays where applicable; bounded retry/escalation follows policy.
 
-Prevent notification storms using:
+## Offline/PWA
+Support safe cached shell/history, push deep links, stale labeling, queued read/archive only when replay-safe and sync after reconnect. Sensitive bodies follow cache policy.
 
-- event deduplication keys;
-- grouping windows;
-- state transition awareness;
-- replace/update behavior for ongoing conditions;
-- incident grouping.
+## Security/privacy
+- no raw secrets in notification payloads;
+- minimize sensitive push previews;
+- client delivery is Organisation/Property scoped;
+- destinations verified/authorized where policy requires;
+- templates cannot exfiltrate arbitrary fields;
+- revocation/access changes affect future delivery.
 
-Example: repeated monitor failures for one outage should not create dozens of separate client notifications.
+## Audit
+Audit policy/template changes for sensitive events, manual resend, recipient override, destination changes and provider configuration. Ordinary read state does not require immutable Audit unless event policy says so.
 
-## 15. Escalation
+## Automations
+Automations call the Notification engine instead of implementing channels independently.
 
-Policies may escalate when:
+## Plugins/connectors
+Plugins may register namespaced event types/policies/templates/deep links. Connectors may provide channels/events. Core owns recipient resolution, permission, dedupe, delivery logging and policy.
 
-- unread after threshold;
-- action not completed;
-- deadline approaches;
-- incident remains unresolved;
-- first delivery channel fails;
-- priority increases.
+## API/MCP/Àríyá
+Expose permitted list/read/read-state/archive/snooze/preferences/admin diagnostics operations. Agents cannot bypass policy to send arbitrary confidential external messages.
 
-Escalation can change:
-
-- recipient;
-- priority;
-- channel;
-- message wording;
-- automation action.
-
-## 16. Notification center — Admin
-
-The Admin notification center should include:
-
-- All;
-- Unread;
-- Mentions;
-- Approvals/Actions;
-- Finance;
-- Properties;
-- System;
-- Security.
-
-Controls:
-
-- search;
-- filter by priority;
-- filter by client/property/project;
-- mark read/unread;
-- archive;
-- snooze;
-- bulk mark read;
-- bulk archive;
-- open related record;
-- notification preference shortcut.
-
-## 17. Notification center — Portal
-
-Client categories should be simplified:
-
-- All;
-- Action required;
-- Projects;
-- Properties;
-- Billing;
-- Security.
-
-Client wording must be understandable without internal implementation terms.
-
-## 18. Notification item design
-
-Each item should show as applicable:
-
-- semantic icon/status;
-- title;
-- concise context;
-- organisation/property/project label;
-- relative time;
-- unread state;
-- priority;
-- primary action;
-- grouping count;
-- delivery/degraded indicator only when useful.
-
-Do not make every notification visually loud.
-
-## 19. Deep links
-
-A notification deep link should open the exact actionable context where possible, for example:
-
-- approval drawer for a deliverable;
-- invoice payment view;
-- property incident;
-- vault access request;
-- project task;
-- connector failure detail.
-
-If access changed since creation, show a safe permission-denied/revoked state rather than leaking data.
-
-## 20. Templates
-
-Notification templates should support:
-
-- in-app title/body;
-- push title/body;
-- email subject/body;
-- WhatsApp message;
-- variables;
-- client-safe variant;
-- staff variant;
-- locale-ready structure;
-- preview/testing;
-- versioning for audit-sensitive templates.
-
-Avoid embedding complex business logic inside templates.
-
-## 21. Settings
-
-Workspace settings must expose:
-
-- enabled channels;
-- channel providers/connectors;
-- defaults by audience;
-- event policy defaults;
-- priority defaults;
-- digest schedules;
-- quiet-hour defaults;
-- template management;
-- mandatory-event rules;
-- retry/failure policy;
-- retention;
-- testing tools.
-
-User preferences live separately from workspace policy.
-
-## 22. Delivery reliability
-
-Each delivery attempt should record:
-
-- notification id;
-- channel;
-- provider/connector;
-- destination reference;
-- attempt number;
-- queued time;
-- sent time;
-- provider acknowledgement;
-- failure category;
-- retry time;
-- final state.
-
-Retries must be bounded and observable.
-
-## 23. Failure behavior
-
-If external delivery fails:
-
-- durable in-app notification remains where applicable;
-- retry follows policy;
-- repeated systemic failures create a platform alert;
-- user-facing record should not falsely claim delivery;
-- critical delivery failure may escalate to another channel.
-
-## 24. Offline/PWA behavior
-
-The notification center must support:
-
-- cached notification shell/history where safe;
-- push opening into installed PWA;
-- offline deep-link fallback;
-- queued read/archive actions if safely replayable;
-- stale indicator when latest data cannot be fetched;
-- sync after reconnection.
-
-Sensitive notification bodies should respect cache policy.
-
-## 25. Security and privacy
-
-- never include raw secrets in notification payloads;
-- minimize sensitive information in push previews;
-- client notifications must be organisation/property scoped;
-- email/WhatsApp destinations must be verified/authorized where policy requires;
-- notification templates must not enable data exfiltration through arbitrary variables;
-- access changes should invalidate future delivery where appropriate.
-
-## 26. Audit
-
-Audit at minimum:
-
-- policy changes;
-- template changes for security/financial events;
-- mandatory notification suppression attempts;
-- manual resend;
-- recipient override;
-- WhatsApp destination change;
-- provider configuration changes.
-
-Reading ordinary notifications does not need immutable security audit unless the notification itself is sensitive.
-
-## 27. Automation integration
-
-Notifications may be:
-
-- triggered by domain event;
-- sent by automation action;
-- used as escalation outcome;
-- acknowledged by automation condition.
-
-Automations should call the notification engine rather than implementing channel delivery independently.
-
-## 28. Plugin integration
-
-Plugins may register:
-
-- event types;
-- categories under approved namespaces;
-- default policies;
-- templates;
-- deep-link handlers;
-- optional channel adapters.
-
-Plugin events must still use core recipient resolution, permissions, dedupe, delivery logging, and audit contracts.
-
-## 29. Connector integration
-
-Connectors may provide channels or events. Examples:
-
-- WhatsApp connector provides delivery channel;
-- monitoring connector generates property events;
-- payment connector generates payment events;
-- Chatwoot connector may generate only selected escalation/status events rather than message-by-message noise.
-
-## 30. API
-
-Expose versioned APIs for permitted operations such as:
-
-- list notifications;
-- get notification;
-- mark read/unread;
-- archive;
-- snooze;
-- get unread count;
-- get/update personal preferences;
-- admin preview/test template;
-- admin policy management;
-- delivery diagnostics with appropriate permissions.
-
-## 31. MCP
-
-Read-oriented MCP tools may include:
-
-- `list_notifications`;
-- `get_unread_notifications`;
-- `get_attention_summary`;
-- `get_notification_preferences`.
-
-Controlled write tools may include:
-
-- `mark_notification_read`;
-- `snooze_notification`;
-- `create_notification` for authorized automation/agent use.
-
-Agents must not bypass event policy to send arbitrary confidential content through external channels.
-
-## 32. Analytics
-
-Measure:
-
-- notification volume by type/channel;
-- read time;
-- action completion after notification;
-- delivery success/failure;
-- opt-out/preference rates;
-- digest engagement;
-- excessive/noisy event detection;
-- repeated snoozing/ignoring of event categories.
-
-Analytics must help reduce noise rather than gamify engagement.
-
-## 33. Retention
-
-Define retention by category and sensitivity. Security/financial notification records may have different requirements from ordinary work notifications.
-
-## 34. Acceptance criteria
-
-The platform is acceptable when:
-
-- events resolve correct recipients;
-- cross-organisation/property leakage tests fail safely;
-- channel preferences are respected;
-- mandatory notices cannot be disabled;
-- dedupe prevents event storms;
-- failed external delivery is visible and retried;
-- notification items deep-link correctly;
-- mobile/PWA push opens the correct context;
-- client wording is safe and understandable;
-- plugins/connectors cannot bypass core policy;
-- API/MCP access respects scopes and permissions.
-
-## 35. Lovable build slices
-
-### Slice A — in-app model + Admin center
-No external channels. Build durable notifications, unread/read/archive, filters, deep links, and realistic demo events.
-
-### Slice B — Portal center
-Client-safe categories, wording, permissions, mobile behavior.
-
-### Slice C — preferences
-Personal channel/event preferences, mandatory rules, quiet hours.
-
-### Slice D — PWA push
-Push permission flow, device registration, notification click/deep-link behavior.
-
-### Slice E — email delivery
-Template + delivery attempt model + failure/retry visibility.
-
-### Slice F — WhatsApp delivery
-Connector-backed client operational messages with explicit eligibility and diagnostics.
-
-### Slice G — digests and escalation
-Digest schedules, grouping, escalation rules, AI-assisted summary presentation where approved.
+Àríyá may summarize Notifications and Attention but does not own deterministic priority/delivery.
+
+## Analytics
+Measure volume, action completion, read time, channel delivery success/failure, opt-out/preferences, digest usefulness and noisy-event patterns to reduce noise rather than gamify engagement.
+
+## Acceptance criteria
+- in-app recipients are Users, not arbitrary Contact records;
+- external Contact destinations are modeled as delivery/communication targets;
+- Attention and Notification lifecycles remain distinct;
+- cross-scope leakage tests fail safely;
+- mandatory policy and preferences behave correctly;
+- dedupe prevents storms;
+- failed external delivery is visible/retryable;
+- global tray and full center are strong Core UI experiences;
+- client wording is safe;
+- plugins/connectors cannot bypass policy;
+- API/MCP/Àríyá respect scope.
