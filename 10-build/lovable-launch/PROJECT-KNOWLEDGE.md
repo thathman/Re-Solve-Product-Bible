@@ -73,4 +73,4 @@ PWA/responsiveness start at foundation. Review phone, tablet, laptop, desktop an
 Relevant screens include loading/skeleton, empty/first-use, success, error, partial/stale, permission/read-only, degraded-provider and offline states. A slice is complete only after functional, security, responsive/PWA, accessibility, Core UI/design, test and portability review.
 
 ## Source of truth
-The private `Re-Solve-Product-Bible` is canonical. File paths in prompts are traceability references; do not assume direct access. This Project Knowledge, installed canonical `resolve-*` skills and the current build prompt are the direct implementation context.
+The public `thathman/Re-Solve-Product-Bible` repository is canonical. It may be referenced directly when a build slice needs an exact supporting specification. Do not browse or implement the whole Product Bible merely because it is public. This Project Knowledge, installed canonical `resolve-*` skills and the current build prompt remain the direct implementation context for each bounded slice.
