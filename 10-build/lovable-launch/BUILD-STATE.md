@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 READY**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 CONDITIONAL (CORE NORMALIZATION FIX REQUIRED)**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -107,6 +107,33 @@ Supervisor verified on application `main` and owner accepted the rendered visual
 
 C2 APIs are canonical and frozen for downstream use.
 
+## FOUND-001C3 — Interaction & Overlay Core UI Pack
+**Status: CONDITIONAL — CORE NORMALIZATION FIX REQUIRED BEFORE C4**
+
+### Verified implementation present on application `main`
+- Core C3 public files exist under `src/components/core/overlays/`, `src/components/core/disclosure/` and `src/components/core/utils/`;
+- `@/components/core` exports Dialog, AlertDialog, Sheet, Drawer, Popover, HoverCard, DropdownMenu, ContextMenu, Accordion, Collapsible, Tabs and ScrollArea families;
+- the Component Gallery consumes the public Core boundary and contains demonstrations for the requested C3 families;
+- underlying accessible primitives are Radix/shadcn source-owned implementations, with Vaul 1.1.2 used for Drawer;
+- `vaul` is the only new C3 runtime dependency visible in `package.json` and is recorded as MIT in `docs/ui-sources.md`;
+- `/ui` production redirect guard remains restored;
+- no Vue runtime/package is present.
+
+### Remaining C3 supervisor findings
+1. **Most Core C3 files are only thin re-export layers over unchanged stock shadcn source components.** This preserves the public boundary but does not yet establish the claimed Re:Solve-owned visual/interaction contract.
+2. **Dialog / AlertDialog / Sheet retain stock overlay/elevation/motion treatment.** The source components still use `bg-black/80`, generic `shadow-lg`, generic `bg-background`, and stock animation timings. Sheet includes 300ms close / 500ms open timing rather than the accepted restrained Re:Solve overlay motion contract.
+3. **Drawer provenance currently overclaims normalization.** `docs/ui-sources.md` says Drawer visual treatment is normalized to Re:Solve tokens, while `src/components/ui/drawer.tsx` still uses stock `bg-black/80`, `bg-background` and `bg-muted` treatment. Vaul itself is acceptable; the documented modification claim must match the code.
+4. **Popover, DropdownMenu and related stock source components still use generic shadcn elevation/motion (`shadow-md`/`shadow-lg` etc.).** shadcn compatibility mappings correctly route semantic colors into Re:Solve tokens, so this is not a separate color system, but Core must normalize elevation, focus, density and motion deliberately rather than merely forwarding stock defaults.
+5. **AlertDialogAction bypasses the accepted Core Button contract.** The low-level alert-dialog source imports stock `@/components/ui/button` `buttonVariants`, so its action/cancel controls do not inherit the canonical C1 Button sizing/focus/disabled behavior. High-risk confirmation actions should consume the accepted Re:Solve action contract.
+6. **Dropdown/Context destructive behavior is gallery-only styling rather than a canonical item variant/contract.** The Core menu layer should expose a deliberate destructive item treatment so product code does not repeatedly hand-write danger classes.
+7. **Sheet gallery composition uses an absolutely positioned footer without a canonical scroll-body/footer layout.** The C3 requirement called for scrollable content plus an action/footer region. Establish a reusable composition that prevents long content from being obscured by the footer and respects safe areas.
+8. **Tabs narrow-overflow evidence hides the scrollbar with `no-scrollbar`.** Long horizontal tabs need a discoverable overflow strategy; do not rely on an invisible scrollbar as the canonical pattern.
+9. **ScrollArea gallery proves vertical overflow only.** Add a small horizontal-overflow evidence case so both orientations are demonstrated and the horizontal scrollbar remains discoverable.
+10. **C3 provenance needs to distinguish shadcn source incorporation from Re:Solve normalization accurately.** Keep shadcn-vue as design/block reference only and do not claim modifications that are not actually present.
+
+### Review classification
+C3 is structurally sound enough for a narrow correction rather than teardown. Preserve the Radix/shadcn/Vaul foundations and the public Core API where practical. Do not start C4 until the normalization/contract issues above are corrected and re-reviewed.
+
 ## shadcn ecosystem direction now canonical
 - `shadcn-vue` is approved as a visual/composition/block-pattern source only; Re:Solve remains React/TanStack and must use React shadcn equivalents where available rather than Vue runtime code.
 - approved future intake includes core interaction primitives, advanced controls, conversation/Àríyá primitives, questionnaire/review-style composition and QR presentation patterns subject to exact source verification.
@@ -132,9 +159,10 @@ C2 APIs are canonical and frozen for downstream use.
 - auth/domain setup: not yet implemented.
 
 ## UI-source incorporation state
-- shadcn/ui: incorporated/source-owned starter foundation.
+- shadcn/ui: incorporated/source-owned starter foundation; C3 currently needs explicit Re:Solve normalization beyond compatibility-token mapping.
 - shadcn-vue: approved pattern/block reference only; never a runtime dependency.
 - Radix: incorporated beneath current shadcn and Core components.
+- Vaul: incorporated for Drawer in C3; MIT; visual normalization pending C3 correction.
 - Lucide: incorporated as primary icon family.
 - Untitled UI React: material Avatar incorporation accepted in C1; C2 form composition is design reference only.
 - Tremor Raw: material Metric incorporation accepted in C1.
@@ -162,6 +190,20 @@ Accepted/frozen C2:
 - FormField
 - FieldGroup
 
+C3 exists but is not canonical/frozen yet:
+- Dialog
+- AlertDialog
+- Sheet
+- Drawer
+- Popover
+- HoverCard
+- DropdownMenu
+- ContextMenu
+- Accordion
+- Collapsible
+- Tabs
+- ScrollArea
+
 ## Current database/domain inventory
 None.
 
@@ -169,10 +211,10 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- interaction/overlay primitives are not yet canonical;
+- C3 needs a bounded normalization/interaction-contract correction before acceptance;
 - questionnaire/review and QR patterns are approved future source candidates but exact React/source implementations have not yet been selected;
 - auth, application states and broader composites remain future FOUND-001 substeps by design;
 - shell, PWA, CI and test foundation remain future FOUND-001 substeps by design.
 
 ## Next action
-Begin bounded `FOUND-001C3` interaction/overlay intake. Preserve accepted/frozen C1/C2 APIs, use React shadcn/Radix source-owned equivalents where appropriate, normalize everything through Re:Solve Core UI, expand Component Gallery evidence, and STOP for supervisor review before any later utility/advanced-input/auth/shell work.
+Execute one narrowly scoped `FOUND-001C3-FIX` that preserves the current primitive foundations/public API while normalizing C3 elevation/motion/surfaces/action contracts, fixing Sheet/Tabs/ScrollArea evidence and correcting provenance. Re-review repository afterward. Do not begin FOUND-001C4.
