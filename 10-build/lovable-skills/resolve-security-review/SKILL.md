@@ -1,6 +1,6 @@
 ---
 name: resolve-security-review
-description: Review Re:Solve auth, permissions, Vault, financial, connector/plugin, API/MCP, Àríyá, sensitive-data, and high-impact action behavior before completion.
+description: Use before completing any Re:Solve slice that touches authentication, permissions, Vault, finance, external access, connectors/plugins, API/MCP, Àríyá, sensitive data, destructive actions, or cross-organisation/property scope.
 ---
 
 # Re:Solve Security Review
@@ -21,3 +21,5 @@ Check:
 - offline/PWA cache safety;
 - Secure External Access expiry/revocation;
 - negative tests and failure states.
+
+Report concrete findings and the negative paths actually checked. Do not weaken authorization to make the happy path easier.
