@@ -85,8 +85,27 @@ The product may be specified comprehensively here, but implementation must be de
 ### Security
 - [Security Architecture](08-security/security-architecture.md)
 
-### Build
+## Lovable Execution
+
 - [Lovable Development Environment](10-build/lovable-environment.md)
+- [Persistent Lovable Knowledge](10-build/lovable-knowledge.md)
+- [Lovable Skill Set](10-build/lovable-skills.md)
+- [Build Slice Protocol](10-build/build-slice-protocol.md)
+- [Demo Data Blueprint](10-build/demo-data-blueprint.md)
+- [Architecture & Portability Checklist](10-build/architecture-portability-checklist.md)
+- [Lovable Setup Sequence](10-build/lovable-setup-sequence.md)
+- [FOUND-001 — Re:Solve Application Foundation](10-build/prompts/FOUND-001-foundation.md)
+
+### Initial Lovable Skill Templates
+
+- `10-build/lovable-skills/airix-feature/SKILL.md`
+- `10-build/lovable-skills/airix-ui/SKILL.md`
+- `10-build/lovable-skills/airix-form/SKILL.md`
+- `10-build/lovable-skills/airix-data-table/SKILL.md`
+- `10-build/lovable-skills/airix-security-review/SKILL.md`
+- `10-build/lovable-skills/airix-pwa/SKILL.md`
+- `10-build/lovable-skills/airix-release/SKILL.md`
+- `10-build/lovable-skills/self-host-check/SKILL.md`
 
 ## Governing Workflow
 
@@ -105,8 +124,11 @@ The planning sequence is:
 5. prototype major interaction flows where needed
 6. define acceptance criteria
 7. break implementation into small Lovable build slices
+8. install persistent Lovable Knowledge and only the skills needed for the current build phase
+9. build one bounded slice
+10. review against Product Bible, security, accessibility, PWA, and portability rules before moving on
 
-## Planned Spec Areas
+## Spec Areas
 
 ```text
 00-foundation/
