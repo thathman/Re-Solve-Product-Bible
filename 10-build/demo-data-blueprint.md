@@ -1,317 +1,345 @@
 # Re:Solve Demo Data Blueprint
 
 ## Purpose
-Demo data is not filler. It must exercise the product's relationships, permissions, states, hierarchy, notifications, and operational workflows so each Lovable slice can be reviewed realistically.
+Demo data is not filler. It exercises relationships, permissions, states, hierarchy, notifications, Attention, monitoring, documents and operational workflows realistically.
 
-Do not use real credentials, production secrets, or private customer data.
+Never use real credentials, production secrets, private customer data or identifiable real client/staff fixtures.
 
-## Demo data principles
-- Use realistic but fictionalized Airix-style organisations and properties.
-- Prefer a small coherent universe over dozens of unrelated examples.
-- Reuse the same organisations, contacts, properties, projects, invoices, support references, files, and notifications across slices.
-- Include healthy, warning, blocked, overdue, pending, archived, and empty-state examples.
-- Include at least one user with restricted property scope and one client admin with broader organisation scope.
-- Vault demo values must be placeholders and must never contain real secrets.
+## Principles
+- Airix Media may be used as the first Operating Entity because it represents the intended deployment context.
+- All demo people and external client Organisations are fictional.
+- Prefer one coherent fictional universe over unrelated filler.
+- Reuse names/IDs across slices.
+- Include healthy, warning, blocked, overdue, pending, archived, stale and empty-state examples.
+- Include a restricted client user and broader organisation admin.
+- Vault values are obviously fake placeholders and are never indexed generically.
 
-## Canonical demo universe
+## Workspace
+**Re:Solve Demo Workspace**
 
-### Internal operating organisation
+## Operating Entity
 **Airix Media**
-Purpose: staff/admin side of Re:Solve.
 
-Suggested staff identities:
-- Hendrix Nwaokolo — Owner / Platform Administrator
-- Ada Eze — Account Manager
-- Tunde Bello — Technical Operations
-- Kemi Lawal — Finance
-- Mariam Yusuf — Project Coordinator
+Brand: Airix Media
+Default currency/configuration may be chosen for development examples without implying core jurisdiction lock-in.
 
-These names are demo-only identities.
+## Staff demo identities
+- Amina Bello — Owner / Platform Administrator
+- Chidi Okafor — Account Manager
+- Tosin Adeyemi — Technical Operations
+- Ifeoma Obi — Finance
+- Mariam Sule — Project Coordinator
 
-## Client organisations
+These identities are fictional.
 
-### Kampala University
-Client code: `KU`
+## Client Organisations
+
+### Westbridge University
+Client code: `WBU`
 Status: Active
-Relationship owner: Ada Eze
-Billing contact: Dr. Sarah Kato
-Portal administrators: Dr. Sarah Kato, Peter Mugisha
+Relationship owner: Chidi Okafor
+
+Contacts:
+- Dr. Nneka Okorie — Organisation Admin, Billing Contact, Project Approver
+- Samuel Mensah — Journal Manager, restricted to Journals subtree
+- Fatima Sani — Technical Contact
+- Kojo Boateng — Finance Contact, billing visibility only
+- Amara Eze — Editor, restricted to one Journal Property
 
 Properties:
-- Kampala University Main Website
-- KU Journals
-  - Kampala Journal of Arts & Social Sciences
-  - Kampala Journal of Business & Management
-- ku.ac.ug domain
-- Main Hosting Account
-
-Use this organisation to demonstrate hierarchy, OJS-related properties, support context, multiple contacts, projects, billing, monitoring, files, and property-scoped access.
-
-### Meridian Development Review
-Client code: `MDR`
-Status: Active
-Smaller organisation with one primary journal property.
-Use for simpler portal and billing scenarios.
-
-### Eastern Research Institute
-Client code: `ERI`
-Status: Onboarding
-Use for first-use/empty-state and incomplete onboarding scenarios.
-
-### Northstar Foundation
-Client code: `NSF`
-Status: Archived or Former Client
-Use for archived records, revoked portal access, completed projects, and historical invoice scenarios.
-
-## Contacts and memberships
-
-### Kampala University
-- Dr. Sarah Kato — Organisation Admin, Billing Contact, Project Approver
-- Peter Mugisha — Technical Contact, Organisation Admin
-- Grace Nambasa — Journal Manager, access limited to KU Journals subtree
-- Daniel Okello — Finance Contact, billing visibility only
-- Lydia Achieng — Journal Editor, access limited to one child journal
-
-Demonstrate:
-- one contact with multiple roles
-- one contact with restricted property access
-- one contact with no billing access
-- one contact with no Vault access
-
-## Property hierarchy example
-
 ```text
-Kampala University
-├── Kampala University Main Website
-├── KU Journals
-│   ├── Kampala Journal of Arts & Social Sciences
-│   └── Kampala Journal of Business & Management
-├── ku.ac.ug Domain
-└── Main Hosting Account
+Westbridge University
+├── Main Website
+├── WBU Journals
+│   ├── Westbridge Journal of Social Research
+│   └── Westbridge Business Review
+├── westbridge.example Domain
+└── Primary Hosting
 ```
 
-Suggested property health:
+Suggested posture:
 - Main Website — Healthy
-- KU Journals — Healthy
-- KJASS — Warning: plugin update/maintenance due
-- KJBMS — Degraded: slow response or certificate warning
+- WBU Journals — Healthy
+- Social Research Journal — Attention: maintenance/update due
+- Business Review — Degraded: slow response/certificate warning
 - Domain — Renewal due within 30 days
 - Hosting — Healthy
 
+### Meridian Research Review
+Client code: `MRR`
+Status: Active
+Smaller organisation with one journal Property. Use for simple Portal/Billing scenarios.
+
+### Eastfield Research Institute
+Client code: `ERI`
+Status: Onboarding
+Use for incomplete onboarding, credential/file requests and first-use states.
+
+### Northstar Civic Foundation
+Client code: `NCF`
+Status: Former/Archived
+Use for offboarding, revoked Portal access, historical documents/invoices and completed projects.
+
+## Permission test identities
+- Staff Owner — broad administration.
+- Account Manager — assigned client/project management without platform-security or broad Vault reveal.
+- Finance User — billing focus with limited technical access.
+- Technical Operator — Properties/Monitoring with scoped Vault access/request capability.
+- Client Organisation Admin — organisation-level client administration.
+- Client Property User — one Property subtree only.
+- Client Billing User — Billing but no technical/Vault access.
+
 ## Projects
 
-### KU Main Website Redesign
+### Westbridge Main Website Redesign
 Status: Active
-Progress: ~65%
+Progress: about 65 percent.
+
 Milestones:
 - Discovery — complete
 - Design — complete
 - Development — active
-- Content migration — blocked by client
+- Content Migration — blocked by client
 - Launch — upcoming
 
-Include:
-- overdue client action
-- upcoming milestone
-- one approved deliverable
-- one deliverable awaiting review
-- one change request
-- one risk
+Include overdue Client Action, upcoming milestone, approved Deliverable, Deliverable awaiting review, Change Request and Risk.
 
-### KJASS OJS Upgrade
+### Social Research Journal Platform Upgrade
 Status: Active
-Property: KJASS
-Include:
-- technical checklist
-- backup milestone
-- staging validation
-- client approval gate
-- release window
+Property: Westbridge Journal of Social Research
 
-### MDR Journal Setup
+Include backup milestone, staging validation, client approval gate and release window.
+
+### Meridian Journal Setup
 Status: Completed
-Use for completed project views and historical activity.
+Use for completed/history states.
 
-## Sales and commercial
+No demo Timesheets or Time Entries.
 
+## Requests
+Examples:
+- Westbridge: `Update editorial board page` — triage -> accepted Task.
+- Westbridge: `Add new journal` — triage -> Opportunity/Project planning.
+- Eastfield: `Provide onboarding credentials` — waiting on client.
+- Meridian: `Change billing contact` — completed.
+
+## Sales/commercial
 Opportunities:
-- KU Annual Support Renewal — Negotiation
-- ERI Journal Platform Setup — Proposal Sent
-- MDR Publishing Support Expansion — Qualified
+- Westbridge Annual Support Renewal — Negotiation
+- Eastfield Journal Platform Setup — Proposal Sent
+- Meridian Publishing Support Expansion — Qualified
 
-Proposals/estimates:
-- one draft
-- one sent
-- one accepted
-- one expired
+Proposal/estimate states:
+- draft
+- sent
+- accepted
+- expired
 
 Contracts:
-- one active
-- one awaiting signature
-- one historical
+- active
+- awaiting signature
+- historical/executed
 
-## Service catalogue
-Suggested services:
+## Document Studio
+Demo documents:
+- Westbridge Annual Support Proposal — sent, secure external link
+- Eastfield Journal Setup Estimate — accepted
+- Westbridge Support Contract — executed through demo SignatureConnector reference
+- project status report
+- account statement
+
+Accepted/executed examples have immutable Final Snapshot metadata.
+
+## Services
+Catalogue:
 - Managed Website Support
-- Managed OJS Support
-- OJS Upgrade Service
+- Managed Journal Platform Support
+- Platform Upgrade Service
 - Website Redesign
 - Domain Management
 - Hosting Management
 - Monitoring & Maintenance
 - Journal Setup
 
-Recurring service instances:
-- KU Managed Website Support — Active
-- KU OJS Support — Active
-- KU Domain Management — Renewal Upcoming
-- MDR OJS Support — Active
+Client Services:
+- Westbridge Managed Website Support — Active
+- Westbridge Journal Platform Support — Active
+- Westbridge Domain Management — Renewal Upcoming
+- Meridian Journal Support — Active
+
+Do not seed Client Service Consumption/remaining-hours/credits.
 
 ## Billing
-
 Invoices:
-- one draft
-- one issued and unpaid
-- one partially paid
-- one overdue
-- one paid
-- one void/cancelled where supported
+- draft
+- issued/unpaid
+- partially paid
+- overdue
+- paid
+- void/cancelled where supported
 
 Payments:
 - verified provider payment
-- bank/offline payment awaiting reconciliation
+- offline/bank payment awaiting reconciliation
 - failed provider attempt
 
 Receipts:
-- one generated from verified payment
+- generated from verified payment
 
 Credit note:
-- one applied to a historical invoice
+- applied to historical invoice
 
-Do not hard-code a specific gateway into core records.
+Payment schedule:
+- one proposal/contract with deposit + milestone payment plan
+
+Do not hard-code a payment gateway into core records.
+
+## Operational spend
+Examples:
+- domain renewal vendor cost
+- hosting recurring vendor cost
+- project billable stock-image/service expense
+
+No payroll/employee expense-management assumptions.
 
 ## Support references
-Chatwoot remains source of truth.
+Chatwoot remains truth.
 
-Demo Re:Solve support context should include references such as:
-- KU Main Website — resolved outage conversation
-- KJASS — open support conversation about submission email delivery
-- KJBMS — waiting on client response
+Safe Re:Solve references:
+- Westbridge Main Website — resolved outage conversation
+- Social Research Journal — open email-delivery support conversation
+- Business Review — waiting on client
 
-Store only safe reference/context data needed by Re:Solve demo surfaces.
+Do not seed full duplicate support message history.
+
+## Monitoring and Property Posture
+Native demo signals:
+- successful HTTP check
+- slow response warning
+- certificate nearing expiry
+- consecutive-failure outage/recovery sequence
+- domain renewal approaching
+- heartbeat/backup stale example
+- maintenance window
+
+External signal examples:
+- Cloudflare connected zone/registration state
+- optional Uptime Kuma source marked external/optional
+
+Connector failure and confirmed target outage must be separate states.
+
+## Renewals
+Examples:
+- westbridge.example Domain — expires in 25 days, auto-renew unknown/client decision needed
+- Primary Hosting — expires in 70 days
+- Support Contract — renewal in 60 days
+- certificate — expires in 18 days
+
+## Attention
+Include:
+- overdue client action
+- pending approval
+- overdue invoice
+- domain renewal
+- degraded Property
+- stale backup/heartbeat
+- connector authentication issue
+- Vault access request
+- onboarding blocker
+- proposal expiring
 
 ## Notifications
-Create a diverse notification set:
+Diverse events spanning informational to critical:
 - task assigned
-- approval requested
-- approval completed
-- invoice due soon
-- payment received
-- project milestone upcoming
+- approval requested/completed
+- invoice due/payment received
+- project milestone
 - client action overdue
-- property warning
-- domain renewal reminder
+- Property warning/outage/recovery
+- renewal reminder
 - connector degraded
-- Vault access request
+- Vault request
 - mention
 
-Priorities should span informational to critical.
-
 ## Approvals
-Examples:
-- Homepage design deliverable — approved
-- KJASS production upgrade window — pending
-- KU contract renewal proposal — pending
+- Homepage Deliverable — approved
+- production upgrade window — pending
+- support renewal Proposal — pending
 - Vault access request — pending
 
 ## Files
-Normal files:
+Ordinary:
 - project brief
 - content migration spreadsheet
 - invoice PDF
 - meeting notes
 - brand assets
 
-Sensitive files should instead be represented in Vault metadata.
+Protected content belongs in Vault instead of retaining ordinary File access.
 
 ## Secure Vault
-Demo metadata only:
-- WordPress Admin Credential — KU Main Website
-- OJS Server SSH Access — KU Journals
-- Domain Registrar Access — ku.ac.ug
-- Signed Support Contract — Kampala University
-- Confidential Renewal Proposal — Kampala University
+Metadata-only demo items:
+- Website Admin Credential — Westbridge Main Website
+- Journal Server Access — WBU Journals
+- Domain Registrar Access — westbridge.example
+- Signed Support Contract — Westbridge University
+- Confidential Renewal Proposal — Westbridge University
 
-Secret values must be obviously fake placeholders and should not be included in screenshots or generic search indexing.
+All secret values are obviously fake development placeholders.
 
 ## Knowledge
-Re:Solve internal/client knowledge examples:
-- OJS Upgrade Standard Operating Procedure
+- Journal Platform Upgrade SOP
 - Client Launch Checklist
 - Domain Renewal Procedure
-- KU Website Editorial Workflow — client-visible
-- KJASS Production Checklist — property-scoped
+- Westbridge Website Editorial Workflow — client-visible
+- Social Research Production Checklist — Property scoped
 
-Chatwoot support KB content is not duplicated here.
+Do not duplicate Chatwoot support KB.
 
-## Monitoring
-Signals:
-- healthy uptime check
-- slow response warning
-- certificate nearing expiry
-- domain renewal approaching
-- recent successful backup
-- failed backup requiring attention
-- maintenance window scheduled
+## Collaboration
+Examples:
+- internal note on an at-risk Project
+- client-visible comment on a Deliverable
+- mention of Account Manager on renewal
+- followed Property/Incident
+
+## Saved views
+Examples:
+- My Active Clients
+- Properties Needing Attention
+- Renewals Next 30 Days
+- Overdue Invoices
+- Projects Waiting on Client
+
+## Data quality
+Examples:
+- possible duplicate Contact
+- stale Connector mapping
+- missing renewal owner
+- expired Portal invitation
 
 ## Connector instances
-Demo instances:
-- Chatwoot — Airix Media managed support
+- Chatwoot — managed support
 - WhatsApp/Baileys — operational messaging
-- Bachs — payment provider
-- OpenRouter — Re:Solve AI
-- Uptime Kuma — monitoring
+- Bachs-style demo payment provider instance without real credentials
+- OpenRouter-style AI provider reference
+- Cloudflare — domain/DNS/health
 - Documenso — signatures
-- Kampala University OJS
-- MDR OJS
-- Airix Media WordPress
+- Westbridge Journal Platform connector
+- Airix Media WordPress demo
+- optional Uptime Kuma demo source for connector compatibility only
 
-Credentials must be represented as secure references only.
-
-## Permission test identities
-
-### Staff Owner
-Can administer all domains.
-
-### Account Manager
-Can manage assigned clients/projects but cannot administer platform security or reveal all Vault items.
-
-### Finance User
-Can view/manage billing but has limited project/support access.
-
-### Technical Operator
-Can manage properties/monitoring and request Vault access.
-
-### Client Organisation Admin
-Can administer client users and approved organisation-level records.
-
-### Client Property User
-Can access one property subtree only.
-
-### Client Billing User
-Can view billing but not project technical details or Vault.
+Credentials are secure references.
 
 ## Slice data policy
-Each build slice should seed only the minimum subset necessary for that slice, but use IDs/names consistent with this blueprint so later slices compose into one coherent demo environment.
+Each build slice seeds only the subset needed, while keeping canonical names/IDs consistent so later slices compose into one coherent demo environment.
 
 ## Reset behavior
-Development should support resetting demo data to a known state without touching developer/system configuration.
+Development supports resetting demo business data to a known state without touching developer/system configuration.
 
-## Data safety
-Never seed:
-- real passwords
-- real API keys
-- real client personal data
+## Never seed
+- real passwords/API keys
+- real staff/client personal data
 - real financial account identifiers
 - real production webhook secrets
 - confidential production documents
