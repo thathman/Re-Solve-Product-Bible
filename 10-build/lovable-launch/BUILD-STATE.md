@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**SETUP-000 PARTIAL — KNOWLEDGE/VERIFICATION PENDING — FOUND-001 NOT YET STARTED**
+**SETUP-000 COMPLETE — RESTART AUDIT NEXT — FOUND-001 NOT YET STARTED**
 
 ## Canonical Product Bible state
 - Product Bible planning/expansion/launch-readiness content is consolidated on `main`.
@@ -19,7 +19,7 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - Workspace: `<record when confirmed>`
 - Project: `Re:Solve`
 - Project Knowledge source fetched by Lovable: `YES`
-- Project Knowledge installed in Project settings: `<verify>`
+- Project Knowledge installed in Project settings: `YES — owner confirmed`
 - Canonical workspace Skills installed: `YES — all 30 Re:Solve skills installed by owner`
 - No obsolete `airix-*` skills were reported.
 - Lovable previously staged 30 canonical skill copies as temporary project-local drafts under `.agents/skills/`; these should be removed after workspace-skill verification so duplicate instruction sources do not remain.
@@ -49,8 +49,9 @@ Observed during SETUP-000:
 - The current project chat could not save Project Knowledge or import/promote GitHub skills as workspace skills.
 - Workspace-owner/admin UI action was required for workspace skill import.
 - Owner has now installed all 30 canonical Re:Solve workspace skills.
+- Owner has confirmed canonical Project Knowledge is pasted into Lovable.
 - No obsolete `airix-*` skills were reported.
-- No product feature, UI-stack installation or database work has started.
+- No product feature, UI-stack installation or database work has started according to the latest setup report; restart audit will verify actual repository state before FOUND-001.
 
 ## Current architecture facts
 Populate through FOUND-001 substeps:
@@ -74,11 +75,11 @@ Populate only actual implemented tables/entities. Do not list future Product Bib
 None currently blocking FOUND-001. SETUP-000 behavior has been incorporated into the bootstrap/supervisor protocol.
 
 ## Known implementation limitations
-No application implementation has started yet.
+No accepted application implementation exists yet.
 
 ## Next action
-1. Verify/paste `PROJECT-KNOWLEDGE.md` into Project settings → Customization → Knowledge if not already installed.
-2. Run supervisor-provided SETUP-001 verification/cleanup prompt.
-3. Verify the 30 workspace skills are active and remove duplicate temporary `.agents/skills/` drafts.
-4. Record Lovable-created application repository/default branch.
-5. Begin `FOUND-001A` only after setup verification passes.
+1. Run the supervisor-provided clean restart audit prompt.
+2. Verify the actual Lovable-created application repository/default branch and current generated stack.
+3. Verify workspace skills are active; remove duplicate temporary `.agents/skills/` drafts only after confirmed.
+4. Classify the application as clean starter / partially modified / substantially built.
+5. Begin `FOUND-001A` only after restart audit passes.
