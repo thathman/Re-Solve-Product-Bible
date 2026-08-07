@@ -2,7 +2,7 @@
 
 The Product Bible is the canonical source of truth for Re:Solve product behavior, flows, roles, states, permissions, information architecture, integrations, extension points, design system, build discipline and acceptance criteria.
 
-The product may be specified comprehensively here, but implementation must be delivered in small, reviewable Lovable build slices.
+The product may be specified comprehensively here, but implementation is delivered in small, reviewable Lovable build slices.
 
 ## Canonical Foundation
 - [Product Thesis](00-foundation/product-thesis.md)
@@ -22,15 +22,9 @@ The product may be specified comprehensively here, but implementation must be de
 - [Performance, Device & Design QA](09-design/performance-device-and-design-qa.md)
 
 ### Non-negotiable UI direction
-Re:Solve's Core UI Framework is source-owned and heavily influenced/implemented from:
-- shadcn/ui
-- Untitled UI React
-- Tremor
-- React Aria / Base UI / Radix
-- TanStack Table / TanStack Query
-- approved specialist libraries where justified
+Re:Solve's Core UI Framework is source-owned and heavily influenced/implemented from shadcn/ui, Untitled UI React, Tremor, React Aria/Base UI/Radix, TanStack Table/Query and approved specialist libraries where justified.
 
-Navigation must remain simple and business-readable, closer to straightforward Perfex/Brevo-style clarity than Odoo app launchers or Twenty-style object/module navigation.
+Navigation remains simple and business-readable, closer to straightforward Perfex/Brevo-style clarity than Odoo app launchers or Twenty-style object/module navigation.
 
 ## Admin OS
 ### Shell and Home
@@ -116,6 +110,7 @@ Chatwoot Captain remains a separate support AI owned by Chatwoot.
 ## Extensions
 - [Plugin Platform](05-extensions/plugins.md)
 - [Connector Platform](05-extensions/connectors.md)
+- [Planned Domain Extensions](05-extensions/planned-domain-extensions.md)
 
 ## Connector Contracts
 - [Core Connector Contracts](06-connectors/core-connectors.md)
@@ -130,9 +125,9 @@ Uptime Kuma is optional compatibility connector territory; Re:Solve has a native
 ## Security
 - [Security Architecture](08-security/security-architecture.md)
 
-## Lovable Build System
+# Lovable Build System
 - [Lovable Development Environment](10-build/lovable-environment.md)
-- [Lovable Persistent Knowledge](10-build/lovable-knowledge.md)
+- [Lovable Persistent Knowledge — detailed source](10-build/lovable-knowledge.md)
 - [Lovable Skills Catalogue](10-build/lovable-skills.md)
 - [Lovable Setup Sequence](10-build/lovable-setup-sequence.md)
 - [Build Slice Protocol](10-build/build-slice-protocol.md)
@@ -140,21 +135,68 @@ Uptime Kuma is optional compatibility connector territory; Re:Solve has a native
 - [Demo Data Blueprint](10-build/demo-data-blueprint.md)
 - [FOUND-001 — Application + Core UI Foundation](10-build/prompts/FOUND-001-foundation.md)
 
-### Initial Lovable skill templates
-- `10-build/lovable-skills/resolve-feature/`
-- `10-build/lovable-skills/resolve-ui/`
-- `10-build/lovable-skills/resolve-shell/`
-- `10-build/lovable-skills/resolve-form/`
-- `10-build/lovable-skills/resolve-data-table/`
-- `10-build/lovable-skills/resolve-security-review/`
-- `10-build/lovable-skills/resolve-pwa/`
-- `10-build/lovable-skills/resolve-release/`
-- `10-build/lovable-skills/self-host-check/`
+## Lovable Launch Pack
+Start here when the Product Bible is merged and the first Lovable build is ready:
+- [START HERE](10-build/lovable-launch/START-HERE.md)
+- [Pre-build Readiness Checklist](10-build/lovable-launch/READINESS-CHECKLIST.md)
+- [Paste-ready Project Knowledge](10-build/lovable-launch/PROJECT-KNOWLEDGE.md)
+- [Application `AGENTS.md` template](10-build/lovable-launch/AGENTS.md.template)
+- [GitHub transition plan](10-build/lovable-launch/GITHUB-TRANSITION.md)
+- [FOUND-001 review gate](10-build/lovable-launch/FOUND-001-REVIEW.md)
+- [Build State tracker](10-build/lovable-launch/BUILD-STATE.md)
 
-Deprecated `airix-*` skill names are removed; Re:Solve is the reusable product and Airix Media is the first Operating Entity/deployment.
+Current Lovable Git sync creates a new repository and does not import the existing legacy `thathman/Re-Solve` repository. The launch pack therefore preserves the legacy repository as reference during FOUND-001 and defines a controlled post-foundation repository naming transition.
+
+## Lovable Skills
+Installation/governance:
+- [Skill installation guide](10-build/lovable-skills/INSTALL.md)
+- [Skill manifest](10-build/lovable-skills/manifest.md)
+
+### Build/UI
+- `resolve-feature`
+- `resolve-ui`
+- `resolve-shell`
+- `resolve-navigation`
+- `resolve-responsive`
+- `resolve-form`
+- `resolve-data-table`
+- `resolve-record-workspace`
+- `resolve-dashboard`
+- `resolve-portal`
+
+### Design/quality
+- `resolve-accessibility`
+- `resolve-design-review`
+- `resolve-security-review`
+- `resolve-pwa`
+- `resolve-debug`
+- `resolve-release`
+- `self-host-check`
+
+### Platform
+- `resolve-notifications`
+- `resolve-attention`
+- `resolve-action-registry`
+- `resolve-settings`
+- `resolve-data-migration`
+
+### Extensions/machine interfaces
+- `resolve-plugin`
+- `resolve-connector`
+- `resolve-automation`
+- `resolve-api`
+- `resolve-mcp`
+
+### Specialist domains
+- `resolve-monitoring`
+- `resolve-document`
+- `resolve-ai`
+- `resolve-vault`
+
+Every skill has a canonical `10-build/lovable-skills/<skill>/SKILL.md` file. Deprecated `airix-*` skill names are removed.
 
 ## Governing Workflow
-Product specification should follow the installed Re:Solve planning skills:
+Product specification follows the installed Re:Solve planning skills:
 - `.github/skills/re-solve-spec/`
 - `.github/skills/flow-by-flow/`
 - `.github/skills/flow-prototype/`
@@ -163,12 +205,15 @@ Planning/build sequence:
 1. establish governing product truth;
 2. define actors/Principals, goal, scope, states, permissions and flows;
 3. specify the complete product experience;
-4. validate flow completeness and cross-domain ownership;
-5. prototype major/high-risk interactions where needed;
+4. validate flow completeness/cross-domain ownership;
+5. prototype high-impact interactions where needed;
 6. define acceptance criteria;
 7. break implementation into small Lovable build slices;
-8. run functional/security/responsive/accessibility/Core UI/visual/portability review;
-9. update Product Bible first if implementation reveals a real contradiction.
+8. configure Project Knowledge and relevant canonical skills;
+9. build one slice;
+10. run functional/security/responsive/PWA/accessibility/Core UI/design/portability review;
+11. update Product Bible first if implementation reveals genuine new product truth;
+12. only then proceed to the next slice.
 
 ## Explicit Product Exclusions
 Re:Solve core does **not** include:
@@ -182,7 +227,7 @@ Re:Solve core does **not** include:
 
 Teams, assignments, Account Teams, Project deadlines, Reminders, Booking and operational Expenses are allowed business capabilities but must not drift into HR/Timesheet systems.
 
-## Planned Spec Areas
+## Spec Areas
 ```text
 00-foundation/
 01-admin/
