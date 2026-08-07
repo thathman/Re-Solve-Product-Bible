@@ -1,330 +1,219 @@
-# Re:Solve AI
+# Àríyá — Re:Solve AI
 
 ## Purpose
+**Àríyá** is Re:Solve's built-in intelligence layer and user-facing AI operator. Àríyá helps users understand records, find information, draft work, detect operational risk, summarize complex situations and execute carefully controlled actions.
 
-Re:Solve AI is the built-in intelligence layer for operating Re:Solve itself. It helps staff understand records, find information, draft work, detect operational risk, summarize complex situations, and execute carefully permissioned actions.
+Àríyá is separate from Chatwoot Captain. Chatwoot retains its own support AI, support prompts, support Knowledge and support runtime.
 
-Re:Solve AI is separate from Chatwoot Captain. Chatwoot retains its own support AI, support prompts, support knowledge, and support runtime.
+Internal technical objects may still use names such as `AIProvider`, `AIProfile`, `AIRun`, `AITool` and `AIConnector`.
+
+See `04-ai/ariya-experience.md` for product identity and interface behavior.
 
 ## Product goals
-
-- reduce operational scanning and repetitive writing
-- make dense business information easier to understand
-- surface important changes and risks proactively
-- provide natural-language search over permitted Re:Solve data
-- support controlled actions without bypassing user permissions
-- expose reusable AI capabilities to Admin and selected Portal experiences
-- remain provider-abstracted
+- reduce operational scanning/repetitive writing;
+- make dense business information understandable;
+- surface important Attention, changes and risks;
+- provide natural-language search over permitted Re:Solve data;
+- support controlled registered actions without bypassing permissions;
+- expose reusable AI capability to Admin and selected Portal experiences;
+- remain provider-abstracted;
+- show evidence/source/freshness for material business claims.
 
 ## Non-goals
-
-- replacing Chatwoot Captain
-- unrestricted autonomous operation
-- arbitrary SQL or raw database access
-- reading Vault secrets by default
-- exposing data the caller cannot access through normal Re:Solve permissions
+- replacing Chatwoot Captain;
+- unrestricted autonomous operation;
+- arbitrary SQL/database access;
+- unrestricted external HTTP/provider access;
+- generic Vault secret retrieval;
+- exposing data outside caller scope;
+- silently sending/accepting/signing consequential commercial documents.
 
 ## Provider model
+Àríyá consumes an `AIConnector`/provider abstraction. Initial preferred provider may be OpenRouter while the product remains provider-neutral.
 
-Re:Solve AI consumes an `AIConnector`/provider abstraction. Initial preferred provider may be OpenRouter, while the product remains provider-neutral.
+Configuration may define default/fast/reasoning/long-context/fallback/embedding models, limits and per-feature routing.
 
-Configuration may define:
-- default model
-- fast model
-- reasoning model
-- long-context model
-- fallback model
-- embeddings model where needed
-- provider limits
-- per-feature model routing
+## AI Gateway
+All provider requests flow through a Re:Solve AI Gateway responsible for:
+- caller Principal;
+- feature/context;
+- provider/model routing;
+- tool/action registry;
+- permissions;
+- usage/budget;
+- redaction/data policy;
+- timeout/retry;
+- audit metadata;
+- safety/guardrails.
 
-## AI surfaces
+Business features do not call provider SDKs directly.
 
-### Global Assistant
+## Surfaces
 
-Accessible from the Admin shell through a command/assistant surface. It can answer questions and invoke permitted tools.
+### Global Àríyá
+Accessible through TopBar and Command Palette. It can answer questions and propose/invoke permitted actions.
 
 Examples:
 - What needs my attention today?
-- Which clients have overdue invoices and open projects?
+- Which clients have overdue invoices and active project risk?
 - Show properties with renewals in the next 30 days.
-- Summarize Kampala University's current work.
+- Explain why this Property is degraded.
 - Draft a client update for this project.
 
-### Record Assistant
+### Record Àríyá
+Available contextually in selected Organisation, Contact, Property, Project, Opportunity, commercial/billing, Request, Incident, Knowledge and document workspaces.
 
-Available in selected record workspaces:
-- Organisation
-- Contact
-- Property
-- Project
-- Opportunity
-- Invoice/Commercial records
-- Knowledge
+Context is provided by controlled tools/services rather than unrestricted page/database scraping.
 
-It receives record context through controlled tools rather than unrestricted page scraping.
-
-### Daily Briefing
-
-A generated operational briefing prioritizing:
-- urgent work
-- overdue commitments
+### Operational Briefing
+Àríyá briefing may prioritize:
+- Attention
+- My Work
 - approvals
-- property health
+- renewals
+- Property Posture/incidents
 - commercial risk
+- overdue receivables
 - client actions
-- important notifications
-- upcoming deadlines
+- important notifications/deadlines
 
-Every briefing item should link to source evidence.
-
-### Summaries
-
-Generate concise summaries of:
-- organisation relationship history
-- project status
-- project activity
-- property health
-- commercial history
-- notification cluster
-- document/knowledge content where permitted
+Every important item links to source evidence.
 
 ### Drafting
-
-Examples:
-- project update
-- proposal text
-- follow-up email
-- internal note
+May draft:
+- proposal scope/narrative
+- contract/SOW narrative
+- project/client updates
+- email/WhatsApp message
 - report narrative
-- client-facing explanation
-- knowledge article draft
+- internal note
+- knowledge article
 
-AI drafts remain drafts until user submits/sends unless an explicitly approved automation says otherwise.
+Drafts remain drafts until deliberately applied/sent/published unless an explicitly approved Automation governs the next action.
 
 ### Analysis
+Potential analyses include client risk/attention, project slippage, renewal exposure, receivables, Property Posture patterns, opportunity forecast context and data-quality explanation.
 
-Potential analyses:
-- client attention/risk signals
-- project slippage
-- overdue dependencies
-- workload concentration
-- renewal exposure
-- receivables summary
-- property-health patterns
+The UI distinguishes AI inference from deterministic facts.
 
-The UI must distinguish AI inference from deterministic system facts.
+## Tool and Action model
+Àríyá uses controlled read tools and the shared Command and Action Registry for mutations.
 
-## AI Gateway
-
-All AI requests flow through a Re:Solve AI Gateway responsible for:
-- caller identity
-- feature context
-- model routing
-- tool registry
-- permissions
-- usage tracking
-- redaction
-- timeout/retry policy
-- audit metadata
-- safety/guardrails
-
-Business features should not call provider SDKs directly.
-
-## Tool model
-
-AI tools are controlled business capabilities.
-
-Examples:
+Examples of read tools:
 - get_organisation_summary
 - search_contacts
-- get_property_status
+- get_property_posture
 - get_project_status
-- list_overdue_tasks
+- list_attention
 - get_invoice_status
 - search_knowledge
+- get_request
+
+Examples of registered writes:
 - create_task
+- create_reminder
 - draft_client_update
+- create_request
 - run_allowed_workflow
 
-Connector-backed tools may include:
-- get_ojs_submission_status
-- get_store_order_status
-- get_monitor_status
+Connector-backed reads/actions remain behind provider-neutral capability contracts.
 
-Tools inherit caller permissions and record scoping.
+## Permissions
+Àríyá never expands authority.
 
-## Permission model
+Every tool/action performs fresh server-side authorization using caller Principal, capability and scope.
 
-AI never expands a user's authority.
-
-If a user cannot view an invoice normally, AI cannot reveal it.
-If a user cannot reveal Vault contents, AI cannot reveal them.
-If a user cannot modify a project, AI cannot modify it.
-
-Tool execution performs server-side authorization at execution time.
+If the caller cannot view/reveal/change something normally, Àríyá cannot reveal/change it.
 
 ## Sensitive information
-
 ### Vault
+Default AI access excludes raw passwords, tokens, keys and confidential value retrieval. Authorized metadata may be searchable when policy allows.
 
-Default AI access:
-- no secret values
-- no password/key reveal
-- optionally searchable non-sensitive metadata under permission
-
-### Files
-
-AI can process files only where user visibility and file policy permit. Sensitive Vault documents follow stricter policy.
+### Files/Documents
+Àríyá may process authorized ordinary files/documents. Vault-protected documents follow stricter policy.
 
 ### Personal/client data
-
-Prompts/tools should send the minimum data required for the task. Provider requests must avoid irrelevant PII.
+Send only the minimum provider context required and honor configured provider data-class policy.
 
 ## Chatwoot separation
-
-Chatwoot owns:
-- Captain
-- support-answer generation
-- support knowledge retrieval
-- customer-support AI workflows
-
-Re:Solve AI may query safe support summaries through the Chatwoot connector if a Re:Solve workflow needs operational context, but must not become a proxy Captain implementation.
+Chatwoot Captain remains responsible for support-answer generation and Chatwoot support Knowledge. Àríyá may query safe provider-neutral support summaries/references when operational context requires it.
 
 ## Knowledge retrieval
+Àríyá uses Re:Solve Knowledge under caller-aware visibility. Draft/internal content never leaks to client users.
 
-Re:Solve AI uses Re:Solve Knowledge with caller-aware visibility.
+## Sources, provenance and freshness
+Material answers should expose source records and freshness where interpretation depends on them. Synced/derived values follow Data Provenance rules.
 
-Knowledge scopes may include:
-- internal
-- organisation-specific
-- property-specific
-- portal-visible
-- plugin-contributed
-
-Retrieval must preserve visibility at query time and result time.
+Àríyá must distinguish:
+- current deterministic fact;
+- stale/unknown source;
+- AI inference;
+- suggested action;
+- completed registered action.
 
 ## AI activity and audit
+Track feature, caller, provider/model, duration, usage, tool/action calls, target records, confirmations/approvals and outcome according to retention policy.
 
-Track:
-- feature
-- user/service identity
-- model/provider
-- start/end
-- tokens/usage where available
-- tool calls
-- target records
-- success/failure
-- confirmation/approval references
-
-Avoid storing full sensitive prompts/responses indefinitely merely for debugging. Retention and redaction are configurable.
+Do not retain full sensitive prompts/responses indefinitely solely for debugging.
 
 ## Usage and limits
-
-Settings should expose:
-- provider status
-- model status
-- usage by period
-- usage by feature
-- cost where provider returns it
-- budget thresholds
-- rate limits
-- per-role/feature limits
-
-Budget alerts use Notifications.
-
-## AI settings
-
-Sections:
-- Provider
-- Models
-- Feature Routing
-- Tools
-- Knowledge
-- Guardrails
-- Usage & Budgets
-- Retention
-- Audit
+Settings expose provider/model state, usage, cost where available, budgets, rate limits and feature/role limits. Budget/availability issues may produce Attention/Notifications.
 
 ## Guardrails
+Configurable controls may:
+- disable write actions;
+- disable selected tools;
+- require confirmation for writes;
+- require approval/step-up for high-impact actions;
+- restrict roles/organisations/properties;
+- restrict provider data classes;
+- cap request/output size.
 
-Configurable policies:
-- disable write tools globally
-- disable specific tools
-- require confirmation for writes
-- require approval for sensitive actions
-- restrict AI to selected roles
-- restrict provider data classes
-- cap output/input size
-- disable AI for selected organisations/properties
-
-## Portal AI
-
-Portal-facing AI is optional and separately permissioned. It must be narrower than staff AI and restricted to client-visible records/knowledge.
+## Portal Àríyá
+Optional and separately permissioned. It is narrower than staff Àríyá.
 
 Potential uses:
-- summarize own project
-- explain own invoice
-- find client-visible documentation
-- understand property status
+- summarize own project;
+- explain own invoice;
+- find client-visible Knowledge;
+- explain own Property/incident status;
+- explain an approval/request/renewal action.
 
-It must not expose internal notes, staff-only health reasoning, other clients, unreleased documents, or Vault secrets.
+Never expose internal notes, other clients, staff-only risk reasoning, unreleased documents or Vault secrets.
 
-## Notifications
-
-AI can generate notification summaries/digests, but deterministic event priority and mandatory delivery rules remain controlled by the Notification Platform.
-
-AI may identify a risk and propose a notification, but the product should visibly mark AI-derived alerts where appropriate.
+## Notifications and Attention
+Àríyá may summarize Attention/Notifications and may propose an AI-derived Attention signal when clearly labeled. Deterministic policy owns notification priority/delivery and authoritative Attention state.
 
 ## Automations
-
-AI can be used as an automation step for:
-- classify
-- summarize
-- draft
-- extract structured fields
-- prioritize
-
-Any downstream side effect follows normal automation permissions and confirmation rules.
+AI may be a controlled Automation step for classify, summarize, draft, extract and prioritize. Downstream side effects follow Action Registry/Automation permissions.
 
 ## API and MCP
-
-AI capabilities may be exposed through API/MCP as controlled operations, but external AI clients should generally consume underlying Re:Solve tools directly rather than recursively calling the Re:Solve assistant.
+External agents should normally consume underlying Re:Solve tools/actions directly rather than recursively calling Àríyá as an unrestricted proxy.
 
 ## Failure states
+Handle provider/model unavailable, timeout, budget exceeded, tool denied, stale/unavailable source, context too large and output validation failure without corrupting business records.
 
-Handle:
-- provider unavailable
-- model unavailable
-- timeout
-- budget exceeded
-- tool denied
-- context too large
-- source unavailable
-- output validation failure
-
-UI should preserve the user's work and show recovery options.
+Àríyá should explicitly say when it lacks access/evidence rather than fabricate success.
 
 ## Acceptance criteria
-
-- Re:Solve AI and Chatwoot AI remain architecturally separate
-- AI provider can be replaced without rewriting business domains
-- AI cannot access records beyond caller permission
-- every write tool performs fresh authorization
-- Vault secrets are unavailable to generic AI retrieval
-- AI outputs distinguish inference from system fact where material
-- tool calls are auditable
-- provider failure does not corrupt business records
-- usage/budget visibility exists
+- Àríyá is the user-facing AI name;
+- Chatwoot Captain remains separate;
+- provider can be replaced without rewriting domains;
+- caller scope is enforced at tool/action execution;
+- Vault secrets remain unavailable to generic AI retrieval;
+- evidence/freshness and inference are distinguishable;
+- writes reuse registered Action policy;
+- usage/tool activity is auditable;
+- provider failure does not corrupt records.
 
 ## Lovable build slices
-
-1. AI settings/provider/model configuration UI with demo provider state
-2. AI Gateway contracts and read-only tool registry
-3. Global assistant UI using demo/read-only tools
-4. Record summaries and drafting
-5. Daily Briefing
-6. tool permissions + confirmation
-7. usage/audit views
-8. automation AI steps
-9. optional Portal AI
+1. Àríyá visual identity/trigger/panel within Core UI foundation using demo state only.
+2. AI settings/provider/model configuration UI.
+3. AI Gateway contracts and read-only tool registry.
+4. Global Àríyá using read-only demo/real tools.
+5. Record summaries and drafting.
+6. Operational Briefing from Attention.
+7. Action Registry integration + confirmation.
+8. usage/audit views.
+9. Automation AI steps.
+10. optional Portal Àríyá.
