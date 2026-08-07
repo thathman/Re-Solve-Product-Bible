@@ -1,738 +1,404 @@
 # Re:Solve Domain Model
 
 ## Purpose
+This document defines the conceptual Re:Solve domain model without locking database schema, ORM or backend framework.
 
-This document defines the initial conceptual domain model for Re:Solve. It describes product relationships and ownership without prematurely locking implementation details such as database schema, ORM, or backend framework.
-
-## Domain Map
+## Domain map
 
 ```text
 Workspace
-├── Users
-├── Roles / Permissions
+├── Operating Entities
+│   └── Brands
+├── Principals
+│   ├── Human Users
+│   ├── Service Accounts
+│   ├── API Clients
+│   ├── MCP Clients
+│   ├── Plugins
+│   └── Connectors
+├── Roles / Permissions / Access Grants
 ├── Teams
 ├── Organisations
 │   ├── Contacts
 │   ├── Memberships
+│   ├── Account Team
 │   ├── Properties
 │   ├── Client Services
 │   ├── Opportunities
 │   ├── Projects
+│   ├── Requests
 │   ├── Commercial Records
 │   ├── Billing Records
 │   ├── Support Context
 │   ├── Files
 │   ├── Vault Items
+│   ├── Knowledge
 │   └── Connector Mappings
-├── Knowledge
+├── Attention
 ├── Notifications
-├── Automations
-├── Plugins
-├── Connectors
-├── API / MCP Clients
+├── Collaboration / Activity
+├── Approvals
+├── Documents
+├── Monitoring / Renewals / Incidents
+├── Automations / Actions / Reminders
+├── Saved Views / Favorites / Recents
+├── Custom Fields / Taxonomy
+├── Imports / Exports / Data Quality
+├── Plugins / Connectors
+├── Àríyá / AI
 ├── Audit
 └── System Configuration
 ```
 
-## 1. Identity and Access Domain
-
+## 1. Workspace, Operating Entity and Brand
 ### Workspace
+Top-level installation boundary. A first deployment has exactly one Workspace.
 
-Top-level operational boundary for an installation or tenant if multi-workspace behavior is later required.
+### Operating Entity
+Business/legal entity operating within Re:Solve and owning client/commercial relationships, document/billing identity and sender configuration.
 
-### User
+### Brand
+Customer-facing identity belonging to an Operating Entity.
 
-Authenticated identity.
+## 2. Identity and Access
+### Principal
+General authorization actor. Principal subtypes include Human User, Service Account, API Client, MCP Client, Plugin and Connector.
+
+### Human User
+Authenticated person. Staff/client/contractor behavior is derived from memberships/access rather than separate authentication species.
 
 ### Organisation Membership
-
-Links a user to an organisation with status, role, permissions, and potentially explicit scope.
+Links a User to an Organisation with status, role, permissions and scope.
 
 ### Team
-
-Operational grouping of users.
+Operational grouping for assignment/routing/ownership/access defaults. It is not an HR record.
 
 ### Role
-
 Named permission bundle.
 
 ### Permission
-
-Stable capability identifier.
+Stable capability using canonical grammar `domain.action` or `domain.resource.action`.
 
 ### Access Grant
-
-Explicit scoped permission assignment that may target an organisation, property, project, vault item, or other protected resource.
-
-Potential attributes:
-- principal
-- scope type
-- scope id
-- permissions/role
-- inheritance behavior
-- source
-- starts at
-- expires at
-- revoked at
-
-## 2. Organisation and CRM Domain
-
-### Organisation
-
-Central business entity representing a prospect, client, partner, vendor, or other organisation.
-
-Important state dimensions may include:
-- relationship type
-- lifecycle status
-- account owner
-- health
-- risk
-- tags
-- segments
-- billing profile
-- portal status
-
-### Contact
-
-Person associated with an organisation.
-
-### Lead
-
-Potential commercial relationship not yet qualified.
-
-### Opportunity
-
-Qualified commercial opportunity.
-
-### Pipeline
-
-Configurable commercial process.
-
-### Pipeline Stage
-
-Ordered stage within a pipeline.
-
-### Activity
-
-User-readable interaction or business timeline item.
-
-Examples:
-- call
-- meeting
-- email
-- note
-- status change
-- payment received
-- project started
-
-## 3. Property Domain
-
-### Property
-
-Central asset/entity representing digital or operational infrastructure.
-
-Core properties should remain generic enough to support extensible types.
-
-Potential base attributes:
-- organisation
-- name
-- type
-- status
-- description
-- owner/team
-- parent
-- primary URL/identifier
-- environment
-- health summary
-- lifecycle dates
-- tags
-- custom fields
-
-### Property Relationship
-
-Supports typed relationships beyond parent-child.
-
-### Property Access Grant
-
-Scopes access to property and optionally descendants.
-
-### Property Health
-
-Derived or cached operational health assembled from monitoring, renewals, connectors, incidents, and manual status.
-
-### Property Renewal
-
-Tracks renewal/expiry obligations such as domain, hosting, maintenance, license, or service renewal.
-
-## 4. Service Domain
-
-### Service Catalogue Item
-
-Reusable definition of a service Re:Solve's operating organisation offers.
+Explicit scoped authorization assignment targeting a Principal and resource scope.
 
 Potential fields:
-- name
-- category
-- description
-- pricing model
-- default price
-- currency
-- billing frequency
-- taxable
-- default SLA
-- default deliverables
-- active/inactive
+- principal
+- scope type/id
+- permissions/role
+- inheritance
+- source/grantor
+- starts/expires
+- revoked
+
+## 3. Organisation and CRM
+### Organisation
+Central relationship entity representing prospect, client, partner, vendor or another organisation.
+
+Important dimensions:
+- relationship/lifecycle
+- account team
+- health/risk
+- tags/segments
+- billing profile
+- portal state
+- Operating Entity relationship
+
+### Contact
+Person associated with an Organisation.
+
+### Lead
+Early commercial lead that may exist before complete Organisation/Contact records are established.
+
+### Opportunity / Pipeline / Stage
+Qualified commercial opportunity and its configurable sales process.
+
+### Account Team Assignment
+Named operational responsibility such as Account Owner or Technical Owner. Not HR.
+
+### Client Lifecycle / Relationship Review
+Cross-domain onboarding/active/offboarding state and periodic account-review records.
+
+## 4. Property and Operations
+### Property
+First-class digital/operational asset.
+
+Base attributes may include Organisation, name, type, status, description, owner/team, parent, URL/identifier, environment, posture summary, lifecycle dates, tags and custom fields.
+
+### Property Relationship
+Typed relationship beyond parent-child.
+
+### Property Access Grant
+Property/descendant access scope.
+
+### Monitor
+Configured native/external check definition.
+
+### Monitoring Signal
+Time-bound observed result from a probe/connector.
+
+### Property Posture
+Derived explainable health state assembled from current evidence.
+
+### Renewal / Expiry Obligation
+First-class obligation for Domain, Hosting, Certificate, Service, Contract, license or other managed dependency.
+
+### Maintenance Window
+Planned operational maintenance/suppression context.
+
+### Incident
+Operational service-impact event related to one or more Properties/signals/support references.
+
+## 5. Service Domain
+### Service Catalogue Item
+Reusable service offering.
+
+Fields may include name, category, description, pricing model, default price/currency, billing frequency, taxable behavior, default SLA, default deliverables and property applicability.
 
 ### Client Service
-
-Instantiated service relationship for an organisation.
-
-Links may include:
-- organisation
-- service catalogue item
-- properties
-- contract
-- project/template
-- billing schedule
-- support entitlement
-- owner
-- start/end/renewal
+Instantiated service relationship linking Organisation, catalogue item, properties, contract, billing, support entitlement, owner, start/end/renewal and status.
 
 ### Service Entitlement
+Defines included rights/scope/SLA, not usage-credit consumption.
 
-Defines included service/support rights, limits, frequency, and SLA behavior.
+**There is no core Client Service Consumption meter.**
 
-## 5. Project and Delivery Domain
-
+## 6. Projects and Delivery
 ### Project
-
-Bounded body of work for an organisation.
-
-May link to:
-- organisation
-- properties
-- services
-- opportunity
-- proposal/estimate
-- contract
-- invoices
+Bounded body of work linked to Organisation, Properties, Services and relevant commercial/billing records.
 
 ### Project Member
+Participant/project-level responsibility.
 
-Participant and project-level role.
+### Task / Recurring Task Definition
+Actionable work plus optional recurrence template that generates ordinary task occurrences.
 
-### Task
+### Milestone / Deliverable / Client Action
+Delivery checkpoints, outputs and explicit client dependencies.
 
-Actionable work unit.
-
-### Subtask / Checklist Item
-
-Smaller completion elements under tasks where appropriate.
-
-### Milestone
-
-Significant project checkpoint.
-
-### Deliverable
-
-Output intended for completion, delivery, review, or approval.
-
-### Client Action
-
-Explicit dependency owned by client.
-
-### Approval Request
-
-Generic approval record.
-
-Potential target types:
-- deliverable
-- proposal
-- estimate
-- contract
-- change request
-- expense
-- other plugin-defined records
-
-### Approval Decision
-
-Decision event with outcome, actor, comment, timestamp, and optional change request detail.
+### Approval Request / Approval Decision
+Generic approval workflow and decision evidence.
 
 ### Change Request
-
-Request to alter scope, output, timing, or implementation.
+Structured change to scope/timing/deliverables.
 
 ### Risk / Issue
-
-Project risk, blocker, decision, or issue requiring tracking.
-
-### Time Entry
-
-Recorded work time where time tracking is enabled.
+Project risk/blocker/decision tracking.
 
 ### Expense
+Optional operational/project/client cost record.
 
-Project or operational expense where enabled.
+**No Time Entry or Timesheet domain exists.**
 
-## 6. Commercial Domain
+## 7. Requests
+### Request
+Structured ask awaiting/under triage or fulfillment.
 
-### Proposal
+### Request Type
+Configurable request classification/intake behavior.
 
-Structured commercial proposal.
+### Request Conversion/Link
+Traceability from Request to resulting Task, Project, Change Request, Approval, Opportunity/Estimate, Chatwoot support reference, Vault request or plugin record.
 
-### Estimate / Quote
+## 8. Commercial and Document Domain
+### Proposal / Estimate / Quote / Contract
+First-class commercial records.
 
-Priced offer/estimate.
+### Document Template / Template Version
+Reusable branded structure/merge schema.
 
-### Contract
+### Document Draft / Document Version
+Rendered/editable representation tied to a business record.
 
-Commercial agreement metadata and lifecycle.
+### Final Snapshot
+Immutable exact content accepted/executed by a recipient.
 
 ### Signature Envelope Reference
+External SignatureConnector transaction mapping.
 
-Connector-owned signing transaction reference linked to a commercial document.
+### Secure External Access Grant
+Narrow expiring/revocable guest access to a specific document/action.
 
-### Commercial Template
+## 9. Billing and Spend
+### Invoice / Invoice Line
+Receivable record and line items.
 
-Reusable proposal, estimate, contract, terms, or content template.
-
-## 7. Billing Domain
-
-### Invoice
-
-Receivable record.
-
-### Invoice Line
-
-Individual billed item.
-
-### Payment
-
-Confirmed payment record.
-
-### Payment Allocation
-
-Links a payment to one or more invoices/receivables.
+### Payment / Payment Allocation
+Confirmed monetary transaction and allocation.
 
 ### Payment Attempt / Provider Event
+Provider lifecycle event/attempt.
 
-External payment-provider lifecycle event or attempt.
-
-### Credit Note
-
-Reduces or reverses invoice value.
-
-### Refund
-
-Tracks confirmed refund lifecycle.
-
-### Receipt
-
-Verified proof-of-payment artifact linked to confirmed financial events.
+### Credit Note / Refund / Receipt
+Financial adjustment/refund/proof-of-payment records.
 
 ### Subscription
-
 Recurring commercial billing agreement owned by Re:Solve.
 
 ### Provider Subscription Mapping
-
-Connector mapping between Re:Solve subscription and external provider subscription.
+External provider mapping.
 
 ### Reconciliation Record
+Expected-versus-external financial matching.
 
-Tracks matching between expected Re:Solve financial records and external provider/bank events.
+### Payment Schedule / Deposit
+Planned installment/deposit terms linked to commercial/billing records.
 
-## 8. Support Operations Domain
+### Account Statement
+Generated client financial statement assembled from billing truth through Document Studio.
 
-Chatwoot owns message/conversation truth.
+### Expense / Recurring Cost
+Operational/vendor cost tracking where enabled. No payroll.
 
-Re:Solve may own:
+## 10. Support Operations
+Chatwoot owns support conversation/message truth.
 
-### Support Mapping
+Re:Solve owns:
+- Support Mapping
+- Support Entitlement
+- Support Summary
+- Incident
+- commercial/operational SLA context
 
-Links organisation/contact/property/service context to Chatwoot identifiers.
+## 11. Communications
+### Message Template / Outbound Message / Delivery Attempt / Sender Identity
+Shared operational messaging metadata for email, WhatsApp, SMS and other channels.
 
-### Support Entitlement
+### Announcement
+Controlled staff/client operational notice, distinct from marketing campaigns.
 
-Defines allowed support scope and SLA.
+## 12. Notification and Attention
+### Notification / Notification Delivery / Preference / Policy / Digest
+Durable awareness and channel-delivery model.
 
-### Support Summary
+### Attention Item
+Current condition still requiring awareness/action.
 
-Derived/cached metrics and conversation state for operational display.
+Attention resolves from underlying condition, not merely notification-read state.
 
-### Incident
+## 13. Collaboration and Activity
+### Comment / Internal Note / Mention / Follow
+Shared collaboration model with explicit audience and record scope.
 
-Operational incident that may be related to Chatwoot conversations but remains a Re:Solve operational record.
+### Activity
+User-readable timeline event.
 
-### SLA Policy
+Activity is separate from Audit.
 
-Defines response/resolution expectations where Re:Solve needs operational awareness independent of Chatwoot internals.
+## 14. Files and Vault
+### File / File Version / File Link / Share
+Ordinary managed file domain.
 
-## 9. Communications Domain
+### Vault Item / Secret Version / Vault File Content / Grant / Access Request / Access Event / Rotation
+Protected confidential domain.
 
-### Message Template
+A protected confidential document is represented as a Vault Item and must not retain a parallel ordinary File access path.
 
-Reusable message content for email, WhatsApp, SMS, push, or other channels.
+Both domains may use the same provider-neutral storage infrastructure.
 
-### Outbound Message
+## 15. Knowledge
+Knowledge Space, Article, Category, Revision, Source and Access Policy.
 
-Operational message initiated by Re:Solve.
+Re:Solve Knowledge is separate from Chatwoot support Knowledge.
 
-### Delivery Attempt
-
-Tracks provider/channel delivery status.
-
-### Sender Identity
-
-Configured sending identity/account/channel.
-
-WhatsApp/Baileys belongs here rather than the managed-customer-support domain.
-
-## 10. Notification Domain
-
-### Notification
-
-User awareness record.
-
-### Notification Event
-
-Source event that generated one or more notifications.
-
-### Notification Delivery
-
-Per-channel delivery attempt/state.
-
-### Notification Preference
-
-User preference by event/category/channel.
-
-### Notification Policy
-
-System/default rules controlling mandatory delivery, escalation, priority, digest behavior, and fallback.
-
-### Digest
-
-Grouped notification summary for a time interval.
-
-## 11. File Domain
-
-### File
-
-Managed file metadata.
-
-### File Version
-
-Versioned binary/document revision where versioning applies.
-
-### File Link
-
-Relationship between a file and any supported business record.
-
-### File Share
-
-Controlled sharing state where needed.
-
-Files may be ordinary or confidential. Confidential files may be governed by Vault controls.
-
-## 12. Secure Vault Domain
-
-### Vault Item
-
-Protected confidential record.
-
-Potential types:
-- credential
-- secret
-- note
-- document
-- file
-- recovery material
-
-### Vault Secret Version
-
-Version of protected secret material.
-
-### Vault File
-
-Confidential file attachment.
-
-### Vault Grant
-
-Explicit access grant.
-
-### Vault Access Request
-
-Request for temporary or privileged access.
-
-### Vault Access Event
-
-Audit-oriented access record for reveal/copy/download/share/revoke/etc.
-
-### Vault Rotation
-
-Rotation policy/history for credentials where applicable.
-
-## 13. Knowledge Domain
-
-### Knowledge Space
-
-Logical grouping/security boundary.
-
-### Knowledge Article
-
-Structured knowledge item.
-
-### Knowledge Category
-
-Classification hierarchy.
-
-### Knowledge Revision
-
-Version history.
-
-### Knowledge Source
-
-External or uploaded source used by Re:Solve AI/search where supported.
-
-### Knowledge Access Policy
-
-Controls staff/client visibility.
-
-## 14. Automation and Event Domain
+## 16. Actions, Automations, Reminders and Cadences
+### Action Definition
+Registered business operation with permission, scope, risk/confirmation/approval, input/output and interface availability.
 
 ### Domain Event
+Structured internal fact.
 
-Structured internal event.
+### Automation Workflow / Trigger / Condition / Step / Run
+Controlled workflow orchestration.
 
-### Automation Workflow
+### Reminder
+Lightweight future attention instruction.
 
-Configured automation definition.
-
-### Trigger
-
-Event, schedule, manual, webhook, connector, or AI-triggered start condition.
-
-### Condition
-
-Rule controlling workflow path.
-
-### Action
-
-Controlled operation.
-
-### Automation Run
-
-Execution instance.
-
-### Automation Step Run
-
-Per-step execution state.
+### Cadence / Activity Plan
+Reusable sequence of follow-up steps using shared actions/automations.
 
 ### Scheduled Job
+System/plugin recurring background work.
 
-System/plugin registered recurring work.
+## 17. Views and Extensibility
+### Saved View
+Saved query/presentation state with private/team/workspace/system visibility.
 
-## 15. Plugin Domain
+### Favorite / Recent Record
+Personal quick-access metadata; does not grant access.
 
-### Plugin Definition
+### Custom Field Definition / Value
+Typed deployment-specific field data.
 
-Installable extension metadata and declared capabilities.
+### Tag / Taxonomy
+Flexible labels versus controlled vocabularies.
 
-### Plugin Installation
+### Custom Record Type
+Advanced future extensibility, never a substitute for core domains.
 
-Installed version/state.
+## 18. Data Provenance, Import and Quality
+### Provenance Metadata
+Source, authority, freshness, connector/import/run and derived/native state.
 
-### Plugin Configuration
+### Import Batch / Migration Batch
+Mapped validated ingestion job.
 
-Scoped configuration.
+### Export Job
+Permission-aware generated export.
 
-### Plugin Permission Grant
+### Data Quality Issue
+Duplicate/stale/orphan/mapping/missing-data issue requiring review/fix.
 
-Approved capabilities.
+### Merge Record
+Audited merge decision preserving relationships/mappings/aliases.
 
-### Plugin Migration
+## 19. Plugin and Connector
+### Plugin Definition / Installation / Configuration / Permission Grant / Migration / Extension Registration
+Installable product-capability extension lifecycle.
 
-Versioned data/schema migration metadata.
+### Connector Definition / Instance / Credential Reference / Mapping / Integration Event / Health / Action
+External-system integration lifecycle.
 
-### Plugin Extension Registration
+Optional provider plugins may register connector implementations.
 
-Declared UI/API/event/job/search/report/MCP extensions.
+## 20. Àríyá / AI
+### AI Provider Configuration / Profile / Session / Tool / Run / Usage Record
+Technical AI runtime records.
 
-## 16. Connector Domain
+Àríyá is the user-facing assistant identity and consumes controlled Action/Data tools under caller permission.
 
-### Connector Definition
+## 21. API / MCP
+API Client, API Credential/Scope, Webhook Subscription/Delivery, MCP Client, Tool Registration and MCP Audit Event.
 
-Reusable integration type.
-
-### Connector Instance
-
-Configured external connection.
-
-### Connector Credential Reference
-
-Reference to protected credentials without exposing raw secrets in normal configuration data.
-
-### Connector Mapping
-
-Maps Re:Solve records to external identifiers.
-
-### Integration Event
-
-Inbound/outbound connector event.
-
-### Connector Health
-
-Derived state describing connectivity/configuration/functionality.
-
-### Connector Action
-
-Declared operation offered by connector.
-
-## 17. AI Domain
-
-### AI Provider Configuration
-
-Configured model/provider relationship for Re:Solve AI.
-
-### AI Profile
-
-Purpose-based model/tool/policy selection.
-
-Examples:
-- fast
-- balanced
-- reasoning
-- drafting
-
-### AI Conversation / Session
-
-Contextual Re:Solve AI interaction where conversation persistence is supported.
-
-### AI Tool
-
-Controlled operation available to AI.
-
-### AI Run
-
-Auditable model invocation/action trace where required.
-
-### AI Usage Record
-
-Token/cost/provider/model usage metadata.
-
-## 18. API / MCP Domain
-
-### API Client
-
-External client identity.
-
-### API Token / Credential
-
-Scoped credential.
-
-### API Scope
-
-Permission bundle for machine access.
-
-### Webhook Subscription
-
-Outbound event subscription.
-
-### Webhook Delivery
-
-Delivery attempt and retry state.
-
-### MCP Client
-
-Authorized agent identity.
-
-### MCP Tool Registration
-
-Tool definition and access policy.
-
-### MCP Audit Event
-
-Invocation record.
-
-## 19. Audit Domain
-
+## 22. Audit
 ### Audit Event
+Append-only accountability/security evidence with actor Principal, action, target, scope/context, timestamp, source/interface, correlation, summarized changes and outcome.
 
-Immutable/semi-immutable accountability record.
+## 23. Settings
+Settings are typed/scoped definitions rather than an unstructured global blob.
 
-Recommended dimensions:
-- actor type/id
-- action
-- target type/id
-- organisation
-- property
-- timestamp
-- source/interface
-- correlation id
-- security metadata
-- summarized changes
-- outcome
+Scopes may include Workspace, Operating Entity, Brand, user preferences, organisation defaults, property type, plugin and connector instance.
 
-## 20. Settings Domain
+## Cross-domain principles
+- Organisation is the major relationship root for clients/prospects/vendors.
+- Operating Entity represents the business doing the work.
+- Property is the major operational asset context.
+- Attention is current actionable state; Notification is awareness/delivery.
+- Activity is narrative; Audit is append-only accountability.
+- External identifiers live in mappings.
+- Provider-specific SDK concepts stay behind Connectors.
+- confidential content stays behind Vault controls.
+- derived/synced/AI data exposes provenance/freshness when material.
+- Action Registry centralizes consequential operations across UI/API/MCP/Àríyá/Automations.
 
-Settings should be scoped intentionally rather than stored as an unstructured global blob.
+## Explicit exclusions
+Do not create core domains for:
+- HR
+- payroll
+- attendance/leave/recruitment
+- employee performance management
+- timesheets/time tracking
+- Client Service Consumption/credit-hour usage metering
 
-Potential scopes:
-- system
-- workspace
-- organisation defaults
-- user preferences
-- module/plugin
-- connector instance
-
-A setting definition should specify:
-- owner
-- data type
-- validation
-- default
-- sensitivity
-- permissions
-- audit requirement
-- restart/reload behavior
-
-## Cross-Domain Relationship Principles
-
-### Organisation is a major relationship root
-
-Most business records should be attributable to an organisation when relevant.
-
-### Property is a major operational context
-
-Technical/service records should attach to property where doing so improves understanding and permissions.
-
-### Activity and Audit are separate
-
-Activity = useful narrative for users.
-Audit = accountability/security evidence.
-
-### External identifiers live in mappings
-
-Do not pollute core records with provider-specific fields when a connector mapping can hold them.
-
-### Sensitive material is separated from ordinary metadata
-
-Normal business records may reference protected Vault material but should not contain raw secrets.
-
-### Derived data is distinguishable
-
-Health scores, summaries, analytics, AI outputs, and cached connector data should be identifiable as derived/cached rather than authoritative source records.
-
-## Deferred Decisions
-
-The following should be specified later rather than assumed now:
-- exact database schema
-- exact multi-workspace/tenant implementation
-- custom field architecture
-- universal tagging architecture
-- record versioning breadth
-- accounting depth
-- polymorphic relation implementation
-- search indexing technology
-- event transport technology
-- object storage technology
-- final auth provider architecture
+## Deferred technical decisions
+Exact database schema, tenant implementation, polymorphic relation mechanics, search/indexing technology, event transport, object storage, monitoring-worker deployment and final auth-provider architecture remain implementation decisions.
