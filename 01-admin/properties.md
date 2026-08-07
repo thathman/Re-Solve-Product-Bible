@@ -1,434 +1,300 @@
 # Properties
 
 ## Purpose
+Properties are a central native object in Re:Solve. A Property represents a digital or operational asset that an Organisation owns, operates, publishes, hosts, manages or receives service for.
 
-Properties are a central native object in Re:Solve. A Property represents a digital or operational asset that an organisation owns, operates, publishes, hosts, manages, monitors, or receives service for.
+Properties prevent Domains, Websites, Journals, hosting, servers, stores and applications from becoming disconnected records scattered across modules.
 
-Properties prevent domains, websites, journals, servers, stores, and related assets from becoming disconnected records scattered across modules.
-
-A property is the context anchor for projects, support, credentials, monitoring, files, knowledge, services, renewals, automations, connectors, and client access.
+A Property is the context anchor for Projects, Requests, Support, Vault, native Monitoring, Property Posture, Renewals, Files, Knowledge, Services, Automations, Connectors and client access.
 
 ## Examples
-
-- Main corporate website
-- University website
-- Journal index
-- Individual OJS journal
+- Website
+- Journal / publication
+- OJS installation
 - WordPress site
 - WooCommerce store
 - Domain
 - Hosting account
 - Server
-- Email service
-- API/service endpoint
-- Other managed asset
+- application/service endpoint
+- other managed asset
 
-## Hierarchy
-
-Properties may have parent/child relationships.
+## Hierarchy and relationships
+Properties may use parent/child hierarchy plus typed relationships.
 
 Example:
-
-Kampala University
-- Main Website
-- KU Journals
-  - Journal A
-  - Journal B
-  - Journal C
-- Main Domain
-- Production Server
+```text
+Westbridge University
+├── Main Website
+├── WBU Journals
+│   ├── Westbridge Journal of Social Research
+│   └── Westbridge Business Review
+├── westbridge.example Domain
+└── Primary Hosting
+```
 
 Rules:
-- hierarchy is explicit
-- child permissions can inherit where policy allows
-- child properties may override service, connector, health, and access configuration
-- circular relationships are prohibited
-- moving a property between parents is audited
+- hierarchy is explicit;
+- circular relationships are prohibited;
+- descendant access may inherit only when policy allows;
+- child Properties can override service, monitoring, connector and access configuration;
+- moving hierarchy/relationship is audited;
+- typed relationships such as hosted-on/domain-for/depends-on remain distinguishable from parent-child.
 
 ## Property types
+Configurable type definitions may declare icon, descriptive/custom fields, permitted child/relationship types, relevant Connector capabilities, Posture evidence categories, default tabs and Service applicability.
 
-Core supports configurable property types. Each type may define:
-- icon
-- descriptive fields
-- supported connectors
-- health capabilities
-- default tabs
-- allowed child types
-- default service associations
-
-Core should ship sensible examples without hard-coding every future asset type.
+Core ships useful examples but does not hard-code every future type.
 
 ## Property List
+Use the canonical Re:Solve DataTable/Saved View patterns.
 
-### Purpose
-Give staff a fast portfolio view of all managed assets.
+Columns may include:
+- Property/reference;
+- Organisation;
+- type;
+- parent;
+- lifecycle status;
+- Property Posture;
+- owner/team;
+- primary URL/identifier;
+- next Renewal/Expiry obligation;
+- last monitoring evidence/freshness;
+- Connector state;
+- active Project/Request count;
+- Support/Incident state.
 
-### Columns
-Configurable fields may include:
-- property name
-- organisation
-- type
-- parent
-- status
-- health
-- service status
-- owner/team
-- primary URL/identifier
-- renewal/expiry
-- last check
-- connector status
-- active project count
-- support state
+Curated views:
+- All Properties
+- Needs Attention
+- Degraded/Critical
+- Renewals Soon
+- Maintenance
+- Unknown/Stale Monitoring
+- Archived
+- personal/team Saved Views
 
-### Views
-- all properties
-- websites
-- journals
-- domains
-- infrastructure
-- attention needed
-- maintenance due
-- expiring soon
-- disconnected
-- archived
-- saved views
-
-### Filters
-- organisation
-- type
-- parent
-- status
-- health
-- owner/team
-- connector
-- service
-- expiry range
-- maintenance state
-- tags
-- custom fields
-
-### Bulk actions
-Where permitted:
-- assign owner/team
-- tag
-- change status
-- schedule maintenance
-- export
-- trigger allowed health refresh
+Website/Journal/Domain/Hosting/etc. are normally filters/saved views rather than permanent root navigation.
 
 ## Property Workspace
 
-### Header
-Shows:
-- name
-- type
-- organisation
-- hierarchy breadcrumb
-- operational status
-- health state
-- owner/team
-- primary identifier/URL
-- important badges
-- primary actions
+### RecordHeader
+Shows name, human reference, type, Organisation, hierarchy/context, lifecycle status, Posture, owner/team, primary identifier and primary/overflow actions.
 
-Primary actions can include:
-- edit
-- create child
-- start project
-- add service
-- add connector instance
-- share credential
-- schedule maintenance
-- create client action
-- open support context
+Registered actions may include:
+- edit;
+- create child/relationship;
+- start Project;
+- create Request;
+- attach Client Service;
+- configure native Monitor;
+- connect external provider;
+- add Renewal Obligation;
+- schedule Maintenance;
+- open Support context;
+- create/share authorized Vault Item.
 
 ### Overview
+Answer:
+1. What is this Property?
+2. Is it operationally healthy?
+3. Why is the current Posture what it is?
+4. What work/services/renewals/incidents need attention?
+5. Who is responsible?
 
-The overview should answer:
-- what is this property?
-- who owns/manages it?
-- is it healthy?
-- what services are attached?
-- what work is active?
-- what needs attention?
+Sections may include:
+- identity/context;
+- Property Posture reasons;
+- Attention;
+- active Client Services;
+- active Projects/Requests;
+- Incidents/Maintenance;
+- upcoming Renewal Obligations;
+- Connector summary/freshness;
+- Support summary;
+- recent Collaboration/Activity;
+- Files/Vault metadata;
+- Knowledge.
 
-Sections:
-- property identity
-- health summary
-- active services
-- active projects/tasks
-- upcoming renewals
-- connector summary
-- support summary
-- recent activity
-- related credentials/files
-
-### Details
-Type-specific operational metadata.
-
-Examples for website:
-- URL
-- platform/CMS
-- environment
-- repository reference
-- hosting relation
-
-Examples for journal:
-- journal title
-- acronym
-- ISSN fields
-- OJS installation relation
-- public URL
-- editorial/support metadata where permitted
-
-Examples for domain:
-- domain name
-- registrar
-- renewal date
-- auto-renew status
-- DNS provider
-
-### Children
-Hierarchy browser with health/state summaries.
-
-### Services
-Services currently delivered for this property, history, recurring/renewal state, service owner, and linked agreements.
-
-### Projects
-Projects and project work attached to the property.
-
-### Support
-Re:Solve context about support for this property, backed by Chatwoot where applicable. Includes support entitlement, known incidents, selected conversation references, and escalation state.
-
-### Monitoring
-Health signals from native checks or monitoring connectors:
-- uptime
-- domain expiry
-- SSL
-- backup state
-- performance
-- application version state
-- connector health
-
-Monitoring capability varies by property type and configured providers.
-
-### Vault
-Permission-gated credentials/confidential files scoped to the property.
-
-### Files
-Non-secret files.
-
-### Knowledge
-Operational/internal/client-safe knowledge attached to the property.
-
-### Connectors
-Connector instances and mappings attached to the property.
-
-### Activity
-Unified event timeline.
-
-### Access
-Users/contacts/teams with property-specific access.
-
-## Property health
-
-Health must be explainable.
-
-Suggested state model:
-- healthy
-- needs_attention
-- degraded
-- critical
-- unknown
-- maintenance
-
-Health is derived from signals, not manually painted green/red without evidence.
-
-Each state exposes contributing signals and timestamps.
+## Details
+Type-specific native/custom metadata.
 
 Examples:
-- website offline -> critical
-- domain expires soon -> needs_attention
-- monitoring connector stale -> unknown/needs_attention
-- active scheduled maintenance -> maintenance
+### Website
+URL, platform/CMS, environment, repository reference, related Domain/Hosting.
 
-## Property status vs health
+### Journal
+Title, acronym, ISSN, OJS/application relationship, public URL and approved editorial/technical metadata.
 
-Status describes lifecycle:
-- onboarding
-- active
-- paused
-- retired
-- archived
+### Domain
+Domain name, registrar source, DNS provider, registration/expiry evidence, auto-renew state and related Website/Hosting.
 
-Health describes current operational condition.
+Provider-specific identifiers live in Connector Mappings rather than polluting core identity.
 
-Do not conflate them.
+## Property Posture
+Property Posture replaces vague generic `health` as the richer operational state.
 
-## Ownership
+Suggested states:
+- HEALTHY
+- ATTENTION
+- DEGRADED
+- CRITICAL
+- MAINTENANCE
+- UNKNOWN
 
-A property can have:
-- accountable staff owner
-- operational team
-- client-side contacts
-- technical contacts
-- approvers
+It is derived and explainable from evidence such as:
+- native HTTP/HTTPS/latency checks;
+- SSL/certificate state;
+- Domain registration/expiry;
+- DNS/hosting evidence;
+- heartbeat/backup freshness;
+- WordPress/OJS/application status;
+- active Incident;
+- Maintenance;
+- Renewal state;
+- Connector freshness.
 
-## Client visibility
+Every material reason shows source and freshness. Connector outage alone does not mean the Property itself is down.
 
-Not every internal property must be visible in the Client Portal.
+## Lifecycle status vs Posture
+Lifecycle status may include Onboarding, Active, Paused, Retired and Archived.
 
-Visibility policy controls:
-- hidden from portal
-- visible summary only
-- normal portal access
-- restricted to explicitly granted client users
+Posture describes current operational condition. Never conflate them.
+
+## Native Monitoring
+Properties can own native Re:Solve Monitor definitions. Initial common checks include HTTP/HTTPS, expected status, latency and certificate/domain expiry evidence; later DNS/TCP/content/heartbeat/backup checks.
+
+The architecture supports separately deployable Monitoring Workers/Probes.
+
+## External monitoring / Cloudflare
+External sources are optional connectors.
+
+Cloudflare can contribute domain/DNS/registrar/edge/health evidence where configured.
+Uptime Kuma may contribute Monitoring signals for deployments already using it, but is never a required dependency.
+
+## Renewal / Expiry Obligations
+A Property can have one or more obligations for Domain, Hosting, Certificate, license, maintenance/service dependency or another managed item.
+
+Each obligation records source, expiry, auto-renew state, owner, client responsibility, related Service/Contract/Billing, reminder/approval/payment state and verification evidence.
+
+Renewal workflow is surfaced in Property and the cross-client Renewal Desk.
+
+## Incidents and Maintenance
+Incidents relate one/more Properties and retain source signals, client impact, timeline and resolution.
+Maintenance windows intentionally annotate/suppress monitoring according to policy.
+
+## Requests
+Property-scoped Requests provide a structured route for change/access/maintenance/service asks before they become Tasks, Projects, Support or commercial work.
+
+## Services
+Show current Client Services, scope, renewal, Support Entitlement and linked commercial records. Do not show hours/credits consumed because Client Service Consumption is out of scope.
+
+## Projects
+Show linked active/completed Projects and relevant current blockers/deliverables.
+
+## Support
+Show provider-neutral Chatwoot-backed Support context: entitlement, safe conversation references, Incidents and escalation. Full messaging remains in Chatwoot.
+
+## Vault and Files
+Vault shows only protected metadata/actions authorized for the Property.
+Files shows ordinary non-confidential content.
+
+A protected confidential document must not remain accessible through a parallel ordinary File path.
+
+## Knowledge
+Property-scoped internal/client-safe Re:Solve Knowledge.
+
+## Connectors and provenance
+Show Connector Instances/Mappings plus authority/freshness. Provider records do not become canonical Property identity.
+
+## Collaboration / Activity
+Use the shared Comments/Mentions/Following model plus user-readable Activity. Audit remains separate.
+
+## Access and client visibility
+Property access grants are independently enforceable and may inherit to descendants where explicitly configured.
+
+Portal visibility options may include hidden, summary-only, normal and explicit-grant-only.
+
+Hidden data cannot leak through Search, counts, Attention, Notifications, API, MCP or Àríyá.
+
+## Attention
+Examples:
+- Posture degraded/critical;
+- Domain/Hosting/Certificate renewal due;
+- backup heartbeat stale;
+- Incident unresolved;
+- Monitoring source unknown/stale;
+- required client decision/request waiting;
+- Connector authentication affects management capability.
 
 ## Notifications
-
-Potential events:
-- property created
-- ownership changed
-- health degraded
-- health critical
-- recovered
-- renewal approaching
-- maintenance scheduled/started/completed
-- connector disconnected
-- credential rotation due
-
-Delivery depends on severity and user preferences/policy.
+Meaningful state transitions such as confirmed outage/recovery, renewal threshold, Maintenance and critical Connector/credential issues. Do not emit a client notification for every raw monitor sample.
 
 ## Automations
+Examples:
+- qualifying failure -> create/link Incident;
+- expiry threshold -> Renewal Attention/Request;
+- recovery -> resolve relevant Attention/update Incident;
+- Maintenance window -> suppress/annotate checks;
+- client decision due -> Portal Request/notification;
+- Connector state change -> data-freshness Attention.
 
-Triggers:
-- property created
-- property type changed
-- health changed
-- expiry threshold reached
-- connector state changed
-- maintenance window reached
+## API / MCP / Àríyá
+First-class APIs expose Property, hierarchy/relationships, Posture, Renewal summaries, native monitoring configuration where permitted, Services, Projects, Requests, Access, Connector mappings and Activity.
 
-Actions:
-- create task
-- create incident
-- notify staff/client
-- WhatsApp client contact
-- launch workflow
-- request approval
-- invoke connector
+Ordinary Property APIs never expose Vault secret values.
 
-## API
-
-First-class endpoints for:
-- CRUD
-- hierarchy
-- health
-- services
-- projects
-- access
-- connectors
-- monitoring summary
-- activity
-
-API consumers must not gain vault secret values through ordinary property reads.
-
-## MCP candidates
-
+MCP candidates:
 - search_properties
 - get_property
-- get_property_health
+- get_property_posture
 - list_property_children
 - list_expiring_properties
 - list_property_services
 - get_property_support_summary
+- list_property_attention
 
-Write tools such as update_property require explicit scopes.
+Àríyá can explain Posture from evidence/freshness and propose registered actions.
 
 ## Plugins
-
-Plugins can contribute:
-- property types
-- type-specific fields
-- tabs
-- health signal providers
-- actions
-- reports
-- automation triggers/actions
-- MCP tools
-
-Plugin-contributed fields must remain namespaced and portable.
-
-## Connectors
-
-A connector instance may attach to:
-- one property
-- multiple related properties where provider semantics require it
-- an organisation with child property mappings
-
-Examples:
-- one OJS installation connector mapping several journal properties
-- one WordPress connector for one website
-- monitoring connector tracking several properties
-- Chatwoot inbox mapped to organisation with property context
+Plugins may contribute Property Types, fields, tabs, Posture signal providers, Actions, Reports, Automation and MCP contributions through approved Core UI/extension contracts.
 
 ## Security
-
-- property grants are explicit
-- parent inheritance must be inspectable
-- cross-organisation property access is denied
-- sensitive technical metadata can require elevated permission
-- secret material stays in Vault
+- cross-Organisation access denied;
+- descendant inheritance inspectable;
+- sensitive technical metadata can require stronger capability;
+- Vault remains separate;
+- dangerous Connector-backed Property actions route through Action Registry and may require confirmation/step-up/Approval.
 
 ## Responsive/PWA
+Phone priority:
+- identity/status;
+- Posture/Attention;
+- Incidents/Renewals;
+- active work/Requests;
+- Services/Support;
+- Activity.
 
-### Mobile property workspace
-Priority order:
-- identity/status
-- health/attention
-- active work
-- services
-- upcoming renewal
-- support/maintenance
-- activity
-
-Hierarchy uses drill-down navigation rather than cramped trees.
-
-Offline:
-- safe summaries may be cached
-- health must show last checked timestamp
-- no credential values cached
-- connector actions disabled offline
+Hierarchy uses drill-down rather than cramped trees. Cached summaries show refresh timestamp; credentials and high-impact actions remain online-only according to policy.
 
 ## Acceptance criteria
-
-- Properties can form safe parent/child hierarchies.
-- Property health is explainable and separate from lifecycle status.
-- All major work can associate with a property without requiring one.
-- Client visibility and property access are separately controlled.
-- Connector mappings do not become canonical property identity.
-- Mobile provides a functional property workspace.
-- Vault values never leak into normal property responses/caches.
-
-## Demo data
-
-Use a university organisation with:
-- Main Website
-- Journals parent property
-- three journal children
-- domain
-- server/hosting property
-
-Include one healthy property, one expiring domain, one degraded journal connector, one property in maintenance, associated projects/services, and property-scoped contacts.
+- hierarchy/typed relationships are safe and explainable;
+- Posture is explainable and distinct from lifecycle status;
+- native monitoring can exist without Uptime Kuma;
+- Renewal is workflow, not a date badge;
+- Cloudflare/external data exposes provenance/freshness;
+- client visibility/access are separately controlled;
+- Vault cannot leak through Property responses/caches;
+- no Client Service Consumption or Timesheet behavior appears.
 
 ## Lovable build slices
-
-1. Property list + filters + demo hierarchy.
-2. Create/edit property + type handling.
-3. Property Overview.
-4. Parent/child hierarchy UX.
-5. Services/projects/support related panels.
-6. Health/monitoring summary.
-7. Access and portal visibility.
-8. Connector and Vault/File metadata views.
-9. Responsive/PWA pass.
+1. Property list + Saved Views + fictional demo hierarchy.
+2. Create/edit + type/relationship handling.
+3. Property Overview + RecordHeader.
+4. hierarchy/relationship UX.
+5. Services/Projects/Requests/Support panels.
+6. Property Posture with demo/native signals.
+7. Renewals/Incidents/Maintenance.
+8. Access/Portal visibility.
+9. Connector/provenance + Vault/File metadata.
+10. real native Monitor execution + Cloudflare/external sources later.
