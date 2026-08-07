@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**SETUP-000 COMPLETE — RESTART AUDIT NEXT — FOUND-001 NOT YET STARTED**
+**SETUP-001 REQUIRED — CLEAN STARTER VERIFIED — FOUND-001 NOT YET STARTED**
 
 ## Canonical Product Bible state
 - Product Bible planning/expansion/launch-readiness content is consolidated on `main`.
@@ -18,23 +18,24 @@ Keep this file updated after each accepted build slice so the next Product Bible
 ## Lovable project
 - Workspace: `<record when confirmed>`
 - Project: `Re:Solve`
-- Project Knowledge source fetched by Lovable: `YES`
 - Project Knowledge installed in Project settings: `YES — owner confirmed`
-- Canonical workspace Skills installed: `YES — all 30 Re:Solve skills installed by owner`
-- No obsolete `airix-*` skills were reported.
-- Lovable previously staged 30 canonical skill copies as temporary project-local drafts under `.agents/skills/`; these should be removed after workspace-skill verification so duplicate instruction sources do not remain.
+- Canonical workspace Skills installed: `YES — all 30 canonical Re:Solve skills plus self-host-check verified active by Lovable`
+- Platform default skill also active: `design-taste-frontend`.
+- No obsolete `airix-*` skills reported.
+- Duplicate project-local copies exist under `.agents/skills/`; remove them during SETUP-001 after workspace-skill verification.
 
 ## Application repository
 - Legacy reference repository: `thathman/Re-Solve`
-- Lovable-created repository: `<record after Git sync / confirmation>`
-- Repository visibility: `private`
-- Active synced branch: `<record>`
+- Lovable-created application repository: `UNVERIFIED`.
+- Lovable audit reported `thathman/Re-Solve-Product-Bible`, but explicitly stated this was derived from context because direct git remotes were not exposed. Do not treat that as application-repository truth.
+- Application repository visibility/default branch: `UNVERIFIED` until Lovable/GitHub integration reports the actual synced app repository.
 - Root AGENTS.md: `NO`
 - Canonical-name transition performed: `NO`
 
 ## Backend
-- Development backend: `<none / Lovable Cloud / Supabase / other>`
-- Project/reference: `<record non-secret identifier only>`
+- Development backend: `Lovable Cloud enabled`
+- Custom database tables: `NONE`
+- RLS policies: `NONE`
 - Migrations initialized: `NO`
 - Demo seed/reset initialized: `NO`
 
@@ -43,43 +44,56 @@ Never store credentials/secrets in this file.
 ## Accepted slices
 None yet.
 
-## Setup observations
-Observed during SETUP-000:
-- Lovable can fetch the public Product Bible Knowledge and skill source files from project chat.
-- The current project chat could not save Project Knowledge or import/promote GitHub skills as workspace skills.
-- Workspace-owner/admin UI action was required for workspace skill import.
-- Owner has now installed all 30 canonical Re:Solve workspace skills.
-- Owner has confirmed canonical Project Knowledge is pasted into Lovable.
-- No obsolete `airix-*` skills were reported.
-- No product feature, UI-stack installation or database work has started according to the latest setup report; restart audit will verify actual repository state before FOUND-001.
+## Setup/restart audit observations
+Verified by Lovable restart audit:
+- clean-starter classification: `A — safe to begin supervised foundation sequence`;
+- framework/build stack: `TanStack Start v1`;
+- React: `19.2.0`;
+- package manager: `bun`;
+- lockfile: `bun.lockb` expected/current platform convention;
+- Tailwind: `4.2.1` using `@tailwindcss/vite`;
+- shadcn: initialized with standard primitives in `src/components/ui/`;
+- current dependencies include standard TanStack Start, Radix UI, Lucide, Zod and React Hook Form;
+- routes: only `src/routes/__root.tsx` and placeholder `src/routes/index.tsx`;
+- Re:Solve-specific UI/components: none;
+- business functionality: none;
+- PWA files: none;
+- tests/CI: none;
+- AGENTS.md: none;
+- no database migrations/schema yet;
+- 30 canonical project-local skill drafts remain redundant under `.agents/skills/`.
 
 ## Current architecture facts
-Populate through FOUND-001 substeps:
-- framework/build tool:
-- routing:
-- UI libraries actually installed:
-- query/state libraries:
-- testing stack:
-- PWA tooling:
-- auth approach:
-- service/repository boundaries:
-- major source directories:
+- framework/build tool: `TanStack Start v1`
+- routing: `TanStack file-based routes`
+- React: `19.2.0`
+- package manager: `bun`
+- Tailwind: `4.2.1`
+- shadcn: `already initialized; exact primitive base still to be inspected during FOUND-001A/B`
+- current UI dependencies: `Radix UI + Lucide + standard shadcn primitives`
+- query/state libraries: `inspect during FOUND-001A`
+- testing stack: `not configured`
+- PWA tooling: `not configured`
+- auth approach: `Lovable Cloud available; no Re:Solve auth/domain setup yet`
+- service/repository boundaries: `not established`
+- major source directories: `starter only; inspect during FOUND-001A`
 
 ## Current Core UI inventory
-Populate through FOUND-001 with implemented canonical components and Component Gallery route.
+None beyond stock/generated shadcn primitives. No Re:Solve Core UI components accepted yet.
 
 ## Current database/domain inventory
-Populate only actual implemented tables/entities. Do not list future Product Bible entities as if implemented.
+None.
 
 ## Open Product Bible deltas
-None currently blocking FOUND-001. SETUP-000 behavior has been incorporated into the bootstrap/supervisor protocol.
+None currently blocking FOUND-001.
 
 ## Known implementation limitations
-No accepted application implementation exists yet.
+- actual application GitHub repository identity is not yet verified;
+- duplicate `.agents/skills/` drafts remain and should be removed once workspace skills are reconfirmed;
+- no CI, tests, PWA, AGENTS.md or Re:Solve foundation exists yet.
 
 ## Next action
-1. Run the supervisor-provided clean restart audit prompt.
-2. Verify the actual Lovable-created application repository/default branch and current generated stack.
-3. Verify workspace skills are active; remove duplicate temporary `.agents/skills/` drafts only after confirmed.
-4. Classify the application as clean starter / partially modified / substantially built.
-5. Begin `FOUND-001A` only after restart audit passes.
+1. Run `SETUP-001` cleanup/repository-identity verification.
+2. Remove duplicate `.agents/skills/` Re:Solve skill drafts only after reconfirming workspace skills are active.
+3. Confirm the real Lovable-created application GitHub repository/default branch from Lovable's GitHub integration state; do not infer it from Product Bible context.
+4. Begin `FOUND-001A — Stack & Repository Preflight` only after SETUP-001 passes.
