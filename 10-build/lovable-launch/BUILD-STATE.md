@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B UI STACK & DESIGN TOKENS NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B CONDITIONAL — UI FOUNDATION CORRECTIONS REQUIRED BEFORE FOUND-001C**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -56,10 +56,32 @@ Supervisor verified on application-repository `main`:
 - public/server environment boundary established with Zod and TanStack `createServerOnlyFn`; `process.env` access is contained inside the server-only function;
 - locale/currency formatting utilities do not impose a universal locale or currency;
 - UI-source provenance ledger lives at `docs/ui-sources.md`;
-- current provenance correctly records source-owned shadcn components, `lucide-react@0.575.0`, granular Radix packages, and Untitled UI/Tremor as not yet incorporated;
 - production runtime remains portable/TanStack-Nitro compatible and is not locked to Cloudflare;
-- no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice;
-- Lovable reported build, lint and type-check success; remaining react-refresh warnings are limited to stock shadcn source components.
+- no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice.
+
+## FOUND-001B — UI Stack & Design Tokens
+**Status: CONDITIONAL**
+
+Implemented direction verified:
+- Re:Solve-owned OKLCH token naming has begun in `src/styles.css`;
+- stock shadcn semantic variables are being mapped to Re:Solve authority tokens;
+- provisional light/dark palette exists;
+- Inter + JetBrains Mono typography intent is present;
+- development token-preview route exists at `/__dev/ui`;
+- no new UI dependency was added;
+- existing Radix/shadcn foundation remains intact;
+- build/lint/type were reported successful.
+
+### FOUND-001B supervisor correction findings
+1. **Remote font runtime dependency:** `src/routes/__root.tsx` loads Inter and JetBrains Mono from `fonts.googleapis.com` / `fonts.gstatic.com`. This contradicts the slice requirement that introduced fonts not require a third-party runtime font request. Self-host now through a portable bundled/source-controlled approach, or remove the remote font usage and use a local/system stack until self-hosting is implemented.
+2. **Theme infrastructure incomplete:** `/__dev/ui` stores theme only in React state, does not persist the non-sensitive preference, and `system` mode reads the OS preference only when the effect runs; it does not subscribe to later OS theme changes. Establish a small reusable light/dark/system theme utility/provider with local preference persistence and `matchMedia` change handling. Avoid a flash of the wrong theme where practical for the current foundation.
+3. **Development route not actually development-only:** `/__dev/ui` is always registered and currently has no environment guard. Ensure production access is prevented/disabled in a portable way while preserving the dev QA route.
+4. **Incorrect provenance wording:** Untitled UI and Tremor have influenced design only; no code has been copied/installed. Record them as `NOT INCORPORATED — DESIGN REFERENCE ONLY`, not `PARTIALLY INCORPORATED`.
+5. **Reduced motion incomplete:** token preview demonstrates transform/shadow/opacity motion without explicit `prefers-reduced-motion` handling. Add a global/reusable reduced-motion treatment and make the preview honor it.
+6. **Required semantic token gaps:** add explicit tokens for selected state, disabled state, focus treatment as a complete contract, and chart/data-visualization series. Keep status semantics label-driven, not color-only.
+7. **Required layout/density token gaps:** establish reusable tokens for page gutters, content measures, panel padding, compact/default/touch control heights, density rhythm, reserved future shell dimensions, responsive/safe-area behavior and restrained elevation. Do not build the shell itself.
+8. **Preview coverage:** update `/__dev/ui` to visibly demonstrate warning/critical/selected/disabled/focus/chart-series states, density/control-height tokens, reduced-motion behavior, and locale-neutral representative numeric data. Do not imply USD is universal product truth.
+9. **Root metadata cleanup:** since `__root.tsx` is already being touched for font/theme foundation, remove remaining generic `Lovable App` / `Lovable Generated Project` / `@Lovable` metadata and replace it with provisional Re:Solve metadata. Do not invent final marketing copy.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
@@ -80,22 +102,22 @@ Supervisor verified on application-repository `main`:
 - service/repository boundaries: `initial FOUND-001A boundaries established`
 
 ## Current Core UI inventory
-None beyond stock/generated shadcn primitives. No Re:Solve-owned Core UI components are accepted yet.
+No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme foundation is under correction. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
 
 ## Current database/domain inventory
 None.
 
 ## Open Product Bible deltas
-None blocking FOUND-001B.
+None requiring an owner product decision. Current FOUND-001B issues are implementation/acceptance corrections.
 
 ## Known implementation limitations
-- Untitled UI is not yet incorporated;
-- Tremor Raw is not yet incorporated;
-- Re:Solve semantic tokens/theme system are not yet established;
-- no Component Gallery yet;
-- no shell, PWA, CI or test foundation yet by design.
+- remote Google Fonts runtime dependency exists;
+- light/dark/system theme behavior is not yet persistent/reactive enough;
+- dev preview route is not yet production-blocked;
+- reduced-motion treatment is incomplete;
+- semantic/layout/density token contracts are incomplete;
+- Untitled UI/Tremor provenance overstates incorporation;
+- no broad Component Gallery, shell, PWA, CI or test foundation yet by design.
 
 ## Next action
-Execute supervisor-provided `FOUND-001B — UI Stack & Design Tokens` only.
-
-FOUND-001B should establish the coherent Re:Solve-owned visual/token foundation and only the minimal targeted Untitled UI/Tremor incorporation needed to prove compatibility. It must preserve the existing Radix-based shadcn setup rather than forcing a primitive-base migration. Do not build Admin/Portal shell, Component Gallery breadth, business modules, PWA or database work in FOUND-001B.
+Execute the supervisor-provided focused `FOUND-001B-FIX` only. Re-review actual repository and preview afterward. Do not begin FOUND-001C until FOUND-001B passes.
