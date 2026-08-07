@@ -1,482 +1,202 @@
 # Re:Solve Lovable Development Environment
 
 ## Purpose
+Re:Solve is built in Lovable during active product development. Lovable is the build environment; GitHub is the persistent source/portability boundary; Supabase may be used for development backend needs. The exported application must remain capable of independent self-hosting without a Lovable runtime dependency.
 
-Re:Solve will be built in Lovable during active product development. Lovable is the development environment and product-building interface. It may use Lovable-native capabilities, Supabase, preview environments, and demo data freely during development.
-
-The finished application must remain portable: Re:Solve must be capable of running independently of Lovable after export/self-host deployment. Lovable is not a required production runtime dependency.
-
-This document defines only build compatibility and development discipline. It intentionally does not prescribe production domains or hosting details that Lovable does not need in order to build correctly.
+This document governs development compatibility and discipline, not production hosting/domain decisions.
 
 ## Governing rule
+Build everything in Lovable, but do not make product-critical business behavior fundamentally depend on a proprietary Lovable runtime after export.
 
-Build everything in Lovable, but do not create business functionality that fundamentally requires Lovable-hosted runtime services to continue functioning after code export.
+## Current Git sync constraint
+As of 2026-08-07, Lovable Git sync can **export/create a new GitHub repository but cannot import an existing GitHub repository into a Lovable project**.
 
-## Development approach
+Therefore:
+- current `thathman/Re-Solve` remains legacy behavior/reference during initial rebuild;
+- create a fresh Lovable project;
+- connect GitHub and let Lovable create a new private synced repository;
+- build FOUND-001 there;
+- do not overwrite/rename the legacy repository during setup;
+- after FOUND-001 passes and with explicit owner approval, perform the one-time repository naming transition documented in `10-build/lovable-launch/GITHUB-TRANSITION.md`.
 
-The Product Bible may be exhaustive. Lovable receives only the current build slice plus the permanent architectural/design rules it needs.
+Renaming the connected repository itself is currently supported by Lovable sync; transferring/deleting/disconnecting it has stronger consequences and must not be done casually.
 
-Workflow:
-
+## Development flow
 ```text
 Product Bible
-→ select one bounded slice
-→ prepare Lovable prompt
+→ choose one bounded slice
+→ ensure Project Knowledge + relevant skills are current
+→ send the slice prompt
 → build in Lovable
 → test/review
-→ compare against acceptance criteria
-→ refine
-→ commit/sync to GitHub
+→ resolve acceptance blockers
+→ Git sync/commit
+→ Product Bible update if genuine product truth changed
 → next slice
 ```
 
-Never ask Lovable to implement an entire loaded OS in one prompt.
+Never ask Lovable to implement the complete loaded OS in one prompt.
 
-## Source of truth
+## Context model
+### Product Bible
+Canonical full product truth. It is private and is not assumed to be directly browsable by Lovable.
 
-- Re-Solve-Product-Bible: canonical product behavior/specification
-- Re-Solve: application source repository
-- Lovable: active build environment
-- GitHub: persistent source history and portability boundary
+### Project Knowledge
+Compact durable Re:Solve rules that apply to every message. Use the paste-ready launch copy in `lovable-launch/PROJECT-KNOWLEDGE.md` and keep it within Lovable's current Project Knowledge limit.
 
-When generated implementation conflicts with the Product Bible, the Product Bible wins unless deliberately amended.
+### Skills
+Task-specific playbooks loaded on demand. Install the canonical `resolve-*` skill catalogue from `10-build/lovable-skills/`.
+
+### Build slice
+The exact current feature/build requirement. Product Bible file paths in a slice are traceability references; the prompt itself must carry the requirements Lovable needs if the private Bible is not connected.
+
+### Repository instructions
+FOUND-001 creates a root `AGENTS.md` from the canonical launch template so critical architecture/build rules also live in exported source control and are readable outside Lovable.
 
 ## Preferred implementation model
+Favor Lovable's current strongest React/full-stack patterns rather than preserving legacy NestJS, TypeORM, GraphQL/Apollo, Redis or other historical architecture merely for continuity.
 
-Favor Lovable's current preferred frontend/backend model over the legacy Re-Solve architecture unless a product requirement clearly requires otherwise.
+Supabase is acceptable during development for:
+- PostgreSQL/data;
+- authentication;
+- storage;
+- realtime where useful;
+- server/backend functions where appropriate;
+- deterministic demo data.
 
-During development, Supabase is an acceptable and preferred foundation for:
-- PostgreSQL data
-- authentication
-- storage
-- realtime where useful
-- backend/server functions where appropriate
-- demo data
+Preserve valuable business behavior, not obsolete implementation constraints.
 
-Do not preserve NestJS, TypeORM, GraphQL/Apollo, Redis, or other legacy architecture merely because the current Re-Solve repository used them.
+## Architecture boundaries
+Even while using Lovable/Supabase:
+- keep business rules outside presentation components;
+- centralize data/provider access through domain/service/repository boundaries where practical;
+- use canonical Principal/User/Membership/capability concepts rather than provider metadata as product truth;
+- provider integrations use Connector boundaries;
+- Plugins use declared extension contracts;
+- version schema/data migrations;
+- document environment variables/secrets;
+- storage objects/URLs are not permanent business ids;
+- background work uses explicit jobs/events rather than hidden browser behavior;
+- API/MCP/Àríyá call controlled application services/Actions rather than scraping UI or querying arbitrary storage.
 
-Preserve valuable business behavior and product logic, not obsolete implementation constraints.
+## Explicit exclusions
+Do not introduce HR management, payroll, recruitment, leave/attendance, performance reviews, Timesheets/Time Tracking, or Client Service Consumption/remaining-hours/credits metering.
 
-## Portability boundaries
+Projects may still use ownership, assignment, estimates, deadlines, milestones, recurring tasks and operational Expenses.
 
-Even while using Supabase/Lovable during development:
-- business rules should not be buried inside page components
-- provider-specific integrations use connector boundaries
-- plugins use declared extension contracts
-- database migrations/schema changes are versioned
-- environment variables/secrets are documented
-- file storage is abstractable toward standard/self-hostable storage patterns
-- authentication-dependent business code should use shared identity/permission services
-- background work should use explicit jobs/events rather than hidden browser behavior
-- APIs and MCP use server-side business services, not UI scraping
+## Core UI Component Framework — mandatory
+Re:Solve owns a source-controlled Core UI Component Framework.
 
-The target is the ability to replace hosted backing services or self-host compatible equivalents without rewriting the product surface.
+Mandatory major sources/influences:
+1. Re:Solve Product Design Language;
+2. shadcn/ui;
+3. Untitled UI React;
+4. Tremor;
+5. React Aria / Base UI / Radix where strongest;
+6. TanStack Table / TanStack Query;
+7. approved specialist libraries only for demonstrated needs.
 
-## Demo data
+Use these heavily, then normalize the result into Re:Solve tokens/components. Do not create library soup.
 
-Lovable development uses rich, realistic demo data.
+FOUND-001 must establish a Component Gallery/Storybook-equivalent and production-quality Sidebar, TopBar, ResolveAvatar/AccountMenu, Notifications chrome, Search/Command, Quick Create, Àríyá entry/panel foundation, mobile navigation and shared state components.
 
-Avoid generic filler such as "Acme Corp" where realistic domain structure tests the product better.
+## Navigation
+Navigation must stay shallow, labeled and understandable like a well-structured service CRM. Reject Odoo-style app grids/module launchers, Twenty-style object/module switching as the main mental model, icon-only root navigation, endless nested trees and uncontrolled plugin root items.
 
-Demo data should include:
-- multiple organisations
-- multiple contacts per organisation
-- contacts with multiple memberships
-- hierarchical properties
-- websites and journals
-- active and completed projects
-- opportunities/proposals/contracts
-- invoices in multiple states
-- payment examples
-- approvals
-- files
-- Vault metadata/examples without real secrets
-- notification history
-- connector health states
-- Chatwoot conversation references/summaries
-- automation runs
-- plugin examples
+Major areas own their child tabs/views. The shell must remain simple as the product grows.
 
-Demo records should intentionally cover empty, healthy, warning, overdue, blocked, degraded, permission-limited, and archived states.
+## Component/library policy
+Prefer mature accessible primitives over custom reimplementations. Introduce specialist dependencies only when a current slice needs them.
 
-## Framework and component policy
+Approved directions include:
+- shadcn/ui + React Aria/Base UI/Radix for accessible application controls;
+- Untitled UI React for high-quality application composition/pattern influence;
+- Tremor/Recharts-style patterns for meaningful operational analytics;
+- TanStack Table for default operational tables;
+- TanStack Query or equivalent for coherent async server state;
+- dnd-kit for accessible reordering/drag-drop;
+- React Flow for automation/process canvas when complexity warrants it;
+- an enterprise grid only when a true spreadsheet/grid workflow cannot be served cleanly by the default table stack.
 
-### Primary UI foundation
+## PWA/responsive/accessibility
+PWA and responsive behavior begin in FOUND-001.
 
-Use a coherent modern React design-system approach supported well by Lovable.
+Every relevant slice considers phone, tablet, laptop, desktop, standalone PWA, touch, keyboard, poor network and safe offline states. Portal common flows must not require desktop. Admin essential operational flows remain usable on phone even when complex editors prefer larger screens.
 
-Default component foundation:
-- shadcn/ui
-- Radix primitives where appropriate
-- Tailwind-compatible token system
-- Lucide or the established Re:Solve icon system
-
-Use shadcn as a foundation, not as a visual identity. Default component styling must be transformed into the Re:Solve design language.
-
-### Alternatives
-
-Lovable may use stronger alternatives when they materially improve a complex requirement, especially for:
-- advanced data grids
-- rich editors
-- charts
-- command palettes
-- date/range selection
-- drag/drop
-- complex forms
-- kanban/timeline/Gantt interactions
-- file management
-
-Alternative libraries must:
-- integrate visually with the design system
-- meet accessibility expectations
-- support responsive behavior
-- avoid locking core product logic into a proprietary runtime
-- be justified by UX capability rather than novelty
-
-Do not introduce multiple overlapping libraries for the same primitive without a clear need.
-
-## Design skills
-
-Lovable should actively use design/review skills and relevant framework knowledge rather than generate generic dashboards from scratch.
-
-Required skill categories:
-- product/interface design
-- information architecture
-- responsive design
-- accessibility
-- shadcn/component-system usage
-- form design
-- operational data tables
-- dashboard design
-- flow/prototype validation
-- design review/redesign
-- PWA/mobile review
-
-Where Lovable provides built-in design/accessibility/redesign skills, use them at the appropriate build/review stages.
-
-Project-specific skills should supplement, not conflict with, Re:Solve Product Bible rules.
-
-## Installed planning skills
-
-The Product Bible currently uses:
-- `re-solve-spec`
-- `flow-by-flow`
-- `flow-prototype`
-
-Equivalent build-side skills should be made available to Lovable where supported, especially for:
-- feature slicing
-- UI implementation
-- forms
-- data tables
-- security review
-- plugin work
-- connector work
-- migration review
-- release review
-- debugging
-- self-host portability review
-
-## Design-system rules
-
-Lovable must not create random bespoke primitives in feature pages when an approved shared primitive exists.
-
-Preferred layering:
-
-```text
-primitive/library
-→ Re:Solve shared component
-→ domain composite
-→ feature/page
-```
-
-Examples of Re:Solve composites:
-- RecordHeader
-- RecordTabs
-- StatusBadge
-- HealthIndicator
-- AttentionItem
-- ActivityTimeline
-- PropertyPicker
-- OrganisationPicker
-- PersonPicker
-- ApprovalPanel
-- FilePicker
-- VaultAccessBadge
-- ConnectorHealthCard
-- EmptyState
-- PermissionGate
-- QuickCreate
-- CommandMenu
-
-## Non-generic design requirement
-
-Re:Solve must not look like a stock SaaS template.
-
-Avoid:
-- walls of identical KPI cards
-- arbitrary gradient hero panels
-- decorative charts without decisions attached
-- giant whitespace that reduces operational density
-- every page being a card grid
-- generic blue-purple startup styling
-- inconsistent custom controls
-
-Prefer:
-- strong hierarchy
-- calm density
-- record relationships
-- attention-driven layouts
-- contextual side panels/drawers
-- powerful tables and saved views
-- compact action clusters
-- command/search workflows
-- meaningful status and health visualization
-- contextual summaries rather than decorative metrics
-
-The Admin OS may be denser than the Client Portal. The Client Portal should remain calmer and task-focused while sharing the same visual DNA.
-
-## Responsive/PWA requirement
-
-PWA and responsiveness are requirements from the first implementation slice.
-
-Every build slice must consider:
-- phone
-- tablet
-- laptop
-- desktop
-- wide desktop where relevant
-- touch targets
-- keyboard navigation
-- safe areas
-- installable PWA behavior
-- standalone display mode
-- service-worker/update behavior
-- push notification compatibility
-- offline/poor-network state
-
-Do not design desktop-only screens and promise to "make responsive later."
-
-### Mobile Admin
-
-Mobile Admin prioritizes:
-- attention queue
-- My Work
-- approvals
-- notifications
-- client/property/project lookup
-- urgent status changes
-- quick create
-- incident response
-
-Very complex editors may be read-only or simplified on phone with an explicit explanation.
-
-### Mobile Client Portal
-
-The Portal should be fully usable for common client tasks:
-- view attention items
-- approve/reject
-- check project/property status
-- view/pay invoice
-- open support
-- access files
-- respond to requests
-- manage notifications/account
-
-Mobile navigation may differ from desktop when that improves usability.
-
-## Accessibility
-
-Target WCAG 2.2 AA for core product surfaces.
-
-Each slice must check:
-- semantic structure
-- keyboard access
-- visible focus
-- dialog focus management
-- labels/descriptions
-- color contrast
-- non-color status cues
-- reduced motion
-- screen-reader naming
-- table alternatives on narrow screens
-- error announcement
-
-Run accessibility/design review before accepting UI-heavy slices.
+Sensitive Vault values and equivalent protected content are never intentionally cached for offline access. Target WCAG 2.2 AA.
 
 ## State completeness
+Implement applicable loading, skeleton, empty, first-use, success, error, partial/stale, degraded provider, permission denied, read-only, offline and destructive-confirmation states. Happy path alone is incomplete.
 
-A page is not complete because the happy path renders.
+## Security
+Use capability + scope authorization server-side. UI hiding is not authorization. Negative cross-Organisation/Property tests are required. Secrets do not belong in prompts, committed config, client bundles, generic logs or demo data.
 
-Every slice specifies and implements applicable:
-- loading
-- skeleton
-- empty
-- first-use
-- populated
-- success
-- error
-- partial data
-- degraded connector
-- permission denied
-- read-only
-- offline
-- stale cached data
-- destructive confirmation
+High-risk reusable operations should use Action Registry contracts with explicit risk, confirmation, approval/step-up and audit.
 
-## Forms
+## Demo data
+Use one coherent fictional universe. Airix Media is the first Operating Entity. Client Organisations and demo people are fictional. Never use real client credentials, secrets or private personal data.
 
-Default form pattern:
-- schema validation
-- accessible labels/descriptions
-- inline validation
-- server validation
-- save progress/state
-- clear submit feedback
-- unsaved-change protection where consequential
-- responsive field layout
-- permission-aware fields
+FOUND-001 seeds only identity/access examples required for shell behavior. Later domain slices expand deterministic seed/reset data.
 
-Use a shared validation approach such as Zod where compatible with the chosen Lovable stack.
+## Testing and QA
+Use the strongest stack-compatible quality setup, typically strict TypeScript, lint/format, component/unit tests and browser flows such as Playwright where appropriate.
 
-## Data tables and operational lists
+A UI-heavy slice must also pass:
+- responsive/PWA review;
+- accessibility review;
+- Core UI consistency/design review;
+- security/permission review;
+- portability review when architecture/provider coupling changes.
 
-Operational lists should consider:
-- search
-- filters
-- sort
-- saved views
-- column visibility
-- pagination/infinite loading
-- row selection
-- bulk actions
-- quick actions
-- export permissions
-- keyboard navigation
-- mobile list alternative
-
-Do not put every dataset into a basic HTML table with no workflow support.
-
-## Testing expectations
-
-The chosen Lovable-compatible testing stack should cover:
-- unit/domain logic
-- integration/server behavior
-- component behavior
-- end-to-end critical flows
-- permission denial
-- cross-organisation/property denial
-- responsive/PWA smoke behavior
-- accessibility checks where practical
-
-Vitest/React Testing Library/Playwright are acceptable when compatible with the generated stack, but exact tools may follow Lovable's current preferred ecosystem.
+`resolve-release` is the final go/no-go review for every build slice.
 
 ## GitHub workflow
-
-Lovable-generated source should remain synchronized with the Re-Solve repository.
-
-Prefer small commits/changes aligned to Product Bible slices.
+The active Lovable-created repository is the synced application source during build. Prefer changes aligned with bounded Product Bible slice ids and avoid giant unrelated commits.
 
 Each completed slice should identify:
-- Product Bible spec
-- acceptance criteria satisfied
-- migrations
-- new permissions
-- new environment variables
-- new dependencies
-- new plugin/connector contracts
-- known deferred items
+- slice id/Product Bible traceability;
+- acceptance criteria;
+- migrations/data changes;
+- new permissions/Actions;
+- new environment variables/dependencies;
+- plugin/connector contracts;
+- tests/reviews;
+- deferred scope.
+
+Do not disconnect/reconnect Git sync casually because current Lovable behavior creates a new repository on reconnect.
 
 ## Environment configuration
+Use documented secret/environment handling. Provider-specific variables remain isolated behind Connectors rather than scattered through business code. Possible future prefixes include `CHATWOOT_*`, `BACHS_*`, `OPENROUTER_*`, `DOCUMENSO_*`, `CLOUDFLARE_*`, `OJS_*`, `WORDPRESS_*`, `WOOCOMMERCE_*` and optional compatibility providers such as `UPTIME_KUMA_*`.
 
-Use documented environment variables and secret management.
+Do not configure production provider secrets during early demo slices.
 
-Group external providers consistently, e.g.:
-- CHATWOOT_*
-- BACHS_*
-- OPENROUTER_*
-- OPENBAO_*
-- DOCUMENSO_*
-- UPTIME_KUMA_*
-- OJS_*
-- WOOCOMMERCE_*
+## Build prompt contract
+Every Lovable implementation request states:
+- exact slice id/objective;
+- exact actor/goal;
+- requirements that matter to this slice;
+- in scope/out of scope;
+- existing Core UI/service boundaries to reuse;
+- data/permission/state/PWA/accessibility needs;
+- acceptance criteria;
+- required skills/reviews;
+- stop condition.
 
-Do not put production secrets into prompts, demo data, client code, or committed configuration.
+Do not rely on Lovable having access to the private Product Bible merely because the prompt references a file path.
 
-## Development connector policy
-
-During Lovable development use:
-- mock/demo connectors where useful
-- sandbox/test provider accounts
-- non-production API keys
-- dedicated demo instances
-
-UI should support realistic connected, degraded, disconnected, authentication-required, rate-limited, and failed states even before every real connector is implemented.
-
-## Build-slice prompt contract
-
-Every Lovable implementation prompt should include only:
-- the current objective
-- relevant Product Bible excerpt/requirements
-- relevant permanent architecture/design rules
-- exact in-scope routes/components/records
-- acceptance criteria
-- demo data needed
-- explicit out-of-scope items
-
-It should explicitly say not to pre-build later slices.
-
-## Slice acceptance review
-
-Before moving on, review:
-- behavior against spec
-- flow completeness
-- visual quality
-- responsiveness
-- PWA implications
-- accessibility
-- permissions
-- loading/empty/error states
-- API implications
-- audit/notifications where applicable
-- regression against existing slices
-
-## Self-host portability review
-
+## Portability review
 Periodically verify:
-- source can build outside Lovable
-- application does not import a Lovable-only runtime requirement for core business behavior
-- database schema/migrations are exportable/versioned
-- auth/storage/provider boundaries remain explicit
-- environment requirements are documented
-- API/MCP are deployment-independent
-- PWA assets/service worker are ordinary application assets
+- exported source builds outside Lovable;
+- no product-critical Lovable-only runtime dependency;
+- migrations/schema are reproducible;
+- auth/storage/provider boundaries are explicit;
+- UI/design system is source-controlled;
+- PWA assets/service worker are ordinary application assets;
+- API/MCP/Actions use portable application services.
 
-This is a compatibility check, not a reason to slow down normal Lovable development.
+This is compatibility discipline, not a reason to build Kubernetes, reverse proxies, multi-region infrastructure or a production migration away from Supabase during product development.
 
-## Initial foundation sequence in Lovable
-
-When implementation begins, do not start by building all modules.
-
-Recommended progression:
-1. project/import and architecture inspection
-2. shared design tokens/components
-3. PWA/responsive shell foundation
-4. Admin shell
-5. Client Portal shell
-6. identity/permissions foundation
-7. realistic demo-data foundation
-8. Dashboard first slice
-9. review
-10. next bounded Product Bible slice
-
-## Acceptance criteria
-
-- all active product development can occur in Lovable
-- Supabase/demo data can be used freely during development
-- implementation favors Lovable-compatible architecture over legacy Re-Solve technology
-- exported source remains normal maintainable application code
-- product does not require Lovable runtime for core operation after export
-- PWA/responsive behavior exists from foundation
-- shared design primitives prevent generic/inconsistent page generation
-- Product Bible slices, not giant prompts, drive implementation
-- GitHub remains a usable source/portability boundary
+## Official current Lovable references
+- https://docs.lovable.dev/features/knowledge
+- https://docs.lovable.dev/features/skills
+- https://docs.lovable.dev/integrations/github
