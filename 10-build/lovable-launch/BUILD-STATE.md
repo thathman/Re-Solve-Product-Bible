@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B CONDITIONAL — UI FOUNDATION CORRECTIONS REQUIRED BEFORE FOUND-001C**
+**FOUND-001A ACCEPTED — FOUND-001B CONDITIONAL — FINAL TOKEN/THEME COMPATIBILITY CLEANUP REQUIRED BEFORE VISUAL ACCEPTANCE**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -60,28 +60,36 @@ Supervisor verified on application-repository `main`:
 - no product modules, database schema, PWA, CI or broad UI shell were introduced in this slice.
 
 ## FOUND-001B — UI Stack & Design Tokens
-**Status: CONDITIONAL**
+**Status: CONDITIONAL — implementation cleanup required, then visual acceptance**
 
-Implemented direction verified:
-- Re:Solve-owned OKLCH token naming has begun in `src/styles.css`;
-- stock shadcn semantic variables are being mapped to Re:Solve authority tokens;
-- provisional light/dark palette exists;
-- Inter + JetBrains Mono typography intent is present;
-- development token-preview route exists at `/__dev/ui`;
-- no new UI dependency was added;
-- existing Radix/shadcn foundation remains intact;
-- build/lint/type were reported successful.
+### Verified implementation now present
+- Re:Solve-owned OKLCH semantic palette in `src/styles.css`;
+- light/dark values for core surfaces, text, borders, actions, statuses, selected, disabled and 6 chart series;
+- Fontsource dependencies for self-hosted Inter Variable and JetBrains Mono Variable (`@fontsource-variable/*`);
+- no Google Fonts runtime links remain in root metadata;
+- reusable `ThemeProvider` supports light/dark/system, localStorage persistence and live `prefers-color-scheme` updates;
+- `/__dev/ui` has a production `beforeLoad` guard;
+- root metadata now uses provisional Re:Solve strings rather than Lovable starter metadata;
+- reduced-motion media handling exists;
+- Untitled UI and Tremor provenance is correctly `NOT INCORPORATED — DESIGN REFERENCE ONLY`;
+- build/lint/type success reported by Lovable.
 
-### FOUND-001B supervisor correction findings
-1. **Remote font runtime dependency:** `src/routes/__root.tsx` loads Inter and JetBrains Mono from `fonts.googleapis.com` / `fonts.gstatic.com`. This contradicts the slice requirement that introduced fonts not require a third-party runtime font request. Self-host now through a portable bundled/source-controlled approach, or remove the remote font usage and use a local/system stack until self-hosting is implemented.
-2. **Theme infrastructure incomplete:** `/__dev/ui` stores theme only in React state, does not persist the non-sensitive preference, and `system` mode reads the OS preference only when the effect runs; it does not subscribe to later OS theme changes. Establish a small reusable light/dark/system theme utility/provider with local preference persistence and `matchMedia` change handling. Avoid a flash of the wrong theme where practical for the current foundation.
-3. **Development route not actually development-only:** `/__dev/ui` is always registered and currently has no environment guard. Ensure production access is prevented/disabled in a portable way while preserving the dev QA route.
-4. **Incorrect provenance wording:** Untitled UI and Tremor have influenced design only; no code has been copied/installed. Record them as `NOT INCORPORATED — DESIGN REFERENCE ONLY`, not `PARTIALLY INCORPORATED`.
-5. **Reduced motion incomplete:** token preview demonstrates transform/shadow/opacity motion without explicit `prefers-reduced-motion` handling. Add a global/reusable reduced-motion treatment and make the preview honor it.
-6. **Required semantic token gaps:** add explicit tokens for selected state, disabled state, focus treatment as a complete contract, and chart/data-visualization series. Keep status semantics label-driven, not color-only.
-7. **Required layout/density token gaps:** establish reusable tokens for page gutters, content measures, panel padding, compact/default/touch control heights, density rhythm, reserved future shell dimensions, responsive/safe-area behavior and restrained elevation. Do not build the shell itself.
-8. **Preview coverage:** update `/__dev/ui` to visibly demonstrate warning/critical/selected/disabled/focus/chart-series states, density/control-height tokens, reduced-motion behavior, and locale-neutral representative numeric data. Do not imply USD is universal product truth.
-9. **Root metadata cleanup:** since `__root.tsx` is already being touched for font/theme foundation, remove remaining generic `Lovable App` / `Lovable Generated Project` / `@Lovable` metadata and replace it with provisional Re:Solve metadata. Do not invent final marketing copy.
+### Remaining FOUND-001B supervisor findings
+1. **Existing shadcn compatibility was partially broken by the token rewrite.** The generated `src/components/ui/sidebar.tsx` still consumes `bg-sidebar`, `text-sidebar-foreground`, `border-sidebar-border`, `ring-sidebar-ring` and related sidebar vocabulary. `src/styles.css` no longer defines the corresponding Tailwind/shadcn compatibility mappings. Restore these compatibility tokens by mapping them onto Re:Solve authority tokens; do not create a separate sidebar design system.
+2. **shadcn chart compatibility is incomplete.** Re:Solve has `rs-chart-1..6`, but preserve/map the existing shadcn `chart-1..5` vocabulary so source-owned chart primitives remain usable without a parallel palette.
+3. **Layout contract still incomplete.** The requested restrained elevation levels, mobile safe-area inset tokens, focus-offset token/treatment and explicit compact/default/touch density rhythm tokens are not yet present. Add these as contracts only; do not build shell/components yet.
+4. **Initial theme flash remains.** `ThemeProvider` applies the stored/system theme in `useEffect`, after first render/hydration. Add a small pre-hydration theme bootstrap so stored dark/system-dark does not visibly flash light where practical in TanStack Start. Keep it portable and CSP-aware/documentable; do not build Appearance settings yet.
+5. **Font CSS is imported twice.** Fontsource is imported both from `src/styles.css` and from `src/routes/__root.tsx`. Choose one canonical bundled import path and remove the duplicate.
+6. **Font provenance still lacks package versions.** `docs/ui-sources.md` records package names/licenses but not version declarations/resolved versions. Record truthful package version provenance from the repository; do not invent values.
+7. **Theme storage should validate persisted values.** Avoid trusting an arbitrary localStorage string as a `Theme`; invalid/corrupted values should fall back safely to `system`.
+
+### Visual acceptance still required after code cleanup
+Before FOUND-001B becomes ACCEPTED, supervisor will review actual `/__dev/ui` appearance in at least:
+- light mode;
+- dark mode;
+- a narrow/mobile viewport.
+
+The visual review will check hierarchy, density, palette restraint, focus visibility, status semantics, typography, long-content behavior and whether the foundation feels like a high-trust operations workspace rather than stock shadcn/generic SaaS.
 
 ## Current architecture facts
 - framework/build tool: `TanStack Start v1 + Vite`
@@ -92,6 +100,7 @@ Implemented direction verified:
 - shadcn: `initialized — new-york, CSS variables, source-owned registry components; do not rerun init without explicit migration decision`
 - current primitive base: `Radix + shadcn source components`
 - primary icon library: `Lucide 0.575.0`
+- typography packages: `@fontsource-variable/inter`, `@fontsource-variable/jetbrains-mono` (version provenance cleanup pending)
 - query/server state: `TanStack Query`
 - form/validation: `React Hook Form + Zod`
 - chart foundation: `Recharts`
@@ -102,7 +111,7 @@ Implemented direction verified:
 - service/repository boundaries: `initial FOUND-001A boundaries established`
 
 ## Current Core UI inventory
-No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme foundation is under correction. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
+No Re:Solve-owned reusable primitive/composite set is accepted yet. FOUND-001B token/theme foundation remains conditional. Full canonical primitives and Component Gallery breadth begin only after FOUND-001B acceptance.
 
 ## Current database/domain inventory
 None.
@@ -111,13 +120,11 @@ None.
 None requiring an owner product decision. Current FOUND-001B issues are implementation/acceptance corrections.
 
 ## Known implementation limitations
-- remote Google Fonts runtime dependency exists;
-- light/dark/system theme behavior is not yet persistent/reactive enough;
-- dev preview route is not yet production-blocked;
-- reduced-motion treatment is incomplete;
-- semantic/layout/density token contracts are incomplete;
-- Untitled UI/Tremor provenance overstates incorporation;
+- shadcn sidebar/chart token compatibility needs restoration;
+- elevation/safe-area/focus-offset/density contracts need completion;
+- pre-hydration theme bootstrap is not yet established;
+- Fontsource is imported twice and provenance versions are incomplete;
 - no broad Component Gallery, shell, PWA, CI or test foundation yet by design.
 
 ## Next action
-Execute the supervisor-provided focused `FOUND-001B-FIX` only. Re-review actual repository and preview afterward. Do not begin FOUND-001C until FOUND-001B passes.
+Execute supervisor-provided final `FOUND-001B-FIX2` implementation cleanup only. Re-review repository afterward, then perform visual acceptance of `/__dev/ui`. Do not begin FOUND-001C until FOUND-001B passes.
