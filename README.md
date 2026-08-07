@@ -52,6 +52,24 @@ The product may be specified comprehensively here, but implementation must be de
 ### Platform
 - [Files Platform](03-platform/files.md)
 - [Re:Solve Knowledge Platform](03-platform/knowledge.md)
+- [Automations Platform](03-platform/automations.md)
+
+## Platform Core
+
+### Extensions
+- [Plugin Platform](05-extensions/plugins.md)
+- [Connector Platform](05-extensions/connectors.md)
+
+### API & AI Integration
+- [API & Webhooks](07-api/api-and-webhooks.md)
+- [MCP Platform](07-api/mcp.md)
+- [Re:Solve AI](04-ai/re-solve-ai.md)
+
+### Security
+- [Security Architecture](08-security/security-architecture.md)
+
+### Build
+- [Lovable Development Environment](10-build/lovable-environment.md)
 
 ## Governing Workflow
 
