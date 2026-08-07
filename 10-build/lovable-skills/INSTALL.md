@@ -6,14 +6,33 @@ Install the canonical source-controlled Re:Solve skills into the Lovable workspa
 ## Current Lovable mechanics
 As of 2026-08-07, custom skills are workspace-level. They can be imported from a public GitHub repository/subdirectory, uploaded as ZIP/`.skill`, written manually, or created in chat. Skills imported/uploaded through Settings do not consume normal chat credits.
 
-The canonical Product Bible repository is private. Do **not** make it public merely to simplify skill installation.
+The canonical Product Bible repository is public:
 
-## Preferred installation for this private repository
-Use **Settings → Skills → Add → Upload ZIP** for each canonical skill package exported from its folder, or use **Write manually** by copying the exact frontmatter fields and body from the canonical `SKILL.md`.
+`https://github.com/thathman/Re-Solve-Product-Bible`
+
+This makes **Import from GitHub** the preferred installation path.
+
+## Preferred installation — Import from GitHub
+In Lovable, go to **Settings → Skills → Add → Import from GitHub**.
+
+Because this repository contains multiple skills, import each skill by its public subdirectory URL:
+
+`https://github.com/thathman/Re-Solve-Product-Bible/tree/main/10-build/lovable-skills/<skill-name>`
+
+Example:
+
+`https://github.com/thathman/Re-Solve-Product-Bible/tree/main/10-build/lovable-skills/resolve-feature`
+
+Lovable also accepts a direct public `SKILL.md` URL and imports its parent folder.
+
+Do not point Lovable at the repository root because the repository contains many Product Bible files and multiple skills rather than one root-level `SKILL.md`.
 
 Do not use `Build with Lovable` to recreate these skills. Their contents are already authored and approved.
 
-If we later create a dedicated public `Re-Solve-Lovable-Skills` mirror containing only non-sensitive skill packages, `Import from GitHub` becomes the preferred one-click path. The private Product Bible remains the source of truth.
+## Fallback installation
+If GitHub import is temporarily unavailable, use **Upload ZIP/`.skill`** or **Write manually** by copying the exact canonical `SKILL.md`.
+
+The Product Bible remains the source of truth regardless of installation method.
 
 ## Install order
 Install all skills in `manifest.md`. For the first build, verify these are enabled before FOUND-001:
@@ -52,7 +71,7 @@ A dedicated Re:Solve workspace is preferred during initial product build because
 ## Canonical update flow
 1. Update `SKILL.md` in the Product Bible.
 2. Review/merge the Product Bible change.
-3. Replace/update the corresponding Lovable workspace skill.
+3. Re-import or update the corresponding Lovable workspace skill.
 4. Verify its description/content.
 5. Continue builds.
 
