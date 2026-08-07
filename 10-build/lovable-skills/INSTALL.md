@@ -23,6 +23,10 @@ Example:
 
 `https://github.com/thathman/Re-Solve-Product-Bible/tree/main/10-build/lovable-skills/resolve-feature`
 
+For a copy/paste list of every canonical skill URL, use:
+
+`10-build/lovable-skills/GITHUB-IMPORT-URLS.md`
+
 Lovable also accepts a direct public `SKILL.md` URL and imports its parent folder.
 
 Do not point Lovable at the repository root because the repository contains many Product Bible files and multiple skills rather than one root-level `SKILL.md`.
