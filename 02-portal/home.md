@@ -1,304 +1,228 @@
 # Client Portal Home
 
 ## Purpose
+Client Portal Home is the client's calm operating summary. Within seconds it should answer: what needs my action, what is happening with my Projects/Properties/Services, what do I owe, what is changing, and where do I go next?
 
-The Client Portal Home is the client's operating summary. It should answer: what needs my attention, what is happening with my services/properties/projects, what do I owe, what has changed, and where do I go next?
-
-It is not a mirror of the Admin Dashboard. It must be calmer, simpler, client-safe, task-focused, and deeply useful on mobile/PWA.
-
-## Primary users
-
-- Client organisation owner/admin
-- Billing contact
-- Project approver
-- Project stakeholder
-- Technical/property contact
-- Other client members with restricted access
-
-The page is shaped by organisation membership, property grants, project participation, billing permissions, and role.
+It is not a mirror of Admin Dashboard. It consumes client-safe Attention and domain projections while hiding internal implementation/risk detail.
 
 ## Core flow
+1. Client User signs in.
+2. Portal resolves Membership plus Organisation/Property/record grants.
+3. client-safe Attention renders first.
+4. current Projects, Property Posture, Support, Billing/Renewals and recent meaningful Activity follow according to role.
+5. user takes one obvious action or opens a focused workspace.
+6. source record/Attention updates; Notification read state remains separate.
 
-1. Client signs in.
-2. Portal resolves organisation and access scope.
-3. Home renders urgent client actions first.
-4. Client reviews current work, properties, support, billing, and recent activity.
-5. Client takes an action or opens a focused workspace.
-6. Completion immediately updates the source record and notification state.
+## Shell relationship
+Global Portal navigation, Notifications and Account live in the Portal shell. Support access is globally reachable.
 
-## Header
-
-Contains:
-- organisation identity
-- contextual greeting
-- global portal search where permitted
-- notification trigger
-- account/organisation switcher if user belongs to multiple organisations
-- support/chat access
-- install-PWA affordance when appropriate
-
-Avoid admin-oriented controls.
+Optional Portal Àríyá, if enabled later, uses the same stable shell/command entry philosophy and must not crowd Home.
 
 ## 1. Requires Your Attention
-
-Highest-priority portal section.
-
-Potential items:
-- approval requested
-- client action overdue
-- invoice due/overdue
-- credential/access request
-- project question requiring response
-- upcoming renewal requiring decision
-- maintenance notice acknowledgement where applicable
-
-Each item includes:
-- plain-language title
-- source
-- due date/status
-- why action is needed
-- one obvious primary action
-- deep link
-
-Client-facing language must avoid internal jargon.
-
-## 2. Current Work
-
-Summarizes active projects and service work visible to the user.
-
-For each project:
-- name
-- status
-- progress/state representation
-- next milestone
-- next client action if any
-- last meaningful update
-
-Do not expose internal tasks, notes, risks, budgets, or staff-only metadata unless explicitly client-visible.
-
-## 3. Properties
-
-Shows permitted properties with meaningful status.
-
-Each property summary may include:
-- name/type
-- status
-- health summary where client-visible
-- maintenance state
-- upcoming renewal
-- current related project/service
-
-If many properties exist, show prioritized/recent ones plus "View all".
-
-## 4. Support
-
-Chatwoot remains support system.
-
-Portal Home may show:
-- support availability/status
-- open conversation count if available and permitted
-- important support incident/status
-- recent selected conversation references
-- button to start/open support
-
-Do not duplicate complete Chatwoot conversation streams on Home.
-
-## 5. Billing
-
-Permission-gated.
-
-Shows:
-- amount currently due
-- overdue invoices
-- next recurring service/renewal
-- recent payment/receipt
-
-For users without billing permission, this block is omitted entirely rather than showing redacted mystery counts.
-
-## 6. Files & Deliverables
-
-Shows recent client-visible files such as:
-- deliverables
-- reports
-- shared documents
-- receipts
-
-Vault-confidential files should be visually distinguished and require appropriate access.
-
-## 7. Recent Activity
-
-Client-safe chronological feed.
+Backed by the shared Attention Engine using a client-safe projection.
 
 Examples:
-- milestone completed
-- deliverable shared
-- invoice issued/paid
-- approval recorded
-- maintenance completed
-- property recovered
-- file shared
+- Approval requested;
+- Client Action overdue;
+- Request needs clarification;
+- Invoice/deposit due;
+- Contract/Proposal action;
+- Domain/Hosting renewal decision/payment;
+- requested File upload;
+- active Incident/maintenance action;
+- permitted Vault Access request/action.
 
-Never expose internal staff notes, connector logs, AI internals, security metadata, or private finance data beyond role.
+Each item has plain-language reason, source/context, due/status, one primary registered action and deep link.
+
+Internal risk scores, staff-only notes and hidden source evidence never leak.
+
+## 2. Current Work
+Visible active Projects and relevant Requests/Client Actions.
+
+Project summary:
+- name/status;
+- progress/milestone state;
+- next milestone;
+- next client action/Approval;
+- latest client-visible update.
+
+Do not expose internal Tasks/Notes/Risks/Budgets unless explicitly client-visible.
+
+## 3. Properties
+Show permitted Properties with client-safe **Property Posture**, not raw provider dashboards.
+
+Summary may include:
+- name/type;
+- lifecycle status;
+- Posture: healthy/attention/degraded/maintenance/unknown;
+- client-safe reason/last updated;
+- active Incident/Maintenance;
+- upcoming Renewal Obligation;
+- related Project/Service.
+
+Provider names such as Cloudflare/Uptime Kuma are normally hidden unless useful. Client should understand the Property, not Re:Solve's monitoring implementation.
+
+## 4. Support
+Chatwoot remains support engine.
+
+Home may show:
+- entitlement/availability;
+- active Incident;
+- safe open/waiting conversation count/references;
+- escalation route;
+- Start/Open Support action.
+
+Do not reproduce full conversation streams.
+
+## 5. Billing & Renewals
+Permission-gated.
+
+May show:
+- currently due/overdue;
+- next Invoice/payment milestone;
+- recent verified Payment/Receipt;
+- Account Statement shortcut;
+- active Client Service renewal;
+- Domain/Hosting/other Renewal requiring client decision/payment.
+
+No Client Service Consumption/remaining-hours/credits.
+
+If user lacks Billing permission, financial content is omitted entirely rather than leaking counts.
+
+## 6. Approvals / Documents / Files
+Recent/relevant:
+- Deliverable awaiting review;
+- Proposal/Estimate/Contract action;
+- requested File;
+- client-visible report/document;
+- Receipt;
+- authorized protected Vault item/action.
+
+Protected Vault content is a separate secure experience and is never an ordinary File preview/cache.
+
+## 7. Recent Activity
+Client-safe meaningful chronology:
+- Milestone/Deliverable;
+- Request update;
+- Approval;
+- Invoice/Payment/Receipt;
+- Proposal/Contract outcome;
+- Property recovery/Maintenance;
+- Renewal completion;
+- File shared;
+- client-visible Comment/update.
+
+No internal Notes, connector logs, Audit details, AI internals or hidden finances.
 
 ## 8. Upcoming
+Compact agenda may include:
+- Project Milestones;
+- Approvals/Client Actions;
+- Renewals;
+- Maintenance;
+- Invoices/payment schedule;
+- Booking/meeting.
 
-Optional compact timeline for:
-- project milestones
-- renewal dates
-- maintenance windows
-- due invoices
-- scheduled meetings/events where connected
+## Àríyá optional client briefing
+If Portal Àríyá is enabled, it can provide a narrow evidence-backed summary such as:
+- `What do I need to do?`
+- `Summarize my website project.`
+- `Why is this Property marked Attention?`
+- `Explain this Invoice.`
 
-## Empty / first-use state
+It sees only client-safe permitted projections and cannot expose staff/internal/Vault-secret context.
 
-A new client with no work yet should see:
-- welcome/context
-- organisation details
-- support access
-- onboarding actions if any
-- clear explanation of what will appear here
+## First-use / onboarding state
+A new client sees:
+- welcome/Operating Entity Brand;
+- Organisation details;
+- onboarding actions/Requests;
+- support access;
+- invited team/access status where authorized;
+- explanation of what will appear later.
 
-No fake charts or sample records.
+No fake charts/sample records.
 
-## Role-specific home behavior
-
+## Role shaping
 ### Organisation Admin
-Broadest permitted overview, including access/team actions.
+Broader Organisation/member/access/Property overview.
 
 ### Billing Contact
-Billing and renewals promoted.
+Finance/Renewals promoted.
 
-### Project Approver
-Approvals and project actions promoted.
+### Approver
+Approvals/Documents promoted.
 
-### Technical Contact
-Properties, maintenance, credentials and support promoted.
+### Property Manager / Technical Contact
+Property Posture, Renewal, Incidents, Requests and Support promoted.
 
-One person can have multiple designations; the page prioritizes combined responsibilities without duplicating sections.
+### Project Collaborator
+Current Work/Files/Approvals promoted.
 
-## Notifications
+Combined responsibilities are ranked without duplicate sections.
 
-Portal Home surfaces unresolved action items, but full history/preferences remain in Notifications.
+## Notifications / WhatsApp
+Home surfaces current Attention; full history/preferences remain Notifications.
 
-Important client-facing events can deliver via:
-- in-app
-- PWA push
-- email
-- WhatsApp when configured and appropriate
+Permitted client events can deliver via in-app, push, email or WhatsApp/Baileys according to policy. WhatsApp remains operational Re:Solve-to-client communication, not end-customer support.
 
-## WhatsApp relationship
+## Requests
+When enabled, Home may provide a simple `New Request` Action and show clarification/status for current Requests rather than forcing every ask into Chatwoot or Project work immediately.
 
-WhatsApp/Baileys is appropriate for operational Re:Solve-to-client communication, for example:
-- approval reminder
-- project update
-- invoice reminder
-- maintenance/renewal notification
-- resolved issue notice
+## API / MCP
+Portal APIs return client-safe projections, not unrestricted Admin payloads.
 
-It does not replace Chatwoot for the client's own end-customer support.
+Potential resources:
+- home summary;
+- client Attention;
+- visible Projects/Requests;
+- visible Property Posture/Renewals;
+- Billing summary where permitted;
+- client-safe Activity;
+- Support summary.
 
-## API
+Client-facing MCP/agent access, if enabled later, uses separate scoped Client Principals/tools.
 
-Portal API responses must be client-safe projections rather than reusing unrestricted admin payloads.
-
-Expose:
-- portal home summary
-- attention items
-- visible project summaries
-- visible property summaries
-- billing summary where permitted
-- client-safe activity
-- support summary
-
-All responses require membership and object-level authorization.
-
-## MCP / AI client access
-
-If client-facing AI/MCP access is ever enabled, it must use separate client scopes and client-safe projections. Admin MCP keys must never be reused in the portal.
-
-Potential future read tools:
-- get_my_client_actions
-- get_my_projects
-- get_my_properties
-- get_my_invoices
-
-## Plugin extension slots
-
-Plugins may add client-home blocks only if:
-- explicitly portal-safe
-- permission aware
-- responsive
-- bounded in size
-- configurable by administrators
+## Plugins
+Portal Home contributions are explicitly portal-safe, scoped, responsive, bounded and configurable. A Plugin cannot add a competing navigation/dashboard framework.
 
 ## Responsive/PWA
+Portal mobile is primary quality target.
 
-The portal is mobile-first enough to function as an installed daily-use app.
+Phone priority:
+1. Requires Your Attention;
+2. Support / New Request shortcuts;
+3. Current Work;
+4. Properties/Posture;
+5. Billing/Renewals if permitted;
+6. Documents/Files/Activity/Upcoming.
 
-### Mobile priority
-1. attention
-2. support shortcut
-3. current work
-4. properties
-5. billing if permitted
-6. recent files/activity
-
-Use bottom navigation or equally reachable mobile navigation per portal shell spec.
-
-PWA requirements:
-- installable
-- push capable
-- safe offline shell
-- touch-friendly
-- update prompt
-- last-sync indicators for cached content
-- notification deep links into exact portal records
-
-Offline:
-- safe cached summaries may display
-- financial/payment actions require connectivity
-- approvals should not be silently queued unless designed for conflict-safe offline operation
-- Vault contents must never be broadly cached
+Use Core UI components and deliberate mobile nav. Safe cached summaries show last refresh; payment/Approval/high-risk actions require connectivity unless specifically designed replay-safe. Vault content never offline caches.
 
 ## Accessibility
-
-- plain-language action labels
-- priority not color-only
-- screen-reader-friendly status summaries
-- keyboard support on desktop
-- adequate touch targets on mobile
+Plain language, non-color-only priority/status, semantic status summaries, keyboard desktop use and generous touch targets.
 
 ## Acceptance criteria
-
-- Client can identify outstanding actions within seconds.
-- User sees only organisations/properties/projects/billing they are authorized for.
-- Home is useful for clients with one property and clients with many properties.
-- Chatwoot remains the actual support engine.
-- Billing block disappears cleanly for unauthorized users.
-- Mobile is a first-class experience rather than a collapsed desktop dashboard.
-- Offline/stale state is explicit.
-- All client-visible activity is safe for the client's role.
+- client sees outstanding actions within seconds;
+- Home uses client-safe Attention rather than Notification unread count as priority;
+- Property Posture/Renewals are understandable without provider jargon;
+- Chatwoot remains Support engine;
+- unauthorized Billing/Property/Project data disappears without leakage;
+- optional Àríyá remains strictly client scoped;
+- mobile is first-class;
+- stale/offline state is truthful;
+- no Client Service Consumption/Timesheet/HR concept appears.
 
 ## Demo data
-
-Use a university client with:
-- multiple portal members with different roles
-- several journal/website properties
-- active website redesign project
-- one pending approval
-- one upcoming domain renewal
-- one open support escalation summary
-- one unpaid invoice visible only to billing users
-- recent deliverable and receipt
+Use fictional Westbridge University context with different client roles, several Properties, active Project, pending Approval/Request, upcoming Domain renewal, active Support/Incident summary, role-gated Invoice, recent Deliverable/Receipt and realistic healthy/quiet state.
 
 ## Lovable build slices
-
-1. Portal Home shell + first-use/loading/empty states.
-2. Requires Your Attention.
-3. Current Work.
-4. Properties.
-5. Support summary/Chatwoot launch.
-6. Billing role-gated block.
-7. Recent files/activity/upcoming.
-8. Role-specific prioritization.
-9. Mobile/PWA/offline polish.
+1. Portal Home first-use/loading/empty shell content after Portal shell exists.
+2. client-safe Attention.
+3. Current Work / Requests.
+4. Properties/Posture/Renewals.
+5. Support/Chatwoot launch.
+6. role-gated Billing/Documents.
+7. Activity/Upcoming.
+8. role-prioritization + optional Àríyá later.
+9. mobile/PWA/offline polish.
