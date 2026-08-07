@@ -1,461 +1,225 @@
 # Organisations and Contacts
 
 ## Purpose
+Organisations and Contacts form Re:Solve's relationship spine. They represent external clients, prospects, partners, vendors and the people related to them.
 
-Organisations and Contacts form the relationship spine of Re:Solve. They represent who Re:Solve serves, who works with them, how people relate to multiple organisations/properties, what access they have, and the complete operational context surrounding those relationships.
-
-This area must support both CRM work and existing-client operations without forcing duplicate records.
+**Operating Entities are separate.** Airix Media/the business operating Re:Solve must not be modeled as an ordinary client Organisation merely to reuse CRM records.
 
 ## Core concepts
-
 ### Organisation
-A client, prospect, partner, vendor, institution, or other legal/operational entity.
+Client, prospect, partner, vendor, institution or other relationship entity.
 
 ### Contact
-A real person. A contact can relate to multiple organisations and properties through memberships/roles.
+A person. Contact is not identical to authenticated User.
 
 ### Membership
-The relationship between a contact and an organisation, including role, status, permissions, dates, and optional property scope.
+A User's relationship to an Organisation, with role/status/permissions and optional Property scope.
 
-### Relationship state
-Examples:
-- prospect
-- active client
-- paused
-- former client
-- partner
-- vendor
+### Relationship / lifecycle state
+Examples: Prospect, Onboarding, Active Client, At Risk, Paused, Offboarding, Former/Archived, Partner, Vendor.
 
-Relationship state must not be overloaded with billing or project state.
+Lifecycle state is distinct from Billing/Project/Property state.
+
+### Account Team
+Named operational responsibilities such as Account Owner, Technical Owner, Delivery Owner and Finance Owner. These are assignment roles, not HR records.
 
 ## Organisation List
+Use canonical DataTable/Saved Views.
 
-### Purpose
-Give staff a high-speed view of organisations with enough context to prioritize work.
+Useful columns:
+- Organisation/reference;
+- relationship/lifecycle;
+- Account Owner;
+- primary Contact;
+- active Properties/Projects/Services;
+- Client Health;
+- outstanding receivable summary;
+- next Renewal;
+- Support/Incident context;
+- last meaningful activity.
 
-### Columns/fields
-Configurable columns may include:
-- organisation name
-- type
-- relationship state
-- primary contact
-- account owner
-- active properties
-- active projects
-- outstanding receivable summary
-- support status
-- next renewal
-- last meaningful activity
-- health indicators
-- tags
+Curated views:
+- All
+- Active Clients
+- Prospects
+- Onboarding
+- Needs Attention
+- Renewals
+- At Risk
+- Former/Archived
+- Saved Views
 
-### Filters
-- type
-- relationship state
-- owner/team
-- tags
-- has active project
-- has overdue invoice
-- has property issue
-- support plan
-- last activity range
-- created range
-- custom fields
+## Organisation 360
+### RecordHeader
+Name, human reference, relationship state, Client Health/Attention, Account Team, tags and registered actions.
 
-### Views
-- all organisations
-- active clients
-- prospects
-- attention needed
-- recently active
-- archived
-- saved custom views
-
-### Actions
-- create organisation
-- export permitted records
-- bulk owner assignment
-- bulk tagging
-- archive when allowed
-
-## Organisation 360 Workspace
-
-The organisation record is a major workspace, not a single form.
-
-### Header
-Shows:
-- name
-- logo/avatar/initial
-- type
-- relationship state
-- health/context indicators
-- account owner
-- tags
-- primary actions
-
-Primary actions may include:
-- add contact
-- add property
-- create project
-- create opportunity
-- create invoice
-- share vault item
-- send operational message
-- open support summary
-
-### Tabs/sections
-
-#### Overview
-- relationship summary
-- primary contacts
-- current work
-- properties
-- finance snapshot
-- support snapshot
-- upcoming renewals
-- latest meaningful activity
-- important notes
-
-#### Contacts
-- memberships
-- contact roles
-- portal access
-- billing/contact designations
-- property-specific roles
-- invitation/access state
-
-#### Properties
-All properties owned/managed for the organisation with hierarchy and health.
-
-#### Projects
-Active, upcoming, completed, and archived projects.
-
-#### Commercial
-- opportunities
-- proposals
-- estimates
-- contracts
-- services
-
-#### Billing
-- invoices
-- payments
-- subscriptions/recurring services
-- credits/refunds where applicable
-
-#### Support
-Re:Solve support summary backed by Chatwoot connector metadata and internal service context.
-
-#### Vault
-Confidential items scoped to the organisation, permission-gated.
-
-#### Files
-Non-vault files shared with or related to the organisation.
-
-#### Activity
-Unified operational timeline with filters.
-
-#### Notes
-Internal notes with permissions and mentions.
-
-#### Access
-Portal members, roles, property grants, invitations.
-
-## Organisation creation flow
-
-Minimum creation should be lightweight:
-- name
-- organisation type
-- relationship state
-- owner
-- optional primary contact
-
-Additional details can be completed later.
-
-Avoid huge onboarding forms for basic creation.
-
-Duplicate detection should warn on:
-- similar organisation name
-- matching domain
-- matching billing identity
-
-Warnings should not silently merge records.
-
-## Organisation fields
-
-Potential core fields:
-- legal/display name
-- short name
-- type
-- relationship state
-- website
-- email domain(s)
-- phone
-- address
-- country/region
-- timezone
-- default currency
-- billing identity
-- tax identifiers
-- account owner/team
-- source
-- tags
-- custom fields
-- internal description
-- archival state
-
-Sensitive finance identifiers must respect permission boundaries.
-
-## Contact List
-
-### Columns
-- name
-- email
-- phone
-- organisations
-- primary organisation
-- role/title
-- portal access
-- last activity
-- owner
-- status
-
-### Filters
-- organisation
-- role
-- portal access
-- property access
-- owner
-- status
-- tags
-- last activity
-
-## Contact Workspace
+Actions may include add Contact/Property, create Opportunity/Project/Request/Invoice, start onboarding/offboarding, send operational message, share authorized Vault Item or open Support summary.
 
 ### Overview
-- identity and channels
-- memberships
-- primary organisation
-- role/title
-- owner
-- communication preferences
-- portal/access state
-- current work relationships
-- recent activity
+- relationship summary;
+- Account Team;
+- Client Health reasons/freshness;
+- Attention;
+- primary Contacts;
+- onboarding/offboarding state;
+- current Projects/Requests;
+- Properties/Posture;
+- active Client Services;
+- Billing/receivables;
+- Renewals;
+- Support/Incidents;
+- latest meaningful Activity.
 
-### Organisations
-A contact may belong to more than one organisation.
+### Contacts
+Memberships, client roles, Portal state, billing/technical/approver designations and Property scope.
 
 ### Properties
-Property-specific roles/access.
+Property hierarchy, Posture, Renewals and Incidents.
 
-### Projects
-Projects where the person is a stakeholder, approver, contributor, or contact.
+### Projects / Requests
+Current/completed work and structured Requests.
 
-### Communications
-Operational communication history owned by Re:Solve. Chatwoot end-customer conversation history is not indiscriminately copied here.
+### Commercial
+Opportunities, Proposals, Estimates, Contracts and Client Services.
+
+### Billing
+Invoices, Payments, Statements, recurring Billing and Credits/Refunds according to permission.
+
+### Support
+Provider-neutral Chatwoot context and entitlement.
+
+### Documents / Files / Vault / Knowledge
+Respect each platform's access model. Protected documents cannot leak through ordinary Files.
+
+### Collaboration / Activity
+Shared Comments/Mentions/Following plus human-readable Activity. Audit remains separate.
 
 ### Access
-Portal roles, invitations, MFA/access state where appropriate.
+Portal Memberships, invitations, roles and Property grants.
 
-## Contact identity rules
+### Connectors / Data Quality
+Mappings, provenance/freshness and relevant duplicate/missing-data issues.
 
-Email is not canonical identity by itself.
+## Creation
+Keep initial Organisation creation lightweight:
+- name;
+- relationship type/state;
+- owner/Account Team default;
+- optional primary Contact/source.
 
-A contact may have:
-- multiple email addresses
-- multiple phone numbers
-- one or more organisation memberships
-- one or more external identities/mappings
+Additional onboarding data can follow later.
 
-Potential duplicate detection should use multiple signals.
+Duplicate detection warns using multiple signals such as similar name, domain, billing identity and explicit external mappings. Never silently merge.
 
-## Client/portal designations
+## Lead conversion
+A Lead may exist before a complete Organisation/Contact exists.
 
-Membership can include designations such as:
-- organisation owner/admin
-- billing contact
-- project approver
-- project stakeholder
-- technical contact
-- property manager
-- vault administrator
-- support contact
+Qualification should:
+1. search potential Organisation/Contact matches;
+2. let user choose/link/create where ambiguous;
+3. preserve Lead/Opportunity provenance;
+4. avoid duplicates;
+5. keep external identities in mappings.
 
-These designations do not automatically grant every related permission; final access is resolved from role + explicit grants + policy.
+Email alone is never universal canonical identity.
 
-## Health and relationship signals
+## Contact Workspace
+May include identity/channels, Organisation relationships, Property access, Projects, communication preferences, Portal/access state, Collaboration/Activity and external mappings.
 
-Health indicators should be explainable and derived from operational evidence such as:
-- unresolved project blockers
-- overdue billing
-- property incidents
-- important support escalations
-- inactivity
-- renewal risk
+A Contact can relate to multiple Organisations and have multiple email/phone identities.
 
-Never show a mysterious numerical score without explanation.
+## Communication and privacy
+Operational email/WhatsApp/call/meeting references may appear when policy permits. Chatwoot support message history is not indiscriminately copied.
 
-## Activity timeline
+Contact preferences/consent/data-right workflows follow Privacy specification.
 
-Potential event families:
-- contact added/removed
-- portal invitation
-- property created
-- project started/completed
-- proposal/contract events
-- invoice/payment events
-- vault share/access events
-- operational communications
-- support escalation references
-- ownership change
-- important notes
+## Client Health
+Derived, explainable relationship state informed by relevant evidence such as:
+- onboarding blockers;
+- Project risk/Client Actions;
+- Property Posture/Incidents;
+- Renewals;
+- Support escalations;
+- overdue receivables;
+- commercial/service state;
+- relationship follow-up.
 
-Timeline filtering by entity/event category is required.
+Do not use an unexplained magic numeric score.
 
-## Archive and deletion
+## Relationship Reviews
+Periodic client/account review records can summarize Services, Properties, Projects, Renewals, Support, Billing, risks, opportunities and agreed actions.
 
-Prefer archive over destructive deletion for records with operational history.
+## Data quality / merge
+Data Quality may flag duplicates, stale Contacts, broken mappings, missing Account Team/renewal owner and expired Portal access.
 
-Deletion requires dependency analysis and elevated permission. Records with legal, billing, audit, or project history may be non-deletable.
+Merge flows preserve relationships, Activity, external mappings, aliases and Audit. Ambiguous records require human review.
+
+## Archive / offboarding
+Prefer Archive over destructive deletion where operational/commercial history exists.
+
+Offboarding coordinates access revocation, connector/support/monitoring handover, documents/files/Vault, Billing and retention through Client Lifecycle rather than simply changing one status.
 
 ## Permissions
+Representative canonical capabilities:
+- `organisations.read/create/update/archive/export`
+- `organisations.members.manage`
+- `contacts.read/create/update/archive`
+- `clients.lifecycle.manage`
+- `clients.access.manage`
+- `clients.finance.read`
+- `clients.vault_metadata.read`
 
-Representative capabilities:
-- organisations.read
-- organisations.create
-- organisations.update
-- organisations.archive
-- organisations.export
-- contacts.read
-- contacts.create
-- contacts.update
-- contacts.archive
-- client_access.manage
-- organisation_finance.read
-- organisation_vault.read
+Actual scope is always enforced server-side.
 
-Property-scoped users only see relevant related data where policy permits.
+## Attention / Notifications / Reminders
+Attention examples: onboarding blocked, client health at risk, important follow-up overdue, renewal with no owner, stale Contact/mapping.
 
-## Notifications
+Notifications remain for meaningful assignment/access/lifecycle changes. Routine CRUD does not spam users.
 
-Events may include:
-- ownership assigned
-- new client portal invitation accepted
-- important contact role changed
-- designated approver changed
-- client becomes inactive/risk condition triggered
-
-Routine CRUD changes should not spam users.
+Users may create record Reminders and Follow Organisations/Contacts without gaining additional access.
 
 ## Automations
+Examples:
+- Organisation becomes client -> onboarding plan;
+- onboarding complete -> Active;
+- inactivity threshold -> Reminder/Attention;
+- Portal access changed -> appropriate notification/audit;
+- offboarding starts -> access review;
+- duplicate/import issue -> Data Quality issue.
 
-Potential triggers:
-- organisation created
-- relationship state changed
-- contact added
-- contact role changed
-- portal access granted/revoked
-- inactivity threshold reached
+## API / MCP / Àríyá
+APIs expose Organisations, Contacts, Memberships, Account Team, lifecycle summaries, access grants, Activity, custom fields and related summaries with provenance where material.
 
-Potential actions:
-- create onboarding project
-- notify owner
-- send welcome communication
-- create follow-up task
-- apply tags
-- provision connector mappings
+MCP candidates include search/get/create/update Organisation/Contact, list Organisation Properties, get_client_health, list_client_attention and get_onboarding_status.
 
-## API
+Àríyá may create an account briefing with source evidence but cannot expose hidden finance/Vault/internal notes.
 
-First-class endpoints for organisations, contacts, memberships, access grants, activity, related summaries, and custom fields.
-
-Support filtering, pagination, stable identifiers, optimistic concurrency or equivalent conflict handling for edits, and idempotency for import/create workflows where needed.
-
-## MCP candidates
-
-- search_organisations
-- get_organisation
-- create_organisation
-- update_organisation
-- search_contacts
-- get_contact
-- create_contact
-- list_organisation_properties
-- get_client_health
-
-Sensitive finance/vault fields must be redacted unless explicitly scoped.
-
-## Plugin extension slots
-
-Plugins may contribute:
-- organisation/contact tabs
-- custom field groups
-- summary cards
-- actions
-- related record types
-- health signals
-- activity renderers
-
-## Connector interactions
-
-Possible mappings:
-- Chatwoot organisation/contact identifiers
-- OJS user identities
-- WooCommerce customer identities
-- external accounting/contact IDs
-
-Mappings are stored separately from canonical identity.
+## Plugins / Connectors
+Plugins may contribute approved tabs/fields/actions/relationships/health signals.
+Connectors map external Chatwoot/OJS/WooCommerce/etc. identifiers separately from canonical identity and must declare sync authority.
 
 ## Responsive/PWA
-
-Mobile organisation workspace prioritizes:
-- header/action summary
-- contacts
-- current work
-- properties
-- attention items
-
-Dense tabular detail becomes cards/list rows rather than compressed tables.
-
-Offline reads may use safe cached summaries. Editing identity/access data while offline should normally be disabled.
-
-## Accessibility
-
-- all relationships readable without relying on color
-- tab workspaces keyboard navigable
-- contact methods have descriptive labels
-- tables expose accessible headers and list fallback on mobile
+Mobile Organisation 360 prioritizes identity, Attention/Health, Contacts, active work, Properties, Renewals and primary actions. Dense details become rows/cards/drill-down. Sensitive identity/access edits are normally online-only.
 
 ## Acceptance criteria
-
-- One contact can belong to multiple organisations without duplication.
-- Organisation 360 presents operational context without requiring module hopping.
-- Portal/property access is explicit and inspectable.
-- Archived records retain historical references.
-- Health indicators always explain their source.
-- Duplicate detection warns without auto-merging.
-- Sensitive related data obeys permission boundaries.
-
-## Demo data
-
-Use realistic organisations including:
-- a university with a main website and multiple journal properties
-- a commercial client with one website and active billing
-- a prospect with an opportunity but no active service
-- a former/archived client
-
-Use contacts with multiple roles, including an organisation owner, billing contact, journal editor, technical contact, and project approver.
+- Operating Entity and client Organisation remain distinct;
+- one Contact can relate to multiple Organisations without duplication;
+- lifecycle/onboarding/offboarding is visible without shadow copies;
+- Account Team is operational ownership, not HR;
+- Client Health is explainable;
+- duplicate detection warns rather than auto-merges;
+- Portal/Property access is explicit;
+- sensitive related data is permission-gated;
+- no HR, Timesheet or Client Service Consumption behavior appears.
 
 ## Lovable build slices
-
-1. Organisation list with realistic filters and responsive states.
-2. Create/edit organisation.
-3. Organisation Overview.
-4. Contacts tab + memberships.
-5. Contact list and Contact Workspace.
-6. Properties/projects relationships.
-7. Finance/support/vault summaries with permission gates.
-8. Access management.
-9. Activity timeline.
-10. Mobile/PWA polish and edge states.
+1. Organisation list + Saved Views.
+2. lightweight create/edit + duplicate warning.
+3. Organisation Overview + Account Team/Health demo.
+4. Contacts + Memberships.
+5. Contact Workspace + multi-Organisation relationships.
+6. Properties/Projects/Requests relationships.
+7. Billing/Support/Documents/Vault summaries.
+8. Access/Portal management.
+9. Collaboration/Activity + lifecycle states.
+10. Data Quality/merge + mobile/PWA polish.
