@@ -1,6 +1,6 @@
 ---
 name: resolve-data-table
-description: Build data-heavy Re:Solve operational lists using the canonical DataTable, saved-view, filter, bulk-action, responsive, permission, and accessibility contracts.
+description: Use when building or refining a Re:Solve operational list, searchable/filterable dataset, bulk-action table, saved-view list, or data-heavy index that needs strong desktop density and an intentional mobile alternative.
 ---
 
 # Re:Solve Data Table
