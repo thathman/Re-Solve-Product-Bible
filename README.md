@@ -28,6 +28,7 @@ The product may be specified comprehensively here, but implementation must be de
 
 ### Platform
 - [Notifications Platform](03-platform/notifications.md)
+- [PWA & Responsive Experience](03-platform/pwa.md)
 
 ## Core Product Flows
 
@@ -39,6 +40,12 @@ The product may be specified comprehensively here, but implementation must be de
 
 ### Client Portal
 - [Client Portal Home](02-portal/home.md)
+- [Properties](02-portal/properties.md)
+- [Projects](02-portal/projects.md)
+- [Billing](02-portal/billing.md)
+- [Support](02-portal/support.md)
+- [Files, Vault & Knowledge](02-portal/files-vault-knowledge.md)
+- [Organisation & Account](02-portal/organisation-and-account.md)
 
 ## Business Operations
 
@@ -48,17 +55,27 @@ The product may be specified comprehensively here, but implementation must be de
 - [Billing & Finance Operations](01-admin/billing.md)
 - [Support Operations & Chatwoot](01-admin/support.md)
 - [Secure Vault](01-admin/secure-vault.md)
+- [Monitoring](01-admin/monitoring.md)
+- [Reports & Analytics](01-admin/reports-and-analytics.md)
+- [Service Catalogue & Recurring Services](01-admin/services-and-recurring.md)
+- [Team & Access Administration](01-admin/team-and-access.md)
+- [System Operations](01-admin/system-operations.md)
 
 ### Platform
 - [Files Platform](03-platform/files.md)
 - [Re:Solve Knowledge Platform](03-platform/knowledge.md)
 - [Automations Platform](03-platform/automations.md)
+- [Forms](03-platform/forms.md)
+- [Global Search & Activity](03-platform/search-and-activity.md)
+- [Calendar & Reminders](03-platform/calendar-and-reminders.md)
+- [Approvals](03-platform/approvals.md)
 
 ## Platform Core
 
 ### Extensions
 - [Plugin Platform](05-extensions/plugins.md)
 - [Connector Platform](05-extensions/connectors.md)
+- [Core Connector Contracts](06-connectors/core-connectors.md)
 
 ### API & AI Integration
 - [API & Webhooks](07-api/api-and-webhooks.md)
