@@ -1,1191 +1,568 @@
 # Settings
 
-## 1. Purpose
+## Purpose
+Settings is the control plane for Re:Solve. It exposes configuration deliberately with ownership, validation, audit, diagnostics, permissions and safe defaults.
 
-Settings is the control plane for Re:Solve. It must expose product configuration deliberately, with clear ownership, safe defaults, validation, auditability, diagnostics, and permission boundaries.
+Settings must not become a miscellaneous dumping ground. Every setting belongs to a domain, has a scope and defined consequences.
 
-Settings must not become a miscellaneous dumping ground. Every setting belongs to a product domain, has an owner, and has defined consequences.
-
-## 2. Goals
-
-Settings must make it possible to configure and operate Re:Solve without editing source code or database records directly for ordinary administrative work.
-
-It must support:
-
-- workspace configuration;
-- users, teams, roles, and permissions;
-- client portal policies;
-- CRM, properties, projects, sales, billing, support, notifications, communications, AI, vault, files, automation, plugins, connectors, API/MCP, security, and system operations;
-- clear save/apply behavior;
-- configuration health;
-- test tools;
-- audit trails;
-- responsive access;
-- plugin/connector extension sections;
-- import/export where safe;
-- reset/recovery where safe.
-
-## 3. Information architecture
-
+## Information architecture
 Top-level Settings groups:
+1. General / Workspace
+2. Operating Entities & Brands
+3. People & Access
+4. Client Portal
+5. CRM
+6. Clients & Lifecycle
+7. Properties
+8. Monitoring & Renewals
+9. Projects
+10. Sales & Documents
+11. Billing & Spend
+12. Support
+13. Requests & Forms
+14. Notifications
+15. Communications
+16. Àríyá / AI
+17. Vault
+18. Files
+19. Automations
+20. Data & Customization
+21. Plugins
+22. Connectors
+23. API & MCP
+24. Security & Privacy
+25. System
 
-1. General
-2. People & Access
-3. Client Portal
-4. CRM
-5. Properties
-6. Projects
-7. Sales
-8. Billing
-9. Support
-10. Notifications
-11. Communications
-12. AI
-13. Vault
-14. Files
-15. Automations
-16. Plugins
-17. Connectors
-18. API & MCP
-19. Security
-20. System
+Settings navigation should be searchable and simple. On desktop use a clear settings sidebar/index; on mobile use an index/drill-down flow rather than another dense permanent sidebar.
 
-On desktop, use persistent settings navigation with search. On mobile, use a settings index and drill-down pages rather than a permanently visible sidebar.
-
-## 4. Settings search
-
-Settings must support search across:
-
-- section names;
-- setting labels;
-- descriptions;
-- connector/plugin settings;
-- security controls;
-- feature keywords.
-
-Search result should deep-link to the exact setting or section.
-
-## 5. Shared setting behavior
-
+## Shared setting contract
 Every setting should define:
-
-- scope: workspace, team, role, user, client default, property type, connector instance, plugin;
-- current value;
-- inherited/default value where applicable;
+- scope: Workspace, Operating Entity, Brand, user, team, client default, Property Type, plugin or connector instance;
+- current/inherited/default value;
 - validation;
-- permission required;
-- whether change is immediate or requires confirmation/restart/reprocessing;
-- whether change is audited;
-- whether rollback is possible;
-- whether it affects existing records or only new records;
-- whether it may trigger notifications.
-
-## 6. Save model
-
-Use the save model best suited to the section:
-
-- immediate save for low-risk toggles/preferences;
-- explicit Save changes for grouped configuration;
-- Review changes confirmation for high-impact settings;
-- test-before-save where provider credentials are involved;
-- step-up authentication for highly sensitive changes.
-
-Unsaved changes must be visible and protected against accidental navigation where material.
-
-## 7. Configuration health
-
-Each major settings area should be able to expose:
-
-- configured;
-- partially configured;
-- needs attention;
-- disabled;
-- error;
-- healthy.
-
-The Settings landing page should summarize areas needing action rather than showing generic cards for every section.
-
----
-
-# A. General
-
-## A1. Workspace
-
-Fields/options:
-
-- workspace display name;
-- legal/business name;
-- internal identifier/code;
-- primary contact details;
-- default business address;
-- website/reference URL;
-- default logo/mark;
-- system display name where configurable;
-- default record ownership behavior;
-- default archive/delete behavior where appropriate.
-
-## A2. Branding
-
-- logo variants;
-- favicon/app icon source;
-- approved accent color;
-- light/dark logo handling;
-- client portal identity;
-- authentication screen identity;
-- email identity defaults;
-- document identity defaults;
-- accessibility contrast validation;
-- preview across desktop/mobile/email/document contexts.
-
-## A3. Locale
-
-- default language;
-- default country/region;
-- date format;
-- time format;
-- first day of week;
-- timezone;
-- number formatting;
-- address formatting;
-- phone formatting assumptions.
-
-## A4. Currency
-
-- workspace base currency;
-- enabled currencies;
-- display precision;
-- rounding policy;
-- exchange-rate handling policy;
-- invoice currency behavior;
-- whether manual rates are permitted;
-- accounting/reporting base currency behavior.
-
-## A5. Defaults
-
-Central default values that do not logically belong elsewhere, with links to domain-specific defaults rather than duplication.
-
----
-
-# B. People & Access
-
-## B1. Staff
-
-- active staff;
-- invited staff;
-- suspended staff;
-- role/team membership;
-- last sign-in;
-- MFA state;
-- session/security summary;
-- deactivate/reactivate;
-- transfer ownership responsibilities before removal.
-
-## B2. Teams
-
-- create/edit/archive team;
-- team lead;
-- members;
-- functional purpose;
-- assignment eligibility;
-- notification defaults;
-- support/project/finance applicability.
-
-## B3. Roles
-
-Roles are named permission bundles.
-
-- system roles;
-- custom roles;
-- clone role;
-- compare roles;
-- permission count;
-- assigned users;
-- risk warning for broad privileges.
-
-## B4. Permissions
-
-Capability-based permission matrix covering all first-class domains and sensitive actions.
-
-Support:
-
-- read;
-- create;
-- update;
-- delete/archive;
-- approve;
-- export;
-- manage settings;
-- reveal sensitive values;
-- share vault items;
-- manage connectors/plugins;
-- manage API/MCP;
-- impersonation if ever supported, with strong audit.
-
-## B5. Invitations
-
-- invitation expiry;
-- resend;
-- revoke;
-- allowed email/domain policy where useful;
-- default role/team;
-- onboarding requirements.
-
-## B6. Sessions
-
-- active sessions/devices;
-- revoke one/all;
-- force reauthentication;
-- session timeout defaults;
-- privileged-action step-up duration.
-
----
-
-# C. Client Portal
-
-## C1. Portal Defaults
-
-- portal enabled;
-- default welcome/help copy;
-- default visible sections;
-- client-safe terminology preferences;
-- default home modules/widgets;
-- support entry behavior;
-- portal announcement/banner.
-
-## C2. Client Roles
-
-Initial role concepts may include:
-
-- Organisation Owner;
-- Organisation Admin;
-- Billing Contact;
-- Project Approver;
-- Project Participant;
-- Technical Contact;
-- Vault Authorized;
-- Read-only Stakeholder.
-
-Roles remain configurable bundles over client-safe permissions.
-
-## C3. Navigation
-
-- workspace-level feature visibility defaults;
-- entitlement-based visibility;
-- plugin portal entries;
-- ordering constraints;
-- mobile priority navigation settings should be system-guided, not arbitrary.
-
-## C4. Registration & Invitations
-
-- self-registration enabled/disabled;
-- invite-only mode;
-- approved domain rules;
-- invitation expiry;
-- organisation admin invitation rights;
-- approval requirement for new client users.
-
-## C5. Branding
-
-Controlled client-facing branding with accessibility guardrails.
-
----
-
-# D. CRM
-
-## D1. Lead Sources
-
-- source list;
-- active/archive;
-- default source;
-- reporting grouping.
-
-## D2. Pipelines
-
-- multiple pipelines;
-- stages;
-- probability/default weighting;
-- stage colors using semantic constraints;
-- required fields per stage;
-- entry/exit automations;
-- won/lost behavior.
-
-## D3. Custom Fields
-
-- supported record types;
-- field types;
-- validation;
-- required/optional;
-- client visibility;
-- API exposure;
-- plugin ownership;
-- archive behavior.
-
-## D4. Activity Types
-
-- call;
-- meeting;
-- email;
-- note;
-- follow-up;
-- custom types;
-- outcome options;
-- default reminder behavior.
-
----
-
-# E. Properties
-
-## E1. Property Types
-
-Examples:
-
-- website;
-- journal;
-- OJS installation;
-- domain;
-- server;
-- hosting account;
-- application;
-- store;
-- infrastructure asset;
-- custom/plugin-defined type.
-
-Each type may define allowed components, fields, health signals, icons, and plugin extensions.
-
-## E2. Statuses
-
-Operational/business statuses such as active, onboarding, maintenance, suspended, retired, archived.
-
-## E3. Health Rules
-
-- healthy/degraded/critical thresholds;
-- stale health behavior;
-- monitor weighting;
-- incident creation rules;
-- client-visible status mapping.
-
-## E4. Maintenance
-
-- maintenance windows;
-- recurrence;
-- client notifications;
-- suppress/annotate monitor alerts;
-- maintenance history.
-
-## E5. Domains/Renewals
-
-- expiry thresholds;
-- auto-renew expectations;
-- notification schedule;
-- ownership/registrar defaults.
-
----
-
-# F. Projects
-
-## F1. Statuses
-
-Configurable project statuses with canonical semantic categories.
-
-## F2. Priorities
-
-Workspace priority vocabulary.
-
-## F3. Task Types
-
-- task;
-- client action;
-- approval;
-- review;
-- technical action;
-- plugin-defined types.
-
-## F4. Templates
-
-- project templates;
-- milestone templates;
-- task templates;
-- role assignment defaults;
-- client action defaults;
-- notification/automation defaults.
-
-## F5. Time Tracking
-
-- enabled/disabled;
-- billable defaults;
-- rounding;
-- timer/manual entry policy;
-- approval requirements.
-
-## F6. Approvals
-
-- approval states;
-- request changes behavior;
-- quorum/multiple approvers where enabled;
-- deadline/escalation defaults;
-- client-safe wording.
-
----
-
-# G. Sales
-
-## G1. Services Catalogue
-
-- service categories;
-- active/archive;
-- pricing models;
-- default taxes;
-- billing cadence;
-- default project template;
-- default support entitlement;
-- property applicability.
-
-## G2. Proposals
-
-- numbering;
-- validity period;
-- templates;
-- default terms;
-- approval/signing behavior;
-- accepted/declined expiry behavior.
-
-## G3. Estimates/Quotes
-
-- numbering;
-- validity;
-- conversion rules;
-- approval;
-- taxes/discount defaults.
-
-## G4. Contracts
-
-- numbering/reference;
-- templates;
-- signature connector;
-- renewal reminders;
-- deposit requirements;
-- client visibility.
-
----
-
-# H. Billing
-
-## H1. Invoice Defaults
-
-- numbering scheme;
-- prefix;
-- due terms;
-- issue date behavior;
-- line-item defaults;
-- notes/terms;
-- PDF/template selection.
-
-## H2. Taxes
-
-- tax definitions;
-- rates;
-- inclusive/exclusive;
-- applicability;
-- effective dates;
-- client exemption handling;
-- plugin-provided jurisdiction rules.
-
-## H3. Payment Terms
-
-- standard terms;
-- grace periods;
-- overdue thresholds;
-- reminder schedule;
-- late fee behavior if ever enabled.
-
-## H4. Payment Providers
-
-Do not hard-code providers into billing core. Settings surface installed payment plugins/connectors and their instances.
-
-For each provider:
-
-- enabled;
-- environment/mode;
-- supported currencies;
-- payment methods;
-- connection test;
-- webhook health;
-- settlement/reconciliation behavior;
-- failure state.
-
-## H5. Subscriptions / Recurring Services
-
-- billing cadence;
-- proration policy;
-- trial defaults;
-- pause/cancel timing;
-- renewal generation;
-- payment failure policy;
-- grace policy.
-
-## H6. Receipts/Credit Notes/Refunds
-
-- numbering;
-- generation policy;
-- template;
-- approval requirements;
-- client notification defaults.
-
----
-
-# I. Support
-
-Chatwoot remains the managed client support engine.
-
-## I1. Chatwoot
-
-Settings should link to the Chatwoot connector instance and expose Re:Solve-specific support policy, not duplicate Chatwoot's entire administration UI.
-
-Show:
-
-- connection state;
-- mapped account/inboxes;
-- mapping health;
-- sync status;
-- supported capabilities;
-- diagnostics;
-- open connector configuration.
-
-## I2. Support Plans / Entitlements
-
-- plan name;
-- response targets;
-- supported channels;
-- business hours;
-- included properties/services;
-- escalation policy;
-- client-visible summary.
-
-## I3. SLA
-
-Re:Solve may retain commercial/operational SLA definitions that relate clients/properties/services to Chatwoot support, while conversation handling remains Chatwoot-owned.
-
-## I4. Categories and Routing Context
-
-Define Re:Solve-side support metadata used for mappings, reporting, and contextual handoff.
-
----
-
-# J. Notifications
-
-Settings must implement the platform spec in `03-platform/notifications.md`.
-
-Sections:
-
-- Channels;
-- Delivery Rules;
-- Event Policies;
-- Templates;
-- Digests;
-- Quiet Hours;
-- Mandatory Events;
-- Retry & Failure;
-- Retention;
-- Test Center.
-
-## J1. Test Center
-
-Authorized admin can:
-
-- send test in-app notification;
-- send test push to own device;
-- send test email;
-- send test WhatsApp message to approved destination;
-- preview templates with sample variables;
-- inspect resulting delivery attempts.
-
----
-
-# K. Communications
-
-## K1. Email
-
-- provider/connector;
-- sender identities;
-- default from/reply-to;
-- domain verification status where available;
-- test email;
-- bounce/failure diagnostics;
-- template relationship.
-
-## K2. WhatsApp/Baileys
-
-Purpose: Re:Solve-to-client operational communication.
-
-Settings:
-
-- connector status;
-- linked number/session;
-- connection/QR state where applicable;
-- approved message categories;
-- quiet-hour policy;
-- client opt-in/eligibility fields where required;
-- message retry;
-- media/file policy;
-- test message;
-- session health;
-- disconnect/reconnect;
-- audit.
-
-Do not present this as the client-customer support inbox; that remains Chatwoot.
-
-## K3. SMS
-
-Optional connector-based channel.
-
-## K4. Sender Identities
-
-Central view of communication identities and verification/health.
-
----
-
-# L. AI
-
-Re:Solve AI is independent from Chatwoot AI.
-
-## L1. Provider
-
-- provider/connector;
-- endpoint if applicable;
-- credential reference;
-- health test;
-- data policy summary.
-
-## L2. Models
-
-- default model;
-- fast model;
-- reasoning model;
-- fallback model;
-- enabled models;
-- cost/context metadata where available.
-
-## L3. Features
-
-Feature-level enable/disable for:
-
-- briefing;
-- drafting;
-- summaries;
-- search;
-- record insights;
-- triage outside Chatwoot;
-- reporting assistance;
-- automation assistance;
-- agentic actions where approved.
-
-## L4. Tools
-
-- registered tools;
-- read/write classification;
-- permission requirements;
-- confirmation requirements;
-- plugin-provided tools;
-- connector-provided tools;
-- audit state.
-
-## L5. Usage & Limits
-
-- usage summary;
-- workspace/user limits;
-- cost limits where measurable;
-- feature limits;
-- retention/logging.
-
-## L6. Guardrails
-
-- sensitive data policy;
-- vault restrictions;
-- write-action confirmation;
-- client data isolation;
-- external content/tool policy.
-
----
-
-# M. Vault
-
-## M1. Policies
-
-- allowed item types;
-- default classifications;
-- retention;
-- expiration;
-- download policy;
-- copy/reveal policy.
-
-## M2. Step-up Authentication
-
-- required actions;
-- step-up methods;
-- validity duration;
-- reauthentication after risk events.
-
-## M3. Access
-
-- roles permitted to create/share/reveal;
-- client access policy;
-- temporary access;
-- request/approval workflow;
-- property/project-scoped access.
-
-## M4. Categories
-
-Credential, legal, commercial, infrastructure, financial, sensitive note, confidential file, and plugin-defined categories.
-
----
-
-# N. Files
-
-## N1. Storage Provider
-
-Development may use Lovable/Supabase storage. Product architecture must remain provider-compatible.
-
-Settings:
-
-- provider;
-- connection health;
-- capacity/limits;
-- allowed object sizes;
-- signed URL behavior;
-- public/private defaults.
-
-## N2. Security
-
-- allowed/blocked types;
-- malware scanning integration where available;
-- executable policy;
-- confidential classification;
-- download logging where appropriate.
-
-## N3. Retention & Versions
-
-- version retention;
-- soft-delete duration;
-- purge policy;
-- orphan cleanup.
-
----
-
-# O. Automations
-
-## O1. Defaults
-
-- enabled;
-- maximum run duration;
-- concurrency;
-- default retry policy;
-- recursion protection.
-
-## O2. Schedules
-
-- timezone behavior;
-- schedule limits;
-- missed-run behavior.
-
-## O3. Failures
-
-- retry defaults;
-- alert thresholds;
-- dead-letter behavior;
-- owner/team notification.
-
-## O4. AI Actions
-
-Define whether AI-assisted automation building or AI-executed actions are permitted and under what confirmation/audit policies.
-
----
-
-# P. Plugins
-
-## P1. Installed
-
-- name;
-- version;
-- publisher/source;
-- status;
-- compatibility;
-- permissions;
-- migrations;
-- health;
-- update state;
-- configuration.
-
-## P2. Sources
-
-- official/bundled source;
-- Git-based source where supported;
-- uploaded package where supported later;
-- trust policy.
-
-## P3. Permissions
-
-Show requested capabilities before enable/install.
-
-## P4. Updates
-
-- available update;
-- compatibility;
-- migration summary;
-- backup requirement;
-- rollback information.
-
-## P5. Development
-
-Developer mode, local plugin diagnostics, manifest validation, extension point registry.
-
----
-
-# Q. Connectors
-
-## Q1. Instances
-
-Connector type may have many instances.
-
-Each instance should expose:
-
-- name;
-- provider;
-- environment;
-- linked organisation/property if scoped;
-- auth status;
-- health;
-- last success;
-- last failure;
-- rate-limit state if known;
-- webhook state;
-- version/capabilities.
-
-## Q2. Authentication
-
-Credentials are stored through the approved secret/vault mechanism, not exposed casually in Settings.
-
-## Q3. Health
-
-- connection test;
-- last successful call;
-- latency where useful;
-- auth expiry;
-- webhook freshness;
-- provider status if known.
-
-## Q4. Events / Failures
-
-- recent connector events;
-- failed webhook/event processing;
-- retry/replay where permitted;
-- correlation ID;
-- masked payload diagnostics.
-
----
-
-# R. API & MCP
-
-## R1. REST/API
-
-- API enabled;
-- version information;
-- documentation link;
-- rate-limit defaults;
-- CORS/origin policy where relevant.
-
-## R2. API Tokens
-
-- create;
-- label;
-- scopes;
-- expiry;
-- last used;
-- allowed IPs optional;
-- revoke;
-- rotate;
-- one-time secret reveal;
-- audit.
-
-## R3. Webhooks
-
-- endpoint subscriptions;
-- event types;
-- secret/signature;
-- delivery attempts;
-- retries;
-- disable;
-- replay;
-- test delivery.
-
-## R4. MCP
-
-- server enabled;
-- endpoint/transport;
-- client credentials;
-- tool catalogue;
-- tool scopes;
-- read/write classification;
-- confirmation policies;
-- audit;
-- client setup instructions for Claude, ChatGPT, Codex, OpenClaw/Hermes, and generic MCP clients.
-
-## R5. AI Clients
-
-Human-readable connection cards for supported external AI clients, generated from the current server configuration without leaking secrets.
-
----
-
-# S. Security
-
-## S1. Authentication
-
-- password login;
-- magic link;
-- passkey support if introduced;
-- OAuth providers;
-- client/staff policy differences;
-- self-registration rules.
-
-## S2. MFA
-
-- required roles;
-- allowed methods;
-- grace period;
-- recovery codes;
-- enforcement status.
-
-## S3. Password Policy
-
-Where password auth exists:
-
-- minimum requirements;
-- breached-password checks if supported;
-- reset policy;
-- lockout/rate limiting.
-
-## S4. Sessions
-
-- session duration;
-- inactivity timeout;
-- remember-device policy;
-- step-up duration;
-- revoke on sensitive changes.
-
-## S5. Rate Limits
-
-Domain-specific policies for auth, API, MCP, file access, vault reveal, and expensive actions.
-
-## S6. Security Events
-
-Search/filter/export authorized security events.
-
-## S7. Network/IP Policy
-
-Optional allow/deny policies for privileged staff/API clients where later required.
-
----
-
-# T. System
-
-## T1. Health
-
-- application health;
-- database;
-- storage;
-- background jobs;
-- notification delivery;
-- connectors;
-- plugins;
-- PWA/push service dependencies where relevant.
-
-## T2. Jobs / Queue
-
-- queued;
-- running;
-- retrying;
-- failed;
-- dead-letter;
-- inspect/retry/cancel with permission.
-
-## T3. Logs
-
-Structured operational logs with masking, filtering, correlation IDs, retention, and permission controls.
-
-## T4. Backups
-
-- backup status;
-- last successful backup;
-- next scheduled;
-- restore documentation/status;
-- test-restore record where managed by Re:Solve;
-- backup configuration connector/provider where applicable.
-
-## T5. Updates
-
-- current version;
-- available version;
-- release notes;
-- compatibility warnings;
-- plugin compatibility;
-- migration requirement;
-- backup prerequisite;
-- update history.
-
-## T6. Feature Flags
-
-- internal/experimental flags;
-- owner;
-- scope;
-- expiration/review date;
-- environment restrictions.
-
-## T7. About / Diagnostics
-
-- version/build;
-- environment label;
-- enabled capabilities;
-- diagnostic export with secret masking;
-- licenses/acknowledgements where needed.
-
----
-
-# 8. Settings permissions
-
-Settings permissions must be granular. `Admin` is not sufficient as the only gate.
-
-Examples:
-
-- settings.general.manage;
-- users.manage;
-- roles.manage;
-- portal.settings.manage;
-- billing.settings.manage;
-- notifications.settings.manage;
-- communications.manage;
-- ai.settings.manage;
-- vault.settings.manage;
-- plugins.manage;
-- connectors.manage;
-- api.manage;
-- mcp.manage;
-- security.settings.manage;
-- system.operations.manage.
-
-High-risk operations may require workspace-owner capability plus step-up authentication.
-
-## 9. Audit requirements
-
-Audit all material settings changes, especially:
-
-- authentication/security;
-- permissions/roles;
-- billing/payment provider;
-- communication destinations/providers;
-- AI provider/tools/guardrails;
-- vault policy;
-- plugin install/enable/update;
-- connector credentials/config;
-- API/MCP tokens/scopes;
-- retention/deletion policy;
-- backup/update operations.
-
-Audit entry should contain actor, before/after summary with secret masking, time, source, and correlation/request context.
-
-## 10. Notifications generated by settings changes
-
-Examples:
-
-- user role elevated;
-- MFA requirement changed;
-- payment provider disconnected;
-- WhatsApp session disconnected;
-- critical connector auth expiring;
-- plugin update failed;
-- API/MCP token created;
-- vault access policy changed;
-- system update completed/failed.
-
-## 11. API and MCP
-
-Settings APIs should exist for machine-manageable configuration, but sensitive areas require stricter scopes and may be read-only through MCP by default.
-
-MCP should never provide blanket `update_settings` access. Expose narrow tools with explicit scopes only when there is a proven use case.
-
-## 12. Responsive behavior
-
-Settings must remain usable on tablet and mobile.
-
-Mobile patterns:
-
-- searchable settings index;
-- drill-down section pages;
-- sticky save action where appropriate;
-- no two-column label/control layout forced into narrow width;
-- connector diagnostics readable on mobile;
-- high-risk confirmations fit safe-area screens.
-
-## 13. Empty/error/loading states
-
-Every settings section must handle:
-
-- loading;
-- no permission;
-- feature/plugin not installed;
-- connector not configured;
-- partial config;
-- invalid existing config;
-- test failed;
-- save failed;
-- concurrent modification where relevant;
-- stale state;
-- offline read-only state.
-
-## 14. Acceptance criteria
-
-Settings is acceptable when:
-
-- every configuration has a clear domain owner;
-- high-risk changes are protected and audited;
-- provider configuration includes test/health behavior;
-- plugin/connector settings extend the control plane without becoming random pages;
-- search can locate settings precisely;
-- mobile is usable;
-- unsupported features clearly show install/configure state;
-- configuration status is visible;
-- secrets are never casually revealed;
-- API/MCP exposure is scoped;
-- settings changes do not silently alter existing data without documented behavior.
-
-## 15. Lovable build slices
-
-Do not build all Settings at once.
-
-### Slice A — Settings shell
-- settings navigation;
-- search;
-- section routing;
-- configuration health summary;
-- responsive mobile settings index.
-
-### Slice B — General
-- workspace;
-- branding;
-- locale;
-- currency;
-- preview/save behavior.
-
-### Slice C — People & Access
-- staff;
-- teams;
-- roles;
-- permission matrix shell;
-- sessions.
-
-### Slice D — Notifications
-Implement workspace policy/settings after the core notification center exists.
-
-### Slice E — Client Portal
-Portal defaults, roles, invitations, navigation policy.
-
-### Slice F onward
-Build one domain settings group at a time, only after the corresponding feature domain is specified enough to know what its settings actually control.
+- required permission;
+- sensitivity;
+- immediate/save/review-changes behavior;
+- audit requirement;
+- whether existing records are affected;
+- rollback/recovery where applicable;
+- health/diagnostic state.
+
+## Save model
+Use:
+- immediate save for low-risk personal preferences;
+- explicit Save for grouped configuration;
+- Review changes for high-impact settings;
+- test-before-save for provider connections;
+- step-up for highly sensitive changes.
+
+Unsaved material changes must be visible and protected against accidental loss.
+
+## Configuration health
+Major sections can report configured, partially configured, needs attention, disabled, degraded or healthy. Settings Home should prioritize action needed rather than show identical cards for every section.
+
+# A. General / Workspace
+- Workspace name/code
+- locale/timezone/date/number formats
+- base/enabled currencies
+- default ownership/archive behavior
+- system identity
+- default record references/numbering links
+- default retention links
+- feature defaults that do not belong to another domain
+
+One Workspace always exists even when multi-workspace SaaS is not enabled.
+
+# B. Operating Entities & Brands
+
+## Entities
+- legal/trading name
+- registration/tax identifiers where applicable
+- addresses/contact details
+- default currency/locale
+- commercial/document identity
+- billing/remittance identity
+- default Brand
+- status
+
+## Brands
+- logo variants
+- favicon/app icon
+- approved accent token
+- Portal/auth identity
+- email identity
+- Document Studio theme
+- support identity
+- sender identity mappings
+- accessibility preview
+
+Brand customization cannot override core semantic accessibility.
+
+# C. People & Access
+
+## Staff / Human Users
+- active/invited/suspended
+- role/team memberships
+- last sign-in
+- MFA state
+- security/session summary
+- deactivate/reactivate
+- responsibility reassignment before deactivation
+
+This is access administration, not HR. Do not add payroll, leave, attendance, recruitment, employee reviews or Timesheets.
+
+## Teams
+- name/purpose
+- lead/owner if useful
+- members
+- assignment/routing eligibility
+- access defaults
+- notification defaults
+
+## Roles / Permissions
+- system/custom roles
+- clone/compare
+- capability matrix
+- high-risk permission warnings
+- assigned principals/users
+- effective-permission explanation
+
+Canonical permission grammar: `domain.action` or `domain.resource.action`.
+
+## Invitations / Sessions
+- expiry/resend/revoke
+- default role/team
+- active sessions/devices
+- revoke/reauthentication
+- privileged-action step-up duration
+
+# D. Client Portal
+- Portal enabled
+- default visible destinations
+- Home defaults
+- client-safe terminology
+- support entry behavior
+- Portal announcement/banner
+- client roles/permissions
+- invitations/self-registration/domain policy
+- client-admin invitation rights
+- Branding/Operating Entity defaults
+- Vault destination shown only when authorized
+- Requests destination policy
+- optional Portal Àríyá policy
+
+# E. CRM
+- lead sources
+- pipelines/stages/probability
+- activity types
+- loss reasons
+- cadences/activity-plan defaults
+- follow-up/reminder defaults
+- segmentation
+- import policy
+- duplicate matching
+- custom fields/taxonomies
+- sales forecast defaults
+
+# F. Clients & Lifecycle
+- client lifecycle statuses
+- onboarding templates
+- offboarding templates
+- Account Team responsibility labels
+- relationship review cadence/defaults
+- client-health rules/thresholds
+- former-client archive policy
+
+Health must remain explainable rather than opaque scoring.
+
+# G. Properties
+- Property Types
+- relationship types
+- statuses
+- client-visible state mapping
+- custom fields
+- hierarchy/inheritance rules
+- maintenance defaults
+- archive behavior
+
+# H. Monitoring & Renewals
+
+## Native monitoring
+- enabled/default monitor policy
+- default intervals/timeouts
+- failure/recovery thresholds
+- monitor retention
+- maintenance behavior
+- probe/worker registration policy
+- client-notification defaults
+
+## Property Posture
+- evidence categories
+- posture thresholds/rules
+- stale-source policy
+- client-safe posture mapping
+
+## Renewals
+- obligation types
+- reminder windows
+- ownership defaults
+- unknown auto-renew policy
+- verification requirements
+- client decision/payment workflow
+
+External sources such as Cloudflare or optional Uptime Kuma are configured under Connectors, not hard-coded here.
+
+# I. Projects
+- statuses
+- priorities
+- task types
+- recurring task defaults
+- templates
+- milestones/deliverable defaults
+- approval behavior
+- Client Action defaults
+- Change Request defaults
+- client visibility
+- cost/commercial display policy
+
+**No Time Tracking/Timesheet settings exist.**
+
+# J. Sales & Documents
+
+## Service Catalogue
+- categories
+- pricing models
+- default taxes
+- billing cadence
+- default Project template
+- default Support Entitlement
+- Property applicability
+
+No Client Service Consumption/allowance-meter settings.
+
+## Proposal / Estimate / Quote
+- numbering
+- validity/expiry
+- templates
+- optional/add-on item behavior
+- discounts/taxes
+- acceptance policy
+- Secure External Access policy
+- reminders
+
+## Contracts
+- numbering
+- templates
+- SignatureConnector
+- signature/expiry/renewal policy
+- deposit requirements
+- client visibility
+
+## Document Studio
+- template management
+- brand/entity defaults
+- web/PDF output
+- A4/Letter defaults
+- variable catalogue
+- version/final-snapshot policy
+- external-view policy
+- retention
+
+# K. Billing & Spend
+
+## Invoices
+- numbering
+- due/payment terms
+- line defaults
+- notes/terms
+- Document Studio template
+
+## Taxes / Currencies
+- tax definitions/effective dates
+- inclusive/exclusive behavior
+- exemptions
+- currency/rounding/exchange policy
+
+## Payment providers
+Payment capability is connector-based. Show installed/configured PaymentConnector instances with environment, methods/currencies, connection/webhook health and reconciliation behavior.
+
+## Recurring billing / Subscriptions
+- cadence
+- renewal generation
+- pause/cancel timing
+- proration/trial only where product requires
+- payment failure/grace policy
+
+## Deposits / payment schedules
+- deposit defaults
+- milestone/installment rules
+- conversion to invoice schedule
+
+## Credit control
+- overdue thresholds
+- reminder/escalation
+- account hold/deposit policy where enabled
+- client-safe messaging
+
+## Receipts / Credit Notes / Refunds / Statements
+- numbering
+- templates
+- generation/approval
+- client notification
+
+## Spend / Expenses
+- categories
+- approval policy
+- billable-expense conversion policy
+- recurring vendor cost categories
+
+No payroll/employee expense/HR assumptions.
+
+# L. Support
+Chatwoot remains the support engine.
+
+Settings expose Re:Solve-specific:
+- Chatwoot connector shortcut/health
+- mappings
+- Support Plans/Entitlements
+- SLA/commercial context
+- business hours
+- categories/routing context
+- client-safe support summary policy
+- incident relationship
+
+Do not reproduce Chatwoot's full inbox/agent/team/Captain administration.
+
+# M. Requests & Forms
+
+## Requests
+- request types/categories
+- statuses
+- default owner/team
+- Portal/public availability
+- triage routing
+- conversion options
+- SLA/response expectations where applicable
+
+## Forms
+- form templates
+- public/Portal/secure-link policy
+- submission retention
+- spam/abuse protection
+- file policy
+- routing
+- mapping into core/custom fields
+
+# N. Notifications
+- channels
+- event policies
+- recipient defaults
+- priority
+- grouping/dedupe
+- templates
+- digests
+- quiet hours
+- mandatory events
+- retries/failure
+- retention
+- Test Center
+
+Attention is configured separately by domain rules; reading Notifications does not resolve Attention automatically.
+
+# O. Communications
+
+## Email
+- provider connector
+- sender identities
+- from/reply-to
+- verification/health
+- test
+- delivery/bounce diagnostics
+
+## WhatsApp/Baileys
+- instance/session
+- approved operational categories
+- destination/eligibility policy
+- quiet hours
+- retry/media policy
+- test/reconnect
+- audit
+
+Not a client-customer support inbox.
+
+## SMS
+Optional connector.
+
+## Announcements
+- audience defaults
+- allowed channels/surfaces
+- expiry
+- client/staff policy
+
+Bulk marketing/campaign configuration belongs to specialist integrations/plugins.
+
+# P. Àríyá / AI
+- provider/AIConnector
+- model profiles/routing
+- features
+- registered tools/actions
+- read/write risk
+- confirmation/approval
+- Knowledge sources
+- provider data-class policy
+- usage/budgets/rate limits
+- retention/audit
+- Portal Àríyá
+- disabled organisations/properties
+
+User-facing name is always Àríyá. Chatwoot Captain remains separate.
+
+# Q. Vault
+- item types/categories
+- classifications
+- access policy
+- client sharing
+- temporary grants
+- access requests/approvals
+- reveal/copy/download policy
+- step-up
+- retention
+- rotation/expiry defaults
+
+# R. Files
+- storage provider
+- limits/types
+- public/private defaults
+- scan/processing policy
+- versions
+- retention/trash
+- sharing
+
+Protected confidential documents should route to Vault rather than preserve ordinary File access.
+
+# S. Automations
+- enabled/limits
+- concurrency/run duration
+- retries
+- recursion protection
+- schedule/timezone behavior
+- failure/dead-letter policy
+- Action Registry permissions
+- AI-step policy
+
+# T. Data & Customization
+
+## Custom Fields
+- supported record types
+- field types
+- validation
+- dynamic display/required rules
+- sensitivity
+- Portal/API/search/report policy
+
+## Tags / Taxonomy
+- tag/category administration
+- merge/archive
+- scope
+
+## Saved Views
+- shared-view permission
+- default views
+
+## Imports / Exports
+- allowed formats
+- file limits
+- duplicate rules
+- dry-run requirements
+- export scope/retention
+
+## Data Quality
+- issue types
+- duplicate thresholds
+- stale/missing/mapping rules
+
+## Record lifecycle / numbering
+- prefixes/sequences
+- archive/trash/purge defaults
+- retention/hold integration
+
+# U. Plugins
+- installed/sources
+- permissions
+- compatibility
+- update/rollback
+- development-source policy
+- extension/navigation rules
+
+# V. Connectors
+- instances
+- authentication
+- mappings
+- capability grants
+- sync direction/authority/conflict policy
+- health
+- events
+- retry/dead-letter
+- credentials references
+- rate limits
+- diagnostics
+
+Specific connector settings may include Chatwoot, Cloudflare, payment providers, OpenRouter, Documenso, optional Uptime Kuma, OJS, WordPress, WooCommerce, email/calendar/storage.
+
+# W. API & MCP
+- REST API
+- API clients/tokens
+- scopes
+- webhooks
+- rate limits
+- MCP clients
+- tool grants
+- read/write policy
+- confirmation/approval
+- audit
+
+# X. Security & Privacy
+- authentication
+- MFA
+- password/session policy
+- devices
+- step-up
+- IP/rate controls where used
+- security events
+- Secure External Access policy
+- privacy/consent
+- data-right workflows
+- retention/legal/operational hold
+- export/deletion/anonymization
+
+# Y. System
+- health
+- jobs/queues
+- Monitoring Worker health
+- logs/diagnostics
+- storage health
+- backups
+- updates
+- feature flags
+- delivery diagnostics
+- redacted diagnostic bundle
+- About/version
+
+## Explicit exclusions
+Settings must not contain or imply:
+- HR
+- payroll
+- recruitment
+- leave/attendance
+- performance review
+- Timesheets/Time Tracking
+- Client Service Consumption/usage credits/hours remaining
+
+## Acceptance criteria
+- settings are searchable and domain-owned;
+- high-risk settings expose consequences and audit;
+- Operating Entity/Brand supports multi-brand future without complicating ordinary use;
+- monitoring is native with external connectors optional;
+- Àríyá is named consistently;
+- navigation remains simple even though Settings is deep;
+- excluded HR/timesheet/consumption features are absent.
