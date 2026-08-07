@@ -1,18 +1,42 @@
 # Files Platform
 
 ## Purpose
-Files is the shared document and attachment layer for Re:Solve. It supports normal operational files across organisations, contacts, properties, projects, billing, sales, knowledge, forms, and portal experiences. Sensitive material belongs in Secure Vault when confidentiality requirements exceed normal file access.
+Files is Re:Solve's ordinary document/attachment layer across Organisations, Contacts, Properties, Projects, Billing, Sales, Requests, Knowledge, Forms and Portal.
+
+Secure Vault is a separate protected domain. A protected confidential document must **not** remain available through a parallel ordinary File access path.
 
 ## Core records
-File, File Version, Folder, File Link, Share, Upload Session, Retention Policy, File Activity, Storage Provider Reference.
+File, File Version, Folder, File Link, File Share, Upload Session, Retention Policy, File Activity and Storage Provider Reference.
+
+## Storage relationship to Vault
+Files and Vault may use the same provider-neutral storage infrastructure/object storage service, but they have different domain identities and authorization contracts.
+
+Conceptually:
+```text
+Storage Provider / Binary Object
+      ├── ordinary File domain metadata/access
+      └── protected Vault Item metadata/access
+```
+
+If an ordinary File is promoted/moved into Vault:
+- create/convert to the protected Vault representation;
+- preserve provenance/link to originating business record where useful;
+- remove/invalidate ordinary File access paths;
+- update search/share links;
+- Audit the transition.
+
+Do not model the same confidential binary as both an ordinary downloadable File and a Vault Item.
 
 ## Principles
-- one file may be linked to multiple business records without unnecessary duplication
-- storage implementation is provider-abstracted
-- permissions are inherited from owning/linked records unless explicitly overridden
-- file metadata and content permissions are independently enforceable where necessary
-- file versioning must preserve history for important documents
-- confidential content should be routed to Secure Vault rather than pretending normal file storage is a vault
+- provider-abstracted storage;
+- stable logical File identity with versions where useful;
+- links to multiple records without unnecessary binary duplication;
+- object-level authorization on metadata/content/share;
+- client visibility explicit;
+- upload/finalization truth separate from partial upload;
+- scan/processing state truthful;
+- protected content routes to Vault;
+- downloaded content is authorized at request time.
 
 ## Main surfaces
 Admin:
@@ -22,75 +46,167 @@ Admin:
 - By Client
 - By Property
 - By Project
+- Requested Uploads
 - Storage / Health
+- Trash where enabled
 
-Client Portal:
+Portal:
 - Files
 - Shared With Me
 - Project Files
 - Property Files
-- Billing Documents
+- Billing/Documents
+- Requested Uploads
+
+Vault appears separately only for authorized protected items.
 
 ## File metadata
-Name, extension/type, MIME, size, owner, organisation, property, project, folder, linked records, uploaded by, created/updated, version, description, tags, visibility, client visibility, retention class, checksum, storage provider, scan status.
+May include:
+- human/file id;
+- name/extension/MIME/size;
+- owner;
+- Organisation/Property/Project/Request context;
+- folder;
+- linked records;
+- uploaded by;
+- created/updated;
+- version;
+- description/tags;
+- visibility/client visibility;
+- retention class;
+- checksum;
+- storage provider reference;
+- scan/processing state;
+- source/provenance;
+- extracted metadata/indexing eligibility.
 
-## Upload flow
-1. user selects/captures file
-2. validate type/size/policy
-3. create upload session
-4. upload to storage provider
-5. malware/security scanning where configured
-6. finalize metadata
-7. link to requested record
-8. emit audit/activity/notification events as needed
+## Upload lifecycle
+1. authorize intended destination/context;
+2. select/capture File;
+3. validate type/size/policy;
+4. create Upload Session;
+5. upload via provider-safe mechanism;
+6. verify checksum/finalization;
+7. scan/process where configured;
+8. finalize File metadata;
+9. link to source record;
+10. emit Activity/Audit/Notification as policy requires.
 
-Partial/failed uploads must be recoverable or cleanly abandoned.
+Failed/abandoned uploads must not look like complete Files.
+
+## Requested uploads
+Requests/Client Actions/Forms may ask a client or guest to upload a specific File.
+
+The upload grant must constrain:
+- destination record;
+- recipient/session;
+- allowed types/size;
+- expiry;
+- number of uploads;
+- client visibility;
+- scan policy.
+
+Secure External Access can provide the narrow guest upload experience.
 
 ## Versions
-Important files can create new versions while preserving stable logical identity. Version history shows uploader, timestamp, change note, size/checksum, and current status.
+Version history shows uploader, timestamp, change note, size/checksum, source and current/final state.
+
+A stable logical File can have versions while client/download links resolve only to authorized/current or specifically shared versions.
+
+Document Studio generated artifacts may reference rendered versions/snapshots but business document status remains owned by its business record.
 
 ## Sharing
-Internal sharing normally follows record permissions. External/client sharing supports explicit audience, expiry, download permission, and revoke. Public anonymous links are disabled by default and require explicit system policy.
+Internal sharing normally follows record scope.
 
-## Search and organization
-Search by filename, tags, linked client/property/project, file type, uploader, date, and permitted extracted metadata. Full-text indexing is optional and must respect access controls.
+External/client File Share may define:
+- recipient/audience;
+- expiry;
+- download/view permission;
+- version;
+- revoke;
+- optional Secure External Access wrapper.
 
-## Retention
-Retention policies may depend on file category, source module, client agreement, or legal/operational needs. Deletion can be soft-delete, scheduled purge, or protected hold. Vault retention is governed separately.
+Anonymous public links are disabled by default.
+
+## Search / indexing
+Search filename, tags, permitted metadata, related Organisation/Property/Project/Request and optional extracted text.
+
+Indexing happens only for declared safe File classes and respects current authorization before result display.
+
+Vault Items/content are excluded from ordinary File full-text index.
+
+## Retention / Trash
+Policies may support Archive, soft-delete/Trash, restore, scheduled purge and protected hold.
+
+Purge honors linked-record constraints/privacy/retention policy. Vault has separate retention/access rules.
 
 ## Permissions
-files.read, files.upload, files.manage, files.delete, files.share, files.versions.manage, files.retention.manage, files.storage.manage. Object-level authorization still applies.
+Canonical examples:
+- `files.read`
+- `files.upload`
+- `files.manage`
+- `files.delete`
+- `files.share`
+- `files.versions.manage`
+- `files.retention.manage`
+- `files.storage.manage`
 
-## Notifications
-Only meaningful events: client file shared, requested file uploaded, approval-related file replaced, share expiring, malware/scan failure, storage failure. Avoid notifying on routine internal uploads.
+Record-level source scope still applies.
+
+## Attention / Notifications
+Meaningful events:
+- requested upload overdue/completed;
+- client File shared;
+- share expiring;
+- approval-related version replaced;
+- scan/processing failed;
+- storage unavailable;
+- orphaned/invalid File Data Quality issue.
+
+Routine internal uploads should not spam users.
 
 ## Automations
-- form submission attachment → link to target record
-- deliverable approved → mark selected version final
-- project completed → apply archival policy
-- file requested from client → notify/remind until received
-- storage/scan failure → operational alert
+Examples:
+- Form Submission File -> link to resulting Request/record;
+- Deliverable approved -> mark chosen File Version final;
+- Project completed -> archival/retention policy;
+- requested File overdue -> Reminder/Attention;
+- scan/storage failure -> operational Attention;
+- File promoted to Vault -> remove ordinary share/access.
 
-## API
-Expose metadata, authorized upload/download, links, versions, sharing, and search. Downloads must verify permissions at request time. Large uploads should use resumable/direct provider mechanisms where supported.
+## API / MCP / Àríyá
+Expose permitted metadata, upload/download, links, versions, sharing/search and requested-upload operations.
 
-## MCP
-Candidates: search_files, list_files_for_project, list_files_for_property, get_file_metadata, request_file_from_client. Raw file retrieval is permission-gated and should use controlled resource access rather than embedding unrestricted binary content into tool responses.
+Raw downloads reauthorize at request time and may use short-lived signed URLs/secure streaming.
+
+MCP candidates:
+- search_files
+- list_files_for_project
+- list_files_for_property
+- get_file_metadata
+- request_file_from_client
+
+Raw binary retrieval is tightly permissioned. Àríyá may summarize authorized ordinary document content under data policy; Vault content follows Vault AI restrictions.
 
 ## PWA/mobile
-Support camera/gallery/file picker, upload progress, retry, mobile previews for common types, and safe share actions. Do not offline-cache confidential or permission-sensitive files by default. Clearly show when a file requires connectivity.
+Support camera/gallery/file picker, progress, retry, mobile preview and safe share actions.
+
+Do not offline-cache confidential/sensitive Files by default. Files requiring network show a deliberate online-required state.
 
 ## Acceptance criteria
-- links do not bypass source-record permissions
-- revoking client access invalidates future downloads
-- version history remains intact
-- failed upload does not create misleading complete file record
-- sensitive files can be explicitly moved/routed into Secure Vault
-- storage provider outages display degraded state without losing metadata truth
+- ordinary File links cannot bypass source-record authorization;
+- revoking access invalidates future download;
+- version history remains stable;
+- failed upload cannot become a misleading complete File;
+- promotion to Vault removes ordinary access path;
+- Vault protected documents are not ordinary File search results;
+- provider outage preserves File metadata truth with degraded state;
+- guest upload grants are narrow/expiring.
 
 ## Lovable build slices
-1. shared file model + upload/list/download
-2. record linking + folders/tags
-3. versions + client sharing
-4. portal files
-5. retention, scan states, provider health
+1. File model + upload/list/download.
+2. linking/folders/tags + requested uploads.
+3. versions + client sharing/Secure External Access.
+4. Portal Files.
+5. Trash/retention/scan/provider health.
+6. Vault promotion boundary + search/indexing controls.
