@@ -1,376 +1,290 @@
 # Client Portal Shell
 
-## 1. Purpose
+## Purpose
+The Client Portal shell is the client-facing Re:Solve operating surface. It must feel simpler and calmer than Admin while retaining the same Core UI quality.
 
-The Client Portal shell is the client-facing operating surface of Re:Solve. It must help client users understand the state of their relationship, properties, projects, approvals, billing, support, files, vault access, and organisation membership without exposing internal staff complexity.
+The Portal is not a reduced Admin OS. It is a client-goal-oriented experience over the same authorized business truth.
 
-The portal is not a reduced Admin OS. It is a distinct experience over the same business truth.
+## Navigation philosophy — non-negotiable
+Portal navigation must be obvious without product training.
 
-## 2. Primary users
+Default destinations:
+```text
+Home
+Properties
+Projects
+Support
+Billing
+Approvals
+Files
+Knowledge
+Organisation
+```
 
-- client organisation owner;
-- client administrator;
-- billing contact;
-- project approver;
-- project participant;
-- technical/property contact;
-- vault-authorized contact;
-- read-only stakeholder.
+Conditional:
+- Requests, when enabled as a meaningful client workflow;
+- Vault, only when the client User has authorized secure items/access.
 
-A client user may have multiple roles and property-specific grants.
+Notifications and Account are **global chrome**, not root-navigation clutter.
 
-## 3. Core portal responsibilities
+Avoid:
+- Odoo-style app/module launchers;
+- Twenty-style object/app switching;
+- nested module trees;
+- every record subtype in root navigation;
+- exposing hidden features just to show permission errors;
+- icon-only root navigation as the primary teaching model.
 
-The shell owns:
+## Primary users
+- Organisation Owner/Admin;
+- Billing Contact;
+- Approver;
+- Project Collaborator;
+- Property Manager/Technical Contact;
+- Vault User;
+- read-only member.
 
-- client navigation;
-- organisation context;
-- property context when relevant;
-- notifications;
-- global support entry;
-- client-safe search;
-- account/user controls;
-- responsive/PWA shell;
-- offline/update state;
+A User may combine responsibilities and have Property-specific grants.
+
+## Shell responsibilities
+- simple client navigation;
+- Organisation context;
+- global client-safe Search/Command where enabled;
+- NotificationTrigger/Tray;
+- Account/ResolveAvatar;
+- persistent Support entry;
+- optional Àríyá entry;
+- responsive/PWA navigation;
+- offline/update/connection state;
 - permission-aware route exposure.
 
-## 4. Navigation philosophy
+## Core UI quality mandate
+Portal shell uses the same mandatory Re:Solve Core UI Framework and sourcing hierarchy:
+- shadcn/ui;
+- Untitled UI React;
+- Tremor where data presentation is relevant;
+- React Aria/Base UI/Radix behavior;
+- Re:Solve-owned final tokens/components.
 
-Portal navigation should be based on client goals.
+Header/navigation/avatar/notifications/support/Àríyá must be production-quality foundation components, not starter-template leftovers.
 
-Primary destinations:
+## Desktop / laptop
+Recommended:
+- compact simple left navigation or validated top/side hybrid using canonical PortalNavigation;
+- Operating Entity/Brand/Re:Solve identity without excessive branding chrome;
+- strong TopBar/utility area;
+- comfortable content width;
+- contextual tabs/views inside destination pages rather than additional permanent sidebars.
 
-- Home
-- Properties
-- Projects
-- Support
-- Billing
-- Approvals
-- Files
-- Vault
-- Knowledge
-- Organisation
+If Portal uses a left nav, it should be lighter/less dense than Admin and avoid exposing technical Operations/Platform structure.
 
-Secondary destinations:
+## Top bar
+Portal TopBar should provide as applicable:
+- current Organisation context;
+- client-safe Search/Command;
+- Support shortcut;
+- optional Àríyá trigger;
+- NotificationTrigger;
+- ResolveAvatar/AccountMenu;
+- connection/offline state only when relevant.
 
-- Notifications
-- Account
+Do not fill it with random feature shortcuts.
 
-Not every user sees every destination.
+## ResolveAvatar / AccountMenu
+The avatar/account experience is a first-class Core UI component.
 
-## 5. Desktop shell
-
-Recommended structure:
-
-- compact sidebar or strong top/side hybrid navigation;
-- clear organisation identity;
-- top utility area for notifications, support, account, and search;
-- main content area with comfortable width;
-- contextual property/project switching inside feature pages rather than global clutter.
-
-The design should feel premium and trustworthy rather than like back-office software.
-
-## 6. Mobile shell
-
-Mobile portal usage is a primary scenario.
-
-The mobile shell should consider a persistent bottom navigation for the highest-frequency destinations, with remaining destinations in a More/menu surface.
-
-Candidate primary mobile destinations:
-
-- Home
-- Properties or Projects depending validated frequency
-- Support
-- Billing/Approvals depending user role
-- More
-
-The final selection should be validated by flow prototypes rather than assumed.
-
-Requirements:
-
-- one-hand reachable primary actions where practical;
-- safe-area handling;
-- installed PWA mode;
-- no horizontal desktop navigation compressed onto a phone;
-- notification and support access always easy to find;
-- file upload and approval flows fully usable on mobile;
-- invoices and receipts readable without pinch/zoom dependency.
-
-## 7. Home responsibility
-
-The portal home is an action-and-status summary, not a miniature version of every module.
-
-It should answer:
-
-- What requires my attention?
-- What is happening with my projects/properties?
-- Is anything wrong?
-- Do I owe anything?
-- Has anything important changed?
-- How do I contact support?
-
-Detailed dashboard specification will follow separately.
-
-## 8. Global support entry
-
-Chatwoot owns managed client support conversations. The portal shell should provide a persistent support entry without recreating Chatwoot's conversation engine.
-
-Possible entry points:
-
-- Support navigation item;
-- floating/help trigger on appropriate screens;
-- contextual `Ask support about this` actions on property/project records;
-- incident/support CTA when a property is degraded.
-
-Support handoff should carry permitted context such as organisation/property/reference without leaking confidential data.
-
-## 9. Search
-
-Portal search should only search records visible to the client user.
-
-Potential searchable objects:
-
-- properties;
-- projects;
-- files;
-- invoices;
-- receipts;
-- knowledge;
-- approvals;
-- vault metadata the user may see.
-
-Internal notes, hidden files, other clients, internal financial data, and internal audit data must never appear.
-
-## 10. Organisation context
-
-The portal must make it obvious which organisation the user is acting for, especially if multi-organisation membership is supported later.
-
-Organisation administration may include:
-
-- profile;
-- team;
-- invitations;
-- role assignments;
-- property access;
-- billing contacts;
-- approvers;
-- vault access administrators.
-
-## 11. Property context
-
-Property-aware surfaces should show:
-
-- property name;
-- type;
-- current state/health where permitted;
-- parent relationship;
-- related projects;
-- support entry;
-- recent activity;
-- relevant files;
-- relevant credentials/vault items;
-- renewal/maintenance information where client-visible.
-
-## 12. Notifications
-
-The shell exposes:
-
-- unread count;
-- notification preview;
-- urgent/important items;
-- full notification center;
-- preference shortcut.
-
-Client notifications must use plain client language. Internal operational terminology should be translated or omitted.
-
-## 13. Account menu
-
-Include:
-
-- personal profile;
-- notification preferences;
-- security/MFA;
-- active sessions/devices;
-- appearance;
-- installed app/help information where appropriate;
+AccountMenu includes:
+- identity/avatar/name;
+- current Organisation/role context;
+- Profile;
+- Notification Preferences;
+- Communication Preferences;
+- Security/MFA;
+- Sessions/Devices;
+- Appearance/Accessibility;
+- Help/keyboard info where useful;
+- Admin switch only for Users who are genuinely authorized for Admin;
 - sign out.
 
-Organisation settings belong in Organisation, not personal Account.
+Organisation administration remains under Organisation, not personal Account.
 
-## 14. Branding
+## Notifications chrome
+NotificationTrigger/Tray must be strong and immediately understandable.
 
-The portal may support controlled workspace/client branding, but Re:Solve must retain a coherent accessible design system.
+Tray supports:
+- unread/action-required cues;
+- grouped client-safe items;
+- context;
+- one obvious action/deep link;
+- read/archive/snooze where relevant;
+- full Notification Center link;
+- preference shortcut.
 
-Permitted branding could include:
+Do not use unread count as the Portal Home Attention model.
 
-- workspace/client logo;
-- approved accent color;
-- portal title;
-- selected auth/login identity;
-- email/document identity.
+## Support entry
+Chatwoot owns Support conversations.
 
-Branding must not permit inaccessible color combinations or arbitrary layout breakage.
+Support must be easy to reach from:
+- root `Support` destination;
+- TopBar shortcut where useful;
+- contextual `Get support for this Property/Project` Actions;
+- Incident/Property state CTA.
 
-## 15. Client-safe terminology
+Context handoff includes safe Organisation/Property/reference only. No secrets/private internal notes.
 
-Portal labels should optimize clarity over internal precision.
+Avoid a second Re:Solve support-messaging console.
 
-Examples:
+## Search / Command
+Portal Search only searches client-authorized records/content.
 
-- `Action required` instead of internal queue names;
-- `Waiting for you` instead of workflow engine state;
-- `Payment received` instead of reconciliation event terminology;
-- `Website issue` instead of technical monitor codes unless detail is requested.
+Potential results:
+- Properties;
+- Projects;
+- Requests;
+- Approvals;
+- Invoices/Receipts/Statements where permitted;
+- Files;
+- Knowledge;
+- safe Vault metadata when explicitly authorized.
 
-## 16. Permission behavior
+Internal Notes, hidden Properties, other Organisations, internal finance/Audit/provider details never appear.
 
-The portal should distinguish:
+Portal command actions are curated/simple, e.g.:
+- New Request;
+- Upload requested File;
+- open outstanding Approval;
+- pay Invoice;
+- start Support;
+- ask Àríyá where enabled.
 
-- feature unavailable to organisation;
-- feature available but current user lacks permission;
+## Àríyá
+Optional Portal Àríyá uses a stable TopBar/Command/contextual pattern and `04-ai/ariya-experience.md`.
+
+Avoid a generic floating bubble that covers content. Portal Àríyá is narrower/client-safe and must never expose internal evidence or Vault secrets.
+
+## Organisation context
+If a User belongs to multiple Organisations, switching is explicit and prominent enough to prevent mistaken action. Current context persists through navigation/deep links safely.
+
+## Property / Project context
+Context belongs inside record pages/RecordHeader/tabs, not as permanent shell switchers unless a prototype proves a clear need.
+
+## Mobile — primary scenario
+Do not shrink the desktop nav.
+
+Use deliberate mobile navigation:
+- compact TopBar;
+- persistent Home/high-frequency destinations via bottom nav if validated;
+- explicit `More`/sheet for remaining destinations;
+- Search, Notifications, Account and Support always easy to reach;
+- Àríyá reachable without obstructing primary work;
+- safe-area handling;
+- installed PWA quality;
+- no horizontal root navigation.
+
+Candidate bottom-nav destinations can be Home, Projects/Properties, Support and role-relevant Action/More. Final composition should be prototyped rather than hard-coded from assumption.
+
+## Client-safe language
+Prefer:
+- `Action required`;
+- `Waiting for you`;
+- `Payment received`;
+- `Website needs attention`;
+- `Renewal due`;
+- `Status temporarily unavailable`.
+
+Avoid raw workflow/event/monitor/provider jargon unless user opens technical detail and has permission.
+
+## Permission states
+Distinguish:
+- feature not offered to Organisation;
+- feature exists but User lacks access;
 - no data yet;
-- no property grant;
-- action requires organisation admin approval.
+- no Property grant;
+- client-admin approval/access request available;
+- permission revoked while page open.
 
-Do not expose hidden destinations merely to show a permission error unless there is a useful reason to explain how access can be requested.
+Do not advertise hidden Vault/finance/internal capability without a useful access-request reason.
 
-## 17. Client actions
-
-Common portal actions may include:
-
+## Common client actions
+May include:
 - approve/reject/request changes;
-- pay invoice;
-- download receipt;
-- upload requested file;
-- update organisation profile;
-- invite teammate;
-- request credential access;
-- reveal permitted vault item;
-- contact support;
-- acknowledge maintenance/incident;
-- complete project action.
+- pay Invoice/deposit;
+- view/download Receipt/Statement;
+- upload requested File;
+- create/respond to Request;
+- update permitted Organisation profile;
+- invite/manage teammate;
+- request Vault access;
+- reveal/download explicitly granted Vault Item;
+- open Support;
+- acknowledge/view Incident/Maintenance;
+- make Renewal decision;
+- complete Client Action.
 
-Actions must deep-link from notifications.
+Actions use Action Registry and deep-link from Attention/Notifications.
 
-## 18. PWA behavior
-
-The portal should be designed as installable from the beginning.
-
-Required states:
-
+## PWA/offline
+Required shell states:
 - install opportunity;
-- offline shell;
-- cached recent safe content where appropriate;
-- offline-safe draft or queued action only when data integrity is clear;
+- offline;
 - reconnecting;
-- sync success/failure;
-- push permission onboarding;
-- app update available.
+- safe cached summaries;
+- update available;
+- sync failed/restored;
+- push permission onboarding.
 
-Sensitive vault values should not be cached for offline access by default.
+High-risk/payment/Approval/Vault actions normally require live connectivity. Vault contents never broadly offline cache.
 
-## 19. Push notifications
-
-Push is particularly valuable for:
-
-- approval required;
-- urgent property incident;
-- payment confirmation;
-- project action due;
-- support update when configured;
-- credential access request/approval;
-- important renewal reminder.
-
-Push behavior must respect notification policy and user preferences except mandatory security events.
-
-## 20. Empty and first-use states
-
-Portal empty states should be reassuring and explanatory.
-
+## Empty states
 Examples:
+- no Projects -> clear account is quiet/show history if permitted;
+- no Invoices -> `No outstanding billing`;
+- no Approvals -> `Nothing waiting for your approval`;
+- no Properties -> explain access may not yet be assigned;
+- no Vault access -> do not advertise hidden secrets;
+- onboarding -> show exact next actions.
 
-- no active projects → explain there are no current projects, show completed history if permitted;
-- no invoices → state account is clear rather than suggesting setup work;
-- no approvals → `Nothing waiting for your approval`;
-- no properties → explain access may not yet be assigned;
-- no vault access → avoid advertising hidden confidential content.
+## Degraded states
+Handle Support unavailable, payment provider unavailable, stale Property Posture, File preview failure, offline and permission revocation without falsely showing empty/healthy state.
 
-## 21. Error and degraded states
+## Branding
+Operating Entity/Brand may control approved logo/accent/title/auth/email/document identity within Core UI accessibility constraints. Do not allow arbitrary client-specific layout themes that fragment the product.
 
-The portal must gracefully handle:
+## Plugins
+Plugin Portal contributions use approved navigation/tab/widget/action slots and Core UI components.
 
-- connector unavailable;
-- payment provider unavailable;
-- support system unavailable;
-- file preview unavailable;
-- stale property health;
-- offline state;
-- permission revoked while screen is open.
+Default answer is not `add a new root nav item`. Plugin visibility respects Organisation entitlement/User scope and mobile rules.
 
-Client copy must distinguish system issue from client action where possible.
+## Accessibility
+WCAG 2.2 AA with special care for mobile navigation, invoices/payment, Approvals, File upload, Support launch, Vault step-up and install/push prompts.
 
-## 22. Accessibility
+## Component Gallery
+PortalNavigation, Portal TopBar, ResolveAvatar/AccountMenu, NotificationTrigger/Tray, Support state, mobile nav, offline/update and optional AriyaTrigger variants should appear in the development Component Gallery.
 
-Portal flows must target WCAG 2.2 AA and be fully usable with keyboard, screen readers, text zoom, and touch.
-
-Particular care:
-
-- invoice/payment forms;
-- approval dialogs;
-- file uploads;
-- support launch;
-- vault reveal;
-- mobile navigation;
-- push/install prompts.
-
-## 23. Plugin extension points
-
-Plugins may add portal functionality only through approved slots:
-
-- navigation destination;
-- property tab;
-- project tab;
-- dashboard/home widget;
-- organisation capability;
-- contextual action.
-
-Plugin visibility must respect organisation entitlement and user permissions.
-
-## 24. Acceptance criteria
-
-The portal shell is acceptable when:
-
-- client users understand where they are and what requires action;
-- permissions produce safe, understandable navigation;
+## Acceptance criteria
+- first-time client User can predict where work lives;
+- root navigation remains simple as capabilities grow;
+- no Odoo/Twenty-style navigation mental model;
+- TopBar/avatar/notifications/support are strong Core UI;
 - mobile feels intentionally designed;
-- PWA installed mode is usable;
-- support is always easy to access without duplicating Chatwoot;
-- notifications deep-link to actionable portal states;
-- organisation/property context is clear;
-- sensitive/internal data cannot leak through search, navigation, errors, or cached states;
-- plugin destinations can be added without breaking navigation hierarchy.
+- support is easy without duplicating Chatwoot;
+- hidden data cannot leak through Search/navigation/errors/cache;
+- conditional Vault/Requests do not clutter users who do not need them;
+- plugin growth cannot destroy Portal simplicity;
+- no HR/Timesheet/Client Service Consumption concept appears.
 
-## 25. Initial Lovable build slices
-
-### Slice A — portal shell
-- navigation;
-- header/account;
-- responsive layouts;
-- placeholder destinations;
-- realistic client identity.
+## Initial Lovable build slices
+### Slice A — strong Portal shell
+Navigation, TopBar, ResolveAvatar/AccountMenu, Notification entry demo, Support entry, placeholder destinations and fictional client identity.
 
 ### Slice B — mobile/PWA shell
-- mobile navigation;
-- safe-area behavior;
-- install/offline/update states;
-- touch review.
+Mobile nav, safe areas, install/offline/update, touch review.
 
-### Slice C — notification entry
-- unread badge;
-- preview;
-- deep-link behavior into placeholder pages.
+### Slice C — Search/Notification polish
+Client-safe Search/Command entry, tray/deep links into placeholder pages.
 
-### Slice D — support entry
-- persistent Chatwoot launch pattern;
-- context-safe handoff demonstration;
-- unavailable/degraded state.
+### Slice D — Support context handoff
+Chatwoot launch pattern and degraded state.
+
+Àríyá functional capability remains a later slice; only canonical shell presence may be established in FOUND-001.
