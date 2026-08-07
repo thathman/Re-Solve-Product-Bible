@@ -13,14 +13,15 @@ Prepare Re:Solve as a Lovable-first, portable, responsive application foundation
 After this slice, reviewers must be able to launch the app, enter representative Admin and Client Portal shells, inspect a production-quality Re:Solve Core UI Component Framework, verify strong navigation/application chrome across devices, and confirm the project is ready for bounded feature slices.
 
 ## Context authority
-The private `Re-Solve-Product-Bible` is canonical product truth. The paths listed below are **traceability references for reviewers**; do not assume you can browse that private repository from Lovable.
+The public `thathman/Re-Solve-Product-Bible` repository is canonical product truth. The paths listed below are traceability references and may be opened directly when an exact supporting specification is needed.
 
-Your direct implementation context is:
+Do **not** browse the public Product Bible broadly and treat every documented future capability as current build scope. Your direct implementation context for this bounded slice is:
 1. Re:Solve Project Knowledge already loaded in this Lovable project;
 2. the installed canonical `resolve-*` skills invoked for this slice;
-3. this complete FOUND-001 prompt.
+3. this complete FOUND-001 prompt;
+4. exact Product Bible files below only when they are needed to clarify or verify this slice.
 
-If this prompt conflicts with Project Knowledge or a loaded Re:Solve skill, stop and report the exact conflict before changing product behavior.
+If this prompt conflicts with Project Knowledge, a loaded Re:Solve skill, or an exact cited Product Bible specification, stop and report the exact conflict before changing product behavior.
 
 ### Product Bible traceability
 This slice was derived from:
@@ -47,10 +48,13 @@ This slice was derived from:
 - `10-build/demo-data-blueprint.md`
 - `10-build/lovable-launch/AGENTS.md.template`
 
+Public repository root:
+`https://github.com/thathman/Re-Solve-Product-Bible`
+
 ## Repository rule
 This Lovable project must use the **new GitHub repository created by Lovable Git sync**. Do not attempt to import, overwrite or reproduce the current legacy `thathman/Re-Solve` repository in this slice.
 
-The legacy repository is reference evidence outside this build. FOUND-001 starts a clean Lovable-first application foundation based on the product rules above.
+The public Product Bible is specification/reference material only and must not become the writable application repository. The legacy Re:Solve application repository is reference evidence outside this build. FOUND-001 starts a clean Lovable-first application foundation based on the product rules above.
 
 Create a root-level `AGENTS.md` in the new application repository using the canonical repository-instruction content supplied with this launch pack. Keep it consistent with Project Knowledge so durable engineering/product rules also live in exported source control.
 
