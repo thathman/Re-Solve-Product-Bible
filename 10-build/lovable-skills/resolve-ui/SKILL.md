@@ -20,6 +20,8 @@ Use shadcn/ui, Untitled UI React and Tremor heavily as primary sources/influence
 
 For a fresh compatible foundation, prefer the current Tailwind v4 path, shadcn with React Aria base, targeted Untitled UI React component integration, and Tremor Raw/copy-paste components. Never downgrade the stack or initialize a second app merely to use a UI source.
 
+Do not upgrade React merely to satisfy the newest Untitled UI release without first checking Lovable's generated runtime and the rest of the dependency graph. If current Untitled components require a newer React baseline than the generated app safely supports, use compatible Untitled components/patterns or adapt the design treatment rather than destabilizing the application. Report the compatibility choice.
+
 Normalize final components into Re:Solve-owned tokens/composites. Do not produce library soup.
 
 ## Source/licensing rule
