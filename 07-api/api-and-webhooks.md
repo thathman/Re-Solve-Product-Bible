@@ -1,254 +1,253 @@
 # Re:Solve API and Webhooks
 
 ## Purpose
+Re:Solve exposes useful business capabilities programmatically so external tools, automations, agents and future products do not need to scrape UI or bypass permissions.
 
-Re:Solve must be API-complete enough that its useful business capabilities can be integrated into external tools, automations, agents, and future products without scraping the UI or bypassing permissions.
-
-The API is a first-class product surface. The UI, automations, plugins, connectors, and MCP layer should rely on the same business contracts wherever practical.
+The API is first-class. UI, Action Registry, Automations, Plugins, Connectors and MCP should reuse the same domain/service contracts wherever practical.
 
 ## Principles
+- versioned/documented;
+- Principal identity + capability + record scope;
+- canonical permission grammar;
+- Organisation/Property/client isolation;
+- predictable pagination/filtering/sorting/search;
+- idempotent writes where appropriate;
+- optimistic concurrency/version checks where needed;
+- strong Audit for sensitive actions;
+- source/provenance/freshness where material;
+- consistent safe errors;
+- no raw database/provider secret exposure;
+- portable/self-hostable implementation.
 
-- versioned and documented
-- explicit authentication and scopes
-- organisation/property isolation
-- predictable pagination/filtering/sorting
-- idempotent writes where appropriate
-- strong audit for sensitive actions
-- consistent errors
-- no raw database exposure
-- no provider secret exposure
-- compatible with self-hosted deployment
+## Conceptual `/api/v1` resources
+Major resources/actions may include:
+- operating-entities / brands where authorized;
+- organisations / contacts / memberships / access-grants;
+- properties / property-relationships / posture / monitors / renewals / incidents;
+- projects / tasks / milestones / deliverables / client-actions;
+- requests;
+- opportunities / services / client-services;
+- proposals / estimates / contracts;
+- documents / document-templates / secure-external-access administration;
+- invoices / payments / receipts / credits / refunds / subscriptions / reconciliation / statements;
+- approvals;
+- attention;
+- notifications / preferences;
+- files;
+- Vault metadata and dedicated privileged Vault operations;
+- knowledge;
+- support summaries/references/entitlements;
+- comments/activity/following where exposed;
+- reminders / booking;
+- saved-views;
+- forms / submissions;
+- custom-field definitions/values where allowed;
+- imports / exports / data-quality issues;
+- automations / actions;
+- plugins / connectors / integration events;
+- reports/defined metrics;
+- Audit.
 
-## Surface
+There are no Timesheet/Time Entry, HR or Client Service Consumption API resources.
 
-Conceptual versioned routes:
+Exact URL naming follows implementation conventions while public contract semantics remain stable.
 
-```text
-/api/v1/organisations
-/api/v1/contacts
-/api/v1/properties
-/api/v1/projects
-/api/v1/tasks
-/api/v1/opportunities
-/api/v1/proposals
-/api/v1/contracts
-/api/v1/invoices
-/api/v1/payments
-/api/v1/approvals
-/api/v1/notifications
-/api/v1/files
-/api/v1/vault
-/api/v1/knowledge
-/api/v1/support
-/api/v1/automations
-/api/v1/plugins
-/api/v1/connectors
-/api/v1/audit
-```
+## OpenAPI / developer reference
+Provide machine-readable OpenAPI and human reference covering purpose, auth/capability, scope, request/response schema, errors, pagination, idempotency/concurrency, rate limits, Audit and side effects.
 
-Exact routing style may follow Lovable-preferred implementation conventions, but the product contracts remain stable.
+Plugin namespaced API contributions appear in the same documentation system.
 
-## API documentation
+## API Principals and credentials
+API Client is a non-human Principal.
 
-Provide machine-readable OpenAPI documentation and a human developer portal/reference.
+Credential records include:
+- name/owner;
+- enabled/expiry;
+- scopes/capabilities;
+- Operating Entity/Organisation/Property restrictions where applicable;
+- created/rotated/last used;
+- optional policy such as IP restriction later;
+- revoke.
 
-Each operation documents:
-- purpose
-- required scope
-- request
-- response
-- errors
-- pagination
-- idempotency
-- rate limits
-- audit behavior
-- side effects
+Raw credential shown only at creation/rotation. Stored credentials are hashed/protected as appropriate to credential type.
 
-## Authentication
+## Scopes / permissions
+Use the same canonical capability vocabulary as the product, e.g.:
+- `organisations.read`
+- `properties.read`
+- `properties.monitoring.manage`
+- `projects.manage`
+- `requests.read`
+- `billing.read`
+- `billing.invoices.create`
+- `vault.metadata.read`
+- `notifications.create`
+- `automations.run`
+- `connectors.events.replay`
 
-Support personal/service API credentials with:
-- name
-- owner
-- scopes
-- created date
-- expiration
-- last used
-- optional IP restrictions later
-- revoke/rotate
+Do not maintain an unrelated colon-separated permission universe.
 
-OAuth/service integrations may be added later without replacing the token model.
+Machine scope never overrides record-level access restrictions.
 
-Raw API tokens are shown only at creation/rotation.
+## Collection conventions
+Consistent support as appropriate for:
+- cursor/page pagination;
+- typed filters;
+- sort;
+- search;
+- date range;
+- relationships;
+- status;
+- field selection/expansion only when safe.
 
-## Scopes
+Avoid unique ad-hoc conventions per domain.
 
-Scopes are capability based, e.g.:
-- organisations:read
-- organisations:write
-- properties:read
-- projects:write
-- billing:read
-- invoices:create
-- vault:metadata:read
-- notifications:create
-- automations:run
+## Data provenance
+Resources backed by connector/derived/cache data should expose useful metadata such as source, observed/synced time, freshness and authority where consumers need it.
 
-Vault reveal/download and high-risk financial actions require narrower scopes.
-
-## Filtering and pagination
-
-Collections should support consistent cursor/page semantics chosen at implementation time, plus documented:
-- filter
-- sort
-- search
-- date range
-- relationship filters
-- status
-
-Avoid unique ad-hoc query conventions per module.
+Stale/unknown cannot be serialized as false zero/healthy state.
 
 ## Idempotency
-
-Mutations that may be retried or create external side effects should accept an idempotency key where appropriate.
+External/retry-prone create or side-effecting Actions accept idempotency keys where appropriate.
 
 Examples:
-- create invoice
-- create payment request
-- trigger automation
-- send operational message
-- create approval request
+- create Invoice/Request/Approval;
+- create Payment link;
+- run Automation;
+- send operational communication;
+- create Secure External Access grant;
+- execute registered Connector-backed Action.
+
+Idempotency key scope/retention/result semantics are documented.
+
+## Concurrency
+Sensitive mutable records may use version/ETag/updated-token checks to prevent silent lost updates, especially settings, access, commercial drafts and workflow configuration.
+
+## Action endpoints
+Consequential operations should map to Action Registry semantics instead of arbitrary one-off mutation routes.
+
+Action execution performs:
+- caller authorization;
+- context/target validation;
+- risk/confirmation/approval/step-up policy as applicable;
+- idempotency;
+- domain mutation;
+- Event/Activity/Audit emission;
+- result schema.
+
+API availability must be explicitly declared by the Action; UI availability does not automatically expose an API action.
 
 ## Errors
+Standard safe envelope:
+- stable code;
+- message;
+- field errors;
+- request/correlation id;
+- remediation hints where safe;
+- retryability metadata where useful.
 
-Standard error envelope includes:
-- stable error code
-- safe message
-- field errors where applicable
-- request/correlation ID
-- remediation hints when safe
-
-Never leak secrets, stack traces, internal SQL, or provider credentials.
+Never leak secrets, stack traces, SQL or provider credentials.
 
 ## Rate limits
+May vary by API Client, route/action risk, workload and provider capacity. Expose retry/limit metadata where practical.
 
-Rate limits may vary by:
-- token/client
-- route class
-- operation risk
-- connector/provider capacity
+## Outbound Webhooks
+Subscription:
+- name;
+- endpoint;
+- selected Event catalogue;
+- protected secret reference;
+- status;
+- creator;
+- scope/filter where supported;
+- last success/failure;
+- failure count.
 
-Responses should surface limit metadata where practical.
+Delivery payload includes stable Event id/type/version, occurred_at, permitted data, source ids/references and correlation id.
 
-## Webhooks outbound
+Requests are signed. Delivery history stores safe metadata, response status/timing/attempt and redacted failure details.
 
-External subscribers can register webhook endpoints for permitted events.
+States: queued, sending, delivered, retrying, failed/dead-letter/paused.
 
-Subscription includes:
-- name
-- endpoint
-- event set
-- secret reference
-- status
-- created by
-- last success
-- last failure
-- failure count
-
-## Webhook delivery
-
-Deliveries include:
-- event ID
-- event type
-- occurred_at
-- schema/version
-- data
-- correlation ID
-
-Requests are signed. Delivery history stores safe request metadata, response status, timing, attempt count, and truncated non-sensitive response/error details.
-
-## Delivery lifecycle
-
-- queued
-- sending
-- delivered
-- retrying
-- failed
-- disabled
-
-Use retry/backoff and dead-letter policy. Repeated endpoint failure may automatically pause delivery and notify administrators.
+Repeated failure can pause delivery and create Platform Attention/Notification.
 
 ## Event catalogue
-
-Document first-class events across domains. Plugins may add namespaced events.
-
 Examples:
 - organisation.created
-- contact.updated
-- property.health_changed
+- client.lifecycle_changed
+- property.posture_changed
+- property.renewal_due
+- monitoring.outage_confirmed
+- incident.created/resolved
+- request.created/triaged/completed
 - project.completed
-- invoice.sent
-- invoice.paid
-- payment.confirmed
+- proposal.accepted
+- contract.executed
+- invoice.issued/paid
+- payment.verified
 - approval.completed
-- vault.access_granted
+- vault.access_granted/revoked
+- attention.created/resolved
 - connector.health_changed
 
+Plugins add namespaced Events.
+
 ## Inbound webhooks
+Provider callbacks belong to Connector Integration Event runtime with verification, idempotency, normalization, retry/dead-letter and provenance.
 
-Provider callbacks belong to the Connector integration runtime, not arbitrary general API controllers. Custom generic inbound automation webhooks may be supported as explicit automation triggers with authentication and rate limiting.
+Generic inbound Automation webhooks are explicit trigger endpoints with authentication/rate limits, not an escape hatch around Connector contracts.
 
-## Admin experience
+## Secure External Access
+Public guest actions use dedicated narrow grant/session endpoints with expiry/revocation and target-specific authorization. The guest token is not a general API credential.
 
-Settings > API & MCP should include:
-- API overview
-- API tokens
-- scopes
-- Webhooks
-- delivery logs
-- developer docs
-- usage/limits
+## Vault API
+Default public/machine surface is metadata-first.
 
-Token creation flow must show requested scopes before creation.
+Secret reveal/protected download is a dedicated privileged operation, disabled for broad API Clients by default and subject to narrower capability, object grant, step-up/confirmation policy and Audit.
 
-## Audit
+Generic list/search/export never returns raw Vault secrets.
 
-Audit:
-- token created/revoked/rotated
-- scopes changed
-- webhook created/changed/deleted
-- sensitive API calls
-- high-risk failures
+## Search / Reports
+API exposes curated permission-aware Search and defined report/metric datasets. No unrestricted SQL/query endpoint.
 
 ## MCP relationship
+MCP uses the same domain/action authorization but exposes a curated AI-friendly tool/resource surface with additional risk controls. It is not an alternate permission universe.
 
-MCP is built on top of controlled Re:Solve capabilities. It should not invent an alternate permission universe. API and MCP may share services/commands, but MCP tools have their own curated schemas and AI safety constraints.
+## Àríyá relationship
+Àríyá uses internal controlled tools/actions rather than becoming an unrestricted proxy over public API. Both rely on the same domain authorization.
 
-## Plugin relationship
+## Plugins
+Plugin API resources/actions are namespaced/registered and inherit Principal auth, capabilities, record scope, rate limits, Audit, Action Registry and docs conventions.
 
-Plugins can register documented namespaced API resources/actions through the platform registry. They inherit auth, scopes, rate limiting, audit, and docs conventions.
+## PWA / first-party app
+First-party internal endpoints may be optimized for UI composition while public API remains stable/documented. Provider-specific SDK calls should not leak throughout browser UI.
 
-## PWA/client relationship
+## Admin settings
+Settings > API & MCP should cover API Clients/tokens, scopes, Webhooks, delivery logs, docs, usage/limits and Audit.
 
-The first-party web/PWA may use internal endpoints optimized for product behavior, but public API semantics should remain stable and independently documented.
+## Audit
+At minimum token create/rotate/revoke, scope/access changes, Webhook configuration, sensitive Actions, Secure External grants and high-risk API failures.
 
 ## Acceptance criteria
-
-- useful business operations have documented programmatic equivalents where appropriate
-- tokens are scope-limited, revocable, expirable, and audited
-- cross-organisation/property access is denied server-side
-- idempotent operations can be retried safely
-- outbound webhooks are signed, observable, and retryable
-- provider callbacks use the connector runtime
-- plugin endpoints cannot bypass core auth/audit
-- OpenAPI documentation remains generated/current
+- meaningful business operations have programmatic equivalents where appropriate;
+- API Client is a scoped Principal;
+- canonical capabilities match UI/MCP concepts;
+- cross-Organisation/Property denial is server-side;
+- retries/idempotency cannot duplicate consequential records;
+- source/freshness is truthful;
+- outbound Webhooks signed/retryable/observable;
+- provider inbound events use Connector runtime;
+- Vault/hidden data is not exposed generically;
+- Plugin endpoints cannot bypass core controls;
+- OpenAPI remains current;
+- no HR/Timesheet/Client Service Consumption resources exist.
 
 ## Lovable build slices
-
-1. API token records + token management UI
-2. common API auth/scope enforcement
-3. first versioned read APIs
-4. write APIs + idempotency
-5. OpenAPI/docs
-6. outbound webhook subscriptions
-7. delivery/retry/log viewer
-8. plugin API registry
+1. API Client/credential records + admin UI.
+2. common Principal/scope enforcement + canonical error/idempotency patterns.
+3. first read APIs for Organisations/Properties/Projects/Requests.
+4. registered write Actions + concurrency/idempotency.
+5. OpenAPI/reference.
+6. outbound Webhook subscriptions/delivery runtime.
+7. logs/retry/dead-letter/Audit.
+8. plugin registry + expanded domain resources over time.
