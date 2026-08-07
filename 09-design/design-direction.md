@@ -1,282 +1,202 @@
 # Re:Solve Design Direction
 
 ## 1. Purpose
+This document defines the visual and interaction direction for Re:Solve before individual screens are designed. Re:Solve must not drift into a generic SaaS dashboard assembled from interchangeable cards, charts and admin templates.
 
-This document defines the visual and interaction direction for Re:Solve before individual screens are designed. It is intentionally product-specific. The goal is to prevent the system from drifting into a generic SaaS dashboard assembled from interchangeable cards, charts, and admin templates.
-
-Re:Solve is an operational system. Its visual language must make dense business information calm, legible, fast to scan, and easy to act on.
+Re:Solve is an operational system. Its visual language must make dense business information calm, legible, fast to scan and easy to act on.
 
 ## 2. Design thesis
+Re:Solve should feel like a **high-trust operations workspace**: precise enough for finance and confidential access, fast enough for operational work, calm enough for all-day use and polished enough for client-facing use.
 
-Re:Solve should feel like a **high-trust operations workspace**: precise enough for finance and credentials, fast enough for support and project work, calm enough for all-day use, and polished enough to be client-facing.
-
-The interface should communicate:
-
+The interface communicates:
 - control without heaviness;
 - density without clutter;
-- confidence without visual aggression;
-- modernity without novelty for novelty's sake;
+- confidence without aggression;
+- modernity without novelty for its own sake;
 - flexibility without looking like a no-code builder;
-- premium quality without decorative excess.
+- premium quality without decorative excess;
+- simplicity without hiding important state.
 
-## 3. Anti-reference
+## 3. Non-negotiable Core UI direction
+Re:Solve uses a mandatory Core UI Component Framework.
+
+Primary implementation/design sources and influences:
+1. Re:Solve Product Design Language
+2. shadcn/ui
+3. Untitled UI React
+4. Tremor
+5. React Aria / Base UI / Radix where their primitive behavior is strongest
+6. TanStack Table / TanStack Query and approved specialist libraries
+
+These sources should heavily influence and be used throughout the product, but final components must be normalized into Re:Solve-owned tokens, components and composites. The product must not look like several libraries stitched together.
+
+See `09-design/core-ui-framework.md`.
+
+## 4. Navigation thesis
+Navigation must be immediately understandable. Re:Solve should feel closer to the clarity of well-structured service CRM/navigation such as Perfex/Brevo than systems that begin with app grids, module launchers or abstract object switching.
 
 Re:Solve must avoid:
+- Odoo-style app-launcher/module-grid navigation as the main mental model;
+- Twenty-style object/app navigation that requires product knowledge to find ordinary work;
+- deeply nested expanding root navigation;
+- showing every child page in the sidebar;
+- icon-only root navigation;
+- making users choose technical modules before they understand the business task.
 
-- generic dashboard templates with rows of identical KPI cards;
-- gratuitous gradients, glassmorphism, floating blobs, or decorative charts;
+Use a strong left navigation, strong top bar and shallow major-area structure. Secondary tabs/views appear after the user enters an area.
+
+See `09-design/navigation-and-application-chrome.md`.
+
+## 5. Other anti-patterns
+Avoid:
+- generic rows of identical KPI cards;
+- gratuitous gradients, glassmorphism or decorative charts;
 - excessive card nesting;
-- one visual treatment reused for every data type;
 - giant headings that consume operational space;
 - low-information whitespace on staff screens;
 - tiny text used to fake density;
-- endless sidebars with every possible route visible at once;
-- icon-only controls when meaning is not obvious;
-- tables that collapse into unusable horizontal scrolling on mobile;
-- client screens that feel like a reskinned staff dashboard;
-- admin screens that feel like a marketing site.
+- tables that become unusable horizontal scroll on phones;
+- client screens that feel like reskinned staff screens;
+- admin screens that feel like marketing sites;
+- generic AI sparkle buttons as the primary Àríyá identity;
+- weak placeholder-quality navigation, avatar or notifications chrome.
 
-## 4. Experience split
-
-Re:Solve has two primary human-facing modes that share one design system but not one information density.
-
+## 6. Experience split
 ### Admin OS
-
 The staff/admin experience is:
-
-- dense;
+- dense but calm;
 - keyboard-friendly;
 - information rich;
-- interruption tolerant;
 - optimized for repeated workflows;
-- comfortable for long sessions;
-- capable of exposing advanced actions without making every screen look complicated.
+- interruption tolerant;
+- capable of advanced actions through progressive disclosure;
+- based around a simple persistent navigation model.
 
 ### Client Portal
-
 The client experience is:
-
 - task-focused;
 - calmer;
-- more guided;
-- more explanatory;
-- lower-density by default;
+- guided;
+- explanatory;
+- lower-density;
 - mobile-first in practical use;
-- focused on actions, status, transparency, and trust.
+- focused on actions, status, transparency and trust.
 
-The client portal must never expose internal complexity simply because the staff system has it.
+The Portal must never expose internal complexity simply because Admin has it.
 
-## 5. Reference qualities
-
-Re:Solve may learn from, but should not visually imitate:
-
-- Linear: speed, keyboard fluency, disciplined density;
+## 7. Reference qualities
+Re:Solve may learn from, but should not imitate blindly:
+- Perfex/Brevo: simple understandable navigation and business-area labeling;
+- Linear: speed, keyboard fluency and disciplined density;
 - Stripe Dashboard: financial hierarchy and high-trust transaction presentation;
-- GitHub: relationship-heavy records and strong information architecture;
-- Notion: flexible content surfaces and calm document treatment;
-- modern shadcn/Radix ecosystems: component quality and accessibility primitives;
-- high-end operations software: predictable patterns and deeply considered empty/error states.
+- GitHub: relationship-heavy records and clear information architecture;
+- Notion: flexible content surfaces;
+- shadcn/Untitled UI/Tremor ecosystems: component craft, accessible primitives and data presentation.
 
-## 6. Visual hierarchy
+## 8. Application chrome is a product feature
+The following are first-class design work:
+- side navigation;
+- top bar;
+- avatar/account control;
+- notification trigger/tray;
+- command/search entry;
+- Quick Create;
+- Àríyá entry and panel;
+- breadcrumbs/context;
+- connection/offline/update state;
+- mobile navigation.
 
-Every screen should answer three questions within seconds:
+They must not remain generic starter-template components after FOUND-001.
 
+## 9. Visual hierarchy
+Every screen should answer within seconds:
 1. Where am I?
-2. What changed or needs attention?
+2. What needs attention or changed?
 3. What can I do next?
 
-Hierarchy should come primarily from:
+Hierarchy comes primarily from spatial grouping, typography, contrast, status treatment, progressive disclosure and predictable structure. Do not rely on color alone.
 
-- spatial grouping;
-- typography;
-- contrast;
-- status treatment;
-- progressive disclosure;
-- persistent page structure.
-
-Do not rely on color alone.
-
-## 7. Page anatomy
-
-Most operational pages should use a predictable structure:
-
+## 10. Page anatomy
+Typical operational page:
 1. global shell;
-2. contextual page header;
-3. primary action zone;
-4. summary/attention layer where warranted;
+2. compact contextual page/record header;
+3. primary actions;
+4. attention/summary layer when useful;
 5. primary working surface;
-6. secondary context or related records;
-7. activity/history where appropriate.
+6. secondary context/related records;
+7. collaboration/activity/history where appropriate.
 
 Not every page needs every layer.
 
-## 8. Record workspaces
-
-First-class records such as organisations, properties, projects, invoices, contracts, and connector instances should use a consistent record workspace pattern.
-
-A record workspace should typically provide:
-
+## 11. Record workspaces
+First-class records such as Organisations, Properties, Projects, Invoices, Proposals, Contracts and Connector Instances use a consistent record-workspace pattern:
 - identity/header;
 - status;
 - ownership;
 - primary actions;
 - contextual metadata;
-- tabs or sections;
+- tabs/sections;
 - related records;
-- activity timeline;
-- audit-sensitive actions where applicable;
+- collaboration/activity;
+- audit-sensitive actions;
 - plugin extension slots.
 
-The user should feel that they are entering a workspace for the record, not opening a generic details page.
+The experience should feel like entering the record's workspace, not opening a generic details page.
 
-## 9. Data density
+## 12. Attention over dashboard decoration
+Dashboards and summary surfaces should begin with decisions/actions/attention, then supporting information. Avoid a sea of equal KPI cards.
 
-Density is contextual.
+Tremor-style metrics/trackers/charts may be used heavily where they answer real operational questions.
 
+## 13. Data density
 ### Staff
-
-Use compact controls, tables, inline metadata, grouped actions, and secondary information without forcing repeated navigation.
+Use compact controls, tables, inline metadata, grouped actions and secondary context without requiring constant navigation.
 
 ### Client
-
-Prefer concise summaries, guided actions, strong status explanations, and fewer simultaneous controls.
+Prefer concise summaries, guided actions and strong status explanations.
 
 ### Mobile
+Recompose the experience. Never simply shrink desktop density.
 
-Do not simply shrink desktop layouts. Recompose information into touch-friendly blocks, prioritized actions, expandable details, and mobile-appropriate navigation.
+## 14. Color and status
+Use semantic tokens for surface, text, borders, primary action, neutral, success, warning, danger, informational, selected/focus and muted states. Domain colors may assist scanning but never replace labels/icons.
 
-## 10. Color strategy
+## 15. Typography
+Typography supports operational scanning and longer documents. Use tabular numerals where useful for finance/metrics. Use monospace only for data that benefits from it, such as identifiers, endpoints and hashes.
 
-The design system should define semantic color tokens rather than hard-code feature-specific colors.
+## 16. Motion
+Motion explains change rather than decorates it. Respect reduced motion. Avoid excessive entrance animations on operational screens.
 
-Required semantic groups:
+## 17. Feedback and states
+Every meaningful surface considers loading, skeleton, first-use, empty, stale, disconnected, permission denied, read-only, offline, retrying, failure, success, archived and degraded states.
 
-- surface/background;
-- text hierarchy;
-- border/divider;
-- primary action;
-- neutral status;
-- success;
-- warning;
-- danger;
-- informational;
-- selected/focused;
-- muted/disabled.
+Toasts are not the only evidence for critical actions.
 
-Domain colors may exist for quick scanning, but must remain secondary to labels and icons.
+## 18. Accessibility
+Target WCAG 2.2 AA. Keyboard access, visible focus, semantic structure, screen-reader names, contrast, touch targets, reduced motion, accessible overlays/forms/tables/charts and meaningful mobile navigation are mandatory.
 
-## 11. Typography
+## 19. Responsive/PWA
+Design for phone, tablet, laptop, desktop, wide desktop and installed PWA. Portal mobile is a primary scenario. Admin mobile remains useful for essential operational work without pretending every dense workflow should look identical to desktop.
 
-Typography must support both reading and operational scanning.
+See `09-design/performance-device-and-design-qa.md`.
 
-Requirements:
+## 20. Component Gallery and design QA
+FOUND-001 establishes a development-only Component Gallery/Storybook-equivalent surface. Major feature completion includes functional, security, responsive/PWA, accessibility, Core UI consistency, visual-polish and degraded/performance review.
 
-- clear hierarchy between page titles, section titles, record names, table content, metadata, labels, and helper copy;
-- numeric/tabular treatment for financial and metric-heavy surfaces;
-- monospace treatment only where data benefits from it, such as API keys, IDs, code, endpoints, hashes, and certain timestamps;
-- no decorative serif dependence for core usability;
-- comfortable body text for knowledge, proposals, contracts, and longer client-facing content.
+## 21. Design review questions
+Before approving a major flow ask:
+- Is this unmistakably Re:Solve?
+- Could a new user predict where this feature lives?
+- Is the important information dominant?
+- Is the correct Core UI component being reused?
+- Does it remain useful with real messy data?
+- Does the mobile version feel designed?
+- Are empty/error/permission/offline/stale states intentional?
+- Can keyboard-heavy staff move quickly?
+- Can a client understand the state without internal jargon?
+- Have shadcn, Untitled UI and Tremor been used/influenced appropriately rather than ignored?
 
-## 12. Motion
+## 22. Lovable usage
+Lovable must use its strongest current design capabilities and the Re:Solve Core UI Framework. Do not accept stock starter-template chrome as final foundation work.
 
-Motion should explain change, not decorate it.
-
-Use motion for:
-
-- drawers/sheets opening;
-- navigation transitions where useful;
-- reordering;
-- state changes;
-- progress;
-- success confirmation;
-- focus/context preservation.
-
-Avoid excessive entrance animations on operational screens.
-
-Respect reduced-motion preferences.
-
-## 13. Feedback
-
-Every user action needs an appropriate feedback mode:
-
-- immediate inline feedback for local actions;
-- toast for successful background-safe actions;
-- persistent banner for important system state;
-- modal confirmation for destructive/high-impact actions;
-- progress state for long-running work;
-- activity/audit entry for sensitive work.
-
-Do not use toasts as the only evidence for critical actions.
-
-## 14. State design
-
-Every designed surface must consider:
-
-- loading;
-- skeleton;
-- first-use;
-- empty;
-- partially configured;
-- stale data;
-- disconnected connector;
-- permission denied;
-- read-only;
-- offline;
-- failed action;
-- retrying action;
-- success;
-- archived/deleted;
-- degraded service.
-
-These states are part of the design, not cleanup work after implementation.
-
-## 15. Accessibility
-
-Target WCAG 2.2 AA.
-
-Mandatory:
-
-- keyboard access;
-- visible focus;
-- semantic structure;
-- screen-reader names;
-- sufficient contrast;
-- touch target sizing;
-- reduced motion;
-- non-color status cues;
-- accessible dialogs, sheets, menus, tables, forms, and charts;
-- meaningful mobile navigation.
-
-## 16. PWA and responsive direction
-
-Responsiveness is foundational.
-
-The product must be designed for:
-
-- phone;
-- tablet;
-- laptop;
-- desktop;
-- wide desktop;
-- installed standalone PWA mode.
-
-Portal mobile usage is a primary scenario. Admin mobile usage is supported, but complex staff operations may progressively disclose or defer advanced controls rather than forcing desktop density onto a phone.
-
-## 17. Design review questions
-
-Before approving any major flow, ask:
-
-- Does this look specific to Re:Solve or could it be any SaaS dashboard?
-- Is the most important information visually dominant?
-- Are actions placed where users need them rather than where a template expects them?
-- Does the screen remain useful with real, messy data?
-- Does the mobile version feel designed, not collapsed?
-- Are empty, error, permission, offline, and partial states intentional?
-- Can a keyboard-heavy staff user move quickly?
-- Can a client understand the state without internal terminology?
-
-## 18. Lovable usage
-
-Lovable should use its strongest current design capabilities, design skills, shadcn-based components, and compatible alternatives where they improve usability. Component choice must serve the product flow; shadcn is a foundation, not a requirement to force every interaction into the nearest stock component.
-
-When a standard primitive is insufficient, create a Re:Solve composite component with a documented purpose and reusable behavior rather than page-specific styling.
+When a standard primitive is insufficient, create a documented reusable Re:Solve composite rather than page-specific styling.
