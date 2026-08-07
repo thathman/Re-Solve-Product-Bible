@@ -1,6 +1,6 @@
 ---
 name: self-host-check
-description: Review a Re:Solve change for portability risks, unnecessary Lovable-only runtime assumptions, provider lock-in, and hard-to-replace infrastructure coupling.
+description: Use when reviewing a Re:Solve architecture or completed build slice for portability risks, unnecessary Lovable-only runtime assumptions, provider lock-in, direct Supabase coupling, or infrastructure choices that would make later independent self-hosting require a redesign.
 ---
 
 # Self Host Check
