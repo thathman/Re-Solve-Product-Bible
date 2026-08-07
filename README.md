@@ -13,6 +13,22 @@ The product may be specified comprehensively here, but implementation must be de
 - [Domain Model](00-foundation/domain-model.md)
 - [Information Architecture](00-foundation/information-architecture.md)
 
+## Experience Foundation
+
+### Design
+- [Design Direction](09-design/design-direction.md)
+- [Design System](09-design/design-system.md)
+
+### Admin
+- [Admin OS Shell](01-admin/shell.md)
+- [Settings](01-admin/settings.md)
+
+### Client Portal
+- [Client Portal Shell](02-portal/shell.md)
+
+### Platform
+- [Notifications Platform](03-platform/notifications.md)
+
 ## Governing Workflow
 
 Product specifications should follow the installed Re:Solve spec and flow skills:
@@ -47,4 +63,4 @@ The planning sequence is:
 10-build/
 ```
 
-Detailed section specifications will be added incrementally after the foundation is reviewed.
+Specifications are added incrementally. Cross-cutting platform behavior is defined before feature pages that depend on it.
