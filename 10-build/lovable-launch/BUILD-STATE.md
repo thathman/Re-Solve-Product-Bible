@@ -3,7 +3,7 @@
 Keep this file updated after each accepted build slice so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**SETUP-000 PARTIAL — OWNER ACTIONS PENDING — FOUND-001 NOT YET STARTED**
+**SETUP-000 PARTIAL — KNOWLEDGE/VERIFICATION PENDING — FOUND-001 NOT YET STARTED**
 
 ## Canonical Product Bible state
 - Product Bible planning/expansion/launch-readiness content is consolidated on `main`.
@@ -19,10 +19,10 @@ Keep this file updated after each accepted build slice so the next Product Bible
 - Workspace: `<record when confirmed>`
 - Project: `Re:Solve`
 - Project Knowledge source fetched by Lovable: `YES`
-- Project Knowledge installed in Project settings: `NO — owner paste action pending`
-- Required FOUND-001 workspace Skills installed: `NO — owner Settings import pending`
-- Lovable reported 30 canonical skill copies staged as temporary project-local drafts under `.agents/skills/`.
-- Temporary project-local skill drafts are **not** the canonical workspace-skill state and should be removed after corresponding workspace skills are verified.
+- Project Knowledge installed in Project settings: `<verify>`
+- Canonical workspace Skills installed: `YES — all 30 Re:Solve skills installed by owner`
+- No obsolete `airix-*` skills were reported.
+- Lovable previously staged 30 canonical skill copies as temporary project-local drafts under `.agents/skills/`; these should be removed after workspace-skill verification so duplicate instruction sources do not remain.
 
 ## Application repository
 - Legacy reference repository: `thathman/Re-Solve`
@@ -47,7 +47,8 @@ None yet.
 Observed during SETUP-000:
 - Lovable can fetch the public Product Bible Knowledge and skill source files from project chat.
 - The current project chat could not save Project Knowledge or import/promote GitHub skills as workspace skills.
-- Those remain workspace-owner/admin UI actions.
+- Workspace-owner/admin UI action was required for workspace skill import.
+- Owner has now installed all 30 canonical Re:Solve workspace skills.
 - No obsolete `airix-*` skills were reported.
 - No product feature, UI-stack installation or database work has started.
 
@@ -76,9 +77,8 @@ None currently blocking FOUND-001. SETUP-000 behavior has been incorporated into
 No application implementation has started yet.
 
 ## Next action
-1. Owner pastes `PROJECT-KNOWLEDGE.md` into Project settings → Customization → Knowledge.
-2. Owner imports only the 11 required FOUND-001 workspace skills from the public Product Bible URLs.
-3. Run supervisor-provided SETUP-001 verification/cleanup prompt.
-4. Verify workspace skills are active and remove duplicate temporary `.agents/skills/` drafts.
-5. Record Lovable-created application repository/default branch.
-6. Begin `FOUND-001A` only after setup verification passes.
+1. Verify/paste `PROJECT-KNOWLEDGE.md` into Project settings → Customization → Knowledge if not already installed.
+2. Run supervisor-provided SETUP-001 verification/cleanup prompt.
+3. Verify the 30 workspace skills are active and remove duplicate temporary `.agents/skills/` drafts.
+4. Record Lovable-created application repository/default branch.
+5. Begin `FOUND-001A` only after setup verification passes.
