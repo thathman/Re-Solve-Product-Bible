@@ -16,6 +16,101 @@ Navigation, top bar, avatar/account, notifications, tables, forms, dialogs, draw
 
 Re:Solve must use these sources heavily without looking like several component libraries stitched together.
 
+### shadcn-vue pattern reference policy
+`shadcn-vue` is an approved visual, composition and block-pattern reference because its current component/block catalogue includes useful modern application patterns that align with Re:Solve. It is **not** an implementation runtime for Re:Solve because the application is React/TanStack.
+
+Rules:
+- when a liked `shadcn-vue` component/block has a current React `shadcn/ui` equivalent, use/import the React source-owned implementation and adapt it into Re:Solve Core UI;
+- never add Vue runtime/components to the React application merely to reproduce a design;
+- when a useful `shadcn-vue` pattern has no suitable React equivalent, port only the interaction/composition pattern into React using the accepted Re:Solve primitive base;
+- all imported/adapted patterns remain subject to Re:Solve tokens, accessibility, responsive behavior, provenance and Core ownership rules;
+- the `dashboard-01`, `sidebar-07`, restrained `sidebar-03`, auth and calendar block families are approved layout references, not page templates to copy wholesale;
+- Re:Solve navigation rules override block defaults: no app launcher, no giant module tree, no uncontrolled submenu nesting and no stock shadcn shell identity.
+
+### Canonical shadcn component intake
+The Core Framework should deliberately intake the useful shadcn catalogue rather than adding components ad hoc.
+
+**Already canonical or currently being normalized**
+- Button / IconButton
+- Avatar
+- Badge / StatusBadge
+- Input
+- Textarea
+- Checkbox
+- Radio Group
+- Switch
+- Select
+- Separator
+- Skeleton
+- Tooltip
+- FormField / FieldGroup (Re:Solve-owned semantics rather than duplicating stock Field blindly)
+
+**Core interaction intake**
+- Accordion
+- Alert
+- Alert Dialog
+- Breadcrumb
+- Button Group
+- Collapsible
+- Command
+- Context Menu
+- Dialog
+- Drawer
+- Dropdown Menu
+- Empty
+- Hover Card
+- Input Group
+- Item
+- Kbd
+- Popover
+- Progress
+- Scroll Area
+- Sheet
+- Spinner
+- Tabs
+- Toast/Sonner — choose one canonical notification-toast implementation after repository audit; do not keep both as competing APIs
+- Toggle
+- Toggle Group
+
+**Advanced input / workflow intake**
+- Attachment
+- Calendar
+- Combobox
+- Date Picker
+- Date Range Picker / range-calendar behavior
+- Input OTP / PIN-entry behavior for MFA and step-up flows
+- Native Select where a simpler native control is preferable
+- Number Field when a real numeric workflow requires it
+- Pagination
+- Resizable
+- Slider when a real settings/domain workflow requires it
+- Stepper for guided workflows
+- Tags Input for tagging workflows
+
+**Conversation / assistant intake**
+- Message
+- Bubble
+- Message Scroller
+- Marker
+- Attachment
+
+These are especially relevant to Àríyá, support/conversation views and evidence-rich agent interactions. They must not turn Re:Solve into a generic chat application.
+
+**Later domain/composite intake**
+- Questionnaire for surveys, intake and structured forms when those slices begin
+- Table as a low-level surface only; operational DataTable remains TanStack Table → Re:Solve DataTable
+- Sidebar as a low-level/reference implementation only; AdminSidebar and PortalNavigation remain Re:Solve-owned composites
+- Card as a source pattern where needed; avoid indiscriminate cardification
+- Chart only where useful as source reference; analytics authority remains Tremor + Recharts
+
+**Not default Core imports**
+- Carousel
+- Menubar
+- Navigation Menu
+- Aspect Ratio
+
+These may be added only when a documented workflow actually needs them. Re:Solve should not import components simply because the registry contains them.
+
 ## Ownership rule
 Before creating a UI pattern:
 1. check for an existing Re:Solve Core component;
@@ -110,6 +205,7 @@ WCAG 2.2 AA is required. Primitive choice should favor mature accessible behavio
 
 ## Acceptance criteria
 - shadcn, Untitled UI and Tremor materially influence implementation quality;
+- shadcn-vue may materially influence composition/block choices without introducing Vue runtime code;
 - shell chrome is first-class;
 - reusable patterns live in the Core Framework;
 - a Component Gallery exists before broad module work;
