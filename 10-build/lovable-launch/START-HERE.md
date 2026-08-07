@@ -1,11 +1,10 @@
 # Start Re:Solve in Lovable
 
-Use this document when the Product Bible planning stack is merged and you are ready to spend the first Lovable build credits.
+Use this document when the Product Bible is canonical and you are ready to start supervised Lovable development.
 
-## Before opening the first build prompt
+## Before the first substantive Lovable message
 Confirm:
-- Product Bible is merged/canonical;
-- `thathman/Re-Solve-Product-Bible` is public and available for Lovable skill import/reference;
+- `thathman/Re-Solve-Product-Bible` is public and canonical;
 - you have owner/admin access to the intended Lovable workspace;
 - the correct GitHub account is connected/available;
 - you understand that Lovable creates a new GitHub repository rather than importing the existing legacy `thathman/Re-Solve` repository;
@@ -16,96 +15,62 @@ Prefer a dedicated Re:Solve Lovable workspace because Re:Solve has a substantial
 
 Create a fresh project named **Re:Solve**.
 
-Do not ask Lovable to build the OS in the initial project-creation description. Keep the first creation/setup prompt minimal if the UI requires one; substantive work starts only after Knowledge and Skills are configured.
+Do not ask Lovable to build the OS in the project-creation description. Keep creation minimal.
 
 ## 2. Connect GitHub
 Connect the Re:Solve project to the correct GitHub installation. Allow Lovable to create a new private application repository and start two-way sync.
 
 Do not attempt to attach/import the existing `thathman/Re-Solve` repository.
 
-The public Product Bible is a specification/reference repository and is **not** the application repository Lovable should write application code into.
+The public Product Bible is specification/reference material and is not the writable application repository.
 
-Record the new application repository name in `BUILD-STATE.md` or your project notes. Keep the old repository unchanged until the post-FOUND-001 transition gate.
+## 3. Send SETUP-000
+The first substantive project-chat instruction is:
 
-## 3. Add Project Knowledge
-Open **Project settings → Knowledge** and paste the contents of:
+`10-build/prompts/SETUP-000-lovable-bootstrap.md`
 
-`10-build/lovable-launch/PROJECT-KNOWLEDGE.md`
+This tells Lovable to:
+- load the canonical Project Knowledge;
+- attempt to install/import the canonical `resolve-*` workspace skills itself from the public Product Bible;
+- verify the required FOUND-001 skills;
+- remove/flag obsolete `airix-*` skills;
+- report any one-time workspace-owner UI action that cannot be performed from project chat;
+- stop before product implementation.
 
-Do not paste the entire Product Bible.
+Do **not** manually recreate skills unless Lovable reports that its current session cannot perform the documented import action. If a one-time Settings action is required, use the exact public URLs in `10-build/lovable-skills/GITHUB-IMPORT-URLS.md`.
 
-The public Product Bible may be linked/referenced when a build slice needs an exact supporting spec, but always-on rules belong in Project Knowledge and task-specific rules belong in Skills/current build prompts.
+## 4. Return the SETUP-000 report to the supervisor
+Bring Lovable's setup report back to ChatGPT.
 
-Verify the saved Knowledge includes these unmistakable phrases/concepts:
-- `Àríyá`;
-- `Core UI Component Framework — NON-NEGOTIABLE`;
-- shadcn/ui + Untitled UI React + Tremor;
-- simple Perfex/Brevo-like navigation;
-- no Odoo/Twenty navigation model;
-- no HR/Timesheets/Client Service Consumption;
-- native Monitoring;
-- Chatwoot boundary;
-- portable/self-hostable after export.
+ChatGPT is the build supervisor and will provide the next concise prompt. Do not improvise the next feature or send FOUND-001 until the supervisor reviews setup readiness.
 
-## 4. Install canonical Skills from GitHub
-Follow `10-build/lovable-skills/INSTALL.md` and `manifest.md`.
+See `10-build/lovable-launch/SUPERVISOR-PROTOCOL.md`.
 
-Preferred method: **Settings → Skills → Add → Import from GitHub**.
-
-Import each required skill from its public Product Bible subdirectory:
-
-`https://github.com/thathman/Re-Solve-Product-Bible/tree/main/10-build/lovable-skills/<skill-name>`
-
-For FOUND-001, verify at least:
-- resolve-feature
-- resolve-ui
-- resolve-shell
-- resolve-navigation
-- resolve-responsive
-- resolve-accessibility
-- resolve-design-review
-- resolve-security-review
-- resolve-pwa
-- resolve-release
-- self-host-check
-
-ZIP/`.skill` upload or exact manual copy remains a fallback if GitHub import is temporarily unavailable.
-
-Remove/disable any obsolete `airix-*` skills if they exist.
-
-## 5. Read the foundation compatibility guardrails
-Before asking Lovable to install or copy UI dependencies, make these two public files part of the FOUND-001 context:
-
+## 5. Foundation compatibility guardrails
+Before FOUND-001, the supervisor will ensure Lovable uses:
 - `10-build/ui-stack-installation.md`
 - `10-build/foundation-engineering-guardrails.md`
 
-They define the current Tailwind/shadcn/Untitled/Tremor compatibility path, dependency/source licensing, package-manager/lockfile rules, environment validation, CI, error-boundary/observability foundation, locale/timezone/currency readiness, theme/typography/icon governance and UI provenance requirements.
+These define Tailwind/shadcn/Untitled/Tremor compatibility, dependency/source licensing, package-manager/lockfile rules, environment validation, CI, error boundaries/observability, locale/timezone/currency readiness, theme/typography/icon governance and UI provenance.
 
 Important defaults include:
-- inspect the generated stack before running any initializer;
+- inspect generated stack before running any initializer;
 - remain on a Tailwind v4-compatible path;
-- prefer shadcn's React Aria base for a fresh compatible project;
-- integrate Untitled UI component-by-component rather than scaffolding a second application;
+- prefer shadcn React Aria base for a fresh compatible project;
+- integrate Untitled UI component-by-component rather than scaffolding a second app;
 - prefer Tremor Raw/current copy-paste components rather than the legacy `@tremor/react` path;
 - use free/open-source UI sources by default unless a separate license is explicitly approved;
-- do not downgrade the stack to satisfy a component library.
+- do not upgrade/downgrade React/Tailwind merely to satisfy one UI source without compatibility review.
 
-## 6. Backend choice
-Do not create the complete future database before the first slice.
-
-When FOUND-001 needs auth/demo identity, allow Lovable to use its current preferred Supabase/Lovable development flow. Create only the minimal Workspace/Operating Entity/User/Membership/Organisation/capability data required by FOUND-001.
-
-## 7. Send FOUND-001
-Open:
+## 6. FOUND-001 comes only after setup review
+When setup passes, the supervisor will provide a short execution prompt pointing Lovable at:
 
 `10-build/prompts/FOUND-001-foundation.md`
 
-Send the complete slice prompt with its required skills attached. Tell Lovable that `10-build/ui-stack-installation.md` and `10-build/foundation-engineering-guardrails.md` are mandatory companion specifications for this foundation slice.
+The supervisor prompt does not repeat the Product Bible. Lovable uses Project Knowledge, installed skills and exact canonical files referenced by the step.
 
-Do not append requests for Dashboard/CRM/Properties/etc.
-
-The first meaningful build should result in:
-- source-controlled app foundation;
+FOUND-001 establishes only:
+- source-controlled application foundation;
 - root `AGENTS.md`;
 - Core UI Component Framework;
 - Component Gallery;
@@ -121,44 +86,30 @@ The first meaningful build should result in:
 - locale-aware formatting foundation;
 - coherent light/dark/system theme foundation.
 
-## 8. Do not accept the first render automatically
-Run the review sequence:
-1. `/resolve-design-review`
-2. `/resolve-security-review`
-3. `/resolve-responsive`
-4. `/resolve-pwa`
-5. `/resolve-accessibility`
-6. `/self-host-check`
-7. `/resolve-release`
+Do not append Dashboard/CRM/Properties/Projects/Billing/etc.
 
-Use both human review checklists:
+## 7. Review before any next feature
+After FOUND-001, return Lovable's completion report and relevant screenshots/results to ChatGPT.
+
+The supervisor will guide the review sequence, using:
 - `FOUND-001-REVIEW.md`
 - `FOUND-001-ENGINEERING-REVIEW.md`
+- relevant `resolve-*` review skills.
 
-If the shell looks generic, navigation/application chrome is weak, source build/CI fails, UI licensing is unclear, or the generated stack had to be downgraded to accommodate a library, refine FOUND-001 before building any business module.
+Do not move into another business module because Lovable says `done`.
 
-## 9. Stop after FOUND-001
-Do not ask Lovable for the next feature immediately.
+## 8. Stop-and-supervise model
+For every subsequent step:
+1. Lovable completes the bounded instruction and stops.
+2. User returns the result to ChatGPT.
+3. ChatGPT reviews actual state.
+4. ChatGPT gives the next concise Lovable prompt.
+5. Repeat.
 
-Capture:
-- actual new GitHub repository name;
-- stack/dependencies selected;
-- routes/components created;
-- schema/migrations;
-- test/CI results;
-- UI source/license provenance;
-- runtime/package manager/Tailwind/shadcn base;
-- theme/typography/icon decisions;
-- locale/timezone/currency formatting approach;
-- screenshots/visual notes if useful;
-- portability concerns;
-- Product Bible ambiguities;
-- review result: PASS / CONDITIONAL / FAIL.
+The user should not need to restate PRD content, determine build order or choose applicable Re:Solve skills. Those are supervisor responsibilities except where a genuine owner decision is required.
 
-Only then author the next bounded slice based on the real generated application.
-
-## 10. Repository naming transition
-If FOUND-001 passes, review `GITHUB-TRANSITION.md`. Repository renaming/archive actions require explicit owner approval and are not part of FOUND-001 itself.
+## 9. Repository naming transition
+If FOUND-001 passes, the supervisor will review `GITHUB-TRANSITION.md` with the user. Repository rename/archive actions require explicit owner approval.
 
 ## Current official Lovable references
 - Knowledge: https://docs.lovable.dev/features/knowledge
