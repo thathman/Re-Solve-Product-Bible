@@ -1,0 +1,59 @@
+# Re:Solve Repository Instructions
+
+These rules apply to the entire application repository. Product behavior is governed by the Re:Solve Product Bible; this file carries the durable implementation rules needed inside source control.
+
+## Build scope
+- Implement only the current Product Bible/Lovable build slice.
+- Do not pre-build adjacent modules or placeholder schemas.
+- If a requirement conflicts with established Re:Solve terminology/architecture, report the contradiction instead of silently creating new product truth.
+
+## Product architecture
+- One application, two role-shaped shells: Admin OS and Client Portal.
+- Workspace, Operating Entity, Organisation, Contact/User/Membership and Property remain distinct concepts.
+- Principal-based authorization uses capability + scope and must be enforced server-side.
+- Keep provider/data access behind shared services/repositories/connectors where practical.
+- Plugins add product capability; Connectors integrate external systems.
+- Business truth must not be shaped around one external provider.
+
+## Explicit exclusions
+Do not add HR, payroll, recruitment, leave/attendance, employee performance, Timesheets/Time Tracking, or Client Service Consumption/remaining-hours/credit metering.
+
+## External boundaries
+- Chatwoot owns support conversations/messages, web chat, routing, support Knowledge and Captain.
+- WhatsApp/Baileys is Re:Solve↔client operational communication.
+- Àríyá is Re:Solve's built-in AI and remains separate from Chatwoot Captain.
+- Billing is payment-provider-neutral; verified provider events establish payment truth.
+- Re:Solve owns native Monitoring; Uptime Kuma/external monitors are optional connectors.
+
+## Core UI — mandatory
+Use the Re:Solve Core UI Component Framework. shadcn/ui, Untitled UI React and Tremor are mandatory major sources/influences; React Aria/Base UI/Radix and TanStack are approved foundational tools. Normalize reusable patterns into Re:Solve-owned components/tokens rather than library soup.
+
+Application chrome is first-class: Sidebar, TopBar, ResolveAvatar/AccountMenu, Notifications, Search/Command, Quick Create, Àríyá, mobile navigation and global states must remain polished and coherent.
+
+Navigation must remain simple/shallow with clear text labels, closer to Perfex/Brevo clarity. Do not introduce Odoo-style app grids/module launchers, Twenty-style object/module switching as the primary model, icon-only root nav or uncontrolled nested/plugin navigation.
+
+Reusable Core UI changes should be represented in the development Component Gallery.
+
+## UX quality
+- Target WCAG 2.2 AA.
+- Design phone, tablet, laptop and desktop intentionally.
+- PWA/offline behavior is explicit and privacy-safe.
+- Include applicable loading, skeleton, empty, first-use, error, partial/stale, permission/read-only, degraded-provider and offline states.
+- Sensitive Vault data must never be cached/logged/indexed casually.
+
+## Platform primitives
+Keep Attention, Notification, Activity and append-only Audit separate.
+Use the Action Registry for reusable consequential mutations so UI, Àríyá, API, MCP and Automations share authorization/risk behavior.
+Preserve source/authority/freshness for connector/imported/derived/AI data when material.
+
+## Security
+- Hidden UI is not authorization.
+- Test negative cross-Organisation/Property access.
+- Do not expose secrets in client code, logs, generic search, notifications or AI/MCP context.
+- Sensitive/high-risk Actions may require confirmation, approval or step-up.
+
+## Portability
+Lovable/Supabase are development tools, not required production runtime assumptions. Avoid Lovable-only product-critical behavior and scattered provider coupling. Keep schema migrations/versioned data and ordinary source-controlled PWA/API/MCP behavior portable.
+
+## Completion
+A slice is complete only after acceptance criteria, tests, security/permission, responsive/PWA, accessibility, Core UI/design and relevant portability review. Record intentionally deferred scope.
