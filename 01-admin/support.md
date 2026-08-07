@@ -1,147 +1,201 @@
 # Support Operations & Chatwoot
 
 ## Purpose
-Support in Re:Solve is the operational context layer around Chatwoot-managed client support. Re:Solve must not rebuild Chatwoot's helpdesk, web chat, conversation engine, support knowledge base, routing, teams, or AI.
+Support in Re:Solve is the operational/context layer around Chatwoot-managed client support. Re:Solve must not rebuild Chatwoot's helpdesk, conversation/message engine, web chat, support Knowledge, agent/team routing or Captain.
 
 ## Ownership boundary
 Chatwoot owns:
-- inboxes and channels
-- customer conversations and messages
-- support attachments
-- agent/team assignment
-- conversation status and routing
-- web chat widgets on client properties
-- support knowledge used by Chatwoot
-- CSAT and native support analytics
-- Chatwoot AI/Captain
+- inboxes/channels;
+- customer conversations/messages;
+- support attachments;
+- agent/team assignment;
+- conversation status/routing;
+- web chat widgets;
+- Support Knowledge;
+- CSAT/native support analytics;
+- Captain.
 
 Re:Solve owns:
-- organisations and contacts
-- properties
-- services and support entitlements
-- property/support mappings
-- incidents and operational escalations
-- support summaries
-- related project/billing/property context
-- connector health
-- selected analytics and business reporting
-- client access/visibility rules
+- Organisations/Contacts;
+- Properties;
+- Client Services/Support Entitlements;
+- safe support mappings/references/summaries;
+- Incidents/operational escalation;
+- related Projects/Requests/Billing/Renewals/Property context;
+- Connector health/freshness;
+- selected cross-domain reporting;
+- client access/visibility.
+
+## Support versus Requests
+A Request is a structured Re:Solve business/operational ask that may need triage into a Project, Task, Approval, commercial flow or Support.
+
+Chatwoot Support is for actual support conversation handling.
+
+Examples:
+- `Website is down` -> Support/Incident context is likely appropriate.
+- `Please add a new journal next quarter` -> Request/Opportunity/Project path.
+- `Change our Billing Contact` -> Request/Organisation workflow.
+
+A Request may create/link a Chatwoot conversation when support is the appropriate channel, but the two records remain distinct and traceable.
 
 ## Support overview
-A calm operational view showing:
-- open/waiting/urgent conversation counts by client/property
-- breached/at-risk SLA where available
-- active incidents
-- client/property support health
-- support entitlement warnings
-- recent high-priority conversations
-- Chatwoot connector health
-- unresolved items that should become projects/tasks/incidents
+Prioritize:
+- open/waiting/urgent safe conversation counts by Organisation/Property;
+- SLA risk/breach where provider data permits;
+- active Incidents;
+- client/Property support health;
+- Support Entitlement mismatch/expiry;
+- recent high-priority references;
+- Chatwoot Connector health/freshness;
+- support items that should become Request/Task/Project/Incident;
+- repeated patterns needing Knowledge/Problem work.
 
 Do not mirror every message into Re:Solve.
 
 ## Conversation references
-Re:Solve stores durable mappings/references, not a second message store. Fields may include organisation, contact, property, Chatwoot inbox, conversation ID, status snapshot, priority, category, assigned team/agent reference, first/last activity timestamps, support plan, incident/project linkage, and last sync.
+Store durable mappings/references/snapshots only, such as Organisation, Contact, Property, Chatwoot inbox/conversation id, status/priority/category snapshot, assigned agent/team reference, first/last activity, entitlement, linked Incident/Project/Request and last sync.
+
+`status snapshot` is derived/provider-sourced and shows freshness; it is not a second authoritative conversation record.
 
 ## Property context
-Every managed web-chat/support flow should attempt to identify:
-- organisation
-- property
-- property type
-- source domain/path
-- authenticated user context when available
-- support category
-- application type
+Managed support handoff should attempt to identify safe:
+- Organisation;
+- Property;
+- Property Type;
+- source domain/path;
+- authenticated client User context when available;
+- support category;
+- application type.
 
-Never send passwords, secrets, session tokens, or unnecessary PII to Chatwoot.
+Never send passwords, session tokens, secrets, Vault content or unnecessary PII to Chatwoot.
 
-## Chatwoot connector
-Capabilities:
-- create/update contact mapping
-- create/read inbox mappings
-- fetch conversation summaries
-- fetch unread/open counts
-- attach safe custom attributes/context
-- assign team/labels where authorized
-- health check
-- webhook ingestion
-- deep link to conversation
-- provision/update property support configuration where policy allows
+## Chatwoot Connector
+Capabilities may include:
+- Contact/account mapping;
+- inbox mapping;
+- conversation summary/reference retrieval;
+- open/unread counts;
+- safe custom context;
+- labels/team assignment where explicitly authorized;
+- health/freshness;
+- webhook ingestion;
+- deep link;
+- property-support configuration where policy allows.
+
+Connector sync declares Chatwoot authority for conversation state and conflict/freshness policy.
 
 ## Inbox model
-Default: one organisation-level inbox per external client family, with property context carried on each conversation. Do not create an inbox per property unless a genuine isolation requirement exists.
+Default may use an Organisation/client-family inbox with Property context on conversations rather than creating an inbox for every Property. Genuine isolation/brand requirements can justify separate inboxes.
 
-Airix-owned brands may each have their own brand inbox.
+Operating Entities/Brands may map to their own support identities/inboxes.
 
-## Support plans / entitlements
-Support entitlement may define:
-- covered properties/services
-- support hours
-- response targets
-- escalation rules
-- included request categories
-- exclusions
-- emergency route
-- client contacts authorized to escalate
+## Support Entitlements
+May define:
+- covered Properties/Services;
+- support hours/business hours as availability windows, not consumption tracking;
+- response targets;
+- channels;
+- categories/exclusions;
+- escalation rules;
+- authorized client Contacts.
 
-Entitlement does not replace Chatwoot SLA mechanics; Re:Solve supplies commercial/operational context.
+**Do not track Client Service Consumption/remaining support hours/credits.**
+
+Entitlement supplies commercial/operational context and does not replace Chatwoot's own SLA/conversation mechanics.
 
 ## Incidents
-Incident is a Re:Solve record for an operational service-impacting event. It can link to multiple Chatwoot conversations, properties, monitoring signals, tasks/projects, client notifications, root cause, timeline, mitigation, and resolution.
+Incident is a Re:Solve operational record related to Properties, Monitoring Signals, Chatwoot references, Projects/Tasks/Requests, client updates and resolution/postmortem.
 
-States: Investigating → Identified → Monitoring → Resolved → Postmortem / Closed.
+Lifecycle: Investigating -> Identified -> Monitoring -> Resolved -> optional Postmortem/Closed.
 
 Severity is separate from Chatwoot conversation priority.
 
-## Client portal support
-Portal shows:
-- Start/continue support action
-- recent conversation references where permitted
-- open/waiting/resolved counts
-- support plan/coverage summary
-- active known incidents
-- service status
-- escalation route
+## Client Portal Support
+Show:
+- Start/Open Support;
+- recent permitted conversation references/counts;
+- Support Entitlement summary;
+- active Incidents/service status;
+- escalation route;
+- relevant Requests if product flow links them.
 
-The Chatwoot widget may be globally available. Full messaging remains Chatwoot-powered.
+The Chatwoot widget/deep-linked experience provides messaging.
 
 ## WhatsApp distinction
-Re:Solve WhatsApp/Baileys is for operational communication between Re:Solve and clients: ticket/status updates, reminders, approvals, invoice notices, project updates, alerts, and direct client messages. It is not the client-customer support inbox.
+WhatsApp/Baileys is Re:Solve-to-client operational communication for Project/Request status, Reminders, Approvals, Billing, Renewals, Property alerts and direct operational updates. It is not the client-customer support inbox.
+
+## Attention
+Examples:
+- urgent Support escalation requiring Account/Technical action;
+- SLA/entitlement mismatch requiring intervention;
+- active Incident;
+- Connector stale/auth failure;
+- recurring support pattern requiring Project/Request/Knowledge action.
+
+Attention represents ongoing condition; Notifications deliver awareness.
 
 ## Permissions
-support.read, support.analytics.read, support.context.manage, support.entitlements.manage, incidents.manage, support_connector.configure, support_mapping.manage. Access to actual Chatwoot conversations additionally respects connector and client/property scope.
+Canonical examples:
+- `support.read`
+- `support.analytics.read`
+- `support.context.manage`
+- `support.entitlements.manage`
+- `support.mappings.manage`
+- `incidents.read`
+- `incidents.manage`
+- `connectors.configure` for Connector administration.
+
+Access still respects Organisation/Property scope and provider mapping visibility.
 
 ## Notifications
-Re:Solve should surface meaningful support events only: urgent escalation, SLA risk, new incident, incident update, conversation needing operational action, connector failure, entitlement mismatch. Do not notify on every Chatwoot message.
+Surface meaningful events only: urgent escalation, SLA risk, Incident created/update/resolved, support item requiring operational action, Connector failure and entitlement mismatch/renewal.
+
+Do not notify Re:Solve Users on every Chatwoot message.
 
 ## Automations
 Examples:
-- high-severity monitoring alert → create/associate incident
-- urgent Chatwoot conversation with matching property → alert assigned Re:Solve owner
-- incident created → notify affected client contacts according to policy
-- recurring support request pattern → suggest project/problem record
-- support entitlement expires soon → renewal workflow
+- confirmed monitoring outage -> create/link Incident;
+- urgent support reference -> Attention/notify Account/Technical owner;
+- Incident created -> client-safe update policy;
+- repeated support category -> suggest Request/Project/Knowledge;
+- Support Entitlement renewal -> Renewal workflow.
 
-## API/MCP
-API exposes support summaries, mappings, entitlements, incidents, and provider-neutral conversation references. Chatwoot message APIs are not re-exposed wholesale.
+## API / MCP / Àríyá
+Expose provider-neutral support summaries, mappings, entitlements, Incidents and safe conversation references.
 
-MCP candidates: get_support_summary, list_active_incidents, get_incident, search_support_references, find_chatwoot_conversation, get_support_entitlement. AI tools must not invoke Chatwoot AI or expose hidden support content outside caller permissions.
+Do not wholesale proxy Chatwoot's message API.
+
+MCP candidates:
+- get_support_summary
+- list_active_incidents
+- get_incident
+- search_support_references
+- find_chatwoot_conversation
+- get_support_entitlement
+
+Àríyá may summarize authorized operational Support context and source freshness. It does not invoke Chatwoot Captain as if Captain were Re:Solve AI.
+
+## Reports
+Cross-domain reporting can combine Support context with Organisation/Property/Service/Incident data while avoiding employee-agent productivity/HR scoring and Client Service Consumption.
 
 ## PWA/mobile
-Support summary, incidents, client/property context, deep links, status updates, and escalation actions must work well on mobile. Chatwoot widget/linked experience must remain usable in installed PWA mode.
+Support summary, Incident, entitlement/context, deep links and escalation/actions work well on phone. Chatwoot linked/widget experience remains usable in installed PWA mode.
 
 ## Acceptance criteria
-- no duplicate internal message store is created
-- Chatwoot remains conversation truth
-- property/client context is safe and minimal
-- one client's support data cannot leak to another
-- connector downtime produces clear degraded state rather than false zero counts
-- Chatwoot AI remains architecturally separate from Re:Solve AI
+- Chatwoot remains conversation/message truth;
+- Requests and Support are distinct but linkable;
+- no duplicate internal message store;
+- client/Property context is safe/minimized;
+- one client's Support data cannot leak;
+- Connector downtime produces stale/degraded state rather than false zero;
+- Captain remains separate from Àríyá;
+- no Client Service Consumption/Timesheet/HR behavior appears.
 
 ## Lovable build slices
-1. support overview using demo connector data
-2. organisation/property/inbox mappings
-3. conversation reference views + deep links
-4. support plans/entitlements
-5. incidents + monitoring links
-6. webhooks, health, analytics, portal support summary
+1. Support overview using fictional Connector data.
+2. Organisation/Property/inbox mappings + provenance.
+3. conversation reference views/deep links.
+4. Support Entitlements.
+5. Incidents + native Monitoring links.
+6. Request/Project/Knowledge triage links.
+7. webhooks/health/analytics/Portal Support summary.
