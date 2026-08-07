@@ -1,112 +1,211 @@
 # Secure Vault
 
 ## Purpose
-Secure Vault is Re:Solve's controlled workspace for confidential information and sensitive files. It is not merely a password manager and it is not general file storage.
+Secure Vault is Re:Solve's controlled workspace for confidential information and protected documents/files. It is not merely a password manager and it is not ordinary File storage.
 
-## Vault item types
-- credential
-- API key / token
-- SSH key / certificate
-- recovery code / secure note
-- confidential document
-- proposal file
-- contract file
-- financial/private record
-- access instruction
-- other sensitive attachment
+## Protected item types
+Examples:
+- credential;
+- API key/token;
+- SSH key/certificate;
+- recovery code;
+- secure note/instruction;
+- confidential Proposal/Contract document;
+- signed agreement;
+- legal/private/financial document;
+- protected evidence/attachment.
+
+## Domain identity
+A protected confidential document is a **Vault Item**, not simultaneously an ordinary File record with a second access route.
+
+Vault and Files may share provider-neutral storage infrastructure, but authorization/domain identity stay separate.
+
+If ordinary content is promoted into Vault, ordinary File links/shares/search/download access must be removed or invalidated while provenance to the originating business record is retained.
 
 ## Core records
-Vault Item, Vault Version, Vault Share, Vault Access Grant, Vault Access Request, Vault Reveal Event, Vault Download Event, Vault Rotation Record, Vault Category, Vault Policy.
+Vault Item, Vault Version, Vault Share, Vault Access Grant, Vault Access Request, Vault Access Event, Vault Rotation Record, Vault Category and Vault Policy.
+
+Access Event can classify reveal, copy, download, share, revoke, failed access, export and other sensitive operations.
 
 ## Principles
-- least privilege
-- explicit scope to organisation/property/project where applicable
-- encrypted storage and secure transport
-- sensitive values are never exposed in normal lists/search results
-- every reveal/download/share/revoke event is auditable
-- client and staff permissions are separate
-- confidential documents remain linked to their source business record when one exists
+- least privilege;
+- object-level authorization plus Organisation/Property/Project scope;
+- encrypted storage/transport according to implementation security model;
+- masked metadata-first lists;
+- no secret values in generic Search/Notifications/Activity/API/MCP/Àríyá;
+- every sensitive reveal/copy/download/share/revoke is append-only audited;
+- temporary access expires automatically;
+- client and staff access policies are independently enforceable;
+- protected documents link to authoritative business records without duplicating their commercial state.
 
-## Vault workspace
+## Main workspace
 Views:
 - My Access
-- All Authorized Items
+- Authorized Items
 - Credentials
-- Confidential Files
+- Confidential Documents
 - Shared With Clients
 - Access Requests
-- Expiring/Rotation Due
+- Expiring / Rotation Due
 - Audit
 
-Lists show metadata only: name, type, organisation/property, owner, access level, last accessed, expiry/rotation, status.
+Lists show safe metadata only: name/type, Organisation/Property/Project, owner, access level, last access, expiry/rotation and status.
 
 ## Item workspace
 Sections:
-- overview metadata
-- secret/file content action
-- access
-- versions
-- linked records
-- rotation/expiry
-- activity/audit
+- Overview metadata;
+- protected content action;
+- Access;
+- Versions;
+- Linked Records;
+- Rotation/Expiry;
+- Activity/Audit summary.
 
-Reveal/download requires explicit user action. Optional step-up authentication can be required by policy or item sensitivity.
+Reveal/copy/download is never automatic when opening the record.
 
-## Sharing
-A share defines recipient/user/group, scope, access capability, expiration, whether re-sharing is allowed, whether download/copy/reveal is permitted, and optional approval requirement.
+## Step-up authentication
+Policy can require recent stronger authentication for actions such as:
+- reveal/copy high-sensitivity secret;
+- protected download/export;
+- change privileged Access Grant;
+- create high-risk share;
+- rotate sensitive connector credential;
+- delete/purge protected item.
 
-Temporary access must expire automatically.
+Step-up validity is bounded and security-event aware.
 
-## Access requests
-User can request access with reason and duration. Approval flow routes to item owner/policy approver. Denied and expired requests remain auditable.
+## Access Grants / Sharing
+A Grant/Share defines:
+- recipient Principal/User or approved client scope;
+- specific Item;
+- allowed operations;
+- start/expiry;
+- re-share permission;
+- approval requirement;
+- reason/purpose where required;
+- grantor;
+- revoke state.
+
+Following an Organisation/Property or having ordinary File access does not grant Vault access.
+
+## Access Requests
+Users may request specific access with reason and duration. Approval routes through shared Approval policy/item owner. Denied/expired/revoked state remains auditable.
+
+Attention may remain open while a request awaits decision.
 
 ## Credentials
-Credential fields may include username, password/secret, URL, notes, environment, owner, rotation due, last rotated, external vault reference, property/system context.
+Metadata may include username/account label, URL, environment, owner, linked Property/system, rotation due/last rotated and optional external-vault reference.
 
-Secret values must be masked by default and never included in generic API/MCP search results.
+Secret material is stored separately from ordinary metadata and masked by default.
 
 ## Confidential documents
-Sensitive files use the same access-policy model as secrets. Proposal/contract records may link to Vault-protected versions while their commercial metadata remains outside Vault.
+Commercial/legal source records such as Proposal/Contract remain outside Vault as first-class business records.
 
-## Rotation
-Support due date, reminder schedule, rotation owner, last rotation, evidence, linked connector/system. Future plugins may automate rotation, but core must support manual lifecycle safely.
+A protected rendered/final document may be represented by a Vault Item linked to:
+- Document Studio Final Snapshot;
+- Contract/Proposal;
+- Organisation/Property/Project;
+- retention/access policy.
+
+No parallel ordinary File download route should remain for the protected content.
+
+## Rotation / expiry
+Credential lifecycle may include:
+- rotation owner;
+- due/reminder policy;
+- last rotated;
+- evidence/reference;
+- linked Connector/Property;
+- manual/automated rotation state.
+
+Plugins/Connectors may assist rotation through registered high-risk Actions. Core supports safe manual lifecycle without requiring an external vault product.
+
+## External Vault Connector
+OpenBao or another external secrets system can optionally strengthen/host secret material behind a `VaultConnector`. Re:Solve product behavior must not depend on one external secrets provider.
 
 ## Permissions
-vault.metadata.read, vault.create, vault.manage, vault.reveal, vault.copy, vault.download, vault.share, vault.access.request, vault.access.approve, vault.audit.read, vault.policy.manage.
+Canonical examples:
+- `vault.metadata.read`
+- `vault.items.create`
+- `vault.items.manage`
+- `vault.secret.reveal`
+- `vault.secret.copy`
+- `vault.file.download`
+- `vault.items.share`
+- `vault.access.request`
+- `vault.access.approve`
+- `vault.access.manage`
+- `vault.audit.read`
+- `vault.policy.manage`
+- `vault.items.delete`
 
-Permissions are subject to object-level grants and organisation/property scope.
+All are further constrained by object/scope grants.
 
-## Notifications
-access requested, access approved/denied, share created/revoked/expiring, credential rotation due/overdue, item expiring, suspicious access event, high-sensitivity reveal if policy requires owner notification.
+## Attention / Notifications
+Attention:
+- access request awaiting decision;
+- rotation overdue;
+- Item expiring;
+- temporary Grant nearing expiry when action required;
+- suspicious/repeated access failure requiring review.
+
+Notifications may cover request outcome, share/revoke/expiry, rotation and security policy events. Do not include raw protected values in any channel.
 
 ## Automations
-- rotation due → notify owner
-- temporary grant expires → revoke automatically
-- staff/client access removed → revoke related vault grants
-- property archived → review linked vault items
-- contract executed → secure final signed copy if configured
+Examples:
+- rotation due -> Attention/notify owner;
+- temporary Grant expiry -> revoke;
+- Membership/Property access removed -> reevaluate inherited Vault access;
+- offboarding -> access-review workflow;
+- Contract executed -> protect final signed document if policy requires;
+- Property archived -> review linked Vault Items.
+
+## Search / AI / MCP
+Generic Search returns only safe metadata when the caller has metadata permission.
+
+Default MCP exposure is metadata-only:
+- search_vault_metadata
+- list_credentials_due_for_rotation
+- request_vault_access
+
+Direct secret reveal through MCP/Àríyá is disabled by default. If a future deployment deliberately enables a narrow high-trust flow, it requires explicit policy, human confirmation/step-up and full Audit. Bulk secret retrieval is never normalized.
+
+Àríyá may explain that an Item exists/needs rotation when metadata is authorized, but should not ingest raw secrets into ordinary conversation history.
 
 ## API
-API defaults to metadata. Secret retrieval uses dedicated privileged endpoints with step-up/authorization checks, minimal response lifetime, audit, and no caching. File downloads use short-lived authorized URLs or equivalent secure streaming.
+Ordinary endpoints are metadata-first.
 
-## MCP
-Default MCP exposure is metadata-only. Candidate tools: search_vault_metadata, list_credentials_due_for_rotation, request_vault_access. Direct secret reveal should be disabled by default and only possible through an explicit high-trust configuration with human confirmation; never expose bulk secrets.
+Protected retrieval uses dedicated privileged operations with:
+- fresh authorization;
+- step-up where configured;
+- minimal response lifetime;
+- no caching;
+- append-only Audit;
+- short-lived download URL/secure streaming for protected files.
 
 ## PWA/mobile
-Metadata, access requests, approval, and individual reveal/download may be mobile-capable. Sensitive content must never be cached for offline use. Screenshots cannot be reliably prevented across platforms, so policy should not claim otherwise.
+Metadata/access request/Approval and individual protected action can work on mobile when policy allows.
+
+Protected content is never offline cached. Screenshot prevention cannot be guaranteed and must not be claimed as a security control.
+
+## Data export / privacy
+Generic client/admin exports exclude Vault secret values. Any protected export is an explicit high-risk Vault action and follows retention/access policy.
 
 ## Acceptance criteria
-- unauthorized list/search reveals no secret content
-- reveal/download/share is audited
-- expired grants stop access immediately
-- removal from organisation/property scope removes inherited access
-- sensitive content is excluded from offline caches and normal notification bodies
-- generic AI/MCP search cannot leak secrets
+- ordinary File access cannot bypass Vault;
+- lists/search never reveal secret value;
+- reveal/copy/download/share/revoke are auditable;
+- expired/revoked Grants stop access immediately;
+- Membership/scope removal revokes inherited access as designed;
+- offline caches/Notifications/Àríyá/MCP cannot leak protected content;
+- optional external Vault providers remain replaceable;
+- protected commercial documents retain business-record provenance.
 
 ## Lovable build slices
-1. metadata lists + item workspace + permissions
-2. credential reveal/copy flow with audit
-3. confidential file flow
-4. shares + access requests/approvals
-5. rotation/expiry policies
-6. advanced external-vault connector support
+1. metadata list/item workspace + permission model.
+2. credential reveal/copy + step-up/Audit.
+3. confidential document flow + File promotion boundary.
+4. Shares/Access Requests/Approvals.
+5. rotation/expiry/Attention.
+6. client-authorized Vault Portal experience.
+7. optional external VaultConnector support.
