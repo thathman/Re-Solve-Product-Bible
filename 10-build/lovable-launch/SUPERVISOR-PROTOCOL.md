@@ -30,6 +30,21 @@ A normal prompt should contain only:
 
 The implementation detail belongs in Project Knowledge, Skills and canonical Product Bible files.
 
+## Umbrella slices and substeps
+Large acceptance specifications such as `FOUND-001` are **umbrella review contracts**, not a requirement to send one giant implementation prompt.
+
+The supervisor should normally decompose an umbrella slice into small implementation steps, for example:
+- `FOUND-001A` stack/repository preflight;
+- `FOUND-001B` UI stack and token foundation;
+- `FOUND-001C` Core UI primitives/Component Gallery;
+- `FOUND-001D` Admin shell/chrome;
+- `FOUND-001E` Portal shell;
+- `FOUND-001F` identity/permission foundation;
+- `FOUND-001G` PWA/accessibility/CI/engineering hardening;
+- `FOUND-001R` integrated review/correction gate.
+
+The umbrella specification remains the final acceptance source. A substep may not widen scope beyond it.
+
 ## Standard prompt shape
 ```text
 STEP <ID> — <short title>
@@ -63,7 +78,9 @@ The supervisor may request:
 ## Skill use
 Let Lovable apply skills automatically when the trigger is unambiguous. Explicitly invoke critical review/build skills when consistency matters or the current step has a high-risk boundary.
 
-Do not attach every skill to every prompt.
+Do not attach every skill to every prompt. Install future domain skills just-in-time when practical; FOUND-001 only requires its designated foundation skills.
+
+Workspace skills are canonical runtime instructions. Project-local `.agents/skills/` copies created during bootstrap are temporary only and should be removed once the corresponding workspace skills are verified, to prevent duplicate/drifting instruction sources.
 
 ## Product Bible references
 Because `thathman/Re-Solve-Product-Bible` is public, supervisor prompts may point Lovable directly to exact canonical files.
@@ -78,6 +95,7 @@ The user may change product direction at any time. When that happens, update Pro
 ## Human approvals
 The supervisor must stop and ask the user only when a true owner decision is needed, such as:
 - repository rename/archive/destructive operation;
+- workspace-level settings actions Lovable cannot perform from project chat;
 - paid/proprietary UI asset/license choice;
 - irreversible data migration;
 - production credential/provider action;
