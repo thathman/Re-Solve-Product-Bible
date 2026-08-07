@@ -1,329 +1,305 @@
 # Re:Solve Security Architecture
 
 ## Purpose
+Security is a platform property. Admin, Client Portal, Secure External Access, API, MCP, Plugins, Connectors, Automations, Files, Vault, Notifications, Monitoring and Àríyá enforce consistent Principal identity, authorization, isolation, Audit and sensitive-data handling.
 
-Security is a platform property, not a feature added after implementation. Every Re:Solve surface—Admin, Client Portal, API, MCP, plugins, connectors, automations, files, Vault, notifications, and AI—must enforce consistent identity, authorization, isolation, audit, and secret-handling rules.
+## Goals
+- strong identity assurance;
+- least privilege;
+- Organisation/Property/record isolation;
+- server-side capability + scope authorization;
+- safe confidential-data handling;
+- append-only evidence for sensitive actions;
+- controlled external access/integrations;
+- recoverability and operational visibility;
+- portable/self-hosted security posture.
 
-## Security goals
+## Identity model
+### Principal
+General authorization actor:
+- Human User;
+- Service Account;
+- API Client;
+- MCP Client;
+- Plugin;
+- Connector.
 
-- strong identity assurance
-- least privilege
-- organisation and property isolation
-- explicit permission checks server-side
-- safe handling of confidential data
-- auditable sensitive actions
-- secure external integrations
-- recoverability and operational visibility
-- portable/self-hosted security posture
+### Human User / Contact / Membership
+User is authenticated human identity. Contact is business person record. Membership links User to Organisation context/access.
 
-## Identity
+### External Identity Mapping
+Provider identity mapping never replaces canonical Re:Solve Principal/User/Contact identity.
 
-Canonical identity concepts:
-- User
-- Person/Contact
-- Membership
-- Role
-- Permission Grant
-- Service Identity
-- API Client
-- MCP Client
-- External Identity Mapping
-
-Email is not the canonical identity key.
+Email is not a universal canonical identity key.
 
 ## Authentication
+Configured policy may support password, magic link, MFA and later OAuth/SSO/passkey-compatible options where appropriate to implementation.
 
-Support according to configured policy:
-- password
-- magic link
-- MFA
-- OAuth/SSO later where needed
-- service/API credentials
+Machine Principals use dedicated credentials—not shared human passwords.
 
-Security settings must allow administrators to control allowed methods without weakening minimum safe defaults.
+## MFA / step-up
+Step-up may be required for:
+- account/MFA/security changes;
+- Vault reveal/copy/download/export;
+- privileged API/MCP credential creation;
+- Connector credential rotation;
+- production DNS/registrar/security changes;
+- high-impact financial Actions;
+- role/access administration;
+- ownership transfer;
+- destructive System/Plugin/Connector Actions.
 
-## MFA
+Step-up has bounded validity and can be invalidated by risk/session changes.
 
-Support step-up/MFA for:
-- account security changes
-- Vault reveal/download where configured
-- API token creation
-- sensitive connector credential changes
-- high-risk financial actions
-- role/permission administration
-
-## Sessions
-
-Session controls:
-- list active sessions/devices
-- revoke one/all
-- last used
-- location/device metadata when safely available
-- absolute/session inactivity expiry
-- suspicious session notification policy
+## Sessions/devices
+Support active session/device visibility, revoke one/all, last used, safe device/location metadata, inactivity/absolute expiry and suspicious-session policy.
 
 ## Authorization
+Every protected operation evaluates:
+- Principal;
+- canonical capability;
+- Workspace/Operating Entity/Organisation/Property/record scope;
+- ownership/assignment where relevant;
+- surface/audience;
+- record visibility/classification;
+- Connector/Plugin constraints;
+- temporary Grant expiry;
+- Action Registry risk/confirmation/Approval policy.
 
-Use capability-based permissions rather than route-only role checks.
+UI hiding is convenience only. Deep links, API, MCP and Àríyá always reauthorize server-side.
 
-Authorization inputs may include:
-- actor
-- permission
-- organisation scope
-- property scope
-- record ownership/assignment
-- client/staff surface
-- record visibility
-- connector/plugin constraints
+## Negative authorization testing
+Required across:
+- cross-Organisation;
+- cross-Property/descendant scope;
+- staff/internal versus client-visible data;
+- Comments/Internal Notes;
+- Vault;
+- ordinary File downloads/shares;
+- commercial/Billing;
+- Support references;
+- Connector Instances/mappings/events;
+- Search/Attention/Notification counts;
+- API/MCP/Àríyá tools;
+- Secure External Access expiry/revocation;
+- Saved Views/shared Reports.
 
-UI hiding is convenience only. Server-side authorization is mandatory.
+A hidden record must not leak existence/title/count through secondary surfaces.
 
-## Isolation
-
-Negative authorization tests are required for:
-- cross-organisation access
-- cross-property access
-- internal vs portal-visible data
-- Vault access
-- connector instances
-- support context
-- file downloads
-- API/MCP tools
-
-A user belonging to multiple organisations must resolve scope explicitly and never inherit unrelated access accidentally.
-
-## Sensitive data classification
-
-At minimum:
+## Data classification
+Initial conceptual classes:
 - Public
 - Internal
 - Client Confidential
 - Sensitive
 - Secret
 
-Policies determine:
-- visibility
-- logging/redaction
-- AI eligibility
-- export eligibility
-- retention
-- notification content
+Classification informs visibility, logs/redaction, AI/provider eligibility, export, retention, Notification previews, cache policy and guest access.
 
-## Secure Vault
+## Action Registry security
+Consequential mutations use registered Actions where applicable.
 
-Vault is the primary controlled-sharing surface for secrets and sensitive confidential files.
+Actions declare:
+- required capability/scope;
+- risk class;
+- target/context;
+- confirmation;
+- Approval/step-up;
+- idempotency;
+- Audit;
+- UI/API/MCP/Àríyá availability.
+
+An Action being visible in one interface does not imply it is available to every Principal or interface.
+
+## Secure External Access
+Guest access is a narrow grant, not a pseudo-Portal account/general API token.
 
 Requirements:
-- encryption at rest using approved implementation
-- narrow permissions
-- step-up support
-- access requests
-- temporary grants
-- reveal/download audit
-- revocation
-- secure deletion/retention policy
-- no secret values in generic logs, notifications, AI prompts, analytics, or search indexes
+- strong unguessable token stored/validated securely;
+- exact resource/action scope;
+- expiry/revocation;
+- optional email/OTP verification;
+- use/download limits where needed;
+- no hidden internal identifiers/data leakage;
+- server-side authorization on every request;
+- Audit for material view/accept/upload/sign actions;
+- no generic Vault secret guest-link behavior.
 
-## Files
+Expired/revoked links stop immediately.
 
-Normal files use permissioned storage. Sensitive content should be explicitly moved/routed to Vault based on policy rather than relying on ordinary file visibility.
+## Vault / Files boundary
+Vault is protected content domain.
 
-Signed download URLs or equivalent access should be short-lived and scoped where implementation supports them.
+Requirements:
+- narrow object-level permissions;
+- step-up/access requests/temporary Grants;
+- reveal/copy/download Audit;
+- secure retention/deletion;
+- no secret values in generic logs, Notifications, Search, Àríyá, analytics, exports or caches.
 
-## Connectors
+Ordinary Files use separate access policy. A protected confidential document must not retain a parallel ordinary File access path.
 
-Connector security requirements:
-- credentials stored through approved secret mechanism/reference
-- signature/auth verification for webhooks
-- idempotency
-- replay protection where provider protocol supports it
-- TLS
-- rate limiting
-- masked logs
-- credential rotation
-- connector-specific least privilege
+Signed URLs/streams are short-lived and reauthorized as implementation allows.
+
+## Connector security
+- least-privilege provider credentials;
+- protected credential references;
+- webhook/auth verification;
+- idempotency/replay handling;
+- TLS;
+- rate limiting;
+- safe logs;
+- rotation/reauthorization;
+- explicit sync authority/conflict policy;
+- high-impact provider writes behind registered Actions.
+
+A Connector failure cannot be silently interpreted as target/business-record state.
+
+### Cloudflare / DNS / registrar
+Production DNS, registrar, auto-renew, TLS/security changes are high-impact. Initial integration should be read-first and writes need specific capabilities, confirmation and possibly step-up/Approval.
+
+## Native Monitoring security
+Monitoring targets/configuration can introduce SSRF/network risks.
+
+Controls should include:
+- validated target schemes/types;
+- policy on private/internal network targets;
+- DNS rebinding/redirect considerations;
+- timeout/size limits;
+- protected auth headers/credentials;
+- probe authentication;
+- rate/concurrency controls;
+- signed/authenticated Monitoring Worker result submission;
+- no secret echo in evidence/errors.
+
+Monitoring Workers/Probes are scoped Service Account Principals and cannot receive broad application DB access by default.
 
 ## Plugins
+Plugins declare canonical permissions, Actions, data/migrations, Connector registrations and extension slots.
 
-Plugins declare permissions and dependencies.
-
-Minimum protections:
-- named permissions
-- namespaced data/routes
-- no casual arbitrary secret access
-- migration validation
-- lifecycle kill switch
-- health and audit
-
-Full OS-process sandboxing is not a v1 requirement, but plugins must not be treated as omnipotent by default.
+Protections:
+- namespaced data/routes;
+- no arbitrary secret access;
+- migration validation/recovery;
+- kill switch;
+- Core UI/navigation governance;
+- health/Audit;
+- no assumption of omnipotent DB access.
 
 ## API
-
-API security:
-- scoped credentials
-- expiration/revocation
-- rate limiting
-- audit
-- idempotency where relevant
-- standard validation
-- consistent authorization
-- no raw database endpoints
+API Client credentials are scoped/expiring/revocable/rate-limited/auditable. Validation, idempotency/concurrency and record authorization are consistent. No raw DB/provider endpoints.
 
 ## MCP
+Curated tools/resources; per-Client capability/scope; Action Registry for writes; Audit each call; output minimization; no arbitrary SQL/filesystem/provider access; Vault reveal unavailable by default.
 
-MCP security:
-- curated tool registry
-- per-client scopes
-- risk classes
-- confirmations/approvals
-- audit each call
-- Vault secret reveal unavailable by default
-- no arbitrary SQL/filesystem/provider access
-
-## AI
-
-AI inherits caller permissions and data classification.
+## Àríyá
+Àríyá inherits caller Principal permissions/scope and configured data policy.
 
 Rules:
-- minimize provider payloads
-- no generic Vault secret access
-- no hidden permission expansion
-- mark inference where materially different from deterministic fact
-- configurable retention/redaction
-- write actions use normal authorization
+- minimum context sent to provider;
+- source/freshness visible;
+- inference distinguishable from fact;
+- no generic Vault secret retrieval;
+- registered Actions only for writes;
+- confirmations/Approvals respected;
+- Portal context cannot access internal records;
+- provider failure cannot fabricate success.
 
-## Notifications
+## Notifications / communications
+Sensitive content is minimized in push/email/WhatsApp previews. Deep-link to authenticated surfaces for detail.
 
-Notification content must respect classification.
+Destinations/recipient eligibility follow privacy/communication policy. Mandatory security notices follow policy even when optional notifications are disabled.
 
-Examples:
-- do not put passwords or private contract contents in push/WhatsApp previews
-- use deep links to authenticated surfaces for sensitive detail
-- mandatory security events cannot be muted where policy requires delivery
+## Privacy / retention / data rights
+Privacy workflows support verified data access/correction/deletion/anonymization requests according to policy while respecting legal/operational holds and required financial/Audit retention.
+
+Connector deletion propagation is only claimed when provider evidence confirms it.
 
 ## Audit
+Audit Event is **append-only** accountability evidence.
 
-Audit high-value actions such as:
-- authentication/security changes
-- role/permission changes
-- Vault reveal/share/download
-- API/MCP credentials
-- connector credentials/configuration
-- plugin lifecycle
-- financial changes
-- destructive deletes
-- sensitive exports
-- automation actions
+Do not mutate a historical Audit Event to `correct` it. A correction/annotation creates subsequent evidence.
 
-Audit records should be append-oriented and protected from ordinary user modification.
+Audit high-value actions including:
+- auth/security/session;
+- role/permission/grants;
+- Vault access/share/reveal/download;
+- API/MCP credentials/actions;
+- Secure External grants/material outcomes;
+- Connector credentials/configuration/replay;
+- Plugin lifecycle/permission/migration;
+- financial/commercial acceptance/actions;
+- production monitoring/DNS changes;
+- sensitive exports/import merges;
+- destructive archive/purge;
+- Automation high-impact actions.
 
 ## Logging
+Redact/exclude passwords, keys, auth/session tokens, private keys, Vault content, protected guest tokens and unnecessary sensitive webhook/provider payloads.
 
-Logs must exclude or redact:
-- passwords
-- API keys
-- auth tokens
-- session tokens
-- private keys
-- Vault secret content
-- full sensitive webhook payloads where unnecessary
+Use correlation IDs/structured safe metadata instead of dumping confidential content.
 
-Use correlation/request IDs to debug without dumping confidential data.
+## Common web protections
+Address XSS, CSRF where relevant, injection, IDOR, mass assignment, upload issues, path traversal, SSRF, unsafe URL fetch/redirect, brute force/rate abuse, replay and dependency vulnerabilities.
 
-## Validation and common web protections
+## Uploads
+Validate type/size/content mismatch, authorization/destination, scan policy and processing state server-side. Secure guest uploads are destination-constrained.
 
-Implementation must address:
-- XSS
-- CSRF where applicable
-- injection
-- insecure direct object reference
-- mass assignment
-- upload validation
-- path traversal
-- SSRF in connector/url workflows
-- brute force
-- rate abuse
-- unsafe redirects
-- dependency vulnerabilities
+## Destructive/high-impact operations
+Require explicit capability, named target/consequence, contextual confirmation, Audit and archive/recovery where practical. Step-up/Approval when risk warrants.
 
-## File uploads
-
-Validate:
-- type
-- size
-- extension/content mismatch
-- permission
-- destination classification
-- malware scanning capability where deployed
-
-Uploads are never trusted solely by client-side validation.
-
-## Destructive actions
-
-High-impact actions require:
-- explicit permission
-- contextual confirmation
-- clear object names/consequences
-- audit
-- recoverability/archive where practical
-
-Avoid unnecessary hard deletes.
-
-## Security events and notifications
-
+## Security events / Attention / Notifications
 Potential events:
-- new sign-in/device
-- MFA changed
-- password changed
-- API/MCP token created/revoked
-- suspicious repeated failure
-- connector auth expired
-- Vault access granted/revealed
-- privileged role changed
+- new/suspicious session;
+- MFA/security change;
+- privileged API/MCP credential;
+- Connector auth expiry;
+- repeated Vault access failure/reveal;
+- privileged role/grant change;
+- Secure External abuse/replay;
+- Monitoring Worker anomaly;
+- backup/security-control failure.
 
-Delivery priority depends on event severity and policy.
+Persistent actionable conditions may create Security Attention; Notifications deliver awareness.
 
-## Security Admin area
-
-Settings > Security includes:
+## Security settings
+Settings > Security & Privacy:
 - Authentication
-- MFA
-- Password Policy
-- Sessions
+- MFA / Step-up
+- Sessions / Devices
+- Password/SSO policy
 - Roles/Permissions link
-- API/MCP credential security
-- Rate Limits
+- API/MCP security
+- Rate limits / abuse
 - Security Events
-- Data/Retention policies where appropriate
+- Secure External Access policy
+- privacy/consent/data rights
+- retention/holds
+- export/purge/anonymization policy.
 
-## Backup and recovery
-
-Security architecture includes recovery:
-- documented backups
-- encrypted backups where appropriate
-- restore testing
-- credential restoration/rotation procedure
-- audit preservation
+## Backup / recovery
+Include documented backups, encryption where appropriate, restore testing, credential recovery/rotation, Audit preservation and disaster-recovery responsibilities.
 
 ## Acceptance criteria
-
-- authorization is server-side and capability/scoped
-- cross-organisation/property negative tests exist
-- Vault secrets do not appear in logs/AI/notifications/search
-- API/MCP credentials are revocable and auditable
-- connector webhooks are verified and idempotent
-- sensitive actions produce audit records
-- session/security controls are user/admin visible as appropriate
-- uploads and downloads enforce permission at request time
-- production configuration rejects known insecure defaults
+- Principal/capability/scope authorization is server-side;
+- negative cross-scope tests exist;
+- hidden records cannot leak via secondary surfaces;
+- Vault/File boundary is enforced;
+- API/MCP/Connector/Plugin credentials are protected/revocable;
+- provider events verified/idempotent;
+- Secure External grants expire/revoke safely;
+- Monitoring avoids SSRF/secret leakage and Probe identity is scoped;
+- Àríyá cannot elevate caller access;
+- sensitive actions produce append-only Audit;
+- production rejects known insecure defaults;
+- no HR/Timesheet/Client Service Consumption security model is introduced.
 
 ## Lovable build slices
-
-1. permission/scoping framework + negative tests
-2. session/security settings UI
-3. audit coverage for sensitive actions
-4. Vault step-up/access policy
-5. API/MCP credential security
-6. connector/plugin security checks
-7. upload/download hardening
-8. security event center and notifications
+1. Principal/capability/scope framework + negative tests.
+2. session/security settings + step-up baseline.
+3. append-only Audit coverage.
+4. Vault/File/Secure External access policies.
+5. API/MCP credential security.
+6. Connector/Plugin/Action Registry security.
+7. upload/download/monitor-target hardening.
+8. Security Event/Attention/Notification center.
