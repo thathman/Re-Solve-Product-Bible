@@ -27,6 +27,10 @@ Rules:
 - the `dashboard-01`, `sidebar-07`, restrained `sidebar-03`, auth and calendar block families are approved layout references, not page templates to copy wholesale;
 - Re:Solve navigation rules override block defaults: no app launcher, no giant module tree, no uncontrolled submenu nesting and no stock shadcn shell identity.
 
+The preferred auth composition reference is the **two-column form + cover-image pattern** used by the shadcn block family (for example login/signup/OTP variants). Re:Solve should adapt that composition for sign-in, signup/invite acceptance where enabled, account recovery, OTP/MFA and step-up verification, with a deliberate single-column mobile transformation and replaceable Re:Solve-owned imagery/brand assets.
+
+The shadcn dashboard block family is an approved composition reference for balancing metrics, operational tables, charts, filters and responsive information hierarchy. It does not override the Re:Solve Dashboard specification, Attention Engine, navigation model, Tremor/Recharts visualization authority or TanStack Table DataTable contract.
+
 ### Canonical shadcn component intake
 The Core Framework should deliberately intake the useful shadcn catalogue rather than adding components ad hoc.
 
@@ -97,7 +101,8 @@ The Core Framework should deliberately intake the useful shadcn catalogue rather
 These are especially relevant to Àríyá, support/conversation views and evidence-rich agent interactions. They must not turn Re:Solve into a generic chat application.
 
 **Later domain/composite intake**
-- Questionnaire for surveys, intake and structured forms when those slices begin
+- Questionnaire/review-style composition for surveys, client/prospect intake, assessments, structured reviews, audit/review checklists, approval questionnaires, onboarding and guided multi-question workflows. This composes canonical Re:Solve FormField/FieldGroup/Stepper controls rather than introducing a competing form framework. Verify the exact current source/React equivalent before implementation.
+- QR Code / QR presentation pattern for payment handoff, guest/share links, contact or property details transfer, verification, mobile deep links and device/session pairing. Verify the exact current source, generation dependency and security/privacy implications before implementation; QR payloads must never expose secrets casually.
 - Table as a low-level surface only; operational DataTable remains TanStack Table → Re:Solve DataTable
 - Sidebar as a low-level/reference implementation only; AdminSidebar and PortalNavigation remain Re:Solve-owned composites
 - Card as a source pattern where needed; avoid indiscriminate cardification
