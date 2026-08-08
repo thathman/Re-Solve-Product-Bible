@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1 ACCEPTED/FROZEN — FOUND-001C5D2 CONDITIONAL (NARROW FILTER/TOOLBAR/A11Y FIX REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1-D2 ACCEPTED/FROZEN — FOUND-001C5D3 NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -12,7 +12,7 @@ Keep this file updated after each supervised build review so the next Product Bi
 - Canonical-name transition performed: `NO`.
 
 ## Accepted foundation
-FOUND-001A, FOUND-001B and FOUND-001C1-C5D1 are accepted/canonical/frozen. Do not reopen frozen UI slices without a concrete regression.
+FOUND-001A, FOUND-001B and FOUND-001C1-C5D2 are accepted/canonical/frozen. Do not reopen frozen UI slices without a concrete regression.
 
 ## Currency display convention
 **CANONICAL**
@@ -40,33 +40,33 @@ Canonical package security state remains:
 Canonical D1 includes generic `DataTable<TData, TValue>`, TanStack core/sorted/pagination row models, semantic Core Table rendering, accessible client sorting, frozen Core Pagination reuse, 10/20/50 page-size selector, loading/error/source-empty states, exact-optional-safe `getRowId`, bounded horizontal overflow, and `@tanstack/react-table@8.20.5` as the single DataTable engine dependency.
 
 ## FOUND-001C5D2 — Operational Controls
-**STATUS: CONDITIONAL — NARROW FILTER/TOOLBAR/A11Y FIX REQUIRED**
+**ACCEPTED / CANONICAL / FROZEN**
 
-### Verified implementation
-- D2 adds `getFilteredRowModel` and internal global/column filter, column visibility and row-selection state;
-- typed TanStack `ColumnMeta` filter metadata supports text/select filters;
-- optional global search exists;
-- hideable-column DropdownMenu exists;
-- opt-in row-selection column uses frozen Core Checkbox and current-page select-all APIs;
-- selected rows use `data-state="selected"`;
-- filtered-empty state is distinct from source-empty state;
-- Clear resets filter state without resetting sorting/visibility/selection;
-- toolbar uses existing Core primitives and wraps responsively;
-- package.json remains unchanged from accepted D1 and preserves `@tanstack/react-table@8.20.5` plus the `js-yaml@4.3.1` override;
-- `/ui` production guard remains present;
-- provenance now records filtering/visibility/selection capability.
+Canonical D2 contracts:
+- `getFilteredRowModel` is added on top of the frozen D1 engine;
+- internal global-filter, column-filter, visibility and row-selection state remain client-side and non-persistent;
+- typed TanStack `ColumnMeta` supports Re:Solve text/select filter metadata;
+- select filters use a non-empty `__all__` sentinel and translate it to `undefined` filter state rather than using an invalid empty Radix SelectItem value;
+- filter values are runtime-narrowed without `any`, `as unknown`, or forced string casts in the DataTable engine;
+- toolbar visibility is driven by search OR filterable columns OR hideable columns OR enabled selection;
+- Columns menu renders only when hideable columns exist and respects TanStack `enableHiding: false`;
+- global search, text filters and select-filter triggers have explicit accessible names;
+- row selection is opt-in, uses current-page select-all, supports indeterminate state, and selected rows use the existing `data-state="selected"` visual contract;
+- consumer `getRowLabel` is preferred for row checkbox naming with a unique index-based fallback;
+- selected-row summary is informational only; no bulk mutation actions are part of Foundation D2;
+- filtered-empty truth uses the filtered row model, distinct from source-empty state;
+- Clear resets only global/column filters and preserves sorting, page size, visibility and selection;
+- filter changes reset the page index to the first page;
+- D1 Status gallery column remains non-sortable; Property, Monthly Cost and Last Checked remain sortable;
+- gallery records are fictional generic operational data, not Airix/client data;
+- package.json/bun.lock remain unchanged from D1; `@tanstack/react-table@8.20.5` and the `js-yaml@4.3.1` override remain canonical;
+- provenance records filtering, visibility and row-selection capability;
+- `/ui` production guard remains intact.
 
-### Remaining verified blockers
-1. **Radix Select empty-value bug.** Select-filter UI renders `<SelectItem value="">All</SelectItem>`. Frozen Core Select is Radix-based; empty string is reserved for clearing the selection and is not a valid SelectItem value. Use a non-empty sentinel such as `__all__` and translate it to `undefined` filter state.
-2. **Columns control is coupled to search/filter toolbar existence.** The whole toolbar currently renders only when search is enabled or a column has filter metadata. A table can have hideable columns (or row selection summary) without either, making the Columns control/selection summary unreachable. Compute toolbar visibility from search OR filter metadata OR hideable columns OR enabled selection, and render the Columns trigger only when hideable columns exist.
-3. **Text column filters are placeholder-only named.** Add an explicit accessible name (`aria-label`/associated label) derived from filter label/column id. Select filter triggers should also have explicit accessible naming rather than relying only on composed trigger text.
-4. **Row checkbox fallback names are duplicated.** When `getRowLabel` is absent every checkbox is named `Select row`. Provide a unique meaningful fallback such as `Select row ${row.index + 1}` while preserving consumer-provided row labels.
-5. **D1 gallery regression: Status became sortable.** D1 explicitly froze Status as non-sortable. Restore `enableSorting: false` for the gallery Status column.
-6. **Gallery data is not generic.** D2 instructions required fictional generic Re:Solve operational records; current gallery includes `Airix Media Group`. Replace brand-specific owners with fictional generic entities/teams while preserving deterministic evidence.
-7. **Type/hygiene cleanup.** D2 engine imports unused `Header` and `Badge` and casts filter values with `as string`. Normalize filter values using runtime string narrowing; keep the generic engine free of unnecessary casts. Use `getFilteredRowModel().rows.length` for filtered-empty truth rather than the paginated row model.
+Lovable reported frozen install, build, lint and `tsc --noEmit` passing. GitHub source review verified the accepted contracts; GitHub review does not independently execute Bun.
 
-### Review classification
-D2 architecture is directionally correct and should not be rewritten. One narrow correction should fix Select sentinel handling, decouple toolbar visibility, improve filter/selection names, restore the frozen non-sortable Status gallery contract, genericize gallery records, and clean filter-value typing. No dependency or frozen primitive changes are required.
+### Known D3 closure item
+Once column visibility exists, loading/empty/filtered-empty DataTable cells should span the current visible leaf-column count rather than the original `columns.length`. Carry this into FOUND-001C5D3 rather than reopening D2.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -77,4 +77,4 @@ D2 architecture is directionally correct and should not be rewritten. One narrow
 - Auth, database/RLS, PWA and domain implementation remain later work.
 
 ## Next action
-Execute the supervisor-provided FOUND-001C5D2-FIX only. Do not begin C5D3 or another FOUND slice until D2 is accepted/frozen.
+Proceed with supervisor-issued FOUND-001C5D3 — DataTable closure/audit only. Resolve structural residuals such as visibility-aware state colSpan and decide which advanced TanStack capabilities belong in Foundation versus later domain implementation. Do not begin server/manual data mode, saved views, URL persistence, bulk mutations, shell, auth, database or dashboard work unless explicitly approved by the supervisor.
