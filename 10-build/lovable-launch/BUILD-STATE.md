@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1-D2 ACCEPTED/FROZEN — FOUND-001C5D3 CONDITIONAL (ONE ACCESSIBILITY CLOSURE ITEM)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1-D2 ACCEPTED/FROZEN — FOUND-001C5D3 CONDITIONAL (TWO NARROW CLOSURE ITEMS)**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -44,21 +44,22 @@ Canonical D1 includes generic `DataTable<TData, TValue>`, TanStack core/sorted/p
 Canonical D2 includes typed global/text/select filtering, the non-empty `__all__` Select sentinel, runtime-narrowed filter values, visibility controls independent of search/filter presence, opt-in current-page row selection, unique accessible row-selection labels, filtered-empty truth based on the filtered row model, filter-reset-to-first-page behavior, generic fictional gallery data, non-sortable Status evidence, no dependency changes, and preserved `js-yaml@4.3.1` override.
 
 ## FOUND-001C5D3 — DataTable Closure / Structural Audit
-**STATUS: CONDITIONAL — ONE ACCESSIBILITY CLOSURE ITEM**
+**STATUS: CONDITIONAL — TWO NARROW CLOSURE ITEMS**
 
 Verified D3 improvements:
-- loading/source-empty/filtered-empty state cells now use `table.getVisibleLeafColumns().length` rather than the original column-definition count, so state rows track current visibility;
-- DataTable source documents the selection identity boundary: TanStack index IDs are acceptable only for transient display selection, while persisted state, business actions, audit-sensitive operations, mutations and future Action Registry commands require stable consumer-supplied `getRowId`;
-- selection remains internally preserved when filtering hides rows, while the visible summary uses filtered selected-row truth;
+- loading/source-empty/filtered-empty state cells use `table.getVisibleLeafColumns().length`, so state rows track current column visibility;
+- DataTable source documents the selection identity boundary: index IDs are transient/display-only; persisted/business/action/audit-sensitive selection requires stable consumer-supplied `getRowId`;
+- selection remains internally preserved when filtering hides rows while the visible summary reflects filtered selected rows;
 - sorting/filtering state remains intact when columns are hidden;
-- pagination footer now stacks `flex-col` on narrow screens and returns to `sm:flex-row` at larger widths;
-- provenance explicitly defers server/manual data mode, URL state, saved views, persistent ordering and related advanced/domain capabilities beyond Foundation Core;
-- no new DataTable dependency or framework was introduced.
+- pagination footer stacks `flex-col` at narrow widths and returns to `sm:flex-row` at larger widths;
+- no dependency drift was introduced and the canonical `js-yaml` override remains intact;
+- advanced server/manual data mode, URL state, saved views and persistent ordering remain deferred beyond Foundation Core.
 
-### Remaining closure item
-The page-size Select trigger is visually adjacent to the text `Rows per page` but is not programmatically associated with that text and has no explicit `aria-label`/`aria-labelledby`. Add an accessible name such as `aria-label="Rows per page"` to the existing DataTable page-size `SelectTrigger` without modifying the frozen Core Select primitive.
+### Remaining closure items
+1. **Page-size Select accessible name.** The DataTable page-size `SelectTrigger` is visually next to “Rows per page” but is not programmatically associated. Add `aria-label="Rows per page"` (or an equivalent explicit association) to that existing trigger. Do not modify frozen Core Select.
+2. **Dedicated TanStack Table provenance entry.** `docs/ui-sources.md` currently mentions TanStack-backed DataTable behavior only inside the broad shadcn modification paragraph. Add a dedicated runtime provenance entry for `@tanstack/react-table` recording version `8.20.5`, MIT license, first Re:Solve Core consumption in FOUND-001C5D1, its role as the headless table engine, and that Re:Solve owns rendering/tokens/responsive/public DataTable API. Record D2 filtering/visibility/selection and D3 deferral of server/manual pagination/sorting/filtering, URL state, saved views, persistence, bulk actions and domain adapters. Preserve the separate frozen semantic `Table` boundary.
 
-This is a narrow accessibility correction only. Do not reopen DataTable architecture or add new capability.
+This is documentation/accessibility closure only. Do not reopen DataTable architecture or add capability.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -77,4 +78,4 @@ This is a narrow accessibility correction only. Do not reopen DataTable architec
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Next action
-Execute one narrow FOUND-001C5D3-FIX to programmatically name the page-size Select trigger, rerun frozen install/build/lint/type, then stop for final DataTable freeze review. Do not begin another FOUND slice until C5D3 is accepted.
+Execute one narrow FOUND-001C5D3-FIX for the page-size accessible name and dedicated TanStack Table provenance entry, rerun frozen install/build/lint/type, then stop for final DataTable freeze review. Do not begin another FOUND slice until C5D3 is accepted.
