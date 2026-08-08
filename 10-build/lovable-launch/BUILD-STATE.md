@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1-E3 CLIENT PORTAL SHELL ACCEPTED/FROZEN — PORTAL SHELL CLOSURE REVIEW NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 IDENTITY/AUTH ARCHITECTURE PREFLIGHT NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -14,17 +14,17 @@ Keep this file updated after each supervised build review so the next Product Bi
 ## Security memory
 **ACCEPTED / CANONICAL**
 - Roles, permissions and capability decisions are server-controlled; browser/client metadata is never authoritative for authorization.
-- Authentication and authorization must be enforced at server-function / server-route boundaries, not only in UI or client navigation.
+- Authentication and authorization are enforced at server-function/server-route boundaries, not only in UI or client navigation.
 - Never invent security helpers that do not exist; inspect and extend real server boundaries deliberately.
-- RLS and least privilege are mandatory when persistence is introduced; database grants/policies/security configuration must be version-controlled and reviewable.
+- RLS and least privilege are mandatory when persistence is introduced; grants/policies/security configuration are version-controlled and reviewable.
 - Service-role credentials and privileged backend secrets are server-only and must never ship in client bundles.
 - `SECURITY INVOKER` is the default; `SECURITY DEFINER` must remain narrow, justified and explicitly reviewed.
 - Runtime validation is required at consequential server boundaries.
 - Preserve `createCsrfMiddleware` in `src/start.ts`.
-- Vault secrets must never appear in browser storage, logs, search results, notifications, analytics, non-Vault surfaces or ordinary client caches.
-- QR codes may expose only signed, scoped, short-lived references/tokens; never raw secrets or durable privileged credentials.
-- Consequential mutations should eventually route through an Action Registry / equivalent audited mutation boundary.
-- Sensitive values, auth tokens, secret payloads and privileged identifiers must not be written to application logs or error telemetry.
+- Vault secrets never appear in browser storage, logs, search results, notifications, analytics, non-Vault surfaces or ordinary client caches.
+- QR codes expose only signed, scoped, short-lived references/tokens; never raw secrets or durable privileged credentials.
+- Consequential mutations should eventually route through an Action Registry/equivalent audited mutation boundary.
+- Sensitive values, auth tokens, secret payloads and privileged identifiers are not written to application logs or error telemetry.
 - No security vulnerability exceptions are accepted.
 
 ## SECURITY-GATE-001 — Dependency remediation
@@ -57,54 +57,52 @@ Canonical Core includes actions, forms, overlays/disclosure, feedback/compositio
 **ACCEPTED / CANONICAL / FROZEN / CLOSED**
 Canonical Admin shell remains under `/admin` with route-aware Sidebar/TopBar/PageHeader/Breadcrumbs/Command/Àríyá composition, nine root Admin routes, Cmd/Ctrl+K Command/Search, anchored Notifications placeholder, shared right-side Àríyá Sheet placeholder, deterministic account/avatar placeholder actions, one primary main landmark and no auth/database/domain implementation. Final closure review passed with no blockers. Do not reopen without a concrete regression.
 
-## FOUND-001E1 — Client Portal Shell Chrome & Visual Foundation
-**ACCEPTED / CANONICAL / FROZEN**
-Canonical E1 includes:
-- `/` as the Client Portal Home surface; old Lovable blank placeholder removed;
+## FOUND-001E — Client Portal Shell
+**ACCEPTED / CANONICAL / FROZEN / CLOSED**
+
+### E1 — Chrome & visual foundation
+Canonical Portal shell includes:
+- client-facing surface at `/` with the old Lovable blank placeholder removed;
 - shell-owned `PortalShell`, `PortalTopBar`, `PortalNavigation`, `PortalPageHeader`, and `portal-nav.ts` with no Admin-shell imports;
 - horizontal Core NavigationMenu on desktop and purpose-built Core Sheet navigation on mobile;
-- Re:Solve brand, Search placeholder, Notifications count `2`, Àríyá placeholder and deterministic fictional client identity `Chinedu Okeke / Acme Properties Ltd.`;
-- one Portal main landmark, canonical focus variables and responsive gutter tokens;
+- Re:Solve brand, Search, Notifications count `2`, Àríyá entry point, and deterministic fictional identity `Chinedu Okeke / Acme Properties Ltd.` with `CO` fallback;
+- one Portal main landmark, canonical focus variables, semantic OKLCH tokens and responsive gutter tokens;
 - Notifications trigger semantics on the actual button; Core public boundary for NavigationMenu/toast; canonical destructive/status tokens;
-- factual auth/authz deferral to FOUND-001F;
-- no auth, database, RLS/domain implementation, real Search, real Notifications or AI backend.
+- no auth, database/RLS/domain implementation, real Notifications or AI backend.
 
-Do not reopen E1 unless a concrete Portal-shell regression appears.
-
-## FOUND-001E2 — Portal Route Skeletons & Command/Search
-**ACCEPTED / CANONICAL / FROZEN**
-Canonical E2 includes:
-- pathless Portal layout `src/routes/_portal.tsx` composing `PortalShell` + `Outlet`;
-- Home at `src/routes/_portal.index.tsx`, so `/` is a true child of the shared Portal layout;
-- `/properties`, `/projects`, `/support`, `/billing` as placeholder-only children of the same `_portal` layout;
-- generated route tree confirms all five Portal destinations share one shell;
-- obsolete standalone `src/routes/index.tsx` removed;
-- shared shell-local `portal-nav.ts` contains five real destinations;
+### E2 — Route skeletons & Command/Search
+Canonical Portal route family:
+- pathless `src/routes/_portal.tsx` composes `PortalShell` + `Outlet`;
+- Home is `src/routes/_portal.index.tsx` at browser path `/`;
+- `/properties`, `/projects`, `/support`, `/billing` are placeholder-only children of the same `_portal` layout;
 - desktop/mobile navigation use real TanStack Links with route-aware active state and `aria-current="page"`; mobile selection closes the Sheet;
-- `PortalBreadcrumbs` provides `Home / Current Section` for non-Home routes while Home remains breadcrumb-free;
-- `PortalPageHeader` composes Portal breadcrumbs without entering Core;
-- `PortalShell` owns one local `commandOpen` state and Cmd/Ctrl+K listener with `preventDefault`, functional toggle and cleanup;
-- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after selection, and keeps Notifications/Àríyá as truthful quick-access placeholders;
-- no new dependencies, auth, database, domain state, Admin/Core changes or security drift introduced.
+- non-Home routes use `Home / Current Section` breadcrumbs while Home remains breadcrumb-free;
+- `PortalShell` owns local `commandOpen` state and Cmd/Ctrl+K listener with `preventDefault`, functional toggle and cleanup;
+- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after selection, and keeps Notifications/Àríyá as shell-level quick access.
 
-Do not reopen E2 without a concrete route/search regression.
-
-## FOUND-001E3 — Portal Shell Composition Closure
-**ACCEPTED / CANONICAL / FROZEN**
-Canonical E3 includes:
-- shell-owned `PortalAriyaPanel` as the Portal's canonical FOUND-001 Àríyá placement: a right-side frozen Core Sheet with semantic title `Àríyá`, description `Re:Solve AI workspace.`, and truthful not-connected `StatePanel`;
+### E3 — Composition closure
+Canonical Portal composition includes:
+- shell-owned `PortalAriyaPanel` as a right-side frozen Core Sheet with title `Àríyá`, description `Re:Solve AI workspace.`, and truthful not-connected `StatePanel`;
 - `PortalShell` owns exactly two local shell states: `commandOpen` and `ariyaOpen`;
-- desktop and mobile TopBar Àríyá triggers open the same `ariyaOpen` Sheet state with no Àríyá toast on those paths;
-- Portal Command `Open Àríyá` closes CommandDialog and opens the same shared Sheet state;
-- Notifications remain anchored in the Portal TopBar DropdownMenu with deterministic unread count `2`; Command Notifications remains a truthful placeholder toast;
-- deterministic client identity remains `Chinedu Okeke / Acme Properties Ltd.` with CO fallback avatar;
-- Account, Organisation, Preferences and Sign out use explicit truthful placeholder messages with no account routes/auth implementation;
-- E2 Cmd/Ctrl+K, routing, breadcrumbs, desktop/mobile navigation and shared pathless layout remain intact;
-- Portal route tree still contains `/`, `/properties`, `/projects`, `/support`, `/billing` under `_portal`; generated route-tree formatting may regenerate, but no route-semantic drift is accepted;
-- package security state remains canonical and no dependency was added;
-- no real AI, notifications, auth, database or business-domain functionality was introduced.
+- desktop/mobile TopBar Àríyá controls and Command `Open Àríyá` open the same Sheet state;
+- Notifications remain anchored in the TopBar with deterministic unread count `2`;
+- Account, Organisation, Preferences and Sign out remain truthful placeholders with no account/auth routes.
 
-Reported frozen install/build/lint/TypeScript checks pass. Do not reopen E3 absent a concrete shell regression.
+### E4 — Final closure review
+**PASS — NO BLOCKERS**
+Verified as one system across desktop/tablet/mobile:
+- `/`, `/properties`, `/projects`, `/support`, `/billing` are all children of the shared pathless `_portal` layout and inherit one `PortalShell`;
+- `/admin` remains isolated under the frozen Admin shell;
+- desktop/mobile navigation, active-route semantics and mobile Sheet close behavior are coherent;
+- breadcrumbs, Cmd/Ctrl+K Command/Search, Notifications, shared Àríyá Sheet and account placeholder contracts remain intact;
+- exactly one Portal `main` landmark; named icon controls, keyboard/focus behavior and light/dark semantic tokens remain coherent;
+- canonical gutter tokens remain in use;
+- placeholder pages contain no business mock records, KPI cards, charts or forms;
+- instruction/task-style Foundation comments were removed from Portal shell runtime source while concise architecture comments remain acceptable;
+- Core/Admin/package/security boundaries remain unchanged;
+- reported `bun run build`, `bun run lint`, and `bunx tsc --noEmit` checks pass.
+
+FOUND-001E is closed. Do not reopen it without a concrete regression or a later requirement exposing a missing shell contract.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -112,9 +110,9 @@ Reported frozen install/build/lint/TypeScript checks pass. Do not reopen E3 abse
 - shadcn source setup `new-york`; do not rerun init.
 - TanStack React Table `8.20.5` is canonical.
 - `/ui` is development/Lovable gallery and redirects to `/` in production.
-- `/admin` remains the frozen staff/admin application shell.
-- `/`, `/properties`, `/projects`, `/support`, `/billing` share the client-facing Portal shell.
-- Auth, database/RLS and PWA remain later work.
+- `/admin` is the frozen staff/admin application shell.
+- `/`, `/properties`, `/projects`, `/support`, `/billing` share the frozen client-facing Portal shell.
+- Auth, database/RLS and PWA are not yet implemented.
 
 ## UI/product direction
 - Re:Solve Core is the public UI boundary.
@@ -125,4 +123,4 @@ Reported frozen install/build/lint/TypeScript checks pass. Do not reopen E3 abse
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Run one brief FOUND-001E4 Client Portal Final Closure Review with no planned feature implementation. Audit all five Portal routes, shared shell/layout, desktop/tablet/mobile navigation, breadcrumbs, Command/Search, Notifications, Àríyá, account, accessibility, light/dark behavior, frozen Admin/Core boundaries, package/security stability and prompt leakage. Only fix objectively verified regressions. If clean, close FOUND-001E and decide the next Foundation slice before beginning auth or domain implementation.
+Run FOUND-001F0 as a **read-only Identity/Auth Architecture Preflight** before implementing authentication. Inspect the actual app/Lovable Cloud/Supabase integration, environment/server boundaries and existing dependencies; identify what auth infrastructure really exists; define the minimal identity, organisation-membership, staff/client surface-access and authorization model; map where server-enforced guards/RLS will eventually belong; and return a staged F1+ implementation plan. Do not install packages, create tables, enable providers, add route guards, or alter UI during F0. Only after supervisor review of F0 should authentication implementation begin.
