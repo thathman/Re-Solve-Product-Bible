@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C4 ACCEPTED/FROZEN — FOUND-001C5A CONDITIONAL (FINAL ADVANCED INPUT CLEANUP REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C4 ACCEPTED/FROZEN — FOUND-001C5A ACCEPTED/FROZEN — SECURITY-MEM-001 READY — FOUND-001C5B PENDING**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -23,6 +23,7 @@ Keep this file updated after each supervised build review so the next Product Bi
 - RLS policies: none.
 - Migrations: not initialized.
 - Demo seed/reset: not initialized.
+- Auth/domain implementation: not yet built.
 
 Never store credentials/secrets in this file.
 
@@ -59,56 +60,57 @@ Dialog, AlertDialog, Sheet/SheetBody, Drawer/DrawerBody, Popover, HoverCard, Dro
 Alert, Empty, StatePanel, Spinner, Progress, typed Sonner Toast boundary, Item family, ButtonGroup family, InputGroup family, Kbd, Toggle/ToggleGroup and Breadcrumb accepted.
 
 C4 non-blocking known limitation:
-- `Item` no longer contains `as any`, but its public forwarded ref remains div-biased when `asChild` renders another semantic element. Runtime/semantic behavior is accepted; do not reopen it during C5A.
+- `Item` public forwarded ref remains div-biased when `asChild` renders another semantic element. Runtime/semantic behavior is accepted; do not reopen casually.
 
-## FOUND-001C5A — Advanced Input Primitives I
-**STATUS: CONDITIONAL — FINAL NARROW CLEANUP REQUIRED BEFORE C5B**
+### FOUND-001C5A — Advanced Input Primitives I
+**ACCEPTED / CANONICAL / FROZEN**
 
-### Current implementation on app `main`
-Reviewed application state through commit `9666f780aecbe8f598bd6a13785c799dd66a0283`.
+Accepted inventory:
+- Command / CommandDialog
+- Combobox
+- NativeSelect / NativeSelectOption / NativeSelectOptGroup
+- InputOTP / InputOTPGroup / InputOTPSlot / InputOTPSeparator
+- Slider
 
-Present through Core:
-- Command / CommandDialog using `cmdk`;
-- searchable single-select Combobox composed from Core Popover + Core Command;
-- NativeSelect / option / optgroup using native HTML `select`;
-- InputOTP family using pre-existing `input-otp`;
-- Slider using pre-existing `@radix-ui/react-slider`;
-- all public APIs export through `src/components/core/index.ts`;
-- no new package dependency was added;
-- `/ui` remains production guarded;
-- home route remains the accepted temporary placeholder.
+Accepted contracts:
+- Command uses pre-existing `cmdk` 1.1.1, canonical selected/disabled semantics and a programmatically named CommandInput;
+- CommandDialog composes the frozen Core Dialog, guarantees an accessible title (default `Command palette`), supports optional description and does not override the raised Dialog surface;
+- Combobox composes Core Popover + Core Command, supports controlled/uncontrolled `value` / `defaultValue` / `onValueChange`, inherits FormField ID/required/disabled/invalid/described-by state, and uses a separate Core IconButton for explicit clearing;
+- selecting an already-selected Combobox option does not implicitly clear it;
+- NativeSelect remains a real native `select`, inherits FormField semantics and preserves 16px narrow/mobile typography;
+- InputOTP uses pre-existing `input-otp` 1.4.2, inherits FormField semantics, keeps visual slots/separator presentational, supports one-time-code/numeric examples without globally forbidding alphanumeric use, and uses reduced-motion-safe caret behavior;
+- Slider uses pre-existing `@radix-ui/react-slider` 1.3.6, requires thumb labels at the Core API, links FormField descriptions/errors to actual thumbs, uses 24px actual thumb targets, distinct range-thumb names, action-primary selected range, subtle inactive track and Radix disabled-state styling;
+- Slider development diagnostics use `import.meta.env.DEV`, not ordinary client-side `process.env`;
+- all C5A APIs export through `src/components/core/index.ts`;
+- no new dependency was added;
+- `input-otp` provenance points to `https://github.com/guilhermerodz/input-otp` (MIT);
+- `/ui` production guard remains secured;
+- home route and package state remain unchanged.
 
-### Verified FIX improvements
-- `ring-rs-focus` was removed from Command/NativeSelect/InputOTP/Slider in favor of the accepted focus-variable contract;
-- CommandInput now has a default accessible name and Command selected/disabled states use Re:Solve semantics;
-- Combobox now supports controlled/uncontrolled state via `value`/`defaultValue`/`onValueChange`;
-- Combobox integrates FormField ID, required, disabled, invalid and described-by state;
-- Combobox clear action is now a real Core IconButton outside the trigger Button;
-- NativeSelect now inherits required/disabled/invalid/described-by state and uses canonical disabled/focus styling;
-- InputOTP now inherits required/disabled/invalid/described-by state, marks visual slots/separator presentational and uses reduced-motion-safe fake-caret behavior;
-- gallery OTP verification example now demonstrates `autocomplete="one-time-code"`, numeric input mode and numeric pattern;
-- Slider now uses canonical action/subtle track semantics, 24px thumbs, FormField description/error linkage on thumbs and required `thumbLabels` typing;
-- gallery Slider examples include distinct range labels and a named disabled slider;
-- `input-otp` provenance now points to `https://github.com/guilhermerodz/input-otp` with MIT/version 1.4.2;
-- supplied dark/light desktop and narrow/mobile gallery screenshots are visually coherent; Advanced Inputs I fits without page-level horizontal overflow, OTP remains usable on narrow layout, and Slider/NativeSelect/Combobox density is consistent with the existing Core direction.
+Visual review:
+- user-supplied dark desktop, light desktop and narrow/mobile Component Gallery captures passed visual review;
+- Advanced Inputs I remains restrained and coherent with the existing Core system;
+- narrow layout shows no page-level horizontal overflow and OTP/NativeSelect/Slider remain usable.
 
-### Remaining verified C5A blockers
-1. **Slider reintroduces ordinary client-side `process.env`.** `src/components/core/inputs/Slider.tsx` uses `process.env['NODE_ENV'] === "development"` for the thumb-label warning. Foundation env boundaries already rejected ordinary universal/client `process.env`. Replace with `import.meta.env.DEV`.
-2. **CommandDialog does not yet guarantee accessible Dialog naming.** It composes Core Dialog but renders `DialogContent` without a canonical DialogTitle/Description contract. Add a screen-reader title (default such as `Command palette`) and optional description/customization, or remove CommandDialog if that contract is not supported. Do not ship a public Dialog wrapper that depends on consumers accidentally supplying a title inside Command children.
-3. **CommandDialog overrides the accepted raised overlay surface with `bg-rs-surface-primary`.** Preserve the frozen Core Dialog raised/elevation contract; remove that override or use `rs-surface-raised` intentionally.
-4. **Combobox selection semantics conflict with the new explicit clear action.** `handleSelect` currently clears the value when the user selects the already-selected option (`newValue === value ? "" : newValue`) even when `clearable` is false. Selecting an option should select it; clearing should happen through the explicit clear control when `clearable` is enabled.
-5. **Clearable Combobox is not actually demonstrated.** The gallery marks the disabled, empty Combobox as `clearable`, so no clear button can appear. Add one selected, enabled `clearable` example (prefer `defaultValue`) so the real focusable clear action is reviewable. Keep the standard standalone example nameable and functional.
-6. **Slider disabled visual semantics should use Radix disabled state rather than `disabled:` pseudo-classes on Thumb.** Radix Slider Thumb is not a native disabled form element. Normalize thumb/root styling with the Radix `data-disabled` state so the locked slider is visibly and semantically distinct. Current screenshot shows the locked slider but its thumb/range treatment remains close to active state.
-7. **Slider label-count warning should use the final dev-safe environment contract.** While changing to `import.meta.env.DEV`, warn on a meaningful mismatch between thumb count and `thumbLabels` count; keep the runtime fallback so an accidental mismatch cannot produce an unnamed thumb.
-8. **No C5B work yet.** Calendar/date/range/pagination/resizable remain blocked until this cleanup is reviewed.
+Non-blocking C5A note:
+- Slider's development warning wording may be polished later; runtime fallback still guarantees a thumb name if labels and rendered thumbs diverge.
 
-### Review classification
-C5A is close. Preserve the current architecture and visual direction. Execute one final narrow cleanup covering only CommandDialog accessibility/surface, Combobox select-vs-clear behavior/evidence, Slider dev-env/disabled-state hardening, then re-review. If clean, freeze C5A and proceed to C5B.
+## Security-memory review
+The user surfaced the current Lovable `@security-memory` in chat. No secrets or credentials were present.
 
-## Security-memory visibility
-- Supervisor searched both the app repository and Product Bible for `security-memory` / Lovable memory source and found no source-controlled artifact.
-- The user reports `@security-memory` was updated in Lovable project memory, but that memory is not currently inspectable through GitHub.
-- Do not claim it has been audited or changed by the supervisor until its text is surfaced in chat or source control.
+Current memory is **not canonical as written** and should be replaced before backend/auth work because several rules are over-broad or premature:
+- do not force all roles/permissions into a single `user_roles` model; Re:Solve authorization must accommodate principals, memberships, roles and permissions without trusting client-editable profile metadata;
+- do not mandate `SECURITY DEFINER` for every role check; default to invoker semantics and use narrowly scoped definer functions only when required;
+- do not blanket-GRANT every public table to `authenticated` and `service_role`; exposed tables require RLS and least-privilege grants, while sensitive tables may be server-only/unexposed;
+- `service_role` is server-only and must never reach browser code or `VITE_*` variables;
+- app-internal private data operations should use authenticated/authorized server functions or server routes as appropriate, but not every piece of application logic must be a `createServerFn`;
+- external/cross-origin APIs use server routes; a `/api/public/*` path does not imply anonymous access;
+- the named `requireSupabaseAuth` middleware does not exist yet and must not be treated as an existing implementation;
+- `src/start.ts` already explicitly installs TanStack Start CSRF middleware for server functions and should retain that protection;
+- Vault secrets must not enter browser storage, URLs, logs, analytics/error telemetry, search indexes, notification bodies or other non-Vault persistence;
+- Action Registry enforcement is a target architecture rule once that registry exists; until then, no consequential domain mutation should ship without explicit authz, validation, confirmation where appropriate and an audit-event design.
+
+Next security-memory step: replace the Lovable memory with the supervisor-approved text from `SECURITY-MEM-001`; do not create database/auth implementation during that step.
 
 ## Current architecture facts
 - TanStack Start v1 + Vite 8.2 + React 19.2.
@@ -116,6 +118,7 @@ C5A is close. Preserve the current architecture and visual direction. Execute on
 - Tailwind 4.2.1.
 - shadcn source setup: `new-york`; do not rerun init.
 - primitive base: individual Radix packages + source-owned shadcn.
+- `src/start.ts` explicitly includes TanStack Start CSRF middleware for server functions.
 - Drawer: Vaul 1.1.2.
 - Toast: Sonner 2.0.7.
 - Command: cmdk 1.1.1.
@@ -142,4 +145,4 @@ C5A is close. Preserve the current architecture and visual direction. Execute on
 - Conversation/Àríyá, auth, dashboard, shell, PWA, CI and testing remain later FOUND-001 work.
 
 ## Next action
-Execute supervisor-provided final `FOUND-001C5A` cleanup only. Re-review afterward. Do not begin C5B.
+Execute `SECURITY-MEM-001` only: replace Lovable `@security-memory` with the supervisor-approved security rules. Return the resulting memory text for confirmation, then STOP. Do not begin C5B until that memory update is reviewed.
