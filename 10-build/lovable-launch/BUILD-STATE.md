@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL ACCEPTED/FROZEN — FOUND-001E2 CONDITIONAL / ROUTE-LAYOUT FIX NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1-E2 CLIENT PORTAL SHELL ACCEPTED/FROZEN — FOUND-001E3 NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -72,36 +72,23 @@ Canonical E1 includes:
 Do not reopen E1 unless a concrete Portal-shell regression appears.
 
 ## FOUND-001E2 — Portal Route Skeletons & Command/Search
-**CONDITIONAL — ROUTE-LAYOUT REGRESSION MUST BE FIXED**
+**ACCEPTED / CANONICAL / FROZEN**
+Canonical E2 includes:
+- pathless Portal layout `src/routes/_portal.tsx` composing `PortalShell` + `Outlet`;
+- Home moved to `src/routes/_portal.index.tsx`, so `/` is a true child of the shared Portal layout rather than a root-level sibling;
+- `/properties`, `/projects`, `/support`, `/billing` as placeholder-only children of the same `_portal` layout;
+- generated route tree confirms `/_portal/` owns browser path `/` and all five Portal destinations share one shell;
+- obsolete standalone `src/routes/index.tsx` removed;
+- shared shell-local `portal-nav.ts` contains five real destinations;
+- desktop/mobile navigation use real TanStack Links with route-aware active state and `aria-current="page"`; mobile selection closes the Sheet;
+- `PortalBreadcrumbs` provides `Home / Current Section` for non-Home routes while Home remains breadcrumb-free;
+- `PortalPageHeader` composes Portal breadcrumbs without entering Core;
+- `PortalShell` owns one local `commandOpen` state and Cmd/Ctrl+K listener with `preventDefault`, functional toggle and cleanup;
+- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after selection, and keeps Notifications/Àríyá as truthful placeholder quick-access actions;
+- optional unused React/Search imports in `PortalCommandMenu` removed during final closure;
+- no new dependencies, auth, database, domain state, Admin/Core changes or security drift introduced.
 
-Verified-good E2 work:
-- pathless Portal layout exists at `src/routes/_portal.tsx` and composes `PortalShell` + `Outlet`;
-- `/properties`, `/projects`, `/support`, `/billing` are generated as children of the pathless `_portal` layout and remain placeholder-only surfaces;
-- shell-local `portal-nav.ts` now contains five real root destinations;
-- desktop and mobile navigation use real TanStack Links with route-aware active state and `aria-current="page"`; mobile links close the navigation Sheet;
-- `PortalBreadcrumbs` uses frozen Core Breadcrumb primitives, links Home with TanStack Router, and suppresses breadcrumbs on `/`;
-- `PortalPageHeader` composes Portal breadcrumbs without moving the component into Core;
-- `PortalShell` owns one local `commandOpen` state and installs Cmd/Ctrl+K with `preventDefault`, functional-state toggle and listener cleanup;
-- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after route selection, and keeps Notifications/Àríyá as truthful placeholder quick-access actions;
-- no new dependencies, auth, database, domain state or Admin/Core changes are accepted in this slice.
-
-### Blocking regression
-The Home route is **not actually inside the shared `_portal` layout**.
-
-Repository evidence:
-- `src/routes/index.tsx` is still declared as `createFileRoute("/")` and now renders only `PortalPageHeader` + `StatePanel` with no `PortalShell` wrapper;
-- generated `src/routeTree.gen.ts` places `IndexRoute` directly under `rootRouteImport`, while `_portal` is a separate sibling; only Billing/Projects/Properties/Support are children of `_portal`.
-
-Result: `/` no longer receives the Portal TopBar, main layout, mobile navigation or Portal Command/Search even though E2 intended all five Portal routes to share one shell.
-
-Required closure:
-- move Home into the pathless Portal layout using the correct TanStack file-route convention (expected `src/routes/_portal.index.tsx` unless repository/router generation proves another canonical form);
-- remove the obsolete standalone root `src/routes/index.tsx` route rather than leaving duplicate `/` routes;
-- preserve Home browser URL `/`, metadata and validation content;
-- regenerate `routeTree.gen.ts` so `/` is a child of `_portal` and there is no standalone root Index route;
-- do not change working E2 shell/nav/breadcrumb/Command behavior.
-
-Non-blocking hygiene: `PortalCommandMenu.tsx` currently has unused React/Search imports if lint permits them; they may be removed during the narrow routing fix without changing behavior.
+Do not reopen E2 without a concrete route/search regression.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -121,4 +108,4 @@ Non-blocking hygiene: `PortalCommandMenu.tsx` currently has unused React/Search 
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Run one narrow FOUND-001E2-FIX to place Home under the shared pathless Portal layout and regenerate the route tree. Preserve all verified-good E2 navigation, breadcrumbs, Command/Search, E1 chrome, frozen Admin/Core, package/security state and explicit CSRF middleware. If clean, freeze E2 and proceed to the final Portal-shell composition slice E3.
+Begin FOUND-001E3 as the final Client Portal shell-composition slice: define the Portal Àríyá placement, close Notifications/account placeholder contracts, review desktop/tablet/mobile shell composition, and perform a no-feature closure audit without implementing auth, database, domain data, real notifications or AI backend.
