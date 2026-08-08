@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL CONDITIONAL / NARROW FIX NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -56,68 +56,44 @@ Do not reopen Core absent a concrete regression or later shell/domain requiremen
 ## FOUND-001D — Admin Shell
 **ACCEPTED / CANONICAL / FROZEN / CLOSED**
 
-### D1 — Chrome & visual foundation
 Canonical Admin shell at `/admin` includes:
-- TanStack layout route with `Outlet` and explicit note that auth/authz is deferred to FOUND-001F;
-- shell-owned `AdminShell`, `AdminSidebar`, `AdminTopBar`, `AdminPageHeader`;
-- frozen Core Sidebar composition, icon collapse and mobile Sheet;
-- strong TopBar with Search, Notifications, Àríyá and account/avatar area;
-- one semantic `main` landmark via SidebarInset;
-- deterministic local demo identity `Amara Okafor / Administrator`;
-- responsive semantic gutters, light/dark tokens, no page-level horizontal overflow;
-- root `/` left untouched.
+- shell-owned Sidebar/TopBar/PageHeader/Breadcrumbs/Command/Àríyá compositions;
+- nine Admin root routes under one TanStack layout;
+- route-aware navigation/current semantics and mobile-close behavior;
+- shell-owned Cmd/Ctrl+K Command/Search;
+- anchored Notifications placeholder;
+- shared right-side Àríyá Sheet placeholder;
+- deterministic account/avatar placeholder actions;
+- one main landmark, responsive desktop/tablet/mobile behavior, light/dark semantic tokens;
+- no auth, permissions, database, domain data, real notifications or AI backend;
+- no Core/package/security drift.
 
-### D2 — Route skeletons & Command/Search
-Canonical Admin root routes:
-- `/admin`
-- `/admin/clients`
-- `/admin/crm`
-- `/admin/properties`
-- `/admin/projects`
-- `/admin/sales`
-- `/admin/billing`
-- `/admin/support`
-- `/admin/platform`
+FOUND-001D passed its final no-feature closure review with no blockers and no modifications. Do not reopen it without a concrete regression or later requirement exposing a missing shell contract.
 
-Canonical behavior:
-- typed shell-local `admin-nav.ts` shared by Sidebar, TopBar and Command/Search;
-- all root destinations are real TanStack Links with route-aware active state and `aria-current="page"`;
-- mobile navigation closes the Sidebar Sheet;
-- placeholder pages remain `AdminPageHeader` + `StatePanel`, with no domain implementation;
-- shell-owned Command dialog opens from desktop/mobile Search and Cmd/Ctrl+K;
-- Cmd/Ctrl+K is the only global Admin shortcut introduced in Foundation;
-- Command navigation uses TanStack navigation with no document reload;
-- Notifications and `Open Àríyá` remain truthful quick-access placeholders.
+## FOUND-001E1 — Client Portal Shell Chrome & Visual Foundation
+**CONDITIONAL — NARROW CLOSURE REQUIRED**
 
-### D3 — Composition closure
-Canonical composition includes:
-- `AdminBreadcrumbs` with `Home / Current Section` on non-Home root routes using a real TanStack Home Link and `BreadcrumbPage` current item;
-- Home remains breadcrumb-free;
-- `AdminAriyaPanel` as Àríyá's canonical FOUND-001 Admin placement: right-side Core Sheet with semantic title/description and truthful placeholder StatePanel;
-- `AdminShell` owns only local `commandOpen` and `ariyaOpen` shell state;
-- TopBar large/narrow Àríyá controls and Command `Open Àríyá` item open the same Sheet;
-- Notifications remain the anchored TopBar DropdownMenu with deterministic unread count `3`;
-- account Profile, Preferences and Sign out produce truthful placeholder feedback without auth/account routes.
+Verified-good E1 architecture:
+- `/` now renders the Client Portal Home surface; the old Lovable blank placeholder and `data-lovable-blank-page-placeholder` are removed;
+- `PortalShell`, `PortalTopBar`, `PortalNavigation`, `PortalPageHeader`, and shell-local `portal-nav.ts` live under `src/components/shell/portal/`;
+- Portal is independently composed and does not import Admin shell components;
+- desktop Portal navigation uses the frozen horizontal NavigationMenu pattern with Home active and Properties/Projects/Support/Billing shown as genuinely noninteractive future destinations;
+- mobile Portal navigation uses a purpose-built Core Sheet with vertical navigation rather than desktop Sidebar collapse;
+- Portal TopBar contains brand, Search placeholder, Notifications placeholder with deterministic count `2`, Àríyá placeholder and deterministic client account/avatar evidence;
+- Home is a quiet `PortalPageHeader` + `StatePanel` validation surface with no fake business data;
+- root route explicitly defers authentication/authorization to FOUND-001F;
+- no package dependency or security override drift was introduced.
 
-### D4 — Final closure review
-**PASS — NO BLOCKERS / NO MODIFICATIONS**
-Verified as one system across desktop/tablet/mobile:
-- all nine Admin routes render inside the same shell;
-- route active/current semantics, TopBar context and breadcrumbs agree;
-- Sidebar expanded/collapsed/mobile behavior is coherent;
-- Cmd/Ctrl+K Command/Search works and remains the only global shortcut;
-- Àríyá uses one shared Sheet state across all shell triggers;
-- Notifications remain anchored and placeholder-only;
-- account actions remain truthful placeholders;
-- one primary main landmark; icon-only controls are named; focus/keyboard behavior remains coherent;
-- light/dark semantic tokens remain intact;
-- Core is unchanged;
-- package/security state is unchanged;
-- root `/` remains untouched;
-- zero prompt/task leakage reported;
-- reported frozen install, build, lint and TypeScript checks pass.
+E1 closure blockers:
+1. Notifications `DropdownMenuTrigger asChild` currently wraps a `div` containing the IconButton, so Radix trigger semantics attach to the wrapper instead of the actual button. The actual IconButton must be the trigger; position the unread Badge separately without stealing trigger semantics.
+2. Account trigger uses hardcoded `focus-visible:ring-2` / `ring-rs-action-primary` styling. Normalize to the frozen focus-variable contract.
+3. The Re:Solve brand Link removes outline without supplying the frozen visible focus treatment. Give the real Link the canonical focus-variable contract.
+4. `PortalNavigation` imports NavigationMenu directly from `@/components/core/navigation/NavigationMenu` instead of the public `@/components/core` boundary; normalize to the Core export boundary and remove unused imports.
+5. `PortalTopBar` imports `toast` directly from `sonner`; shell code should consume the Core toast export. Normalize to `@/components/core`.
+6. Sign-out styling references non-canonical `rs-action-danger`. Use accepted destructive action/status tokens; canonical destructive action authority is `rs-action-destructive` / `rs-action-destructive-*`.
+7. Portal shell/topbar content uses hardcoded responsive horizontal gutters (`px-4/md:px-6/lg:px-8`) instead of canonical `--spacing-rs-gutter-mobile/tablet/desktop` tokens. Normalize shell horizontal gutters to the established token contract while preserving the comfortable Portal max width.
 
-FOUND-001D is closed. Do not reopen it without a concrete regression or a later requirement exposing a missing shell contract.
+Preserve the accepted E1 visual direction, root replacement, desktop-vs-mobile navigation model and placeholder-only behavior while making only this closure pass.
 
 ## FOUND-001C5E audit deferrals
 Build in shell/domain only when justified:
@@ -147,15 +123,16 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - TanStack React Table `8.20.5` is the canonical DataTable engine.
 - Auth, database/RLS, PWA and domain implementation remain later work.
 - `/ui` is development/Lovable gallery and redirects to `/` in production.
-- `src/routes/index.tsx` remains the untouched placeholder and is reserved for the Client Portal surface during FOUND-001E.
+- `/` is now the Client Portal Home surface; `/admin` remains the frozen staff/admin application shell.
 
 ## UI/product direction
 - Re:Solve Core is the public UI boundary.
 - Admin navigation stays simple and shallow, closer to Perfex/Brevo than Odoo/Twenty.
+- Client Portal is calmer and less dense than Admin while remaining clearly Re:Solve.
 - Àríyá is Re:Solve's built-in AI surface; Chatwoot keeps Captain separately.
 - shadcn-vue is visual/composition reference only; never runtime Vue code.
 - Untitled UI and Tremor remain selective source/reference systems.
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Begin FOUND-001E as small supervised Client Portal Shell slices. The client-facing portal owns `/` and other non-admin routes, while staff/admin remains under `/admin`. First Portal slice should establish client-facing shell/chrome, responsive navigation and a quiet Home validation surface using frozen Core, without auth, business-domain implementation, database work, real notifications, or real Àríyá functionality.
+Run one narrow FOUND-001E1-FIX pass to correct Portal trigger semantics, canonical focus treatment, Core public-boundary imports/toast use, destructive token usage, and canonical gutter tokens. Preserve the accepted Portal shell visual direction and root replacement. If clean, freeze E1 and proceed to E2 route-aware Portal navigation/shell composition rather than business-domain implementation.
