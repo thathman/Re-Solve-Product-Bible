@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL CONDITIONAL / FINAL MICRO-FIX NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL ACCEPTED/FROZEN — FOUND-001E2 NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -61,7 +61,6 @@ Do not reopen Core absent a concrete regression or later shell/domain requiremen
 
 ## FOUND-001D — Admin Shell
 **ACCEPTED / CANONICAL / FROZEN / CLOSED**
-
 Canonical Admin shell at `/admin` includes:
 - shell-owned Sidebar/TopBar/PageHeader/Breadcrumbs/Command/Àríyá compositions;
 - nine Admin root routes under one TanStack layout;
@@ -77,28 +76,27 @@ Canonical Admin shell at `/admin` includes:
 FOUND-001D passed its final no-feature closure review with no blockers and no modifications. Do not reopen it without a concrete regression or later requirement exposing a missing shell contract.
 
 ## FOUND-001E1 — Client Portal Shell Chrome & Visual Foundation
-**CONDITIONAL — FINAL MICRO-CLOSURE REQUIRED**
+**ACCEPTED / CANONICAL / FROZEN**
+Canonical E1 includes:
+- `/` is now the Client Portal Home surface; the old Lovable blank placeholder and placeholder SVG/marker are removed;
+- shell-owned `PortalShell`, `PortalTopBar`, `PortalNavigation`, `PortalPageHeader`, and `portal-nav.ts` under `src/components/shell/portal/` with no Admin-shell imports;
+- desktop Portal navigation uses frozen horizontal Core NavigationMenu with Home as the only implemented route in E1;
+- Properties, Projects, Support and Billing are shown in E1 as genuinely noninteractive `aria-disabled` future destinations with no fake href/click/tabIndex behavior;
+- mobile Portal navigation uses a purpose-built Core Sheet with semantic title/description and vertical navigation rather than Admin Sidebar collapse;
+- Portal TopBar contains Re:Solve brand, Search placeholder, Notifications placeholder with deterministic unread count `2`, responsive Àríyá placeholder, and deterministic fictional client identity `Chinedu Okeke / Acme Properties Ltd.` using local avatar fallback;
+- root Home is a quiet `PortalPageHeader` + `StatePanel` validation surface with no fake domain data;
+- `PortalShell` keeps exactly one primary `main` landmark and explicitly notes that authentication/authorization is deferred to FOUND-001F;
+- Notifications Radix trigger semantics land on the actual Core button and the unread Badge is pointer-safe;
+- account and brand links use the frozen focus-variable contract;
+- Portal Navigation and toast consumption use the public `@/components/core` boundary;
+- Sign out uses canonical destructive/status tokens rather than invented danger tokens;
+- Portal shell and TopBar use canonical responsive gutter tokens;
+- Search uses canonical `bg-rs-surface-primary`; the invalid `rs-surface-secondary` usage is removed;
+- instruction-like security/source commentary was removed while retaining the factual FOUND-001F auth-deferral note;
+- no auth, database, RLS implementation, domain models/data, real Search, real Notifications or real Àríyá backend was added;
+- no Core/Admin/package/security drift was introduced; reported frozen install/build/lint/TypeScript checks pass.
 
-Verified-good E1 architecture:
-- `/` now renders the Client Portal Home surface; the old Lovable blank placeholder and `data-lovable-blank-page-placeholder` are removed;
-- `PortalShell`, `PortalTopBar`, `PortalNavigation`, `PortalPageHeader`, and shell-local `portal-nav.ts` live under `src/components/shell/portal/`;
-- Portal is independently composed and does not import Admin shell components;
-- desktop Portal navigation uses frozen horizontal NavigationMenu with Home active and Properties/Projects/Support/Billing shown as genuinely noninteractive future destinations;
-- mobile Portal navigation uses a purpose-built Core Sheet with vertical navigation rather than desktop Sidebar collapse;
-- Portal TopBar contains brand, Search placeholder, Notifications placeholder with deterministic count `2`, Àríyá placeholder and deterministic client account/avatar evidence;
-- Home is a quiet `PortalPageHeader` + `StatePanel` validation surface with no fake business data;
-- root route explicitly defers authentication/authorization to FOUND-001F;
-- requested E1-FIX corrections are verified on `main`: Notifications trigger semantics now land on the actual Core button, Badge is pointer-safe, account and brand use frozen focus variables, Portal Navigation imports through `@/components/core`, Portal TopBar consumes Core `toast`, Sign out uses canonical destructive/status tokens, and Portal shell/topbar horizontal gutters use canonical responsive gutter tokens;
-- no package dependency or security override drift was introduced;
-- `src/start.ts` still explicitly preserves TanStack `createCsrfMiddleware` for server functions.
-
-Remaining E1 blockers:
-1. `PortalTopBar.tsx` Search trigger still references `bg-rs-surface-secondary`, but no canonical `rs-surface-secondary` token exists. Use an accepted surface token such as `bg-rs-surface-primary` or `bg-rs-surface-subtle`, preserving current restrained visual intent.
-2. `PortalShell.tsx` contains the instruction-like source comment `Do not pretend the portal is secured yet.` Keep the concise engineering fact `Authentication/authorization is intentionally deferred to FOUND-001F.` but remove the supervisor-style imperative line to satisfy prompt/source hygiene.
-
-Non-blocking hygiene: `PortalNavigation.tsx` still imports React without using it. It may be removed during this final shell-local micro-fix.
-
-Preserve all accepted E1 behavior while fixing only these remaining details.
+Do not reopen E1 unless a concrete Portal-shell regression appears.
 
 ## FOUND-001C5E audit deferrals
 Build in shell/domain only when justified:
@@ -128,7 +126,7 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - TanStack React Table `8.20.5` is the canonical DataTable engine.
 - Auth, database/RLS, PWA and domain implementation remain later work.
 - `/ui` is development/Lovable gallery and redirects to `/` in production.
-- `/` is now the Client Portal Home surface; `/admin` remains the frozen staff/admin application shell.
+- `/` is the Client Portal Home surface; `/admin` remains the frozen staff/admin application shell.
 
 ## UI/product direction
 - Re:Solve Core is the public UI boundary.
@@ -140,4 +138,4 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Run one final FOUND-001E1-FIX2 micro-pass to replace the non-existent `rs-surface-secondary` Search surface token, remove the instruction-like PortalShell comment, and optionally remove the unused React import in PortalNavigation. Preserve all accepted Portal shell behavior, Admin/Core frozen boundaries, package/security state and explicit CSRF middleware. If clean, freeze E1 and proceed to E2 route-aware Portal navigation/shell composition.
+Begin FOUND-001E2 as a small Client Portal shell slice: convert Properties, Projects, Support and Billing into real placeholder route skeletons, make Portal navigation route-aware across desktop/mobile, add a shell-owned Portal Command/Search surface over frozen Core Command, and establish route-aware page-header/breadcrumb context without implementing business-domain data, auth, database, real Notifications or real Àríyá functionality.
