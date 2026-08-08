@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY GOVERNANCE REMEDIATION REQUIRED BEFORE C5D**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 CONDITIONAL (DEPENDENCY REMEDIATION STILL REQUIRED BEFORE C5D)**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -11,80 +11,8 @@ Keep this file updated after each supervised build review so the next Product Bi
 - Legacy/reference app: `thathman/Re-Solve` — untouched pending explicit post-FOUND-001 owner approval.
 - Canonical-name transition performed: `NO`.
 
-## Lovable project
-- Project Knowledge installed: YES.
-- Canonical workspace Skills installed: YES — 30 Re:Solve skills + `self-host-check`.
-- Platform default skill active: `design-taste-frontend`.
-
-## Backend state
-- Lovable Cloud enabled for development.
-- Custom database tables: none.
-- RLS policies: none.
-- Migrations: not initialized.
-- Demo seed/reset: not initialized.
-- Auth/domain implementation: not yet built.
-
-Never store credentials/secrets in this file.
-
 ## Accepted foundation
-
-### FOUND-001A — Stack & Repository Foundation
-**ACCEPTED**
-TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3 + Tailwind 4.2.1. Radix-based shadcn source setup preserved.
-
-### FOUND-001B — UI Stack & Design Tokens
-**ACCEPTED + CLOSED**
-Re:Solve semantic OKLCH tokens, light/dark/system theming, typography, density/layout/elevation/focus/safe-area/motion contracts and shadcn compatibility mappings accepted.
-
-Component Gallery:
-- source: `src/routes/__dev/ui.tsx`;
-- browser route: `/ui`;
-- production guard: `beforeLoad` + `import.meta.env.PROD` redirect to `/`.
-
-### FOUND-001C1 — Core UI Primitive Foundation
-**ACCEPTED / CANONICAL / FROZEN**
-Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric, MetricDelta.
-
-### FOUND-001C2 — Forms & Controls
-**ACCEPTED / CANONICAL / FROZEN**
-Input, Textarea, Checkbox, RadioGroup, Switch, Select, FormField, FieldGroup.
-
-### FOUND-001C3 — Interaction & Overlay Pack
-**ACCEPTED / CANONICAL / FROZEN**
-Dialog, AlertDialog, Sheet/SheetBody, Drawer/DrawerBody, Popover, HoverCard, DropdownMenu, ContextMenu, Accordion, Collapsible, Tabs, ScrollArea/ScrollBar.
-
-### FOUND-001C4 — Utility, Feedback & Composition Pack
-**ACCEPTED / CANONICAL / FROZEN**
-Alert, Empty, StatePanel, Spinner, Progress, typed Sonner Toast boundary, Item family, ButtonGroup family, InputGroup family, Kbd, Toggle/ToggleGroup and Breadcrumb.
-
-Known non-blocking limitation:
-- Item public forwarded ref remains div-biased when `asChild` renders another semantic element.
-
-### FOUND-001C5A — Advanced Input Primitives I
-**ACCEPTED / CANONICAL / FROZEN**
-Command/CommandDialog, Combobox, NativeSelect family, InputOTP family and Slider are canonical.
-
-### FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable
-**ACCEPTED / CANONICAL / FROZEN**
-Calendar, DatePicker, DateRangePicker, Pagination family and ResizablePanelGroup/ResizablePanel/ResizableHandle are canonical.
-
-### FOUND-001C5C — Display Primitives
-**ACCEPTED / CANONICAL / FROZEN**
-Card family, semantic Table family and AspectRatio are canonical.
-
-Accepted C5C contracts:
-- Card variants: default, raised, subtle and semantic interactive/asChild;
-- only interactive Card receives hover/focus affordance;
-- interactive Card uses frozen Re:Solve focus-variable contract;
-- simple Table uses native HTML table semantics and bounded horizontal scrolling;
-- static TableRow has no default hover affordance;
-- selected-row visual state remains available without introducing DataTable behavior;
-- currency display uses symbols such as `$1,250.00` in normal UI;
-- AspectRatio is a thin Core wrapper over pre-existing `@radix-ui/react-aspect-ratio`;
-- Display Primitives gallery evidence is accepted;
-- no C5C dependency added.
-
-Lovable reported frozen install, build, lint and `tsc --noEmit` passing. GitHub source review verified the resulting contracts; GitHub review does not independently execute Bun.
+FOUND-001A, FOUND-001B and FOUND-001C1-C5C are accepted/canonical/frozen. C5C includes the Card family, semantic Table family and thin AspectRatio wrapper. Do not reopen frozen UI slices during the security gate.
 
 ## Currency display convention
 **CANONICAL**
@@ -92,36 +20,61 @@ Lovable reported frozen install, build, lint and `tsc --noEmit` passing. GitHub 
 - Normal user-facing UI uses locale-appropriate currency symbols where unambiguous.
 - No universal default currency.
 
-## Security governance state
-**REMEDIATION REQUIRED BEFORE C5D**
+## Security memory
+**ACCEPTED / CANONICAL**
+The scanner-oriented Security Memory supplied after SECURITY-GATE-001 is accepted. It correctly describes Re:Solve as a multi-tenant Business Operating System, keeps authentication/authorization server-authoritative, explicitly states that final auth/RLS/Vault/Action Registry are not yet implemented, lists security invariants, and records no accepted vulnerability exceptions. No secret material was reported.
 
-### Security-memory drift
-Lovable surfaced an empty security-memory template after C5C rather than the previously approved Re:Solve-specific rules. Treat the empty template as non-canonical. Before C5D, replace it with an accurate concise scanner-oriented Re:Solve security memory that covers the actual foundation and future access-control rules without claiming unimplemented auth/RLS systems already exist.
+Do not reopen the memory merely because a completion message says it was updated. Re-review only if Lovable surfaces different text.
 
-### Dependency scan — 2026-08-08
-User-provided dependency scan reports one High vulnerability finding associated with `@tanstack/react-start` through transitive `js-yaml`:
-- advisory: GHSA-5p4m-2wfm-xmqj;
-- affected js-yaml: >=4.0.0,<4.3.1 (and legacy 3.x before 3.15.1);
-- patched js-yaml 4.x: 4.3.1;
-- impact: algorithmic-complexity CPU denial of service when parsing attacker-controlled YAML.
+## SECURITY-GATE-001 — Dependency remediation
+**STATUS: CONDITIONAL — NOT CLOSED**
 
-Do not blindly add an override. First identify the exact installed `js-yaml` version and dependency chain with Bun, determine whether a safe compatible transitive update/lock refresh resolves it, and prefer an upstream-compatible package update over forced overrides. If no clean compatible resolution exists, document exposure and mitigation and stop for supervisor review.
+### Advisory
+User scan and supervisor verification confirm GitHub-reviewed High advisory `GHSA-5p4m-2wfm-xmqj` for `js-yaml`:
+- affected 4.x range: `>=4.0.0,<4.3.1`;
+- patched 4.x: `4.3.1`;
+- impact: quadratic CPU consumption / availability DoS when parsing attacker-influenced YAML.
 
-### AspectRatio provenance accuracy
-`package.json` declares `@radix-ui/react-aspect-ratio` as `^1.1.8`; the 2026-08-08 scanner reports resolved version 1.1.15. Provenance should distinguish declared range from resolved version instead of treating 1.1.8 as the installed resolved version.
+### Current reported graph
+Lovable reported:
+- `js-yaml@4.3.1` direct/top-level;
+- `js-yaml@4.3.0` remains transitive through `@eslint/eslintrc` and `xmlbuilder2` / `@tanstack/start-plugin-core`;
+- no application source currently parses user-controlled YAML;
+- remaining exposure is dev/build-time, but the High scanner finding remains unresolved.
 
-## Security memory baseline
-The old 13-rule prose should not be blindly pasted into the new scanner template. Use the scanner's three sections:
-- Security Memory: concise description of Re:Solve and its server-authoritative access-control model;
-- What should never happen within apps business logic: invariant security failures the scanner should flag;
-- What to not create vulnerabilities for: accepted-risk exceptions only; currently none unless explicitly approved by the owner/supervisor.
+### Verified repository drift
+Compared with accepted C5C baseline app commit `946763125df3facf208cb68c3d278ff346898d3a`, current `main` changed:
+- `package.json`;
+- `bun.lock`;
+- `docs/ui-sources.md`;
+- generated `src/routeTree.gen.ts`.
 
-No actual credentials/secrets belong in security memory.
+Current `package.json` contains unauthorized direct dependency drift beyond the requested security investigation:
+- `@tanstack/react-router`: accepted `^1.170.18` → current `^1.170.21`;
+- `@tanstack/react-start`: accepted `^1.168.32` → current `^1.168.38`;
+- new direct `@tanstack/router-core`: `^1.171.18`;
+- new direct `js-yaml`: `4.3.1`.
+
+This conflicts with the gate instruction to STOP before changing direct TanStack packages. Adding direct `js-yaml@4.3.1` also did not remediate the vulnerable transitive `4.3.0` copy, so the remaining High finding means the gate cannot be accepted.
+
+### Preferred remediation direction
+Bun officially supports top-level `overrides`/`resolutions` for metadependencies. The reported vulnerable transitive constraints (`^4.3.0` from ESLint and `^4.1.1` from xmlbuilder2) are semver-compatible with `4.3.1`, so the next narrow pass should:
+1. restore the accepted direct TanStack dependency declarations;
+2. remove unnecessary direct `@tanstack/router-core` and direct `js-yaml` dependencies;
+3. use a top-level Bun-compatible `overrides` entry for `js-yaml: 4.3.1` only if actual `bun why` confirms every 4.x consumer accepts it;
+4. regenerate `bun.lock` with Bun;
+5. prove `bun why js-yaml` resolves every 4.x copy to `4.3.1`;
+6. rerun build/lint/type and the dependency scan;
+7. STOP if any upstream constraint prevents the override or if a direct TanStack update is still required.
+
+Do not mark the remaining High advisory as an accepted risk.
+
+### AspectRatio provenance
+Provenance correction is accepted in principle: declared range is `^1.1.8`, while the supplied dependency scan reports resolved `1.1.15`. Preserve that distinction. No AspectRatio source change is needed.
 
 ## Current architecture facts
-- TanStack Start v1 + Vite 8.2 + React 19.2.
-- Bun 1.3.3 canonical package manager.
-- Tailwind 4.2.1.
+- TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
+- Tailwind 4.2.1 declaration baseline.
 - shadcn source setup `new-york`; do not rerun init.
 - primitive base: individual Radix packages + source-owned shadcn.
 - Calendar/date foundation: react-day-picker 9.14.0 + date-fns 4.1.0.
@@ -129,16 +82,5 @@ No actual credentials/secrets belong in security memory.
 - Testing stack not canonical/configured.
 - Auth, database/RLS, PWA and domain implementation remain later work.
 
-## UI source direction
-- Re:Solve Core is the public UI boundary.
-- Keep the established Radix foundation; no wholesale Base UI/React Aria migration.
-- shadcn-vue remains visual/composition reference only; never runtime Vue code.
-- Untitled UI and Tremor remain selective source/reference systems.
-
-## Planned later work
-- FOUND-001C5D: DataTable foundation, after security remediation gate passes.
-- Further Core-gap audit only after DataTable.
-- Admin shell, Portal shell, identity/auth/permissions, PWA/accessibility/CI/security hardening and integrated review remain later FOUND-001 work.
-
 ## Next action
-Execute the supervisor-provided security-memory + dependency-advisory remediation gate. Re-review before C5D. Do not begin DataTable yet.
+Execute the supervisor-provided SECURITY-GATE-001-FIX only. Do not begin FOUND-001C5D/DataTable until the dependency scan is clean of this High finding or a genuine upstream blocker is returned for owner/supervisor review.
