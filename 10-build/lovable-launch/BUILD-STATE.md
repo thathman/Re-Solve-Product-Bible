@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1-E2 CLIENT PORTAL SHELL ACCEPTED/FROZEN — FOUND-001E3 NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1-E3 CLIENT PORTAL SHELL ACCEPTED/FROZEN — PORTAL SHELL CLOSURE REVIEW NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -75,20 +75,36 @@ Do not reopen E1 unless a concrete Portal-shell regression appears.
 **ACCEPTED / CANONICAL / FROZEN**
 Canonical E2 includes:
 - pathless Portal layout `src/routes/_portal.tsx` composing `PortalShell` + `Outlet`;
-- Home moved to `src/routes/_portal.index.tsx`, so `/` is a true child of the shared Portal layout rather than a root-level sibling;
+- Home at `src/routes/_portal.index.tsx`, so `/` is a true child of the shared Portal layout;
 - `/properties`, `/projects`, `/support`, `/billing` as placeholder-only children of the same `_portal` layout;
-- generated route tree confirms `/_portal/` owns browser path `/` and all five Portal destinations share one shell;
+- generated route tree confirms all five Portal destinations share one shell;
 - obsolete standalone `src/routes/index.tsx` removed;
 - shared shell-local `portal-nav.ts` contains five real destinations;
 - desktop/mobile navigation use real TanStack Links with route-aware active state and `aria-current="page"`; mobile selection closes the Sheet;
 - `PortalBreadcrumbs` provides `Home / Current Section` for non-Home routes while Home remains breadcrumb-free;
 - `PortalPageHeader` composes Portal breadcrumbs without entering Core;
 - `PortalShell` owns one local `commandOpen` state and Cmd/Ctrl+K listener with `preventDefault`, functional toggle and cleanup;
-- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after selection, and keeps Notifications/Àríyá as truthful placeholder quick-access actions;
-- optional unused React/Search imports in `PortalCommandMenu` removed during final closure;
+- `PortalCommandMenu` composes frozen Core Command primitives, uses TanStack navigation, closes after selection, and keeps Notifications/Àríyá as truthful quick-access placeholders;
 - no new dependencies, auth, database, domain state, Admin/Core changes or security drift introduced.
 
 Do not reopen E2 without a concrete route/search regression.
+
+## FOUND-001E3 — Portal Shell Composition Closure
+**ACCEPTED / CANONICAL / FROZEN**
+Canonical E3 includes:
+- shell-owned `PortalAriyaPanel` as the Portal's canonical FOUND-001 Àríyá placement: a right-side frozen Core Sheet with semantic title `Àríyá`, description `Re:Solve AI workspace.`, and truthful not-connected `StatePanel`;
+- `PortalShell` owns exactly two local shell states: `commandOpen` and `ariyaOpen`;
+- desktop and mobile TopBar Àríyá triggers open the same `ariyaOpen` Sheet state with no Àríyá toast on those paths;
+- Portal Command `Open Àríyá` closes CommandDialog and opens the same shared Sheet state;
+- Notifications remain anchored in the Portal TopBar DropdownMenu with deterministic unread count `2`; Command Notifications remains a truthful placeholder toast;
+- deterministic client identity remains `Chinedu Okeke / Acme Properties Ltd.` with CO fallback avatar;
+- Account, Organisation, Preferences and Sign out use explicit truthful placeholder messages with no account routes/auth implementation;
+- E2 Cmd/Ctrl+K, routing, breadcrumbs, desktop/mobile navigation and shared pathless layout remain intact;
+- Portal route tree still contains `/`, `/properties`, `/projects`, `/support`, `/billing` under `_portal`; generated route-tree formatting may regenerate, but no route-semantic drift is accepted;
+- package security state remains canonical and no dependency was added;
+- no real AI, notifications, auth, database or business-domain functionality was introduced.
+
+Reported frozen install/build/lint/TypeScript checks pass. Do not reopen E3 absent a concrete shell regression.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -97,6 +113,7 @@ Do not reopen E2 without a concrete route/search regression.
 - TanStack React Table `8.20.5` is canonical.
 - `/ui` is development/Lovable gallery and redirects to `/` in production.
 - `/admin` remains the frozen staff/admin application shell.
+- `/`, `/properties`, `/projects`, `/support`, `/billing` share the client-facing Portal shell.
 - Auth, database/RLS and PWA remain later work.
 
 ## UI/product direction
@@ -108,4 +125,4 @@ Do not reopen E2 without a concrete route/search regression.
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Begin FOUND-001E3 as the final Client Portal shell-composition slice: define the Portal Àríyá placement, close Notifications/account placeholder contracts, review desktop/tablet/mobile shell composition, and perform a no-feature closure audit without implementing auth, database, domain data, real notifications or AI backend.
+Run one brief FOUND-001E4 Client Portal Final Closure Review with no planned feature implementation. Audit all five Portal routes, shared shell/layout, desktop/tablet/mobile navigation, breadcrumbs, Command/Search, Notifications, Àríyá, account, accessibility, light/dark behavior, frozen Admin/Core boundaries, package/security stability and prompt leakage. Only fix objectively verified regressions. If clean, close FOUND-001E and decide the next Foundation slice before beginning auth or domain implementation.
