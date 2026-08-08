@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL CONDITIONAL / NARROW FIX NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E1 CLIENT PORTAL SHELL CONDITIONAL / FINAL MICRO-FIX NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — specification/planning source.
@@ -13,12 +13,18 @@ Keep this file updated after each supervised build review so the next Product Bi
 
 ## Security memory
 **ACCEPTED / CANONICAL**
-- Authentication and authorization remain server-authoritative.
-- RLS / least privilege remain required when persistence is introduced.
-- Service-role credentials remain server-only.
-- SECURITY INVOKER is the default; SECURITY DEFINER must remain narrow and justified.
-- Runtime validation and the existing CSRF middleware boundary must be preserved.
-- Vault secrets must never appear in browser storage, logs, search, notifications or non-Vault surfaces.
+- Roles, permissions and capability decisions are server-controlled; browser/client metadata is never authoritative for authorization.
+- Authentication and authorization must be enforced at server-function / server-route boundaries, not only in UI or client navigation.
+- Do not invent helper names or security middleware that do not exist (for example, never assume `requireSupabaseAuth` exists); inspect and extend real server boundaries deliberately.
+- RLS and least privilege are mandatory when persistence is introduced. Database grants/policies/security configuration must be version-controlled and reviewable.
+- Service-role credentials and other privileged backend secrets are server-only and must never ship in client bundles.
+- `SECURITY INVOKER` is the default for database functions/views; `SECURITY DEFINER` must remain narrow, justified, least-privileged and explicitly reviewed.
+- Runtime input validation is required at consequential server boundaries.
+- Preserve `createCsrfMiddleware` in `src/start.ts`; defining `src/start.ts` opts out of TanStack Start's implicit CSRF setup, so this explicit middleware is a security contract.
+- Vault secrets must never appear in browser storage, logs, search results, notifications, analytics, non-Vault surfaces or ordinary client caches.
+- QR codes may expose only signed, scoped, short-lived references/tokens; never encode raw secrets or durable privileged credentials.
+- Consequential mutations should eventually route through an Action Registry / equivalent audited mutation boundary as the product domain is implemented; do not scatter privileged mutations across ad-hoc client-triggered handlers.
+- Sensitive values, auth tokens, secret payloads and privileged identifiers must not be written to application logs or error telemetry.
 - No security vulnerability exceptions are accepted.
 
 ## SECURITY-GATE-001 — Dependency remediation
@@ -71,29 +77,28 @@ Canonical Admin shell at `/admin` includes:
 FOUND-001D passed its final no-feature closure review with no blockers and no modifications. Do not reopen it without a concrete regression or later requirement exposing a missing shell contract.
 
 ## FOUND-001E1 — Client Portal Shell Chrome & Visual Foundation
-**CONDITIONAL — NARROW CLOSURE REQUIRED**
+**CONDITIONAL — FINAL MICRO-CLOSURE REQUIRED**
 
 Verified-good E1 architecture:
 - `/` now renders the Client Portal Home surface; the old Lovable blank placeholder and `data-lovable-blank-page-placeholder` are removed;
 - `PortalShell`, `PortalTopBar`, `PortalNavigation`, `PortalPageHeader`, and shell-local `portal-nav.ts` live under `src/components/shell/portal/`;
 - Portal is independently composed and does not import Admin shell components;
-- desktop Portal navigation uses the frozen horizontal NavigationMenu pattern with Home active and Properties/Projects/Support/Billing shown as genuinely noninteractive future destinations;
+- desktop Portal navigation uses frozen horizontal NavigationMenu with Home active and Properties/Projects/Support/Billing shown as genuinely noninteractive future destinations;
 - mobile Portal navigation uses a purpose-built Core Sheet with vertical navigation rather than desktop Sidebar collapse;
 - Portal TopBar contains brand, Search placeholder, Notifications placeholder with deterministic count `2`, Àríyá placeholder and deterministic client account/avatar evidence;
 - Home is a quiet `PortalPageHeader` + `StatePanel` validation surface with no fake business data;
 - root route explicitly defers authentication/authorization to FOUND-001F;
-- no package dependency or security override drift was introduced.
+- requested E1-FIX corrections are verified on `main`: Notifications trigger semantics now land on the actual Core button, Badge is pointer-safe, account and brand use frozen focus variables, Portal Navigation imports through `@/components/core`, Portal TopBar consumes Core `toast`, Sign out uses canonical destructive/status tokens, and Portal shell/topbar horizontal gutters use canonical responsive gutter tokens;
+- no package dependency or security override drift was introduced;
+- `src/start.ts` still explicitly preserves TanStack `createCsrfMiddleware` for server functions.
 
-E1 closure blockers:
-1. Notifications `DropdownMenuTrigger asChild` currently wraps a `div` containing the IconButton, so Radix trigger semantics attach to the wrapper instead of the actual button. The actual IconButton must be the trigger; position the unread Badge separately without stealing trigger semantics.
-2. Account trigger uses hardcoded `focus-visible:ring-2` / `ring-rs-action-primary` styling. Normalize to the frozen focus-variable contract.
-3. The Re:Solve brand Link removes outline without supplying the frozen visible focus treatment. Give the real Link the canonical focus-variable contract.
-4. `PortalNavigation` imports NavigationMenu directly from `@/components/core/navigation/NavigationMenu` instead of the public `@/components/core` boundary; normalize to the Core export boundary and remove unused imports.
-5. `PortalTopBar` imports `toast` directly from `sonner`; shell code should consume the Core toast export. Normalize to `@/components/core`.
-6. Sign-out styling references non-canonical `rs-action-danger`. Use accepted destructive action/status tokens; canonical destructive action authority is `rs-action-destructive` / `rs-action-destructive-*`.
-7. Portal shell/topbar content uses hardcoded responsive horizontal gutters (`px-4/md:px-6/lg:px-8`) instead of canonical `--spacing-rs-gutter-mobile/tablet/desktop` tokens. Normalize shell horizontal gutters to the established token contract while preserving the comfortable Portal max width.
+Remaining E1 blockers:
+1. `PortalTopBar.tsx` Search trigger still references `bg-rs-surface-secondary`, but no canonical `rs-surface-secondary` token exists. Use an accepted surface token such as `bg-rs-surface-primary` or `bg-rs-surface-subtle`, preserving current restrained visual intent.
+2. `PortalShell.tsx` contains the instruction-like source comment `Do not pretend the portal is secured yet.` Keep the concise engineering fact `Authentication/authorization is intentionally deferred to FOUND-001F.` but remove the supervisor-style imperative line to satisfy prompt/source hygiene.
 
-Preserve the accepted E1 visual direction, root replacement, desktop-vs-mobile navigation model and placeholder-only behavior while making only this closure pass.
+Non-blocking hygiene: `PortalNavigation.tsx` still imports React without using it. It may be removed during this final shell-local micro-fix.
+
+Preserve all accepted E1 behavior while fixing only these remaining details.
 
 ## FOUND-001C5E audit deferrals
 Build in shell/domain only when justified:
@@ -135,4 +140,4 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Run one narrow FOUND-001E1-FIX pass to correct Portal trigger semantics, canonical focus treatment, Core public-boundary imports/toast use, destructive token usage, and canonical gutter tokens. Preserve the accepted Portal shell visual direction and root replacement. If clean, freeze E1 and proceed to E2 route-aware Portal navigation/shell composition rather than business-domain implementation.
+Run one final FOUND-001E1-FIX2 micro-pass to replace the non-existent `rs-surface-secondary` Search surface token, remove the instruction-like PortalShell comment, and optionally remove the unused React import in PortalNavigation. Preserve all accepted Portal shell behavior, Admin/Core frozen boundaries, package/security state and explicit CSRF middleware. If clean, freeze E1 and proceed to E2 route-aware Portal navigation/shell composition.
