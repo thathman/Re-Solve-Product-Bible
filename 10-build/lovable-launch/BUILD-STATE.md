@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1 ADMIN SHELL ACCEPTED/FROZEN — FOUND-001D2 NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1 ADMIN SHELL ACCEPTED/FROZEN — FOUND-001D2 CONDITIONAL / NARROW CLEANUP NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -96,6 +96,30 @@ A lint/type-only cleanup in `/ui` removed unnecessary DataTable casts during the
 
 Do not reopen D1 during later Admin-shell slices unless a concrete shell regression appears.
 
+## FOUND-001D2 — Admin Route Skeletons & Global Command/Search
+**CONDITIONAL — NARROW CLEANUP REQUIRED**
+
+Verified-good D2 architecture:
+- typed shell-local navigation configuration exists in `src/components/shell/admin/admin-nav.ts` and is shared by Sidebar, TopBar context, and Command/Search;
+- real placeholder routes exist for `/admin/clients`, `/admin/crm`, `/admin/properties`, `/admin/projects`, `/admin/sales`, `/admin/billing`, `/admin/support`, and `/admin/platform`;
+- generated TanStack route tree includes all D2 root routes under the existing `/admin` layout;
+- route pages remain placeholder-only `AdminPageHeader` + `StatePanel` surfaces with no domain data or business implementation;
+- Sidebar destinations are real TanStack `Link` elements with route-aware active state and `aria-current="page"`;
+- selecting Sidebar navigation calls `setOpenMobile(false)` so the mobile Sheet closes without changing desktop behavior;
+- shell-owned `AdminCommandMenu` composes frozen Core Command primitives; both Search triggers open the same dialog;
+- Cmd/Ctrl+K is implemented at shell level with `preventDefault` and listener cleanup;
+- navigation CommandItems use TanStack `navigate` and close the dialog without page reload;
+- Notifications and Àríyá remain placeholder-only quick-access behaviors;
+- TopBar current section title derives from the shared Admin navigation model;
+- D1 shell chrome and frozen Core remain structurally intact;
+- package/security state is unchanged and the canonical `js-yaml@4.3.1` override remains.
+
+Remaining D2 blockers:
+1. `AdminSidebar.tsx` still contains the now-unused D1 `FutureDestination` helper and Tooltip/React support imports even though all D2 root destinations are real Links. Remove this dead shell code; no future-root placeholder helper should remain in the D2 Sidebar.
+2. `AdminCommandMenu.tsx` renders a visible `⌘N` `CommandShortcut` for Notifications even though no Cmd+N behavior exists and D2 explicitly adds no global shortcut other than Cmd/Ctrl+K. Remove the misleading shortcut UI and the now-unused `CommandShortcut` import. Do not add a Notifications keyboard handler.
+
+Preserve the accepted D2 route/navigation/Command architecture while making only this cleanup.
+
 ## FOUND-001C5E gap-audit deferrals
 Build in shell (FOUND-001D/E):
 - PageHeader
@@ -138,4 +162,4 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Begin FOUND-001D2 as a small Admin-shell slice focused on route-aware shell navigation and shell-level global Command/Search composition. Keep business-domain implementations as placeholders only; do not implement auth, database, real notifications, real Àríyá, or business data. Preserve frozen D1 chrome and all Core APIs.
+Run one narrow FOUND-001D2-FIX pass to remove dead `FutureDestination` shell code and the misleading unimplemented Notifications `⌘N` command shortcut. Preserve all accepted D2 routes, navigation behavior, Cmd/Ctrl+K Command/Search, frozen D1 chrome, Core APIs, package/security state and root route. If clean, freeze D2 and proceed to the next small Admin-shell slice.
