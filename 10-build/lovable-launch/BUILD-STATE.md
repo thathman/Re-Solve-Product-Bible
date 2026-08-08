@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5D3 ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5E AUDIT ACCEPTED / IMPLEMENTATION NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5D3 ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5E CONDITIONAL / FINAL CLOSURE NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -58,13 +58,38 @@ Canonical D3 closure includes:
 
 The Re:Solve DataTable foundation is structurally closed. Do not reopen it during FOUND-001 unless a later shell/domain requirement exposes a concrete missing foundation contract.
 
+## FOUND-001C5E — Core Navigation Foundations
+**CONDITIONAL — FINAL CLOSURE REQUIRED**
+The implementation correctly established Re:Solve-owned Sidebar and NavigationMenu foundations by adapting the repository's existing shadcn/Radix source rather than adding dependencies.
+
+Verified-good C5E architecture:
+- Sidebar has controlled/uncontrolled open state and separate mobile-open state.
+- Core Sidebar contains no cookie/localStorage/sessionStorage persistence and no global Cmd/Ctrl+B listener.
+- Sidebar consumes frozen Core Button/Input/Separator/Sheet/Skeleton/Tooltip rather than stock `src/components/ui/*` equivalents.
+- Sidebar uses canonical `--spacing-rs-sidebar-width` / `--spacing-rs-sidebar-collapsed` reservations and Re:Solve semantic tokens/focus variables.
+- SidebarMenu/SidebarMenuItem preserve `ul`/`li` semantics; `asChild` supports future semantic router links/actions.
+- active Sidebar items use selected surface + font weight + action-primary indicator, not color alone.
+- collapsed Sidebar tooltips and mobile Sheet title/description are present.
+- NavigationMenu is built on the existing `@radix-ui/react-navigation-menu` dependency with Re:Solve tokens/focus treatment and `asChild` support.
+- Navigation Foundations gallery section exists and `/ui` remains production-guarded.
+- package/security state is unchanged and no dependency was added.
+
+Final C5E blockers:
+1. `src/components/core/index.ts` added broad `export *` for Sidebar and NavigationMenu; C5E must use explicit intentional exports.
+2. NavigationMenu provenance is inaccurate: package declaration is `^1.2.14`; the current dependency scan resolves `1.2.22`, not `1.2.5`.
+3. NavigationMenu viewport/content needs a real narrow-screen width guard; gallery hierarchical content currently uses fixed 400–600px widths that can overflow phone viewports.
+4. `SidebarMenuSkeleton` uses `Math.random()` to produce width during render/useMemo, which is unsuitable for deterministic SSR/hydration. Replace with deterministic width behavior or an explicit caller-provided width without random rendering.
+5. While touching NavigationMenu visual closure, ensure active/current link evidence has a non-color distinction (for example font weight/indicator) and gallery link focus uses the frozen focus-variable contract rather than ad-hoc `focus:shadow-*` styling.
+
+Do not reopen the Sidebar/NavigationMenu architecture beyond these concrete closure issues.
+
 ## FOUND-001C5E — Core UI Gap Audit
-**AUDIT ACCEPTED / IMPLEMENTATION NEXT**
+**AUDIT ACCEPTED**
 The no-change audit found the existing Core broadly sufficient and classified remaining patterns by actual shell/domain need rather than by component-catalog completeness.
 
 ### Build now in C5E
-- **Sidebar primitives** — required before Admin shell work. The repository already contains a stock shadcn-style `src/components/ui/sidebar.tsx`; C5E should adapt/normalize that source into the Re:Solve Core boundary rather than inventing a new sidebar system.
-- **NavigationMenu** — required as the generic horizontal/hierarchical navigation primitive for the Client Portal and other suitable horizontal navigation contexts. The repository already contains `src/components/ui/navigation-menu.tsx` on the existing Radix Navigation Menu dependency; normalize/adapt rather than reinstall.
+- Sidebar primitives — required before Admin shell work; normalize/adapt the existing shadcn source.
+- NavigationMenu — required as the generic horizontal/hierarchical navigation primitive; normalize/adapt the existing Radix/shadcn source.
 
 ### Build in shell (FOUND-001D/E)
 - PageHeader
@@ -72,10 +97,8 @@ The no-change audit found the existing Core broadly sufficient and classified re
 - AppLayout containers
 - DescriptionList / key-value detail composition
 
-These require shell/application intent and should not be frozen prematurely as generic Core primitives.
-
 ### Defer to first real domain requirement
-- **NumberField / Currency / Percent editing** — do not block shell work. Numeric editing needs a concrete contract for locale, parsing, precision, min/max, negative values, stepping, empty/null behavior, and display-vs-value semantics. Build it when the first business form requires it, using existing Input/FormField/InputGroup foundations unless that domain exposes a genuine reusable Core contract.
+- NumberField / Currency / Percent editing — do not block shell work; the first business form must define locale/parsing/precision/min/max/negative/step/null/display-value semantics.
 - Timeline / activity
 - FileUpload
 - RichTextEditor
@@ -89,14 +112,6 @@ These require shell/application intent and should not be frozen prematurely as g
 - SectionHeader
 - generic Toolbar
 - Carousel unless a later product requirement demonstrates an actual need
-
-### C5E implementation boundary
-C5E implementation should therefore contain only:
-1. Re:Solve Core Sidebar primitive family, normalized from the existing shadcn source and frozen Re:Solve tokens/components.
-2. Re:Solve Core NavigationMenu primitive family, normalized from the existing Radix/shadcn source.
-3. Gallery/provenance/accessibility/responsive evidence for those two families.
-
-No NumberField implementation in C5E. No shell-specific route hierarchy, product navigation IA, workspace switcher, account menu, notifications, global search, or Àríyá behavior yet.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -115,4 +130,4 @@ No NumberField implementation in C5E. No shell-specific route hierarchy, product
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Next action
-Implement FOUND-001C5E as the final pre-shell Core navigation-foundation slice: normalize/adapt the existing shadcn-style Sidebar and Radix/shadcn NavigationMenu into the canonical Re:Solve Core boundary, with gallery, responsive, accessibility and provenance evidence. Do not implement shell information architecture or NumberField in this slice.
+Run one narrow FOUND-001C5E-FIX closure for explicit Core exports, correct NavigationMenu provenance, deterministic Sidebar skeleton rendering, narrow-screen NavigationMenu containment, and canonical active/focus gallery evidence. If clean, freeze C5E and begin FOUND-001D Admin Shell.
