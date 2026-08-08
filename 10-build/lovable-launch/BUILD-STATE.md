@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5A ACCEPTED/FROZEN — SECURITY-MEM-001 ACCEPTED/CANONICAL — FOUND-001C5B CONDITIONAL (FINAL TWO-ISSUE CLOSURE REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5B ACCEPTED/FROZEN — SECURITY-MEM-001 ACCEPTED/CANONICAL**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -64,46 +64,37 @@ Known non-blocking limitation:
 **ACCEPTED / CANONICAL / FROZEN**
 Command/CommandDialog, Combobox, NativeSelect family, InputOTP family and Slider are canonical. C5A uses pre-existing cmdk 1.1.1, input-otp 1.4.2 and @radix-ui/react-slider 1.3.6.
 
+### FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable
+**ACCEPTED / CANONICAL / FROZEN**
+Calendar, DatePicker, DateRangePicker, Pagination family and ResizablePanelGroup/ResizablePanel/ResizableHandle are canonical.
+
+Accepted C5B contracts:
+- React DayPicker 9.14.0 + date-fns 4.1.0 remain the date foundation;
+- picker values stay calendar-date oriented; no implicit UTC/ISO serialization;
+- DatePicker uses typed single-mode DayPicker composition; DateRangePicker uses typed range-mode composition;
+- controlled/uncontrolled detection is based on actual `value` prop presence;
+- DateRangePicker is narrow-first at one month and enhances at desktop/tablet;
+- Pagination is semantic, router-agnostic through `asChild`, and disabled Previous/Next are true non-links;
+- react-resizable-panels v4.6.5 is used through Group/Panel/Separator with canonical `orientation`, explicit percentage string sizing where intended, library-owned Group layout, parent `group-aria-*` separator styling and stacked mobile fallback;
+- Resizable vertical separator geometry is narrow/full-height with col-resize; horizontal separator geometry is short/full-width with row-resize;
+- Slider exact-optional typing uses conditional prop spreading with no `any`/unknown casts;
+- deterministic August 2026 gallery evidence is accepted;
+- standalone DatePicker has an explicit accessible name;
+- package/lock remain on the pre-existing dependency set; no C5B dependency was added;
+- `/ui` production guard and home route remain unchanged.
+
+Lovable reported `bun install --frozen-lockfile`, build, lint and `tsc --noEmit` passing. GitHub source review verified the resulting contracts; GitHub review does not independently execute Bun.
+
 ## SECURITY-MEM-001 — Lovable Security Memory
 **ACCEPTED / CANONICAL**
-Supervisor-approved 13-rule security memory remains canonical.
+Supervisor-approved 13-rule security memory remains canonical unless Lovable surfaces changed text. Do not reopen merely because a completion message says the memory was updated.
 
 ## Currency display convention
 **CANONICAL**
 - Internal/data/API currency identity remains explicit via ISO codes.
 - Normal user-facing UI uses locale-appropriate currency symbols where unambiguous.
 - No universal default currency.
-- Current gallery examples use `$42,850.00` and `$12,400.00`.
-
-## FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable
-**STATUS: CONDITIONAL — FINAL TWO-ISSUE CLOSURE REQUIRED**
-
-### Verified current improvements
-- Port Range prompt leakage is gone and label is exactly `Port Range`.
-- Standalone DatePicker now has `aria-label="Target date"`.
-- Calendar evidence is deterministic August 2026: fixed default month and explicit today/selected states.
-- DatePicker uses `PropsSingle`; DateRangePicker uses `PropsRange`; no `any` remains in their picker boundary.
-- Picker controlled/uncontrolled detection uses actual prop presence.
-- Calendar dates use local calendar constructors, not ISO date-string parsing.
-- DateRange maintenance/error/disabled-date evidence exists.
-- Pagination disabled Previous/Next evidence and asChild evidence exist.
-- Resizable public API uses v4 `orientation` and gallery sizes use percentage strings.
-- Resizable Group wrapper no longer adds manual flex/flex-col; it keeps only safe size classes.
-- Resizable nested line/grip now use parent `group-aria-*` state instead of same-element ARIA selectors.
-- package.json/bun.lock use `react-resizable-panels ^4.6.5`; Vitest absent.
-- `/ui` guard and home route remain unchanged.
-
-### Remaining verified blockers
-1. **Frozen Slider now contains two `as any` casts.** `src/components/core/inputs/Slider.tsx` constructs `rootProps` with `value: value as any` and `defaultValue: defaultValue as any` to satisfy `exactOptionalPropertyTypes`. This weakens the accepted C5A type boundary and is unnecessary. Solve exact-optional typing by conditionally spreading only defined `value` / `defaultValue` props (or another fully typed approach) instead of casting to `any`. C5A remains frozen except for this hygiene repair introduced during C5B closure.
-2. **Resizable separator geometry is reversed relative to its actual ARIA orientation.** Current `aria-orientation="vertical"` classes produce an 8px-high/full-width row-resize target and horizontal line; current `aria-orientation="horizontal"` classes produce an 8px-wide/full-height col-resize target and vertical line. WAI-ARIA separator orientation describes the separator itself. A vertical separator must be a vertical divider (narrow width/full height, col-resize); a horizontal separator must be a horizontal divider (short height/full width, row-resize). Swap the root target geometry, child line geometry, and grip rotation accordingly while keeping parent `group-aria-*` propagation.
-
-### Source verification notes
-- `tsconfig.json` has `exactOptionalPropertyTypes: true`.
-- Official react-resizable-panels v4 docs confirm Group owns `display`, `flex-direction`, `flex-wrap`, and `overflow`; v4 uses `orientation`; numeric Panel sizes are pixels and percentage examples should use strings.
-- Lovable reports build/lint/`tsc --noEmit` passing. Source-level supervisor review does not independently execute Bun through GitHub.
-
-### Review classification
-C5B is otherwise ready. One narrow correction should touch only `Slider.tsx` and `Resizable.tsx`, then stop for final review. No gallery, package, picker, pagination, formatter, provenance, security-memory or home-route changes are required unless a compile error proves otherwise.
+- Gallery examples use `$42,850.00` and `$12,400.00`.
 
 ## Current architecture facts
 - TanStack Start v1 + Vite 8.2 + React 19.2.
@@ -111,9 +102,28 @@ C5B is otherwise ready. One narrow correction should touch only `Slider.tsx` and
 - Tailwind 4.2.1.
 - shadcn source setup `new-york`; do not rerun init.
 - primitive base: individual Radix packages + source-owned shadcn.
+- Drawer: Vaul 1.1.2.
+- Toast: Sonner 2.0.7.
+- Command: cmdk 1.1.1.
+- OTP: input-otp 1.4.2.
+- Slider: @radix-ui/react-slider 1.3.6.
 - Calendar/date foundation: react-day-picker 9.14.0 + date-fns 4.1.0.
 - Resizable foundation: react-resizable-panels 4.6.5.
 - Testing stack not canonical/configured.
+- PWA/auth/domain implementation remains later work.
+
+## UI source direction
+- Re:Solve Core is the public UI boundary.
+- Keep the established Radix foundation; no wholesale Base UI/React Aria migration.
+- shadcn-vue remains visual/composition reference only; never runtime Vue code.
+- Untitled UI and Tremor remain selective source/reference systems.
+
+## Planned later work
+- Additional Core composition/display primitives remain before shell work.
+- Number Field and Tags Input are not current official React shadcn primitives; any future React port requires explicit source/type review rather than copying Vue code.
+- Questionnaire/review remains a higher-order composition above FormField/FieldGroup, not a second forms framework.
+- Security-sensitive QR uses signed/scoped/short-lived references only.
+- Conversation/Àríyá, auth, dashboard, shell, PWA, CI and testing remain later FOUND-001 work.
 
 ## Next action
-Execute the supervisor-provided final Slider type-hygiene + Resizable orientation-geometry correction only. Re-review before acceptance. Do not begin another slice.
+Proceed only with the next supervisor-issued FOUND-001C slice. Do not rename repositories or begin shell/auth/domain work yet.
