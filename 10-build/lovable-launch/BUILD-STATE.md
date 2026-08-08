@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1 CONDITIONAL (NARROW ACCESSIBILITY/HYGIENE FIX REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1 ACCEPTED/FROZEN — FOUND-001C5D2 NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -12,7 +12,7 @@ Keep this file updated after each supervised build review so the next Product Bi
 - Canonical-name transition performed: `NO`.
 
 ## Accepted foundation
-FOUND-001A, FOUND-001B and FOUND-001C1-C5C are accepted/canonical/frozen. C5C includes the Card family, semantic Table family and thin AspectRatio wrapper. Do not reopen frozen UI slices without a concrete regression.
+FOUND-001A, FOUND-001B and FOUND-001C1-C5D1 are accepted/canonical/frozen. Do not reopen frozen UI slices without a concrete regression.
 
 ## Currency display convention
 **CANONICAL**
@@ -42,39 +42,32 @@ Canonical package security state:
 The override is temporary supply-chain remediation and should be re-evaluated when upstream dependencies no longer need it.
 
 ## FOUND-001C5D1 — DataTable Core Foundation
-**STATUS: CONDITIONAL — NARROW ACCESSIBILITY/HYGIENE FIX REQUIRED**
+**ACCEPTED / CANONICAL / FROZEN**
 
-### Verified implementation
-- `@tanstack/react-table` is now the justified C5D1 direct dependency at `8.20.5`;
-- generic Re:Solve `DataTable<TData, TValue>` exists;
-- engine enables only `getCoreRowModel`, `getSortedRowModel`, and `getPaginationRowModel`;
-- frozen simple semantic Table is reused for rendering;
-- client sorting exists;
-- frozen Core Pagination family is reused;
-- page-size selector exists with 10/20/50;
-- normal/loading/error/empty presentation exists;
+Canonical D1 contracts:
+- `@tanstack/react-table` is the single justified DataTable engine dependency at `8.20.5`;
+- Re:Solve owns the generic `DataTable<TData, TValue>` boundary;
+- rendering composes the frozen semantic Core `Table` primitives;
+- enabled TanStack row models are only `getCoreRowModel`, `getSortedRowModel`, and `getPaginationRowModel`;
+- client-side sorting is supported;
+- `aria-sort` belongs on the relevant `TableHead`/`th` rather than the sort Button;
+- sort interaction remains a real Core Button with accessible next-action naming;
+- frozen Core Pagination is reused;
+- enabled Previous/Next controls are keyboard-operable anchors with client-side `preventDefault` navigation;
+- disabled Previous/Next remain frozen non-link states;
+- page-size options are 10/20/50 with default 10;
+- pagination/footer is suppressed while loading and when no data exists, avoiding `Page 1 of 0`;
+- explicit normal/loading/error/empty states exist;
+- default empty copy is neutral and does not claim D2 filters/search exist;
+- optional `getRowId` is supplied through exact-optional-safe conditional spreading with no forced cast;
+- generic engine contains no `any`/`as unknown` workaround;
 - bounded horizontal scrolling remains inherited from Core Table;
-- D1 gallery evidence exists;
-- `js-yaml` override remains present;
-- no C5D2 filtering/visibility/selection engine was intentionally added.
+- `StatePanel` was restored to its frozen public API;
+- stray `src/routes/__dev/ui.tsx.demo-parts` artifact was removed;
+- `/ui` D1 gallery remains the sole canonical gallery evidence;
+- no D2 filtering, visibility, selection or toolbar features are part of D1.
 
-### Remaining verified blockers
-1. **`aria-sort` is attached to the sort Button instead of the column-header cell.** `aria-sort` belongs on the relevant column/row header semantic element. Move the current sort state to `TableHead`/`th`; keep the button name describing the next action.
-2. **Enabled Previous/Next controls are anchors without `href`.** Frozen `PaginationPrevious`/`PaginationNext` render a normal `<a>` when enabled. C5D1 currently provides only `onClick`, producing anchors without link keyboard semantics. Compose an actually keyboard-operable enabled control without modifying frozen Pagination implementation. A small `href` + preventDefault client-pagination approach is acceptable; another semantic composition using the existing Pagination family is acceptable if it preserves disabled non-link behavior.
-3. **Empty-state copy references filters/search that do not exist in D1.** Replace with neutral D1-accurate copy such as no records/data available. Do not introduce filtering/search.
-4. **Empty data can produce `Page 1 of 0`.** Do not render nonsensical page information/navigation when there are zero rows; keep the empty state bounded and understandable.
-5. **`getRowId` uses an unnecessary forced function cast and is always supplied to `useReactTable`.** With `exactOptionalPropertyTypes`, conditionally spread `getRowId` only when provided. No cast is needed.
-6. **Frozen `StatePanel` was modified only to widen optional action properties with `| undefined`.** Revert `StatePanel.tsx` to the accepted C5C/C4 public type contract. DataTable already conditionally constructs action props and does not need this frozen API change.
-7. **Stray file `src/routes/__dev/ui.tsx.demo-parts` was committed.** It duplicates gallery data/helpers, includes an `any` status map, and is not a canonical source file. Delete it; keep the actual `/ui` source as the sole gallery evidence.
-
-### Additional scope observation
-`src/lib/theme/contract.ts` differs from the earlier C5C baseline by adding a nested try/catch around `localStorage.getItem`. This is outside C5D1 scope. Do not modify it in the C5D1 fix unless the supervisor explicitly reopens it; the narrow fix should focus only on verified D1 regressions above.
-
-### Package/security state
-Current `package.json` correctly includes `@tanstack/react-table: 8.20.5` and preserves the `js-yaml: 4.3.1` top-level override. No second table dependency is justified.
-
-### Review classification
-The DataTable architecture is directionally correct and should not be rewritten. One narrow correction should fix semantic sorting, keyboard-operable pagination, neutral empty/pagination state behavior, exact-optional `getRowId`, restore frozen StatePanel, and remove the stray demo artifact. Then stop for final D1 review.
+Lovable reported frozen install, build, lint and `tsc --noEmit` passing with only the existing Fast Refresh warnings. GitHub source review verified the accepted contracts; GitHub review does not independently execute Bun.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -84,7 +77,7 @@ The DataTable architecture is directionally correct and should not be rewritten.
 - Calendar/date foundation: react-day-picker 9.14.0 + date-fns 4.1.0.
 - Resizable foundation: react-resizable-panels 4.6.5.
 - TanStack Query is pre-existing.
-- TanStack React Table `8.20.5` is the C5D1 table engine.
+- TanStack React Table `8.20.5` is the canonical DataTable engine.
 - Testing stack not canonical/configured.
 - Auth, database/RLS, PWA and domain implementation remain later work.
 
@@ -96,4 +89,4 @@ The DataTable architecture is directionally correct and should not be rewritten.
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Next action
-Execute the supervisor-provided FOUND-001C5D1-FIX only. Do not begin C5D2 until D1 is accepted/frozen.
+Proceed with supervisor-issued FOUND-001C5D2 only: global/column filtering, column visibility, row selection, and a restrained operational toolbar on top of the frozen D1 engine. Do not begin server/manual pagination, saved views, URL persistence, shell, auth, database, dashboard, or business-domain screens.
