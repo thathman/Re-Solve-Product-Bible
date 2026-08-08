@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5D3 ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5E CORE GAP AUDIT NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5D3 ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5E AUDIT ACCEPTED / IMPLEMENTATION NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -58,6 +58,46 @@ Canonical D3 closure includes:
 
 The Re:Solve DataTable foundation is structurally closed. Do not reopen it during FOUND-001 unless a later shell/domain requirement exposes a concrete missing foundation contract.
 
+## FOUND-001C5E — Core UI Gap Audit
+**AUDIT ACCEPTED / IMPLEMENTATION NEXT**
+The no-change audit found the existing Core broadly sufficient and classified remaining patterns by actual shell/domain need rather than by component-catalog completeness.
+
+### Build now in C5E
+- **Sidebar primitives** — required before Admin shell work. The repository already contains a stock shadcn-style `src/components/ui/sidebar.tsx`; C5E should adapt/normalize that source into the Re:Solve Core boundary rather than inventing a new sidebar system.
+- **NavigationMenu** — required as the generic horizontal/hierarchical navigation primitive for the Client Portal and other suitable horizontal navigation contexts. The repository already contains `src/components/ui/navigation-menu.tsx` on the existing Radix Navigation Menu dependency; normalize/adapt rather than reinstall.
+
+### Build in shell (FOUND-001D/E)
+- PageHeader
+- CommandBar / CommandPalette composition over the frozen Command engine
+- AppLayout containers
+- DescriptionList / key-value detail composition
+
+These require shell/application intent and should not be frozen prematurely as generic Core primitives.
+
+### Defer to first real domain requirement
+- **NumberField / Currency / Percent editing** — do not block shell work. Numeric editing needs a concrete contract for locale, parsing, precision, min/max, negative values, stepping, empty/null behavior, and display-vs-value semantics. Build it when the first business form requires it, using existing Input/FormField/InputGroup foundations unless that domain exposes a genuine reusable Core contract.
+- Timeline / activity
+- FileUpload
+- RichTextEditor
+- Charts
+- Kanban
+- TreeSelect
+
+### Unnecessary as dedicated Core families
+- SearchField — compose InputGroup + icon/action
+- Menubar
+- SectionHeader
+- generic Toolbar
+- Carousel unless a later product requirement demonstrates an actual need
+
+### C5E implementation boundary
+C5E implementation should therefore contain only:
+1. Re:Solve Core Sidebar primitive family, normalized from the existing shadcn source and frozen Re:Solve tokens/components.
+2. Re:Solve Core NavigationMenu primitive family, normalized from the existing Radix/shadcn source.
+3. Gallery/provenance/accessibility/responsive evidence for those two families.
+
+No NumberField implementation in C5E. No shell-specific route hierarchy, product navigation IA, workspace switcher, account menu, notifications, global search, or Àríyá behavior yet.
+
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
 - Tailwind 4.2.1 declaration baseline.
@@ -75,4 +115,4 @@ The Re:Solve DataTable foundation is structurally closed. Do not reopen it durin
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Next action
-Run FOUND-001C5E as a Core UI gap audit before building additional primitives. Audit actual shell/portal/foundation needs against the current Core inventory, current shadcn/Untitled/Tremor references and approved architecture. Classify each missing pattern as build-now, defer-to-shell/domain, or unnecessary. Do not install or implement components during the audit itself.
+Implement FOUND-001C5E as the final pre-shell Core navigation-foundation slice: normalize/adapt the existing shadcn-style Sidebar and Radix/shadcn NavigationMenu into the canonical Re:Solve Core boundary, with gallery, responsive, accessibility and provenance evidence. Do not implement shell information architecture or NumberField in this slice.
