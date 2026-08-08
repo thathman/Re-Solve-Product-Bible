@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 ACCEPTED + CLOSED — FOUND-001C4 CONDITIONAL (FINAL C4 CONTRACT CLEANUP REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 ACCEPTED + CLOSED — FOUND-001C4 CONDITIONAL (FINAL C4 CLOSURE HYGIENE REQUIRED)**
 
 ## Canonical Product Bible state
 - Repository: `thathman/Re-Solve-Product-Bible`.
@@ -133,7 +133,7 @@ Key contracts:
 C3 closure hygiene also removed leaked prompt text from the home route and restored accepted Skeleton gallery evidence.
 
 ## FOUND-001C4 — Utility, Feedback & Composition Core Pack
-**Status: CONDITIONAL — FINAL C4 CONTRACT CLEANUP REQUIRED BEFORE C5**
+**Status: CONDITIONAL — FINAL C4 CLOSURE HYGIENE REQUIRED BEFORE C5**
 
 ### Current C4 inventory present on application `main`
 - Alert
@@ -142,44 +142,45 @@ C3 closure hygiene also removed leaked prompt text from the home route and resto
 - Progress
 - Toast / Toaster
 - Item family
-- ButtonGroup / ButtonGroupSeparator
+- ButtonGroup / ButtonGroupSeparator / ButtonGroupText
 - InputGroup family / InputGroupButton
 - Kbd / KbdGroup
 - Toggle / ToggleGroup
 - Breadcrumb family
 - StatePanel
 
-### Verified improvements after C4-FIX and C4-FIX2
-- non-canonical C4 border/ring token drift was materially normalized to accepted authority tokens;
-- Progress now forwards the determinate `value` to Radix and uses generated IDs/ARIA naming support;
-- Spinner uses `motion-safe:animate-spin`; decorative mode uses `aria-hidden`, meaningful mode exposes status text;
-- InputGroup consumes FormField invalid/disabled state via nullish override semantics;
+### Verified C4 contracts now materially correct after FIX/FIX2/FIX3
+- Progress forwards determinate `value` to Radix and has generated-ID/ARIA naming support without requiring an explicit ID;
+- Spinner uses `motion-safe:animate-spin`; decorative mode is `aria-hidden`, meaningful mode exposes status text;
+- InputGroup consumes FormField invalid/disabled state with nullish override semantics and includes `min-w-0`;
 - InputGroupButton composes Core Button and inherits FormField disabled state;
-- Item removed the cursor-only `interactive` prop and uses `asChild` for semantic button/link composition;
+- InputGroupAddon exposes `inline-start`, `inline-end`, `block-start`, `block-end` visual alignment values;
+- Item removed the cursor-only `interactive` prop; noninteractive rows no longer carry clickable hover/focus treatment;
 - ItemMedia/EmptyMedia use direct-child SVG selectors rather than cloneElement sizing;
-- Empty no longer forces a 400px minimum and entrance motion is motion-safe;
-- Toast no longer exposes raw Sonner and no `any` suppression/cast remains;
-- Toggle pressed state now has non-color ring/elevation feedback and accepted focus variables;
+- Empty sizes naturally and entrance motion is motion-safe;
+- Toast public API now exposes typed `message`, `info`, `success`, `warning`, `error`, `loading`, `dismiss` methods without raw Sonner exposure or broad callable-object assertions;
+- Toast action foreground now uses `text-rs-text-inverse` and status icons use foreground semantics;
+- ButtonGroupText now exists and is exported through the Core boundary;
+- ButtonGroupSeparator orientation names now correspond to the rendered line;
+- Toggle pressed state has explicit non-color ring/elevation feedback and accepted focus variables;
 - Breadcrumb dead separator prop was removed and long wrapping evidence exists;
 - gallery contains Warning Toast, standalone Empty, InputGroupText, InputGroupButton, textarea footer, pressed Toggle and long Breadcrumb evidence;
-- Sonner provenance now lives under Runtime UI Dependencies;
+- gallery ToggleGroup examples now use `aria-labelledby` on both group roots;
+- Sonner provenance lives under Runtime UI Dependencies and ButtonGroupText is recorded in shadcn source-pattern intake;
 - Sonner 2.0.7 and Vaul 1.1.2 remain pre-existing dependencies;
 - `package.json` and the temporary home route remain unchanged;
 - `/ui` remains production guarded.
 
-### Remaining verified C4 blockers after FIX2
-1. **InputGroup alignment/DOM-order contract is still incomplete.** `InputGroupAddon.align` only changes addon styling. The parent does not automatically recompose for block addons, so the gallery still requires `className="flex-col"`. Inline-start examples also place addons before the input in DOM order. Current React shadcn guidance requires addons to remain after Input/InputGroupTextarea in DOM order and `align` to control visual placement. The Core implementation should make this true without gallery-only layout hacks.
-2. **ToggleGroup roots remain unnamed.** Gallery labels individual ToggleGroupItem controls, but the single-selection and multiple-selection ToggleGroup roots still lack `aria-label` or `aria-labelledby`.
-3. **Toast action foreground is semantically wrong.** Toaster primary action uses `text-rs-status-success-foreground` with `bg-rs-action-primary`. It must use the same inverse/action foreground contract as canonical Core Button rather than a success-status foreground.
-4. **Toast wrapper typing is still misleading.** `toast.message` is asserted to `typeof sonnerToast`, a callable object type with attached methods; the wrapper function does not actually carry those runtime properties. Replace broad callable-object assertions with method-specific `Parameters<>` / `ReturnType<>` wrappers or equivalent accurate typing.
-5. **ButtonGroupText is still absent.** Current React shadcn Button Group treats ButtonGroupText as a first-class composition primitive and it is useful for labels/prefixes. Add it through the Core boundary rather than omitting part of the selected source pattern.
-6. **ButtonGroupSeparator orientation should match a clear canonical contract.** Prefer the current shadcn meaning where separator orientation describes the separator line (`vertical` in a horizontal button group, `horizontal` in a vertical group), or derive it from ButtonGroup context. Avoid an API where `orientation="horizontal"` renders a vertical line without clear context semantics.
-7. **Progress naming should be hardened for optional labels.** If `showLabel=true` but `label` is absent and the caller supplies `aria-label`, do not also generate an empty `aria-labelledby` target that can take naming precedence. Only bind the visible label ID when an actual visible label exists and no explicit accessible-name prop overrides it.
-8. **Item polymorphic ref typing should not lie.** `Item` now renders semantic controls through Slot, but its forwarded ref is still typed as `HTMLDivElement`; an `asChild` button/link can therefore produce an incorrect ref type contract. Align the implementation with a safe current-shadcn-style `asChild`/Slot typing strategy without casts.
-9. **InputGroup responsive foundation should include the current-source `min-w-0` behavior** so grouped controls do not force avoidable overflow in constrained layouts.
+### Remaining verified C4 blockers after FIX3
+1. **Item still violates the explicit no-cast closure criterion.** `src/components/core/layout/Item.tsx` still renders `<Comp ref={ref as any}>`. The completion report said the ref/asChild contract was corrected, but `main` still contains `as any`. Remove the cast and use a truthful Slot/polymorphic ref strategy. This is a blocker because FIX3 explicitly required `no as any`.
+2. **InputGroup gallery DOM order is still wrong in two examples.** `Search Domain` still renders an addon before the input, and `Assign User` still renders the inline-start addon before the input. The accepted C4 contract requires the input/textarea first in DOM order and `align` to control visual position.
+3. **InputGroup block-end gallery still uses a layout hack.** `Note with Footer` still renders `<InputGroup className="flex-col">`. The C4 contract explicitly requires `align="block-end"` to produce the composition without adding `flex-col` to the group.
+4. **ButtonGroupText is imported/exported but not actually demonstrated in the C4 gallery.** Add one compact evidence example so the new public primitive is reviewable rather than dead intake.
+5. **ButtonGroup separator gallery orientation is still semantically wrong.** The horizontal `Publish options` ButtonGroup uses `ButtonGroupSeparator orientation="horizontal"`, which now correctly renders a horizontal line. In a horizontal group this should be a vertical separator (or omit the prop if vertical is the default).
+6. **ButtonGroupText border treatment is incomplete.** Its class includes `border-rs-border-normal` but no border width utility, so the declared border color does not create a visible border. Add an actual restrained border where the composition requires it, normalized to the accepted token.
 
 ### Review classification
-C4 remains structurally sound. One final narrow `FOUND-001C4-FIX3` should address only the remaining blockers above. No redesign or new component family is required. If clean, freeze C4 and proceed to C5.
+The implementation is close enough that no further architecture work is needed. Execute one closure-hygiene fix covering only the six findings above. If clean, freeze C4 immediately and proceed to C5.
 
 ## shadcn ecosystem direction now canonical
 - `shadcn-vue` is a visual/composition/block reference only; Re:Solve remains React/TanStack and uses React shadcn equivalents where available.
@@ -209,11 +210,11 @@ C4 remains structurally sound. One final narrow `FOUND-001C4-FIX3` should addres
 - auth/domain setup: not yet implemented.
 
 ## UI-source incorporation state
-- shadcn/ui: source-owned starter foundation, materially normalized through Re:Solve Core; C4 remains conditional pending final composition/type cleanup.
+- shadcn/ui: source-owned starter foundation, materially normalized through Re:Solve Core; C4 remains conditional pending final closure hygiene.
 - shadcn-vue: visual/composition/block reference only; no runtime dependency.
 - Radix: incorporated beneath shadcn/Core.
 - Vaul: pre-existing dependency first consumed by Drawer in C3; accepted.
-- Sonner: pre-existing 2.0.7 dependency first consumed through Core Toast in C4; final wrapper/action contract pending.
+- Sonner: pre-existing 2.0.7 dependency first consumed through Core Toast in C4; wrapper/action contract now materially corrected.
 - Lucide: primary icon family.
 - Untitled UI React: material Avatar incorporation accepted in C1; later use remains selective.
 - Tremor Raw: material Metric incorporation accepted in C1.
@@ -225,9 +226,9 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- C4 requires one final narrow closure fix before acceptance;
+- C4 requires one final closure-hygiene fix before acceptance;
 - Questionnaire/review and QR remain approved later source candidates;
 - advanced input/scheduling, conversation/Àríyá, auth, application shell, PWA, CI and tests remain future FOUND-001 substeps.
 
 ## Next action
-Execute supervisor-provided `FOUND-001C4-FIX3` only. Correct InputGroup visual alignment/DOM order, ToggleGroup naming, Toast action/type contract, ButtonGroupText/separator semantics, Progress optional-label naming, Item polymorphic ref typing and InputGroup min-width behavior. Re-review afterward. Do not begin FOUND-001C5.
+Execute supervisor-provided `FOUND-001C4-FIX4` only. Remove the remaining Item `as any`, correct InputGroup gallery DOM order and block-end evidence, demonstrate ButtonGroupText, correct Publish separator orientation, and give ButtonGroupText a real restrained border treatment. Re-review afterward. Do not begin FOUND-001C5.
