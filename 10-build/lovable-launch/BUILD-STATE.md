@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5B ACCEPTED/FROZEN — FOUND-001C5C CONDITIONAL — SECURITY-MEM-001 ACCEPTED/CANONICAL**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY GOVERNANCE REMEDIATION REQUIRED BEFORE C5D**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -66,49 +66,57 @@ Command/CommandDialog, Combobox, NativeSelect family, InputOTP family and Slider
 
 ### FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable
 **ACCEPTED / CANONICAL / FROZEN**
-Calendar, DatePicker, DateRangePicker, Pagination family and ResizablePanelGroup/ResizablePanel/ResizableHandle are canonical. Date-only semantics, typed picker modes, responsive range month count, router-agnostic Pagination, v4 Resizable orientation/geometry, conditional Slider prop spreading, deterministic August 2026 gallery evidence and no-new-dependency package state are frozen.
+Calendar, DatePicker, DateRangePicker, Pagination family and ResizablePanelGroup/ResizablePanel/ResizableHandle are canonical.
 
-## FOUND-001C5C — Core Display Primitives
-**STATUS: CONDITIONAL — NARROW NORMALIZATION REQUIRED**
+### FOUND-001C5C — Display Primitives
+**ACCEPTED / CANONICAL / FROZEN**
+Card family, semantic Table family and AspectRatio are canonical.
 
-### Current implementation present on app `main`
-- `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`, `CardAction`;
-- Card variants: default, raised, subtle, interactive, with `asChild` semantic composition;
-- native semantic `Table` family with bounded horizontal-scroll wrapper;
-- thin `AspectRatio` wrapper around pre-existing `@radix-ui/react-aspect-ratio`;
-- explicit C5C exports added to Core boundary;
-- `Display Primitives` gallery exists with Card, Table and AspectRatio evidence;
-- currency evidence follows canonical symbol display;
-- no C5C dependency was reported or observed.
+Accepted C5C contracts:
+- Card variants: default, raised, subtle and semantic interactive/asChild;
+- only interactive Card receives hover/focus affordance;
+- interactive Card uses frozen Re:Solve focus-variable contract;
+- simple Table uses native HTML table semantics and bounded horizontal scrolling;
+- static TableRow has no default hover affordance;
+- selected-row visual state remains available without introducing DataTable behavior;
+- currency display uses symbols such as `$1,250.00` in normal UI;
+- AspectRatio is a thin Core wrapper over pre-existing `@radix-ui/react-aspect-ratio`;
+- Display Primitives gallery evidence is accepted;
+- no C5C dependency added.
 
-### Verified strengths
-- default Card is quiet/bordered; raised uses accepted level-1 elevation;
-- interactive Card gallery uses an actual anchor through `asChild`, not click-only div semantics;
-- Table retains native table/thead/tbody/tfoot/tr/th/td/caption semantics;
-- table horizontal overflow is contained by the Table wrapper;
-- gallery includes header/body/footer/caption, numeric right alignment, `$` currency values and narrow constrained table evidence;
-- AspectRatio is a thin Radix wrapper and gallery images carry meaningful alt text;
-- C5C exports are explicit for the newly added families;
-- existing C1-C5B gallery evidence remains present.
-
-### Remaining verified blockers
-1. **Interactive Card uses a noncanonical focus ring.** `Card.tsx` uses `focus-visible:ring-2`, `focus-visible:ring-rs-action-primary`, and fixed offset utilities. Replace these with the frozen Re:Solve focus-variable contract: `--rs-focus-ring-width`, `--rs-focus-ring-color`, `--rs-focus-offset-width`, `--rs-focus-offset-color`.
-2. **Static Table rows receive hover styling by default.** `TableRow` applies `hover:bg-rs-surface-subtle/30` to every row, including static display-only rows. Static rows must not imply clickability. Remove default hover treatment or gate it behind an explicit opt-in state/variant without introducing DataTable behavior.
-3. **AspectRatio provenance is underspecified.** `docs/ui-sources.md` lists Aspect Ratio under shadcn and Radix generically, but C5C should explicitly record the pre-existing runtime `@radix-ui/react-aspect-ratio` (currently 1.1.8), MIT license, and first Re:Solve Core consumption in C5C. Keep shadcn pattern provenance separate from runtime package provenance.
-
-### Review classification
-C5C architecture is accepted in direction but not frozen yet. Apply one narrow normalization pass touching Card, Table and provenance only. Do not redesign the gallery or introduce DataTable.
-
-## SECURITY-MEM-001 — Lovable Security Memory
-**ACCEPTED / CANONICAL**
-Supervisor-approved 13-rule security memory remains canonical unless Lovable surfaces changed text. Do not reopen merely because a completion message says the memory was updated.
+Lovable reported frozen install, build, lint and `tsc --noEmit` passing. GitHub source review verified the resulting contracts; GitHub review does not independently execute Bun.
 
 ## Currency display convention
 **CANONICAL**
 - Internal/data/API currency identity remains explicit via ISO codes.
 - Normal user-facing UI uses locale-appropriate currency symbols where unambiguous.
 - No universal default currency.
-- Gallery examples use symbols such as `$42,850.00`.
+
+## Security governance state
+**REMEDIATION REQUIRED BEFORE C5D**
+
+### Security-memory drift
+Lovable surfaced an empty security-memory template after C5C rather than the previously approved Re:Solve-specific rules. Treat the empty template as non-canonical. Before C5D, replace it with an accurate concise scanner-oriented Re:Solve security memory that covers the actual foundation and future access-control rules without claiming unimplemented auth/RLS systems already exist.
+
+### Dependency scan — 2026-08-08
+User-provided dependency scan reports one High vulnerability finding associated with `@tanstack/react-start` through transitive `js-yaml`:
+- advisory: GHSA-5p4m-2wfm-xmqj;
+- affected js-yaml: >=4.0.0,<4.3.1 (and legacy 3.x before 3.15.1);
+- patched js-yaml 4.x: 4.3.1;
+- impact: algorithmic-complexity CPU denial of service when parsing attacker-controlled YAML.
+
+Do not blindly add an override. First identify the exact installed `js-yaml` version and dependency chain with Bun, determine whether a safe compatible transitive update/lock refresh resolves it, and prefer an upstream-compatible package update over forced overrides. If no clean compatible resolution exists, document exposure and mitigation and stop for supervisor review.
+
+### AspectRatio provenance accuracy
+`package.json` declares `@radix-ui/react-aspect-ratio` as `^1.1.8`; the 2026-08-08 scanner reports resolved version 1.1.15. Provenance should distinguish declared range from resolved version instead of treating 1.1.8 as the installed resolved version.
+
+## Security memory baseline
+The old 13-rule prose should not be blindly pasted into the new scanner template. Use the scanner's three sections:
+- Security Memory: concise description of Re:Solve and its server-authoritative access-control model;
+- What should never happen within apps business logic: invariant security failures the scanner should flag;
+- What to not create vulnerabilities for: accepted-risk exceptions only; currently none unless explicitly approved by the owner/supervisor.
+
+No actual credentials/secrets belong in security memory.
 
 ## Current architecture facts
 - TanStack Start v1 + Vite 8.2 + React 19.2.
@@ -118,8 +126,8 @@ Supervisor-approved 13-rule security memory remains canonical unless Lovable sur
 - primitive base: individual Radix packages + source-owned shadcn.
 - Calendar/date foundation: react-day-picker 9.14.0 + date-fns 4.1.0.
 - Resizable foundation: react-resizable-panels 4.6.5.
-- AspectRatio foundation: @radix-ui/react-aspect-ratio 1.1.8, pre-existing dependency.
 - Testing stack not canonical/configured.
+- Auth, database/RLS, PWA and domain implementation remain later work.
 
 ## UI source direction
 - Re:Solve Core is the public UI boundary.
@@ -128,11 +136,9 @@ Supervisor-approved 13-rule security memory remains canonical unless Lovable sur
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Planned later work
-- DataTable remains a separate later supervised system; do not fold it into simple Table.
-- Additional higher-order composition primitives remain before shell work.
-- Questionnaire/review remains above FormField/FieldGroup, not a second forms framework.
-- Security-sensitive QR uses signed/scoped/short-lived references only.
-- Conversation/Àríyá, auth, dashboard, shell, PWA, CI and testing remain later FOUND-001 work.
+- FOUND-001C5D: DataTable foundation, after security remediation gate passes.
+- Further Core-gap audit only after DataTable.
+- Admin shell, Portal shell, identity/auth/permissions, PWA/accessibility/CI/security hardening and integrated review remain later FOUND-001 work.
 
 ## Next action
-Execute only the supervisor-issued C5C normalization correction. Re-review before acceptance. Do not begin DataTable or another C5 slice.
+Execute the supervisor-provided security-memory + dependency-advisory remediation gate. Re-review before C5D. Do not begin DataTable yet.
