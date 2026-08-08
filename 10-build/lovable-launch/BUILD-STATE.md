@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED/FROZEN — FOUND-001C2 ACCEPTED/FROZEN — FOUND-001C3 ACCEPTED/FROZEN — FOUND-001C4 ACCEPTED/FROZEN — FOUND-001C5A READY**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C4 ACCEPTED/FROZEN — FOUND-001C5A CONDITIONAL (ADVANCED INPUT CONTRACT FIX REQUIRED)**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -12,11 +12,10 @@ Keep this file updated after each supervised build review so the next Product Bi
 - Canonical-name transition performed: `NO`.
 
 ## Lovable project
-- Project Knowledge installed: `YES`.
-- Canonical workspace Skills installed: `YES — 30 Re:Solve skills + self-host-check`.
+- Project Knowledge installed: YES.
+- Canonical workspace Skills installed: YES — 30 Re:Solve skills + `self-host-check`.
 - Platform default skill active: `design-taste-frontend`.
-- Duplicate `.agents/skills/` drafts: removed.
-- Obsolete `airix-*` skills: none.
+- Duplicate `.agents/skills/` drafts removed; obsolete `airix-*` skills absent.
 
 ## Backend state
 - Lovable Cloud enabled for development.
@@ -27,151 +26,103 @@ Keep this file updated after each supervised build review so the next Product Bi
 
 Never store credentials/secrets in this file.
 
-## Accepted slices
+## Accepted foundation
 
 ### FOUND-001A — Stack & Repository Foundation
-**Status: ACCEPTED**
-
-Accepted foundation includes TanStack Start v1 + React 19.2, Vite 8.2, TypeScript 5.8, Bun 1.3.3, Tailwind 4.2.1, preserved Radix-based shadcn source setup, environment/config boundaries, locale/currency-safe formatters, provenance ledger, portability guardrails and no business/domain implementation.
+**ACCEPTED**
+TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3 + Tailwind 4.2.1. Radix-based shadcn source setup preserved. Environment/config, locale/currency, portability and provenance guardrails accepted.
 
 ### FOUND-001B — UI Stack & Design Tokens
-**Status: ACCEPTED + CLOSED**
-
-Accepted foundation includes Re:Solve-owned semantic OKLCH tokens, light/dark/system theming, self-hosted Inter Variable + JetBrains Mono Variable, density/layout/elevation/focus/safe-area/motion contracts, accessible status/destructive semantics, chart tokens and shadcn compatibility mappings.
+**ACCEPTED + CLOSED**
+Re:Solve semantic OKLCH tokens, light/dark/system theming, self-hosted Inter + JetBrains Mono, density/layout/elevation/focus/safe-area/motion contracts and shadcn compatibility mappings accepted.
 
 Component Gallery contract:
 - source: `src/routes/__dev/ui.tsx`;
-- browser path: `/ui` because `__dev` is pathless;
-- production guard: TanStack `beforeLoad` + `import.meta.env.PROD` redirect to `/`;
-- local/non-production access remains intended.
+- browser route: `/ui`;
+- production guard: `beforeLoad` + `import.meta.env.PROD` redirect to `/`;
+- local/non-production access intended.
 
 ### FOUND-001C1 — Core UI Primitive Foundation
-**Status: ACCEPTED — CANONICAL/FROZEN**
+**ACCEPTED / CANONICAL / FROZEN**
+Button, IconButton, Badge, StatusBadge, ResolveAvatar, Tooltip, Separator, Skeleton, Metric, MetricDelta.
 
-Accepted inventory:
-- Button / IconButton
-- Badge / StatusBadge
-- ResolveAvatar
-- Tooltip
-- Separator
-- Skeleton
-- Metric / MetricDelta
+### FOUND-001C2 — Forms & Controls
+**ACCEPTED / CANONICAL / FROZEN**
+Input, Textarea, Checkbox, RadioGroup, Switch, Select, FormField, FieldGroup. Typed FormField context and ID/required/disabled/invalid/described-by semantics are canonical.
 
-Key contracts include Core ownership boundary, accessible Button/IconButton behavior, meaningful/decorative Avatar semantics, Tremor-informed Metric structure and direction-vs-sentiment MetricDelta.
+### FOUND-001C3 — Interaction & Overlay Pack
+**ACCEPTED / CANONICAL / FROZEN**
+Dialog, AlertDialog, Sheet/SheetBody, Drawer/DrawerBody, Popover, HoverCard, DropdownMenu, ContextMenu, Accordion, Collapsible, Tabs, ScrollArea/ScrollBar. Radix/shadcn base + Vaul Drawer accepted; overlay/safe-area/destructive/focus contracts frozen.
 
-### FOUND-001C2 — Canonical Form & Control Primitives
-**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
+### FOUND-001C4 — Utility, Feedback & Composition Pack
+**ACCEPTED / CANONICAL / FROZEN**
+Alert, Empty, StatePanel, Spinner, Progress, typed Sonner Toast boundary, Item family, ButtonGroup family, InputGroup family, Kbd, Toggle/ToggleGroup and Breadcrumb accepted.
 
-Accepted inventory:
-- Input
-- Textarea
-- Checkbox
-- RadioGroup / RadioGroupItem
-- Switch
-- Select family
-- FormField
-- FieldGroup
+C4 non-blocking known limitation:
+- `Item` no longer contains `as any`, but the public forwarded ref remains div-biased when `asChild` renders another semantic element. Runtime/semantic behavior is accepted; do not reopen it during C5A.
 
-Key contracts include typed FormField context, coherent ID/required/disabled/invalid/described-by semantics, native fieldset/legend behavior, real touch-size controls, 16px narrow-screen entry typography, accepted focus-variable contract and FormField-aware Select behavior.
+## FOUND-001C5A — Advanced Input Primitives I
+**STATUS: CONDITIONAL — ONE BOUNDED CONTRACT CORRECTION REQUIRED BEFORE C5B**
 
-### FOUND-001C3 — Interaction & Overlay Core UI Pack
-**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
+### Current implementation present on app `main`
+- Command / CommandDialog family using `cmdk`;
+- searchable single-select Combobox composed from Core Popover + Core Command;
+- NativeSelect / option / optgroup using a real HTML `select`;
+- InputOTP family using pre-existing `input-otp`;
+- Slider using pre-existing `@radix-ui/react-slider`;
+- all five families export through `src/components/core/index.ts`;
+- gallery contains an `Advanced Inputs I` section;
+- `package.json` shows no new dependency: cmdk 1.1.1, input-otp 1.4.2 and Radix Slider 1.3.6 were already present;
+- `/ui` production guard remains secured;
+- home route remains the accepted temporary placeholder.
 
-Accepted inventory:
-- Dialog / AlertDialog
-- Sheet / SheetBody
-- Drawer / DrawerBody
-- Popover / HoverCard
-- DropdownMenu / ContextMenu
-- Accordion / Collapsible
-- Tabs
-- ScrollArea / ScrollBar
+### Verified blockers / corrections required
+1. **Non-canonical focus token reintroduced.** NativeSelect, InputOTP slots and Slider use `ring-rs-focus`, which is not part of accepted token authority. Replace with the frozen explicit `--rs-focus-ring-*` / offset-variable contract. Do not create a new `rs-focus` alias.
+2. **Command normalization incomplete.** CommandDialog adds stock `shadow-lg` instead of canonical overlay elevation. Command selected state should use the accepted selected surface. CommandInput needs an explicit accessible-name contract rather than relying on placeholder text.
+3. **Combobox FormField contract incomplete.** It propagates ID, disabled, invalid and described-by but omits FormField required semantics. Standalone Combobox has no accessible-name prop/contract. Use nullish state merging rather than `||` where explicit overrides are supported.
+4. **Combobox gallery is functionally inert.** Current Combobox is controlled-only (`value` + `onValueChange`) but the standard gallery example supplies neither, so selecting an option does not update the visible selected value. Add a coherent controlled/uncontrolled contract (`defaultValue` is acceptable) or make gallery state explicit.
+5. **Combobox clear action is inaccessible.** `clearable` renders a clickable `X` SVG inside the trigger Button. It is mouse-only and creates a second pseudo-action inside a button. Replace with a real separately focusable Core action outside the trigger, or another accessible non-nested clear contract.
+6. **NativeSelect FormField contract incomplete.** Required state is not inherited. Disabled/required/id/described-by/invalid values should be intentionally resolved without later prop spreading silently undoing context. Use canonical disabled surface/text/border and focus-variable treatment.
+7. **InputOTP FormField contract incomplete.** Required state is not inherited and disabled merging uses `||`. Active slot focus uses non-canonical `rs-focus`. OTP visual slots/separator should remain presentational so the underlying coherent input is not duplicated to assistive tech. Verification-code gallery should explicitly demonstrate `autocomplete="one-time-code"` and numeric input semantics. Fake-caret motion must remain reduced-motion safe.
+8. **Slider accessibility is not yet canonical.** `aria-describedby`/FormField ID are placed on the Radix Root rather than the actual slider Thumb controls. Accessible thumb names are optional although the slice required naming. The disabled gallery slider is unnamed. Range thumbs must have distinct names. Move relevant ARIA/ID/error linkage to thumbs and make naming mandatory or otherwise guaranteed.
+9. **Slider visual/touch contract mismatch.** Code uses 20×20 thumbs despite the completion report claiming 24×24. Use at least the accepted 24×24 actual target, canonical focus variables, `rs-action-primary` for selected range and a subtle inactive track. Active scaling must be motion-safe. Use programmatic disabled semantics/styling from Radix state.
+10. **Gallery evidence needs correction rather than expansion.** Preserve Command grouped/empty/disabled/shortcut evidence, but make Combobox actually selectable/clearable and named; prove required FormField semantics; give OTP verification semantics; give disabled Slider an accessible name/value context.
+11. **Provenance has an incorrect input-otp source URL.** Correct upstream to `guilhermerodz/input-otp` (MIT). Keep package version 1.4.2 and pre-existing-dependency history. Only claim FormField/Slider accessibility normalization that actually exists after the fix.
+12. **No new dependencies are required.** Do not modify package.json/bun.lock. Do not add Base UI, React Aria, Vue or another combobox/OTP/slider library.
 
-Key contracts include Radix/shadcn foundation, Vaul 1.1.2 for Drawer, shared Re:Solve backdrop/elevation, Core Button-backed destructive confirmation, long-content Sheet/Drawer composition, destructive menu variants, accepted focus treatment, discoverable Tabs overflow and secured `/ui` production behavior.
-
-### FOUND-001C4 — Utility, Feedback & Composition Core Pack
-**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
-
-Accepted inventory:
-- Alert
-- Empty
-- StatePanel
-- Spinner
-- Progress
-- Toaster / typed `toast` boundary
-- Item family
-- ButtonGroup / ButtonGroupSeparator / ButtonGroupText
-- InputGroup / InputGroupAddon / InputGroupText / InputGroupInput / InputGroupTextarea / InputGroupButton
-- Kbd / KbdGroup
-- Toggle / ToggleGroup
-- Breadcrumb family
-
-Verified accepted contracts:
-- Progress forwards determinate values to Radix and supports visible/hidden accessible naming without requiring consumer IDs;
-- Spinner uses reduced-motion-safe animation; decorative mode is hidden from assistive tech;
-- InputGroup consumes FormField invalid/disabled state, uses nullish override semantics and `min-w-0`;
-- InputGroupAddon supports visual `inline-start`, `inline-end`, `block-start`, `block-end` alignment while gallery evidence keeps the input/textarea first in DOM order;
-- block-end textarea composition works without a parent `flex-col` gallery hack;
-- InputGroupButton composes Core Button and inherits FormField disabled state;
-- Empty sizes naturally, is motion-safe and StatePanel remains presentation-only;
-- Toast uses Sonner 2.0.7 behind a typed Core-owned API with message/info/success/warning/error/loading/dismiss methods and Re:Solve action/status semantics;
-- Item interaction is opt-in through `asChild`; structural rows remain noninteractive and media uses direct-child SVG sizing;
-- ButtonGroup is programmatically nameable, separator orientation describes the rendered line, and ButtonGroupText is a noninteractive labelled composition primitive;
-- Toggle pressed state has non-color feedback and ToggleGroup gallery roots are programmatically named;
-- Breadcrumb keeps semantic nav/list/current-page behavior, asChild link support and narrow-safe wrapping;
-- gallery preserves C1-C3 evidence and includes all accepted C4 evidence;
-- no new dependency was added for C4; package state and temporary home route remained unchanged;
-- `/ui` remains production guarded;
-- no prompt/task leakage exists in current source.
-
-Non-blocking known limitation accepted at C4 close:
-- `Item` no longer contains the unsafe `as any` cast, but its public forwarded ref remains div-biased even when `asChild` renders another semantic element. Runtime/semantic behavior is correct; do not rely on polymorphic Item refs until this is revisited. A future widening/removal of that ref contract is allowed as a non-breaking Core hardening change.
+### Review classification
+C5A architecture is usable and should be corrected in place. Do not tear it down. One bounded fix should normalize focus tokens, complete FormField/accessibility contracts, make Combobox interaction real, harden OTP/Slider semantics and correct provenance. Re-review before C5B.
 
 ## Current architecture facts
 - TanStack Start v1 + Vite 8.2 + React 19.2.
-- Bun 1.3.3 is the only package manager.
+- Bun 1.3.3 only package manager.
 - Tailwind 4.2.1.
-- shadcn source setup is initialized `new-york`; do not rerun init.
-- Current primitive base: Radix + shadcn source components.
-- Drawer: Vaul 1.1.2, pre-existing dependency first consumed in C3.
-- Toast: Sonner 2.0.7, pre-existing dependency first consumed in C4.
+- shadcn source setup: `new-york`; do not rerun init.
+- primitive base: individual Radix packages + source-owned shadcn.
+- Drawer: Vaul 1.1.2.
+- Toast: Sonner 2.0.7.
+- Command: cmdk 1.1.1.
+- OTP: input-otp 1.4.2.
+- Slider: @radix-ui/react-slider 1.3.6.
 - Icons: Lucide 0.575.0.
 - Typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0.
 - Query/server state: TanStack Query.
 - Forms/validation available: React Hook Form + Zod.
-- Chart foundation: Recharts; Tremor remains chart/composition influence.
-- Testing stack: not configured.
-- PWA tooling: not configured.
-- Auth/domain setup: not yet implemented.
+- Chart foundation: Recharts.
+- testing/PWA/auth/domain implementation: not yet configured/built.
 
-## UI-source direction
-- Re:Solve Core is the public UI boundary; feature code must not bypass it casually.
-- shadcn/ui is source-owned and normalized into Re:Solve.
-- shadcn-vue is visual/composition/block reference only; never a Vue runtime dependency.
-- Radix remains the current primitive base; no wholesale React Aria/Base UI migration.
-- Untitled UI remains selectively incorporated/reference-driven.
-- Tremor Raw remains selectively incorporated/reference-driven.
-- Current React shadcn patterns are preferred over translating Vue equivalents when available.
+## UI source direction
+- Re:Solve Core is the public UI boundary.
+- Current React shadcn patterns are preferred where compatible.
+- shadcn-vue remains visual/composition reference only; never runtime Vue code.
+- Keep current Radix base; no wholesale Base UI or React Aria migration.
+- Untitled UI and Tremor remain selective source/reference systems.
 
-## Planned future source intake
-- Advanced inputs/scheduling: Combobox, OTP/PIN, Number Field, Tags Input, Slider, Calendar, Date Picker/Date Range, Pagination, Resizable and Stepper where justified.
-- Questionnaire/review composition remains a higher-order form/review layer above FormField/FieldGroup, not a second forms framework.
-- QR remains an approved utility/presentation candidate; security-sensitive QR flows must encode signed/short-lived references, never raw secrets.
-- Conversation/Àríyá primitives remain later intake: Message, Bubble, Message Scroller, Attachment, Marker.
-- Two-column image auth blocks remain the preferred desktop auth composition direction with deliberate single-column mobile transformation.
-- Dashboard/sidebar blocks remain composition references only; Re:Solve navigation, Attention Engine, TanStack DataTable and Tremor/Recharts architecture remain authoritative.
-
-## Current database/domain inventory
-None.
-
-## Open Product Bible deltas
-None requiring an owner product decision.
-
-## Known implementation limitations
-- Item polymorphic ref typing caveat recorded above;
-- advanced inputs/scheduling are not yet canonical;
-- Questionnaire/review and QR exact implementations are not yet selected;
-- conversation/Àríyá primitives, auth, application shell, PWA, CI and testing remain future FOUND-001 substeps.
+## Planned later work
+- C5B: Calendar, Date Picker/Date Range, Pagination, Resizable and other bounded scheduling/navigation primitives.
+- Questionnaire/review remains a higher-order composition above FormField/FieldGroup, not a second forms framework.
+- QR remains a later utility/presentation pattern; security-sensitive QR encodes signed/short-lived references only.
+- Conversation/Àríyá, auth, dashboard, shell, PWA, CI and testing remain later FOUND-001 work.
 
 ## Next action
-Begin bounded `FOUND-001C5A — Advanced Input Primitives`. Preserve frozen C1-C4 APIs. Implement only the first advanced-input subset, expand the Component Gallery, verify accessibility/responsiveness/provenance, and STOP for supervisor review before scheduling/date, Questionnaire, QR, shell or auth work.
+Execute supervisor-provided `FOUND-001C5A-FIX` only. Re-review afterward. Do not begin C5B.
