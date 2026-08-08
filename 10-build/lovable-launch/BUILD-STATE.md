@@ -3,38 +3,27 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED — FOUND-001C2 ACCEPTED + CLOSED — FOUND-001C3 ACCEPTED + CLOSED — FOUND-001C4 CONDITIONAL (FINAL C4 CLOSURE HYGIENE REQUIRED)**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED + CLOSED — FOUND-001C1 ACCEPTED/FROZEN — FOUND-001C2 ACCEPTED/FROZEN — FOUND-001C3 ACCEPTED/FROZEN — FOUND-001C4 ACCEPTED/FROZEN — FOUND-001C5A READY**
 
-## Canonical Product Bible state
-- Repository: `thathman/Re-Solve-Product-Bible`.
-- Visibility: `public`.
-- Product Bible planning/expansion/launch-readiness content is canonical on `main`.
-- First umbrella build slice: `FOUND-001 — Re:Solve Application + Core UI Foundation`.
-- FOUND-001 is supervised through bounded substeps.
-
-## Lovable project
-- Project: `Re:Solve`.
-- Project Knowledge installed: `YES`.
-- Canonical workspace Skills installed: `YES — all 30 Re:Solve skills plus self-host-check`.
-- Platform default skill active: `design-taste-frontend`.
-- Obsolete `airix-*` skills: `NONE`.
-- Duplicate `.agents/skills/` drafts: `REMOVED`.
-
-## Application repository
-- Current Lovable application: `thathman/re-solve-c560d62c`.
-- Visibility: `private`.
-- Default branch: `main`.
-- Legacy reference repository remains `thathman/Re-Solve`.
-- Product Bible is specification/reference only, not application source.
-- Root `AGENTS.md`: accepted in FOUND-001A.
+## Canonical repositories
+- Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
+- Current Lovable app: `thathman/re-solve-c560d62c` — private, `main`.
+- Legacy/reference app: `thathman/Re-Solve` — untouched pending explicit post-FOUND-001 owner approval.
 - Canonical-name transition performed: `NO`.
 
-## Backend
-- Development backend: `Lovable Cloud enabled`.
-- Custom database tables: `NONE`.
-- RLS policies: `NONE`.
-- Migrations initialized: `NO`.
-- Demo seed/reset initialized: `NO`.
+## Lovable project
+- Project Knowledge installed: `YES`.
+- Canonical workspace Skills installed: `YES — 30 Re:Solve skills + self-host-check`.
+- Platform default skill active: `design-taste-frontend`.
+- Duplicate `.agents/skills/` drafts: removed.
+- Obsolete `airix-*` skills: none.
+
+## Backend state
+- Lovable Cloud enabled for development.
+- Custom database tables: none.
+- RLS policies: none.
+- Migrations: not initialized.
+- Demo seed/reset: not initialized.
 
 Never store credentials/secrets in this file.
 
@@ -60,24 +49,15 @@ Component Gallery contract:
 **Status: ACCEPTED — CANONICAL/FROZEN**
 
 Accepted inventory:
-- Button
-- IconButton
-- Badge
-- StatusBadge
+- Button / IconButton
+- Badge / StatusBadge
 - ResolveAvatar
 - Tooltip
 - Separator
 - Skeleton
-- Metric
-- MetricDelta
+- Metric / MetricDelta
 
-Key contracts:
-- public Core boundary under `src/components/core/` + `src/components/core/index.ts`;
-- Button loading/a11y/reduced-motion behavior accepted;
-- IconButton requires accessible label and consumes Core Tooltip;
-- ResolveAvatar has meaningful/decorative accessibility contract;
-- Metric materially adapts Tremor Card structure with provenance;
-- MetricDelta separates direction from sentiment.
+Key contracts include Core ownership boundary, accessible Button/IconButton behavior, meaningful/decorative Avatar semantics, Tremor-informed Metric structure and direction-vs-sentiment MetricDelta.
 
 ### FOUND-001C2 — Canonical Form & Control Primitives
 **Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
@@ -92,132 +72,94 @@ Accepted inventory:
 - FormField
 - FieldGroup
 
-Key contracts:
-- typed FormField context and coherent ID/required/disabled/invalid/described-by semantics;
-- description/error IDs always map to rendered nodes;
-- native fieldset/legend semantics retained;
-- Checkbox/Radio actual controls are 24×24; Switch actual Root is at least 24px high;
-- narrow/mobile text-entry/select typography remains at least 16px;
-- accepted token vocabulary and explicit focus-variable contract;
-- Select Root/Trigger integrate with FormField context;
-- C2 owner-approved visually.
+Key contracts include typed FormField context, coherent ID/required/disabled/invalid/described-by semantics, native fieldset/legend behavior, real touch-size controls, 16px narrow-screen entry typography, accepted focus-variable contract and FormField-aware Select behavior.
 
 ### FOUND-001C3 — Interaction & Overlay Core UI Pack
 **Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
 
 Accepted inventory:
-- Dialog
-- AlertDialog
+- Dialog / AlertDialog
 - Sheet / SheetBody
 - Drawer / DrawerBody
-- Popover
-- HoverCard
-- DropdownMenu
-- ContextMenu
-- Accordion
-- Collapsible
+- Popover / HoverCard
+- DropdownMenu / ContextMenu
+- Accordion / Collapsible
 - Tabs
 - ScrollArea / ScrollBar
 
-Key contracts:
-- Radix/shadcn foundation retained; Vaul 1.1.2 used for Drawer;
-- shared Re:Solve backdrop and raised/elevation treatment;
-- Core Button-backed AlertDialog actions;
-- Sheet and Drawer long-content/safe-area contracts;
-- destructive menu variants use high-contrast danger foreground semantics;
-- Accordion/Tabs accepted focus contract;
-- Tabs overflow remains discoverable through Core ScrollArea + horizontal ScrollBar;
-- `/ui` production guard secured;
-- no Vue runtime/package or parallel component system introduced.
+Key contracts include Radix/shadcn foundation, Vaul 1.1.2 for Drawer, shared Re:Solve backdrop/elevation, Core Button-backed destructive confirmation, long-content Sheet/Drawer composition, destructive menu variants, accepted focus treatment, discoverable Tabs overflow and secured `/ui` production behavior.
 
-C3 closure hygiene also removed leaked prompt text from the home route and restored accepted Skeleton gallery evidence.
+### FOUND-001C4 — Utility, Feedback & Composition Core Pack
+**Status: ACCEPTED + CLOSED — CANONICAL/FROZEN**
 
-## FOUND-001C4 — Utility, Feedback & Composition Core Pack
-**Status: CONDITIONAL — FINAL C4 CLOSURE HYGIENE REQUIRED BEFORE C5**
-
-### Current C4 inventory present on application `main`
+Accepted inventory:
 - Alert
 - Empty
+- StatePanel
 - Spinner
 - Progress
-- Toast / Toaster
+- Toaster / typed `toast` boundary
 - Item family
 - ButtonGroup / ButtonGroupSeparator / ButtonGroupText
-- InputGroup family / InputGroupButton
+- InputGroup / InputGroupAddon / InputGroupText / InputGroupInput / InputGroupTextarea / InputGroupButton
 - Kbd / KbdGroup
 - Toggle / ToggleGroup
 - Breadcrumb family
-- StatePanel
 
-### Verified C4 contracts now materially correct after FIX/FIX2/FIX3
-- Progress forwards determinate `value` to Radix and has generated-ID/ARIA naming support without requiring an explicit ID;
-- Spinner uses `motion-safe:animate-spin`; decorative mode is `aria-hidden`, meaningful mode exposes status text;
-- InputGroup consumes FormField invalid/disabled state with nullish override semantics and includes `min-w-0`;
+Verified accepted contracts:
+- Progress forwards determinate values to Radix and supports visible/hidden accessible naming without requiring consumer IDs;
+- Spinner uses reduced-motion-safe animation; decorative mode is hidden from assistive tech;
+- InputGroup consumes FormField invalid/disabled state, uses nullish override semantics and `min-w-0`;
+- InputGroupAddon supports visual `inline-start`, `inline-end`, `block-start`, `block-end` alignment while gallery evidence keeps the input/textarea first in DOM order;
+- block-end textarea composition works without a parent `flex-col` gallery hack;
 - InputGroupButton composes Core Button and inherits FormField disabled state;
-- InputGroupAddon exposes `inline-start`, `inline-end`, `block-start`, `block-end` visual alignment values;
-- Item removed the cursor-only `interactive` prop; noninteractive rows no longer carry clickable hover/focus treatment;
-- ItemMedia/EmptyMedia use direct-child SVG selectors rather than cloneElement sizing;
-- Empty sizes naturally and entrance motion is motion-safe;
-- Toast public API now exposes typed `message`, `info`, `success`, `warning`, `error`, `loading`, `dismiss` methods without raw Sonner exposure or broad callable-object assertions;
-- Toast action foreground now uses `text-rs-text-inverse` and status icons use foreground semantics;
-- ButtonGroupText now exists and is exported through the Core boundary;
-- ButtonGroupSeparator orientation names now correspond to the rendered line;
-- Toggle pressed state has explicit non-color ring/elevation feedback and accepted focus variables;
-- Breadcrumb dead separator prop was removed and long wrapping evidence exists;
-- gallery contains Warning Toast, standalone Empty, InputGroupText, InputGroupButton, textarea footer, pressed Toggle and long Breadcrumb evidence;
-- gallery ToggleGroup examples now use `aria-labelledby` on both group roots;
-- Sonner provenance lives under Runtime UI Dependencies and ButtonGroupText is recorded in shadcn source-pattern intake;
-- Sonner 2.0.7 and Vaul 1.1.2 remain pre-existing dependencies;
-- `package.json` and the temporary home route remain unchanged;
-- `/ui` remains production guarded.
+- Empty sizes naturally, is motion-safe and StatePanel remains presentation-only;
+- Toast uses Sonner 2.0.7 behind a typed Core-owned API with message/info/success/warning/error/loading/dismiss methods and Re:Solve action/status semantics;
+- Item interaction is opt-in through `asChild`; structural rows remain noninteractive and media uses direct-child SVG sizing;
+- ButtonGroup is programmatically nameable, separator orientation describes the rendered line, and ButtonGroupText is a noninteractive labelled composition primitive;
+- Toggle pressed state has non-color feedback and ToggleGroup gallery roots are programmatically named;
+- Breadcrumb keeps semantic nav/list/current-page behavior, asChild link support and narrow-safe wrapping;
+- gallery preserves C1-C3 evidence and includes all accepted C4 evidence;
+- no new dependency was added for C4; package state and temporary home route remained unchanged;
+- `/ui` remains production guarded;
+- no prompt/task leakage exists in current source.
 
-### Remaining verified C4 blockers after FIX3
-1. **Item still violates the explicit no-cast closure criterion.** `src/components/core/layout/Item.tsx` still renders `<Comp ref={ref as any}>`. The completion report said the ref/asChild contract was corrected, but `main` still contains `as any`. Remove the cast and use a truthful Slot/polymorphic ref strategy. This is a blocker because FIX3 explicitly required `no as any`.
-2. **InputGroup gallery DOM order is still wrong in two examples.** `Search Domain` still renders an addon before the input, and `Assign User` still renders the inline-start addon before the input. The accepted C4 contract requires the input/textarea first in DOM order and `align` to control visual position.
-3. **InputGroup block-end gallery still uses a layout hack.** `Note with Footer` still renders `<InputGroup className="flex-col">`. The C4 contract explicitly requires `align="block-end"` to produce the composition without adding `flex-col` to the group.
-4. **ButtonGroupText is imported/exported but not actually demonstrated in the C4 gallery.** Add one compact evidence example so the new public primitive is reviewable rather than dead intake.
-5. **ButtonGroup separator gallery orientation is still semantically wrong.** The horizontal `Publish options` ButtonGroup uses `ButtonGroupSeparator orientation="horizontal"`, which now correctly renders a horizontal line. In a horizontal group this should be a vertical separator (or omit the prop if vertical is the default).
-6. **ButtonGroupText border treatment is incomplete.** Its class includes `border-rs-border-normal` but no border width utility, so the declared border color does not create a visible border. Add an actual restrained border where the composition requires it, normalized to the accepted token.
-
-### Review classification
-The implementation is close enough that no further architecture work is needed. Execute one closure-hygiene fix covering only the six findings above. If clean, freeze C4 immediately and proceed to C5.
-
-## shadcn ecosystem direction now canonical
-- `shadcn-vue` is a visual/composition/block reference only; Re:Solve remains React/TanStack and uses React shadcn equivalents where available.
-- approved future intake includes advanced controls, conversation/Àríyá primitives, Questionnaire/review composition and QR presentation patterns subject to exact source verification.
-- two-column form + cover-image auth blocks are the preferred desktop composition reference for login/signup/recovery/OTP/step-up with deliberate single-column mobile transformation.
-- shadcn dashboard blocks are composition references only and do not override Re:Solve dashboard, Attention Engine, TanStack DataTable, Tremor/Recharts or navigation architecture.
-- Questionnaire is a higher-order review/form composition above canonical FormField/FieldGroup, not a second forms framework.
-- security-sensitive QR flows must use signed/short-lived references rather than raw secrets.
+Non-blocking known limitation accepted at C4 close:
+- `Item` no longer contains the unsafe `as any` cast, but its public forwarded ref remains div-biased even when `asChild` renders another semantic element. Runtime/semantic behavior is correct; do not rely on polymorphic Item refs until this is revisited. A future widening/removal of that ref contract is allowed as a non-breaking Core hardening change.
 
 ## Current architecture facts
-- framework/build: TanStack Start v1 + Vite;
-- routing: TanStack file routes;
-- React: 19.2.0;
-- package manager: Bun 1.3.3;
-- Tailwind: 4.2.1;
-- shadcn: initialized `new-york`, source-owned; do not rerun init;
-- primitive base: Radix + shadcn source components;
-- Drawer: Vaul 1.1.2;
-- Toast runtime: Sonner 2.0.7;
-- icons: Lucide 0.575.0;
-- typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0;
-- query/server state: TanStack Query;
-- forms/validation available: React Hook Form + Zod;
-- chart foundation: Recharts;
-- testing stack: not configured;
-- PWA tooling: not configured;
-- auth/domain setup: not yet implemented.
+- TanStack Start v1 + Vite 8.2 + React 19.2.
+- Bun 1.3.3 is the only package manager.
+- Tailwind 4.2.1.
+- shadcn source setup is initialized `new-york`; do not rerun init.
+- Current primitive base: Radix + shadcn source components.
+- Drawer: Vaul 1.1.2, pre-existing dependency first consumed in C3.
+- Toast: Sonner 2.0.7, pre-existing dependency first consumed in C4.
+- Icons: Lucide 0.575.0.
+- Typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0.
+- Query/server state: TanStack Query.
+- Forms/validation available: React Hook Form + Zod.
+- Chart foundation: Recharts; Tremor remains chart/composition influence.
+- Testing stack: not configured.
+- PWA tooling: not configured.
+- Auth/domain setup: not yet implemented.
 
-## UI-source incorporation state
-- shadcn/ui: source-owned starter foundation, materially normalized through Re:Solve Core; C4 remains conditional pending final closure hygiene.
-- shadcn-vue: visual/composition/block reference only; no runtime dependency.
-- Radix: incorporated beneath shadcn/Core.
-- Vaul: pre-existing dependency first consumed by Drawer in C3; accepted.
-- Sonner: pre-existing 2.0.7 dependency first consumed through Core Toast in C4; wrapper/action contract now materially corrected.
-- Lucide: primary icon family.
-- Untitled UI React: material Avatar incorporation accepted in C1; later use remains selective.
-- Tremor Raw: material Metric incorporation accepted in C1.
+## UI-source direction
+- Re:Solve Core is the public UI boundary; feature code must not bypass it casually.
+- shadcn/ui is source-owned and normalized into Re:Solve.
+- shadcn-vue is visual/composition/block reference only; never a Vue runtime dependency.
+- Radix remains the current primitive base; no wholesale React Aria/Base UI migration.
+- Untitled UI remains selectively incorporated/reference-driven.
+- Tremor Raw remains selectively incorporated/reference-driven.
+- Current React shadcn patterns are preferred over translating Vue equivalents when available.
+
+## Planned future source intake
+- Advanced inputs/scheduling: Combobox, OTP/PIN, Number Field, Tags Input, Slider, Calendar, Date Picker/Date Range, Pagination, Resizable and Stepper where justified.
+- Questionnaire/review composition remains a higher-order form/review layer above FormField/FieldGroup, not a second forms framework.
+- QR remains an approved utility/presentation candidate; security-sensitive QR flows must encode signed/short-lived references, never raw secrets.
+- Conversation/Àríyá primitives remain later intake: Message, Bubble, Message Scroller, Attachment, Marker.
+- Two-column image auth blocks remain the preferred desktop auth composition direction with deliberate single-column mobile transformation.
+- Dashboard/sidebar blocks remain composition references only; Re:Solve navigation, Attention Engine, TanStack DataTable and Tremor/Recharts architecture remain authoritative.
 
 ## Current database/domain inventory
 None.
@@ -226,9 +168,10 @@ None.
 None requiring an owner product decision.
 
 ## Known implementation limitations
-- C4 requires one final closure-hygiene fix before acceptance;
-- Questionnaire/review and QR remain approved later source candidates;
-- advanced input/scheduling, conversation/Àríyá, auth, application shell, PWA, CI and tests remain future FOUND-001 substeps.
+- Item polymorphic ref typing caveat recorded above;
+- advanced inputs/scheduling are not yet canonical;
+- Questionnaire/review and QR exact implementations are not yet selected;
+- conversation/Àríyá primitives, auth, application shell, PWA, CI and testing remain future FOUND-001 substeps.
 
 ## Next action
-Execute supervisor-provided `FOUND-001C4-FIX4` only. Remove the remaining Item `as any`, correct InputGroup gallery DOM order and block-end evidence, demonstrate ButtonGroupText, correct Publish separator orientation, and give ButtonGroupText a real restrained border treatment. Re-review afterward. Do not begin FOUND-001C5.
+Begin bounded `FOUND-001C5A — Advanced Input Primitives`. Preserve frozen C1-C4 APIs. Implement only the first advanced-input subset, expand the Component Gallery, verify accessibility/responsiveness/provenance, and STOP for supervisor review before scheduling/date, Questionnaire, QR, shell or auth work.
