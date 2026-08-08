@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5A ACCEPTED/FROZEN — SECURITY-MEM-001 ACCEPTED/CANONICAL — FOUND-001C5B READY**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5A ACCEPTED/FROZEN — SECURITY-MEM-001 ACCEPTED/CANONICAL — FOUND-001C5B CONDITIONAL (CORRECTION REQUIRED)**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -64,67 +64,69 @@ Known non-blocking limitation:
 
 ### FOUND-001C5A — Advanced Input Primitives I
 **ACCEPTED / CANONICAL / FROZEN**
-
-Accepted inventory:
-- Command / CommandDialog
-- Combobox
-- NativeSelect / NativeSelectOption / NativeSelectOptGroup
-- InputOTP / InputOTPGroup / InputOTPSlot / InputOTPSeparator
-- Slider
-
-Accepted contracts:
-- Command uses pre-existing `cmdk` 1.1.1, canonical selected/disabled semantics and a programmatically named CommandInput;
-- CommandDialog composes frozen Core Dialog, guarantees an accessible title, supports optional description and preserves raised Dialog surface/elevation;
-- Combobox composes Core Popover + Core Command, supports controlled/uncontrolled value state, inherits FormField ID/required/disabled/invalid/described-by state, and uses a separate Core IconButton for explicit clearing;
-- selecting an already-selected Combobox option does not implicitly clear it;
-- NativeSelect remains a real native select with FormField semantics and 16px narrow/mobile typography;
-- InputOTP uses pre-existing `input-otp` 1.4.2, inherits FormField semantics, keeps visual slots/separator presentational, supports one-time-code/numeric examples without globally forbidding alphanumeric use, and uses reduced-motion-safe caret behavior;
-- Slider uses pre-existing `@radix-ui/react-slider` 1.3.6, requires thumb labels at the Core API, links FormField description/error to thumbs, uses 24px actual thumb targets, distinct range-thumb names, action-primary selected range, subtle inactive track and Radix disabled-state styling;
-- Slider diagnostics use `import.meta.env.DEV`, not client-side `process.env`;
-- all C5A APIs export through Core;
-- no new dependency was added;
-- `input-otp` provenance points to `https://github.com/guilhermerodz/input-otp` (MIT);
-- `/ui` production guard remains secured;
-- home route and package state remain unchanged.
+Command/CommandDialog, Combobox, NativeSelect family, InputOTP family and Slider are canonical. C5A uses pre-existing cmdk 1.1.1, input-otp 1.4.2 and @radix-ui/react-slider 1.3.6; no package was added. FormField integration, explicit Combobox clearing, OTP semantics, required Slider thumb naming, 24px thumbs, focus variables and production `/ui` guard are frozen.
 
 Visual review:
-- user-supplied dark desktop, light desktop and narrow/mobile Component Gallery captures passed visual review;
-- Advanced Inputs I remains restrained/coherent and narrow layout shows no page-level horizontal overflow.
+- user-supplied dark desktop, light desktop and narrow/mobile Component Gallery captures passed C5A visual review.
 
 ## SECURITY-MEM-001 — Lovable Security Memory
 **ACCEPTED / CANONICAL**
 
 The user replaced Lovable `@security-memory` with the supervisor-approved rules and read the result back in chat. No secret material was detected.
 
-Canonical security-memory principles now include:
-- never trust client-editable profile/user metadata as the sole authorization authority;
-- model authorization in server-controlled principals/memberships/roles/permissions/grants;
-- every table exposed through the Supabase Data API requires intentional RLS plus least-privilege database grants;
-- keep tables server-only/unexposed where direct Data API access is unnecessary;
-- Supabase secret/service-role credentials are server-only and must never enter browser bundles, `VITE_*`, browser storage, URLs, logs or telemetry;
-- PostgreSQL functions default to `SECURITY INVOKER`; narrowly justified `SECURITY DEFINER` functions require controlled/empty `search_path`, fully qualified objects and restricted EXECUTE privileges;
-- private/tenant/account/sensitive data must enforce authn/authz at the server function or server route boundary; UI/route guards are UX, not authorization;
-- TanStack `createServerFn` is for typed same-origin app RPC; server routes are for external/cross-origin/protocol HTTP surfaces;
-- untrusted server input requires runtime validation;
-- preserve `createCsrfMiddleware` in `src/start.ts` for server functions;
-- do not treat an auth middleware/helper as canonical until it actually exists and is reviewed;
-- Vault secrets must not enter browser storage, URLs, ordinary logs, analytics/error telemetry, search, notification bodies or non-Vault persistence;
-- security-sensitive QR flows encode only signed/scoped/short-lived references, never raw secrets;
-- Action Registry enforcement begins once that registry exists; before then consequential mutations still require server-side authz, validation, confirmation where appropriate, idempotency/retry consideration and audit-event design;
-- schema/RLS/grants/functions/triggers/security configuration must be reproducible through version-controlled migrations/configuration;
-- logs/errors follow data minimization and redact secret material.
+Canonical principles include server-controlled authorization, intentional RLS on Data-API-exposed tables, least-privilege grants, server-only service-role credentials, SECURITY INVOKER by default, narrowly constrained SECURITY DEFINER, server-boundary authn/authz, createServerFn for same-origin typed RPC, server routes for external/protocol HTTP surfaces, runtime validation of untrusted server input, preserved TanStack Start CSRF middleware, Vault secret minimization, signed/scoped/short-lived security-sensitive QR references, migration-controlled security configuration and log/error redaction.
 
-Supervisor verification against current official guidance:
-- Supabase requires RLS on exposed-schema tables and recommends least-privilege grants;
-- secret/service-role keys bypass RLS and are server-only;
-- Supabase recommends `SECURITY INVOKER` by default and controlled `search_path`/restricted execution for `SECURITY DEFINER` functions;
-- TanStack Start documents server functions as same-origin app RPC, server routes for outside callers, endpoint-level auth for private data and explicit `createCsrfMiddleware` when `src/start.ts` exists.
+Do not implement auth/database systems merely because the memory is canonical; the rules constrain later slices.
 
-Do not implement database/auth systems merely because these memory rules are now canonical; they constrain later slices when those systems are actually built.
+## FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable
+**STATUS: CONDITIONAL — CORRECTION REQUIRED BEFORE ACCEPTANCE**
+
+### Current implementation present on app `main`
+- `src/components/core/calendar/Calendar.tsx` using pre-existing react-day-picker 9.14.0;
+- `DatePicker.tsx` composed from Core Popover + Core Button + Core Calendar;
+- `DateRangePicker.tsx` using React DayPicker `DateRange`;
+- `Pagination.tsx`;
+- `Resizable.tsx` using pre-existing react-resizable-panels 4.6.5;
+- C5B families currently export through `src/components/core/index.ts`;
+- provenance entries for react-day-picker, date-fns and react-resizable-panels are present.
+
+### Positive findings
+- Calendar is Re:Solve-tokenized and uses React DayPicker rather than a parallel calendar library;
+- no `toISOString()`/UTC serialization logic was found in C5B;
+- selected range uses Re:Solve action/selected surfaces and disabled/outside states are distinct;
+- DatePicker/DateRangePicker use Core Popover + Core Button + Core Calendar;
+- Pagination exposes `nav aria-label="Pagination"` and active-page `aria-current`;
+- Resizable uses the correct v4 primitive names `Group`, `Panel`, `Separator` under the Re:Solve wrapper;
+- provenance correctly records pre-existing react-day-picker 9.14.0, date-fns 4.1.0 and react-resizable-panels 4.6.5 with MIT licenses.
+
+### Verified blockers / corrections required
+1. **C5B gallery is missing.** `src/routes/__dev/ui.tsx` imports none of Calendar, DatePicker, DateRangePicker, Pagination or Resizable and has no `Advanced Inputs II` section. The implementation report's gallery-complete claim is false.
+2. **Prompt/task leakage has reappeared in runtime source.** The C5A Port Range label contains user/Lovable instruction text (`Do not make any visual modifications...`). Remove it and restore the accepted `Port Range` label. Search current source for instruction/task leakage before closure.
+3. **Unexpected package/test drift violates the C5B dependency contract.** `vitest` was added to `package.json` and `bun.lock`, and `src/lib/formatters/formatters.test.ts` was added even though C5B required no dependencies/testing-stack changes. Remove this drift and restore package/bun state to the accepted C5A baseline.
+4. **Frozen formatter/Metric evidence drifted out of scope.** `formatCurrency` behavior was changed and the accepted Metric gallery strings were replaced with runtime symbol formatting. Restore `src/lib/formatters/index.ts` and the C1 Metric gallery evidence to the accepted C5A baseline; C5B did not authorize formatter or Metric changes.
+5. **Core index was broadly rewritten.** C5B replaced many explicit frozen exports with `export *`, unintentionally widening the public Core boundary. Restore the accepted C5A index/export style and add only the new C5B public exports.
+6. **DatePicker/FormField merging uses `||` instead of nullish precedence.** `id`, disabled, invalid and required must use caller-provided values first and FormField fallback via `??` where false/empty overrides are meaningful.
+7. **DatePicker invalid border uses the soft danger surface token as a border.** Use `rs-status-danger-foreground` for invalid border/focus semantics.
+8. **DatePicker controlled-empty behavior is fragile.** `value !== undefined` cannot represent a controlled picker whose value is intentionally `undefined` after clearing. Establish a coherent controlled/uncontrolled contract that does not switch modes when a controlled value becomes empty.
+9. **DatePicker has an unused `DayPicker` type import.** Remove dead imports and ensure lint/type clean.
+10. **DateRangePicker repeats the same `||`/invalid-token/controlled-empty issues.** Normalize consistently with DatePicker.
+11. **DateRangePicker contains `calendarProps as any`.** Remove the `any` cast and model range-calendar props truthfully using React DayPicker range types or a typed branch for required/optional range mode.
+12. **DateRangePicker is not truly mobile-first.** It initializes with the requested desktop month count (default 2) and only switches to one month after a client effect. Initialize narrow-safe (one month) and enhance to multiple months after a safe media-query check so first narrow render cannot briefly squeeze/overflow two months.
+13. **Picker display formatting does not honor Calendar locale.** Calendar accepts locale/timeZone passthrough, but trigger text uses date-fns default locale. At minimum, apply `calendarProps.locale` to display formatting. Do not add UTC serialization/timezone conversion logic.
+14. **Pagination is not router-compatible as required.** `PaginationLink` is hard-coded to `<a>` and has no `asChild`/Slot composition contract for TanStack Router links. Add router-compatible composition without coupling to routing.
+15. **Disabled Pagination Previous/Next remain anchors.** `pointer-events-none` + `tabIndex=-1` is visual/interaction suppression, not a truly noninteractive disabled control. Render a non-link disabled state or otherwise make activation impossible while preserving `aria-disabled`.
+16. **Resizable uses a stale v3 direction selector.** `data-[panel-group-direction=vertical]` no longer matches react-resizable-panels v4. Current v4 uses Group orientation behavior and WAI-ARIA `aria-orientation` on Separator. Normalize wrapper styling to the v4 contract.
+17. **Resizable handle target is too thin/under-specified.** Current separator is effectively a 1px line and the pseudo-element hit-area classes do not establish a real pseudo-element. Give the separator a discoverable pointer target while keeping a restrained visual line/optional grip, visible focus and correct orientation styling.
+18. **Resizable uses generic `shadow-sm` on the grip.** Use no shadow or accepted Re:Solve elevation.
+19. **Responsive Resizable fallback is unproven because the gallery is absent.** C5B gallery must show resizable panels at tablet/desktop and an intentional stacked narrow fallback rather than draggable phone panes.
+20. **Security memory was previously accepted and is not source-controlled.** The latest user says it was updated again but did not provide the resulting text. Do not modify it during the C5B fix; return the current memory text for supervisor comparison, with secrets redacted if any exist.
+
+### Review classification
+C5B architecture is usable and should be corrected in place. Do not tear down React DayPicker or react-resizable-panels. One bounded fix should restore scope hygiene, complete gallery evidence, normalize picker state/FormField contracts, add router-compatible Pagination, update Resizable to its actual v4 semantics and then stop for review.
 
 ## Current architecture facts
 - TanStack Start v1 + Vite 8.2 + React 19.2.
-- Bun 1.3.3 only package manager.
+- Bun 1.3.3 is the canonical package manager.
 - Tailwind 4.2.1.
 - shadcn source setup: `new-york`; do not rerun init.
 - primitive base: individual Radix packages + source-owned shadcn.
@@ -134,28 +136,28 @@ Do not implement database/auth systems merely because these memory rules are now
 - Command: cmdk 1.1.1.
 - OTP: input-otp 1.4.2.
 - Slider: @radix-ui/react-slider 1.3.6.
-- Calendar/date foundation already installed: `react-day-picker` 9.14.0 + `date-fns` 4.1.0.
-- Resizable foundation already installed: `react-resizable-panels` 4.6.5.
+- Calendar/date foundation: react-day-picker 9.14.0 + date-fns 4.1.0.
+- Resizable foundation: react-resizable-panels 4.6.5.
 - Icons: Lucide 0.575.0.
 - Typography: Inter Variable + JetBrains Mono Variable via Fontsource 5.3.0.
 - Query/server state: TanStack Query.
 - Forms/validation available: React Hook Form + Zod.
 - Chart foundation: Recharts.
-- testing/PWA/auth/domain implementation: not yet configured/built.
+- Testing stack remains **not canonical/configured**; the current C5B-added Vitest drift must be removed before C5B close.
+- PWA/auth/domain implementation: not yet configured/built.
 
 ## UI source direction
 - Re:Solve Core is the public UI boundary.
 - Current React shadcn Radix-compatible patterns are preferred where compatible with the existing project.
-- Current shadcn may default new projects to Base UI, but existing Re:Solve remains on its established Radix foundation; do not migrate wholesale.
+- Keep the established Radix foundation; no wholesale Base UI/React Aria migration.
 - shadcn-vue remains visual/composition reference only; never runtime Vue code.
 - Untitled UI and Tremor remain selective source/reference systems.
 
 ## Planned later work
-- C5B: Calendar, DatePicker, DateRangePicker, Pagination and Resizable.
-- Later advanced input/composition slices may address Number Field, Tags Input, Stepper and Questionnaire where justified.
+- Later advanced input/composition slices may address Number Field, Tags Input, Stepper, Questionnaire and QR where justified.
 - Questionnaire/review remains a higher-order composition above FormField/FieldGroup, not a second forms framework.
-- QR remains a later utility/presentation pattern; security-sensitive QR encodes signed/short-lived references only.
+- Security-sensitive QR uses signed/scoped/short-lived references only.
 - Conversation/Àríyá, auth, dashboard, shell, PWA, CI and testing remain later FOUND-001 work.
 
 ## Next action
-Begin bounded `FOUND-001C5B — Calendar, Date Selection, Pagination & Resizable`. Preserve frozen C1-C5A APIs and canonical security memory. Expand the Component Gallery, verify date-only/timezone semantics, accessibility, responsiveness and provenance, then STOP for supervisor review.
+Execute the supervisor-provided `FOUND-001C5B-FIX` only. Restore frozen scope, correct C5B contracts, add the missing Advanced Inputs II gallery evidence, return the current security-memory text without changing it, and STOP for supervisor review.
