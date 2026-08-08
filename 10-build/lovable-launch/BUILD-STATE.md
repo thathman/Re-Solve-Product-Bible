@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1-D2 ADMIN SHELL ACCEPTED/FROZEN — FOUND-001D3 NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1-D3 ADMIN SHELL ACCEPTED/FROZEN — ADMIN SHELL CLOSURE REVIEW NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -12,7 +12,7 @@ Keep this file updated after each supervised build review so the next Product Bi
 - Canonical-name transition performed: `NO`.
 
 ## Accepted foundation
-FOUND-001A, FOUND-001B and the complete FOUND-001C Core UI framework through C5E are accepted/canonical/frozen. FOUND-001D1-D2 Admin Shell slices are also accepted/canonical/frozen. Do not reopen frozen slices without a concrete regression or a later requirement that exposes a genuinely missing contract.
+FOUND-001A, FOUND-001B and the complete FOUND-001C Core UI framework through C5E are accepted/canonical/frozen. FOUND-001D1-D3 Admin Shell slices are also accepted/canonical/frozen. Do not reopen frozen slices without a concrete regression or a later requirement that exposes a genuinely missing contract.
 
 ## Currency display convention
 **CANONICAL**
@@ -79,7 +79,6 @@ Canonical D1 includes:
 - frozen `SidebarInset` as the single Admin `main` landmark, with shell content scrolling inside a neutral container;
 - shallow provisional Sidebar groups, real active Home link, icon-collapse and mobile Sheet behavior;
 - Home `aria-current="page"` semantics when active;
-- future destinations were initially shell-local unavailable evidence and were replaced by real root links in D2;
 - TopBar Search using frozen Core Button/focus behavior;
 - Notifications DropdownMenu semantics attached to the actual IconButton trigger;
 - responsive Àríyá controls: labeled Core Button at large widths and compact IconButton at narrow widths;
@@ -113,9 +112,28 @@ Canonical D2 includes:
 - the obsolete D1 `FutureDestination` helper and Tooltip plumbing were removed once all D2 root routes became real links;
 - no route, Core, package, lockfile or security drift was introduced.
 
-A leftover unused React import remains in `AdminSidebar.tsx`; accepted as non-blocking hygiene because it does not affect runtime semantics and the reported lint/typecheck passed. It may be removed opportunistically in a future shell-only edit without reopening D2 behavior.
-
 Do not reopen D2 during later Admin-shell slices unless a concrete routing/Command regression appears.
+
+## FOUND-001D3 — Admin Shell Composition Closure
+**ACCEPTED / CANONICAL / FROZEN**
+
+Canonical D3 includes:
+- shell-owned `AdminBreadcrumbs` implementing `Home / Current Section` for non-Home Admin root routes using frozen Core Breadcrumb primitives;
+- breadcrumb Home is a real TanStack `Link` to `/admin`; current section is `BreadcrumbPage` and is not clickable;
+- `AdminPageHeader` remains shell-owned and composes the canonical breadcrumb behavior through a small `showBreadcrumbs` flag;
+- Home remains breadcrumb-free while section placeholder pages show the canonical two-level breadcrumb;
+- shell-owned `AdminAriyaPanel` establishes Àríyá's canonical FOUND-001 Admin placement as a right-side Core Sheet with semantic title/description and a truthful `StatePanel` placeholder;
+- `AdminShell` owns exactly two local shell states: `commandOpen` and `ariyaOpen`; no global state library/context was introduced;
+- both responsive TopBar Àríyá triggers and the Command `Open Àríyá` item open the same Sheet state; no Àríyá toast remains on those trigger paths;
+- Notifications remain anchored as the TopBar DropdownMenu with deterministic unread count `3`; the Command Notifications item remains a truthful placeholder action rather than programmatically controlling the dropdown;
+- account menu retains deterministic shell identity `Amara Okafor / Administrator` and gives explicit placeholder feedback for Profile, Preferences and Sign out without adding auth/account routes or persistent account state;
+- D2 route-aware TopBar context, Cmd/Ctrl+K command behavior, real Sidebar links and mobile-close behavior remain intact;
+- no domain data, auth, permissions, database, real notifications or AI backend was added;
+- no Core/package/security/root-route drift was introduced.
+
+Non-blocking hygiene: unused React imports remain in `AdminBreadcrumbs.tsx` and `AdminSidebar.tsx`. They have no runtime effect and do not reopen D3; remove opportunistically only during a later shell-local edit.
+
+Admin shell implementation is now closed for FOUND-001 pending one brief no-feature closure review.
 
 ## FOUND-001C5E gap-audit deferrals
 Build in shell (FOUND-001D/E):
@@ -159,4 +177,4 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Begin FOUND-001D3 as a small Admin-shell composition closure. Define route-aware PageHeader/breadcrumb behavior, add shell-only Profile/Preferences placeholder destinations if justified, and establish the final shell placement contracts for Notifications and Àríyá without implementing their real engines. Preserve frozen D1-D2 chrome/navigation/Command behavior, Core APIs, package/security state and root route. After D3, perform a brief Admin-shell closure review before starting FOUND-001E Client Portal Shell.
+Run one brief FOUND-001D4 Admin Shell Closure Review with no planned feature implementation. Audit desktop/tablet/mobile shell behavior, route/nav/search/breadcrumb/Notifications/Àríyá/account composition, frozen Core boundaries, package/security/root-route stability, and prompt leakage. Only fix objectively verified regressions. If clean, close FOUND-001D and begin FOUND-001E Client Portal Shell.
