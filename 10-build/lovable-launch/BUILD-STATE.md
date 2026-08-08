@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1-D2 ACCEPTED/FROZEN — FOUND-001C5D3 NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5C ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001C5D1-D2 ACCEPTED/FROZEN — FOUND-001C5D3 CONDITIONAL (ONE ACCESSIBILITY CLOSURE ITEM)**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -41,32 +41,24 @@ Canonical D1 includes generic `DataTable<TData, TValue>`, TanStack core/sorted/p
 
 ## FOUND-001C5D2 — Operational Controls
 **ACCEPTED / CANONICAL / FROZEN**
+Canonical D2 includes typed global/text/select filtering, the non-empty `__all__` Select sentinel, runtime-narrowed filter values, visibility controls independent of search/filter presence, opt-in current-page row selection, unique accessible row-selection labels, filtered-empty truth based on the filtered row model, filter-reset-to-first-page behavior, generic fictional gallery data, non-sortable Status evidence, no dependency changes, and preserved `js-yaml@4.3.1` override.
 
-Canonical D2 contracts:
-- `getFilteredRowModel` is added on top of the frozen D1 engine;
-- internal global-filter, column-filter, visibility and row-selection state remain client-side and non-persistent;
-- typed TanStack `ColumnMeta` supports Re:Solve text/select filter metadata;
-- select filters use a non-empty `__all__` sentinel and translate it to `undefined` filter state rather than using an invalid empty Radix SelectItem value;
-- filter values are runtime-narrowed without `any`, `as unknown`, or forced string casts in the DataTable engine;
-- toolbar visibility is driven by search OR filterable columns OR hideable columns OR enabled selection;
-- Columns menu renders only when hideable columns exist and respects TanStack `enableHiding: false`;
-- global search, text filters and select-filter triggers have explicit accessible names;
-- row selection is opt-in, uses current-page select-all, supports indeterminate state, and selected rows use the existing `data-state="selected"` visual contract;
-- consumer `getRowLabel` is preferred for row checkbox naming with a unique index-based fallback;
-- selected-row summary is informational only; no bulk mutation actions are part of Foundation D2;
-- filtered-empty truth uses the filtered row model, distinct from source-empty state;
-- Clear resets only global/column filters and preserves sorting, page size, visibility and selection;
-- filter changes reset the page index to the first page;
-- D1 Status gallery column remains non-sortable; Property, Monthly Cost and Last Checked remain sortable;
-- gallery records are fictional generic operational data, not Airix/client data;
-- package.json/bun.lock remain unchanged from D1; `@tanstack/react-table@8.20.5` and the `js-yaml@4.3.1` override remain canonical;
-- provenance records filtering, visibility and row-selection capability;
-- `/ui` production guard remains intact.
+## FOUND-001C5D3 — DataTable Closure / Structural Audit
+**STATUS: CONDITIONAL — ONE ACCESSIBILITY CLOSURE ITEM**
 
-Lovable reported frozen install, build, lint and `tsc --noEmit` passing. GitHub source review verified the accepted contracts; GitHub review does not independently execute Bun.
+Verified D3 improvements:
+- loading/source-empty/filtered-empty state cells now use `table.getVisibleLeafColumns().length` rather than the original column-definition count, so state rows track current visibility;
+- DataTable source documents the selection identity boundary: TanStack index IDs are acceptable only for transient display selection, while persisted state, business actions, audit-sensitive operations, mutations and future Action Registry commands require stable consumer-supplied `getRowId`;
+- selection remains internally preserved when filtering hides rows, while the visible summary uses filtered selected-row truth;
+- sorting/filtering state remains intact when columns are hidden;
+- pagination footer now stacks `flex-col` on narrow screens and returns to `sm:flex-row` at larger widths;
+- provenance explicitly defers server/manual data mode, URL state, saved views, persistent ordering and related advanced/domain capabilities beyond Foundation Core;
+- no new DataTable dependency or framework was introduced.
 
-### Known D3 closure item
-Once column visibility exists, loading/empty/filtered-empty DataTable cells should span the current visible leaf-column count rather than the original `columns.length`. Carry this into FOUND-001C5D3 rather than reopening D2.
+### Remaining closure item
+The page-size Select trigger is visually adjacent to the text `Rows per page` but is not programmatically associated with that text and has no explicit `aria-label`/`aria-labelledby`. Add an accessible name such as `aria-label="Rows per page"` to the existing DataTable page-size `SelectTrigger` without modifying the frozen Core Select primitive.
+
+This is a narrow accessibility correction only. Do not reopen DataTable architecture or add new capability.
 
 ## Current architecture facts
 - TanStack Start v1 + React 19.2 + Vite 8.2 + TypeScript 5.8 + Bun 1.3.3.
@@ -76,5 +68,13 @@ Once column visibility exists, loading/empty/filtered-empty DataTable cells shou
 - TanStack React Table `8.20.5` is the canonical DataTable engine.
 - Auth, database/RLS, PWA and domain implementation remain later work.
 
+## UI source direction
+- Re:Solve Core is the public UI boundary.
+- Simple semantic `Table` remains separate from `DataTable`.
+- DataTable Foundation remains client-side/headless-engine focused; domain adapters own future server/manual data modes and consequential actions.
+- Keep established Radix/shadcn foundation.
+- shadcn-vue remains visual/composition reference only; never runtime Vue code.
+- Untitled UI and Tremor remain selective source/reference systems.
+
 ## Next action
-Proceed with supervisor-issued FOUND-001C5D3 — DataTable closure/audit only. Resolve structural residuals such as visibility-aware state colSpan and decide which advanced TanStack capabilities belong in Foundation versus later domain implementation. Do not begin server/manual data mode, saved views, URL persistence, bulk mutations, shell, auth, database or dashboard work unless explicitly approved by the supervisor.
+Execute one narrow FOUND-001C5D3-FIX to programmatically name the page-size Select trigger, rerun frozen install/build/lint/type, then stop for final DataTable freeze review. Do not begin another FOUND slice until C5D3 is accepted.
