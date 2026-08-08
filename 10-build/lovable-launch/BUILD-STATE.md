@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1 ADMIN SHELL CONDITIONAL / NARROW FIX NEXT**
+**FOUND-001A ACCEPTED — FOUND-001B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D1 ADMIN SHELL CONDITIONAL / FINAL NAV-SEMANTICS CLEANUP NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible` — public, specification/planning only.
@@ -67,32 +67,30 @@ Canonical C5E includes:
 - NavigationMenu provenance: declared `^1.2.14`, resolved `1.2.22`, MIT, pre-existing dependency, first Re:Solve Core consumption FOUND-001C5E;
 - no package/lock/security drift.
 
-Core UI is closed for FOUND-001.
+Core UI is now closed for FOUND-001.
 
 ## FOUND-001D1 — Admin Shell Chrome & Visual Foundation
-**CONDITIONAL — NARROW CLOSURE REQUIRED**
+**CONDITIONAL — ONE FINAL SHELL-LOCAL NAVIGATION CLEANUP REQUIRED**
 
 Verified-good D1 architecture:
 - `/admin` is a TanStack layout route with `Outlet`; `/admin/` provides the Home validation surface.
 - The route explicitly documents that authentication/authorization is deferred to FOUND-001F; no fake auth guard was added.
 - `AdminShell`, `AdminSidebar`, `AdminTopBar`, and `AdminPageHeader` live under `src/components/shell/admin/`, keeping shell composition outside frozen Core.
-- Sidebar composition uses the frozen Core Sidebar family, provisional shallow groups, active Home, disabled future destinations, icon-collapse and mobile Sheet behavior.
-- TopBar includes Search, Notifications, Àríyá and account/avatar evidence; all interactions are placeholder-only.
+- `SidebarInset` is now the single Admin `main` landmark; the nested main was removed.
+- Sidebar composition uses the frozen Core Sidebar family, provisional shallow groups, active Home, icon-collapse and mobile Sheet behavior.
+- Home is a real TanStack Link and exposes `aria-current="page"` when active.
+- TopBar Search now uses Core Button and canonical focus behavior.
+- Notifications Radix trigger semantics attach to the actual IconButton.
+- Àríyá uses a labeled Core Button at large widths and a compact IconButton at narrow widths.
+- Account trigger uses the frozen focus-variable contract and the demo avatar is deterministic/local with no remote URL.
 - Admin Home contains only shell-validation copy and no fake KPI/domain data.
 - `/` remains untouched; package/security state remains canonical and no dependency was added.
 - generated `routeTree.gen.ts` correctly includes `/admin` and `/admin/`.
 
-D1 closure blockers:
-1. `SidebarInset` already renders the document's `main` landmark, but `AdminShell` nests another `<main>` inside it. Replace the inner landmark with a non-main content container.
-2. Desktop Search is a raw button without the frozen focus-variable contract. Prefer frozen Core Button composition or apply the exact canonical focus variables.
-3. Account trigger uses hardcoded `focus-visible:ring-2 focus-visible:ring-rs-action-primary`; normalize it to the frozen focus-variable contract.
-4. Notifications `DropdownMenuTrigger asChild` currently wraps a non-focusable `div`, so Radix trigger semantics/ARIA attach to the wrapper instead of the actual IconButton. The actual interactive button must be the trigger; position the unread Badge without stealing trigger semantics.
-5. Àríyá uses `IconButton size="icon-compact"` while embedding visible text at large screens. Core IconButton has a fixed icon width, so use a real Button for the labeled desktop/tablet control and an IconButton for narrow screens.
-6. Demo avatar loads from an external DiceBear URL, violating D1's static/local/no-network shell evidence rule. Use ResolveAvatar initials/fallback with no remote `src`.
-7. Future disabled Sidebar destinations use the frozen disabled button contract, whose pointer-events are disabled; their internal Sidebar tooltip cannot be relied on for collapsed pointer discovery. Use a shell-level noninteractive composition that remains visibly/semantically unavailable and still exposes a collapsed label without reopening Core.
-8. Clean minor shell hygiene while touching these files (unused imports, explicit Home current-page semantics where appropriate) without changing the accepted IA evidence.
+Remaining D1 blocker:
+1. `FutureDestination` currently uses `SidebarMenuButton asChild disabled` with a `<span>` child. Because the final DOM node is a span, native `disabled` semantics and the Core `disabled:*` CSS state do not apply truthfully, while a meaningless `disabled` attribute can be forwarded to the span. Keep the shell-level Tooltip discovery pattern, but render future destinations as explicitly noninteractive `aria-disabled="true"` span composition with shell-local disabled styling and no `disabled` prop on the slotted span. Remove the unused `Separator` import while touching the file.
 
-Do not redesign the shell during the fix; preserve the accepted visual direction and route architecture.
+Do not redesign the shell during this final cleanup; preserve the accepted visual direction, route architecture and all verified-good D1 fixes above.
 
 ## FOUND-001C5E gap-audit deferrals
 Build in shell (FOUND-001D/E):
@@ -136,4 +134,4 @@ Unnecessary as dedicated Core families unless a later requirement proves otherwi
 - No timesheets, HR, or client service-consumption concepts.
 
 ## Next action
-Run one narrow FOUND-001D1-FIX pass to correct shell landmarks, focus semantics, DropdownMenu trigger semantics, responsive Àríyá composition, static avatar evidence, and disabled-future-nav collapsed labeling. Preserve the accepted shell architecture and visual direction. If clean, freeze D1 and proceed to the next small Admin-shell slice rather than business-domain implementation.
+Run one final shell-local FOUND-001D1-FIX2 pass to correct only `FutureDestination` semantics/disabled styling and remove the unused import. If clean, freeze D1 and proceed to the next small Admin-shell slice rather than business-domain implementation.
