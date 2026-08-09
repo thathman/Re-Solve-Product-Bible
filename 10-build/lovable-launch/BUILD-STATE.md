@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS CONDITIONAL / GRANT-CLOSURE NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`.
@@ -63,7 +63,6 @@ Canonical F1A state:
 - generated bearer serverFn transport remains intact: browser-generated client obtains the access token, `attachSupabaseAuth` forwards `Authorization: Bearer`, and generated server middleware validates with `auth.getClaims()`.
 - generated `supabaseAdmin` service-role client is PRESENT / GENERATED / QUARANTINED / UNUSED by Re:Solve application code.
 - `src/start.ts` preserves error middleware + explicit `createCsrfMiddleware`; generated `attachSupabaseAuth` remains registered as function middleware.
-- `.env` / `.env.*` remain ignored except `.env.example`.
 - canonical cookie-backed SSR session uses `@supabase/ssr`, request-scoped server clients, shared browser/server cookie state, Supabase-provided cache directives, and validated `getClaims()` identity.
 - bearer serverFn transport remains a separate accepted stateless path.
 
@@ -71,31 +70,68 @@ F1A is frozen. Do not reopen transport without a concrete auth/session regressio
 
 ## FOUND-001F1B — User-Facing Authentication Flows
 **ACCEPTED / CANONICAL / FROZEN**
-Canonical auth UX now includes:
-- `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`;
-- shared auth components under `src/components/auth/`;
-- login via canonical `supabaseAuthBrowser.auth.signInWithPassword()` with RHF/Zod validation and no public signup;
-- already-authenticated `/login` requests redirect to `/` based only on authenticated identity, with no staff/org assumption;
-- forgot-password uses neutral account-enumeration-safe success copy;
-- reset-password uses canonical browser auth client and stable provider-neutral failure copy;
-- reusable server-side `signOut` uses the request-scoped cookie-backed client;
-- shared `getSafeRedirect()` permits internal application paths only and rejects protocol-relative/external targets;
-- PKCE callback code exchange now runs through a server function backed by `createSsrSessionSupabase()`, so the resulting session is written into canonical HTTP cookies before redirect;
-- recovery callbacks redirect to `/reset-password`; general callbacks use safe internal redirects;
-- raw Supabase/AuthError objects, auth codes, tokens, sessions and password values are not logged or exposed to UI;
-- generated `src/integrations/supabase/**`, `src/start.ts`, CSRF, bearer middleware and service-role quarantine remain unchanged;
-- no profiles, organisations, memberships, staff records, RLS domain policies, MFA, invitations, organisation selection or Admin/Portal authorization were introduced.
+Canonical auth UX includes `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`; canonical browser sign-in/reset actions; request-scoped server sign-out; server-side PKCE code exchange into cookie session state; safe internal redirects; provider-neutral errors; no public signup; and no staff/org authorization assumptions. Generated Supabase integration, CSRF, bearer transport and service-role quarantine remain unchanged.
 
-F1B authenticates identity only. It does not determine what the authenticated user is allowed to access.
+F1B authenticates identity only. It does not determine what the authenticated user may access.
+
+## FOUND-001F2A — Minimal Identity Schema + Baseline RLS
+**CONDITIONAL — SCHEMA/POLICY SHAPE ACCEPTED; DETERMINISTIC GRANT BASELINE + SOURCE HYGIENE MUST CLOSE**
+
+### Verified schema
+Version-controlled migration:
+`supabase/migrations/20260809051520_identity_foundation.sql`
+
+Creates only:
+- `public.organisations(id, name, created_at)`;
+- `public.profiles(id -> auth.users, display_name, avatar_url, created_at)`;
+- `public.organisation_memberships(id, organisation_id -> organisations, user_id -> auth.users, status, created_at)` with unique `(organisation_id, user_id)` and indexes on user/org;
+- `public.staff_members(user_id -> auth.users, status, created_at)`.
+
+Membership/staff statuses are constrained to `active | suspended`. User relationships remain independent: a user may be staff, organisation member, both, or member of multiple organisations.
+
+### Verified RLS policy shape
+RLS is enabled on all four public tables.
+- profiles: authenticated own-row SELECT, own-row INSERT, own-row UPDATE; no DELETE policy;
+- organisation_memberships: authenticated own-row SELECT only;
+- organisations: authenticated SELECT only where an active membership for `auth.uid()` exists;
+- staff_members: authenticated own-row SELECT only.
+
+Policy dependency is non-recursive: organisation policy reads membership; membership policy depends only on `user_id = auth.uid()`. No `SECURITY DEFINER` function exists. No seed identities/data or onboarding trigger exists.
+
+### Generated types
+`src/integrations/supabase/types.ts` was regenerated and contains all four tables with the expected public relationships/nullability. References into `auth.users` are not emitted as public PostgREST relationships, which is expected.
+
+### Blocking deterministic-grant issue
+The migration grants the intended narrow privileges but does **not first revoke** any pre-existing/default privileges from `anon` and `authenticated`.
+
+Supabase grants and RLS are separate security layers, and public-table default grants can vary by project/Data API configuration. A canonical portable migration must not depend on the connected Cloud project's current automatic-exposure setting.
+
+Required closure in a NEW follow-up migration (do not rewrite already-applied migration history):
+- `REVOKE ALL` on the four identity tables from `anon` and `authenticated` first;
+- explicitly re-grant only the required authenticated privileges;
+- preserve column-level profile mutation grants (`INSERT(id, display_name, avatar_url)`, `UPDATE(display_name, avatar_url)`);
+- organisations/memberships/staff remain authenticated SELECT-only;
+- no authenticated DELETE anywhere;
+- anon receives no table privileges;
+- service-role treatment may remain explicit/privileged, but generated application service-role client stays quarantined and unused.
+
+This ensures broad project defaults cannot silently defeat the intended column/table grant model even though RLS currently blocks unauthorized rows.
+
+### Source-hygiene issue
+The applied migration begins with a build-slice/supervisor comment naming `FOUND-001F2A`. Do not rewrite applied migration history solely to remove it. Instead, record this as noncanonical source-hygiene residue and ensure the corrective migration contains only concise database-purpose comments, with no supervisor/prompt/build-slice language. Future migrations must not repeat task IDs/instructions in source.
+
+### External primary-source alignment
+Current Supabase guidance treats Postgres grants and RLS as separate layers and recommends explicitly granting only required privileges. Supabase project defaults for automatically exposing new `public` tables have changed over time/configuration; therefore Re:Solve migrations must establish their own deterministic privilege baseline rather than rely on project defaults.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
 - `/ui` remains dev-only gallery.
 - Admin and Portal shells remain frozen.
 - Lovable Cloud/Supabase is active.
-- Cookie-backed SSR auth + bearer serverFn transport are frozen.
-- User-facing sign-in/password-recovery flows are frozen.
-- No application identity schema/RLS/surface authorization exists yet.
+- F1 auth transport + UX are frozen.
+- Four identity tables and baseline RLS now exist in Cloud and source control.
+- F2A is not frozen until explicit privilege revocation/regrant is applied through a follow-up version-controlled migration.
+- No Admin/Portal route authorization, organisation selection, invitations, domain tables or broad RBAC exists yet.
 
 ## Next action
-Begin **FOUND-001F2A — Minimal Identity Schema + Baseline RLS**. Introduce only the canonical identity records required by F0: profiles, organisations, organisation memberships and staff access. Create them through version-controlled Supabase migrations, enable RLS in the same slice, grant only the minimum self-readable/self-profile permissions required for future F3 access checks, regenerate database types, and do not wire UI or route guards yet. Do not create invitations, domain tables, broad RBAC/capability catalogues, organisation switcher, demo users or service-role application flows in F2A.
+Run one narrow **FOUND-001F2A-FIX — Deterministic Identity Grants Closure**. Add a new migration that revokes all table privileges from `anon` and `authenticated` on the four identity tables, then explicitly re-grants only the accepted least-privilege matrix. Do not modify the already-applied identity migration, policies, schema shape, generated auth code or UI. Re-regenerate types only if tooling changes them. If clean, freeze F2A and proceed to F2B application identity read primitives.
