@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV-PREVIEW-001 ACCEPTED/FROZEN — CLIENT PORTAL HOME NEXT**
+**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV-PREVIEW-001 ACCEPTED/FROZEN — CLIENT PORTAL HOME IMPLEMENTATION REVIEWED BUT REJECTED VISUALLY / REOPENED FOR ORIGINAL REDESIGN**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -48,8 +48,9 @@ Keep this file updated after each supervised build review so future Lovable prom
 Applies to Auth/client entry surfaces and Client Portal only.
 
 Canonical sources:
-1. `Airix360/AM-Client-Docs` Re:Solve Design System + supplied Client Portal Home.
+1. `Airix360/AM-Client-Docs` Re:Solve Design System.
 2. `Airix360/airixmedia-web` as supporting systems/interaction reference.
+3. Owner-supplied Client Portal pages are REFERENCE MATERIAL only unless a later slice explicitly promotes a specific interaction/anatomy to canonical.
 
 Client grammar:
 - warm paper canvas around `oklch(97% 0.012 60)`.
@@ -67,6 +68,14 @@ Client grammar:
 - bundled/self-hosted fonts only; no runtime Google Fonts/CDN dependency.
 - no external stock-image dependency is canonical.
 
+### Reference-use rule
+**OWNER CORRECTION / CANONICAL**
+- Never blindly clone an attached client sample page.
+- Samples provide visual vocabulary, content clues, and useful interaction ideas; they are not automatic layout specifications.
+- Re:Solve client surfaces must be independently designed from the product's actual information hierarchy and workflows.
+- Preserve the Airix visual DNA while producing a distinct Re:Solve product composition.
+- Before freezing a client page, verify it is not merely a React transcription of an attached mockup.
+
 ## Auth visual / capability plan
 **FUNCTIONAL AUTH FROZEN; VISUAL REFRESH + CAPABILITY EXPANSION TRACKED, NOT YET IMPLEMENTED**
 - Previous missing exact image asset is CLOSED/no-action; do not keep chasing it.
@@ -82,18 +91,16 @@ Client grammar:
 
 ## CLIENT-VIS portal shell rollout
 **ACCEPTED / CANONICAL / FROZEN VISUALLY**
-Verified current implementation:
 - one existing `PortalShell`; no parallel shell.
 - `.rs-client-theme` is scoped to Portal and applies Space Grotesk directly via `font-family`.
 - Fontsource Space Grotesk and Instrument Serif are bundled locally; JetBrains Mono remains existing technical/data font.
-- `--color-rs-surface-dark` is mapped to the semantic `--rs-surface-dark` variable, so active warm-charcoal nav utilities are real Tailwind theme utilities.
-- client scope explicitly owns selected/disabled/destructive semantics required to avoid partial global-dark leakage.
-- `PortalTopBar` brand and organisation controls are sibling links, not nested anchors, and both preserve the frozen focus-visible contract.
+- `--color-rs-surface-dark` is mapped to the semantic `--rs-surface-dark` variable.
+- client scope owns selected/disabled/destructive semantics required to avoid partial global-dark leakage.
+- `PortalTopBar` brand and organisation controls are sibling links and both preserve the frozen focus-visible contract.
 - active organisation comes only from the safe `/_portal` route context and remains UX context only.
 - no new Supabase query or authorization shortcut was introduced.
 - desktop navigation, mobile Sheet, command search, notifications, Àríyá and account behavior remain in the existing architecture.
 - Admin visual files remain untouched by the client theme rollout.
-- Lovable reported build/lint success; source review found no remaining shell blocker.
 
 Do not reopen the client shell absent a concrete regression or explicit owner visual request.
 
@@ -101,44 +108,63 @@ Do not reopen the client shell absent a concrete regression or explicit owner vi
 **ACCEPTED / CANONICAL FOR DEVELOPMENT / FROZEN UNTIL DEMO IDENTITY TRANSITION**
 Verified app commit: `1e673b2c042283c88e55e777f32d5c52c1890bfd`.
 
-Verified current files:
-- `src/routes/admin.tsx` blob `56947b1d8e0c09092d97b44d2e02f1b26e0e8edd`.
-- `src/routes/_portal.tsx` blob `ee239d8bb1068bb9800469871577dc8aca1fd8ff`.
-
 Canonical behavior:
-- only `import.meta.env.DEV` bypasses the parent route UX guards.
-- development `/admin` returns before `getAdminAccess()` so static Admin visual surfaces render without a login.
+- only `import.meta.env.DEV` bypasses parent route UX guards.
+- development `/admin` returns before `getAdminAccess()` so static Admin visual surfaces render without login.
 - development Portal returns deterministic browser-only preview context: organisation id `00000000-0000-4000-8000-000000000001`, name `Adaeze Realty Group`.
-- production branches remain byte-structurally present and continue calling the frozen `getAdminAccess()` and `getPortalOrganisationContext()` authorization flows.
+- production branches remain present and continue calling the frozen `getAdminAccess()` and `getPortalOrganisationContext()` authorization flows.
 - no localStorage/cookie/query-string/public production toggle exists.
 - no identity/RLS/server function/CSRF/service-role boundary was changed.
 - preview organisation context is presentation-only and is not authorization evidence.
 - `/login` remains independently accessible.
 - `/select-organisation` remains on its real authentication/context flow.
 - no database changes, seed identities or test users were introduced.
-- Lovable reported build/lint/typecheck success.
-
-Development-visible visual routes include Portal `/`, `/properties`, `/projects`, `/support`, `/billing` and the full existing `/admin` route family.
 
 This bypass must be removed or explicitly replaced when canonical demo/test identities become part of the supervised build. It must never become a production feature flag.
 
-## Client Portal Home reference
-The supplied Client Portal Home is a layout specification for the next visual slice:
-- horizontal client navigation with Re:Solve + organisation context.
-- warm editorial canvas and large Instrument Serif greeting.
-- prominent warm-charcoal active-project panel with progress/approval state.
-- simple recent-activity rows with mono time/date labels.
-- compact property incident, overdue invoice, support and Àríyá modules in the right column.
-- client-oriented calm density; do not copy Admin dashboard density.
-- static believable demo data only until domain persistence is separately designed.
+## CLIENT-VIS-HOME — Current implementation review
+**FUNCTIONALLY SAFE / VISUALLY REJECTED / NOT FROZEN**
+Current app head reviewed: `29074337bf93808ac020863d74ccd0258a8207bc`.
+Current Home blob: `src/routes/_portal.index.tsx` SHA `36b9f1f52b6803f9a09bec6839a6f99a0a2fde52`.
+
+Verified scope:
+- compared with DEV-PREVIEW head `1e673b2c042283c88e55e777f32d5c52c1890bfd`, the visual slice changed only `src/routes/_portal.index.tsx` plus generated `src/routeTree.gen.ts`.
+- static demo content only; no database/server/security change.
+- frozen Portal shell/Admin/Auth/identity boundaries were preserved.
+
+Reason for visual rejection:
+- implementation follows the attached Client Portal Home sample too literally: greeting-first anatomy, approximately 1.3/1 two-column split, dark active-project block at upper left, recent activity below, and a stacked property/billing/support/Àríyá rail at right.
+- this is effectively a React translation of the supplied mockup rather than an original Re:Solve Home designed from product hierarchy.
+- owner explicitly requires a complete redesign rather than blind use of the attached sample.
+
+### New Home design thesis — Client Briefing Board
+The redesigned Home should feel like a concise morning/working brief from Re:Solve, not a generic dashboard and not the supplied sample.
+
+Required information hierarchy:
+1. **Briefing header** — restrained Instrument Serif greeting + date/context + one-sentence operational summary.
+2. **Needs your attention** — one full-width segmented priority rail containing the few things that actually require the client's decision/action (approval, degraded property, overdue invoice). This is the first operational object after the greeting.
+3. **Work in motion** — one large bordered workspace region, not a dark hero card. Show the active project as a horizontal stage/route system (Discovery -> Design -> Build -> QA -> Launch), current stage, 68% overall progress, next handoff, and approval count. Use thin Airix systems-line/node language rather than a diagonal texture.
+4. **Your digital estate** — compact property health rows/table-like region with domains, state, and latest signal. Avoid individual property cards.
+5. **Recent movement** — editorial event stream/timeline with mono dates and restrained status markers.
+6. **Money + support** — one shared bordered region subdivided internally into billing and support, not separate floating cards.
+7. **Àríyá workspace bar** — a wide dark/charcoal bottom band or inset strip that feels like a contextual command surface, not another right-rail chatbot card. Existing shared Àríyá implementation remains authoritative; Home treatment may remain visual-only if opening it requires shell changes.
+
+Composition guidance:
+- use a primarily single broad content column with large subdivided regions; selective two-column subdivision only inside lower sections.
+- avoid a permanent right sidebar of stacked cards.
+- use strong horizontal rules, internal dividers, system lines/nodes and whitespace for hierarchy.
+- terracotta appears selectively for attention/action/current-stage emphasis.
+- warm charcoal is reserved for Àríyá or a deliberate inset, not automatically the project hero.
+- use believable static demo content but do not invent domain persistence.
+- mobile becomes a linear briefing sequence preserving the same information priority.
 
 ## Sequencing
-1. CLIENT-VIS-HOME — implement supplied Client Portal Home reference using static demo data only.
-2. inspect/freeze Portal Home.
-3. propagate client grammar to Properties, Projects, Support and Billing in small slices.
+1. CLIENT-VIS-HOME-R2 — fully redesign only `src/routes/_portal.index.tsx` using the Client Briefing Board thesis above.
+2. inspect/freeze the original Portal Home composition.
+3. propagate the accepted client grammar to Properties, Projects, Support and Billing in small slices; those pages must also be independently designed rather than cloned from attached samples.
 4. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
 5. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
 6. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
 
 ## Next action
-Run **CLIENT-VIS-HOME — Client Portal Home Reference Implementation**. Modify only the Portal Home visual content using static believable demo data and the supplied Client Portal Home as the layout specification. Preserve the frozen Airix client shell, frozen development preview boundary, all production authorization/server security, and the separate Lucid Admin visual dialect.
+Run **CLIENT-VIS-HOME-R2 — Original Client Briefing Board**. Replace the current Home composition completely while preserving the frozen Airix client theme/shell and all security boundaries. Treat attached portal examples as reference vocabulary only, not a layout to reproduce.
