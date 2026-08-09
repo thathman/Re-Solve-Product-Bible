@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A CLOUD + SSR TRANSPORT CONDITIONAL / COOKIE-POLICY MICRO-FIX NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`.
@@ -13,7 +13,7 @@ Keep this file updated after each supervised build review so the next Product Bi
 ## Security memory
 **ACCEPTED / CANONICAL**
 - Roles/permissions/capabilities are server-controlled; browser metadata is never authoritative.
-- Auth/authz is enforced at server-function/server-route boundaries and later by RLS, not only by UI navigation.
+- Auth/authz is enforced at server-function/server-route boundaries and later by RLS, not only UI navigation.
 - Never invent helpers that do not exist.
 - RLS + least privilege when persistence begins; grants/policies/security config version-controlled.
 - Service-role credentials are server-only and never a shortcut around normal user RLS.
@@ -28,11 +28,13 @@ Keep this file updated after each supervised build review so the next Product Bi
 
 ## SECURITY-GATE-001
 **ACCEPTED / CLOSED**
-Canonical security-sensitive package facts remain:
+Canonical security-sensitive package facts:
 - `@tanstack/react-router ^1.170.18`
 - `@tanstack/react-start ^1.168.32`
 - `@tanstack/router-plugin ^1.168.23`
 - `@tanstack/react-table 8.20.5`
+- `@supabase/supabase-js ^2.112.2`
+- `@supabase/ssr ^0.12.4`
 - top-level override `"js-yaml": "4.3.1"`
 - no accepted High/Critical finding.
 
@@ -50,67 +52,46 @@ Surface direction:
 - one membership => automatic org context; multiple memberships => explicit selection;
 - active-org context is never authorization evidence;
 - invite-oriented email/password foundation, MFA-ready; enterprise SSO deferred;
-- Supabase Auth acceptable for Lovable Cloud, managed Supabase and self-hosted Supabase portability.
-
-Session direction:
-- SSR route identity must be available from cookies on the initial server request;
-- validated `getClaims()`/equivalent is used for identity checks;
-- raw `getSession()` user data is not authoritative;
-- bearer auth remains acceptable for stateless server/API requests.
+- Supabase Auth remains portable across Lovable Cloud, managed Supabase and self-hosted Supabase.
 
 ## FOUND-001F1A — Lovable Cloud + Auth Transport
-**CONDITIONAL — ACTIVATION ACCEPTED; ONE SSR COOKIE-POLICY BLOCKER REMAINS**
+**ACCEPTED / CANONICAL / FROZEN**
 
-### Accepted activation and transport facts
+Canonical F1A state:
 - Lovable Cloud/Supabase is activated and connected.
-- generated `src/integrations/supabase/**` and `supabase/config.toml` exist and remain generated infrastructure.
-- env contract uses publishable-key naming; old `VITE_SUPABASE_ANON_KEY` is gone.
-- `@supabase/supabase-js` and `@supabase/ssr ^0.12.4` are present.
-- `src/start.ts` still preserves error middleware + explicit `createCsrfMiddleware`; generated `attachSupabaseAuth` remains registered as `functionMiddleware`.
-- generated bearer serverFn path is preserved: browser-generated client obtains the token, attaches `Authorization: Bearer`, and generated server middleware validates it with `auth.getClaims()`.
+- generated `src/integrations/supabase/**` and `supabase/config.toml` remain generated infrastructure and are not hand-edited.
+- env contract uses publishable-key naming; old `VITE_SUPABASE_ANON_KEY` is removed.
+- generated bearer serverFn transport remains intact: browser-generated client obtains the access token, `attachSupabaseAuth` forwards `Authorization: Bearer`, and generated server middleware validates with `auth.getClaims()`.
 - generated `supabaseAdmin` service-role client is PRESENT / GENERATED / QUARANTINED / UNUSED by Re:Solve application code.
+- `src/start.ts` preserves error middleware + explicit `createCsrfMiddleware`; generated `attachSupabaseAuth` remains registered as function middleware.
 - `.env` / `.env.*` remain ignored except `.env.example`.
-- no profiles/organisations/memberships/staff schema, domain RLS, login UI or Admin/Portal access guards exist yet.
 
-### Re:Solve-owned SSR session implementation
-`src/lib/supabase/` now contains:
-- `client.ts`: generated tooling client plus a separate Re:Solve `createBrowserClient` auth client;
-- `server.ts`: request-scoped bearer clients and `getAuthenticatedUser()` with bearer-first then cookie fallback;
-- `session.ts`: request-scoped `createServerClient` using TanStack `getCookies()` / `setCookie()` and validated cookie-backed `getClaims()` identity probe.
+Re:Solve-owned auth boundaries under `src/lib/supabase/`:
+- `client.ts` exposes the generated tooling client separately from canonical `supabaseAuthBrowser` built with `createBrowserClient`.
+- `server.ts` provides request-scoped bearer clients and `getAuthenticatedUser()` with bearer-first then cookie fallback.
+- `session.ts` provides request-scoped cookie-backed `createServerClient` using TanStack `getCookies()` / `setCookie()` and validated `getClaims()` identity.
 
-This structurally closes the earlier initial-request gap: cookie state can be read by the server without browser localStorage or a client-injected Authorization header.
+Canonical dual-transport model:
+1. **Cookie-backed SSR session** — canonical Re:Solve browser/server auth session, available on initial server requests and future route boundaries.
+2. **Bearer serverFn transport** — retained generated Lovable path for stateless server-function RPCs.
 
-### Blocking cookie-policy issue
-`src/lib/supabase/session.ts` currently forces every Supabase auth cookie written by `setAll()` to:
+Cookie policy closure:
+- Supabase-managed auth cookies are **not** forcibly `HttpOnly`; browser `createBrowserClient` can share the session as required by `@supabase/ssr`.
+- Supabase-provided cookie attributes are preserved; safe fallbacks apply only for `SameSite=Lax`, production `Secure`, and `Path=/` when absent.
+- library-provided expiry/max-age attributes are not replaced.
+- installed `@supabase/ssr 0.12.4` `setAll(cookies, headers)` cache directives are forwarded through TanStack `setResponseHeader`, preserving private/no-cache/no-store/must-revalidate/max-age=0 behavior on token rotation.
+- authenticated identity is validated with `getClaims()`, not trusted from raw `getSession()` user state.
+- no route guards, identity tables, organisation/staff authorization, domain RLS or login UI exist yet.
 
-`httpOnly: true`
-
-This is not compatible with the canonical `@supabase/ssr` shared browser/server session model. The browser-side `createBrowserClient` needs access to the auth/refresh cookies to maintain and refresh the same session. Current Supabase SSR guidance explicitly says HttpOnly is not required for these auth cookies and notes that the browser needs the refresh token.
-
-Required closure:
-- do **not** force `httpOnly: true` on Supabase-managed SSR auth cookies;
-- preserve Supabase-provided cookie options and only supply safe defaults where the library has not already specified them;
-- keep `SameSite=Lax`, `Secure` in production and `Path=/` where appropriate without overriding library-required attributes;
-- inspect the installed `@supabase/ssr 0.12.4` `CookieMethodsServer.setAll` contract and preserve/apply any response cache headers it provides on token rotation; manual `private, no-store` may remain only if it does not overwrite stronger/more complete supplied headers;
-- generated integration files stay untouched;
-- bearer serverFn path stays intact;
-- service-role client remains quarantined and unused.
-
-### External primary-source alignment
-Current Supabase guidance states:
-- `@supabase/ssr` is the supported cookie-session package for SSR frameworks including TanStack Start;
-- browser and server use shared cookie-backed session state;
-- `getClaims()` is suitable for protected identity checks;
-- HttpOnly is not appropriate for this shared JS SSR session because browser code must access the refresh token;
-- responses that rotate auth cookies must not be publicly cached.
+F1A is frozen. Do not reopen transport unless a concrete auth/session regression is demonstrated.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
 - `/ui` remains dev-only gallery.
 - Admin and Portal shells remain frozen.
 - Lovable Cloud/Supabase is active.
-- Auth transport exists but F1A is not frozen until the SSR cookie-policy micro-fix closes.
+- Secure dual auth transport is established.
 - No application identity schema/RLS/surface authorization yet.
 
 ## Next action
-Run one narrow **FOUND-001F1A-FIX2**: correct the Supabase SSR cookie options so they remain compatible with `createBrowserClient`, preserve any library-provided refresh cache headers, and re-verify the existing cookie/bearer dual transport. Do not add login UI, identity tables, RLS policies or route guards. If clean, freeze F1A and proceed to F1B user-facing auth flows.
+Begin **FOUND-001F1B — User-Facing Authentication Flows** as a small slice. Build invite-oriented sign-in, sign-out, forgot/reset password and required auth callback/session-expiry surfaces using the canonical Re:Solve cookie-backed auth client established in F1A. Do not create profiles, organisations, memberships, staff records, domain RLS, active-organisation selection or Admin/Portal staff/org authorization yet; those remain F2/F3. Preserve the frozen Admin/Portal visual foundations and generated Lovable integration files.
