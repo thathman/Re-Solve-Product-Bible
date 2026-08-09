@@ -36,7 +36,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 - `@tanstack/react-router ^1.170.18`
 - `@tanstack/react-start ^1.168.32`
 - `@tanstack/router-plugin ^1.168.23`
-- `@supabase/react-table 8.20.5` is not canonical; actual frozen table dependency remains `@tanstack/react-table 8.20.5`.
+- `@tanstack/react-table 8.20.5`
 - `@supabase/supabase-js ^2.112.2`
 - `@supabase/ssr ^0.12.4`
 - top-level `overrides.js-yaml = 4.3.1`.
