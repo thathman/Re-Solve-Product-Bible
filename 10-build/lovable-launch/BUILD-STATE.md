@@ -102,15 +102,24 @@ Client grammar:
 - desktop navigation, mobile Sheet, command search, notifications and account behavior remain in the existing architecture.
 - Admin visual files remain untouched by the client theme rollout.
 
-### Client help / Àríyá interaction — OWNER OVERRIDE / CANONICAL DIRECTION
+### Client help / Àríyá / Chatwoot interaction — OWNER OVERRIDE / CANONICAL DIRECTION
 - Remove the dedicated Àríyá trigger from the Client Portal top navigation/topbar.
 - Do not reserve a full Àríyá section or bottom command strip inside Portal Home.
-- Client help should be persistently available through a floating launcher anchored to the lower-right of client Portal pages.
-- The launcher belongs to the client Portal shell so it is available consistently across Home, Properties, Projects, Support and Billing.
-- Preferred mental model is one help launcher with two clearly separated destinations/modes: **Ask Àríyá** and **Support**. Do not merge AI and human-support transcripts into one ambiguous conversation.
-- Desktop may use a compact pill/launcher; mobile may collapse to a circular button while preserving accessible labels and touch targets.
-- Àríyá should continue to use the existing shared `PortalAriyaPanel` rather than creating another AI implementation.
-- Support may initially route/open a support surface and later connect to the canonical support-chat implementation (e.g. Chatwoot) when that integration is intentionally built.
+- Client help is persistently available through one floating lower-right conversation launcher owned by the Client Portal shell.
+- **Àríyá is Re:Solve's own AI product and identity. It is NOT Chatwoot Captain, is not powered by Captain, and must never be presented as Captain.**
+- Àríyá owns the client-facing AI conversation, Re:Solve-specific reasoning/orchestration, product context, tool use and AI behavior.
+- **Chatwoot is the conversation/support transport and human-support backbone**: conversation persistence, inbox/queue state, assignment, agent participation and human takeover.
+- The client should experience one continuous Re:Solve conversation. Àríyá is the first responder; the same conversation can transition to a human Re:Solve support agent without forcing the client to start over.
+- A visible **Request human support / Talk to a person** control should be available inside the conversation. Natural-language requests for a human should also trigger handoff.
+- Àríyá may later escalate proactively according to explicit policy, such as low confidence, unsupported action, sensitive/high-risk request, repeated unresolved interaction or client distress/frustration.
+- Canonical conversation state should distinguish at least AI active, human requested/queued, human active and resolved. When human support is active, Àríyá must not continue autonomous client-facing replies unless the workflow explicitly returns control to AI.
+- Chatwoot Captain remains a **separate optional staff-side Chatwoot capability**. If enabled later, it may assist human agents inside Chatwoot, but it must not impersonate Àríyá, replace Àríyá, share Àríyá's branding, or become visible as the client-facing Re:Solve assistant.
+- Àríyá may eventually provide agent-side summaries/context/suggested actions as its own Re:Solve capability, but that is separate from Captain and requires its own supervised design.
+- Support is therefore incorporated into the Àríyá conversation experience through human takeover rather than exposed as a competing top-level launcher choice.
+- `/support` remains a separate client workspace for conversation/support history, status and future formal support objects; starting or continuing support there may open the same canonical conversation experience.
+- Desktop may use a compact pill launcher; mobile may collapse to a circular button while preserving accessible labels and touch targets.
+- Existing `PortalAriyaPanel` remains the current UI implementation to evolve; do not create a duplicate AI client.
+- Before Chatwoot integration exists, human-takeover UI may be represented visually/demo-only, but must not fake a real connected agent state.
 - Floating launcher must respect safe-area insets, not cover critical content, and remain client-only. Do not add it to Admin or Auth unless separately requested.
 - This explicit owner request is a permitted narrow reopening of the otherwise frozen Portal shell visuals.
 
@@ -158,7 +167,7 @@ Required information hierarchy:
 5. **Recent movement** — editorial event stream/timeline with mono dates and restrained status markers.
 6. **Money + support** — one shared bordered region subdivided internally into billing and support, not separate floating cards.
 
-Home must NOT include an Àríyá section/strip. Persistent Àríyá/support access belongs to the floating client help launcher owned by the Portal shell.
+Home must NOT include an Àríyá section/strip. Persistent Àríyá/support access belongs to the floating client conversation launcher owned by the Portal shell.
 
 Composition guidance:
 - use a primarily single broad content column with large subdivided regions; selective two-column subdivision only inside lower sections.
@@ -170,14 +179,15 @@ Composition guidance:
 - mobile becomes a linear briefing sequence preserving the same information priority.
 
 ## Sequencing
-1. CLIENT-HELP-001 — move client Àríyá access from the topbar to a persistent floating Àríyá/Support launcher while preserving the existing `PortalAriyaPanel`; no Home content redesign in this slice.
+1. CLIENT-HELP-001 — move client Àríyá access from the topbar to one persistent floating Re:Solve conversation launcher using the existing `PortalAriyaPanel`; incorporate a visible human-support takeover affordance conceptually, but do not fake live Chatwoot connectivity in this visual slice.
 2. inspect/freeze the help-launcher refinement.
 3. CLIENT-VIS-HOME-R2 — fully redesign only `src/routes/_portal.index.tsx` using the Client Briefing Board thesis above and no embedded Àríyá module.
 4. inspect/freeze the original Portal Home composition.
 5. propagate the accepted client grammar to Properties, Projects, Support and Billing in small slices; those pages must also be independently designed rather than cloned from attached samples.
-6. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
-7. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
-8. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
+6. later implement the actual Àríyá <-> Chatwoot conversation bridge and human-takeover state machine as a separate supervised integration slice; Captain remains separate.
+7. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
+8. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
+9. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
 
 ## Next action
-When prompting resumes, run **CLIENT-HELP-001 — Floating Àríyá/Support Launcher** first. Remove the client topbar Àríyá trigger, add one persistent lower-right client help launcher using the existing `PortalAriyaPanel` for Àríyá and a clearly separated Support destination/mode, and preserve all shell/security contracts. Then run **CLIENT-VIS-HOME-R2** without any embedded Àríyá section.
+When prompting resumes, run **CLIENT-HELP-001 — Floating Re:Solve Conversation Launcher** first. Remove the client topbar Àríyá trigger, add one persistent lower-right launcher using the existing `PortalAriyaPanel`, represent human takeover as an explicit future-ready state without pretending Chatwoot is connected, and preserve all shell/security contracts. Àríyá remains Re:Solve's own AI; Chatwoot is the conversation/handoff backbone; Captain remains separate. Then run **CLIENT-VIS-HOME-R2** without any embedded Àríyá section.
