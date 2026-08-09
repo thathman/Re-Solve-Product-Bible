@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV-PREVIEW-001 ACCEPTED/FROZEN — CLIENT PORTAL HOME IMPLEMENTATION REVIEWED BUT REJECTED VISUALLY / REOPENED FOR ORIGINAL REDESIGN**
+**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN EXCEPT EXPLICIT HELP-LAUNCHER REFINEMENT — DEV-PREVIEW-001 ACCEPTED/FROZEN — CLIENT PORTAL HOME IMPLEMENTATION REVIEWED BUT REJECTED VISUALLY / REOPENED FOR ORIGINAL REDESIGN**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -90,7 +90,7 @@ Client grammar:
 - no Auth capability prompt yet unless explicitly requested.
 
 ## CLIENT-VIS portal shell rollout
-**ACCEPTED / CANONICAL / FROZEN VISUALLY**
+**ACCEPTED / CANONICAL / FROZEN VISUALLY, WITH ONE OWNER-REQUESTED HELP-LAUNCHER REFINEMENT PENDING**
 - one existing `PortalShell`; no parallel shell.
 - `.rs-client-theme` is scoped to Portal and applies Space Grotesk directly via `font-family`.
 - Fontsource Space Grotesk and Instrument Serif are bundled locally; JetBrains Mono remains existing technical/data font.
@@ -99,10 +99,20 @@ Client grammar:
 - `PortalTopBar` brand and organisation controls are sibling links and both preserve the frozen focus-visible contract.
 - active organisation comes only from the safe `/_portal` route context and remains UX context only.
 - no new Supabase query or authorization shortcut was introduced.
-- desktop navigation, mobile Sheet, command search, notifications, Àríyá and account behavior remain in the existing architecture.
+- desktop navigation, mobile Sheet, command search, notifications and account behavior remain in the existing architecture.
 - Admin visual files remain untouched by the client theme rollout.
 
-Do not reopen the client shell absent a concrete regression or explicit owner visual request.
+### Client help / Àríyá interaction — OWNER OVERRIDE / CANONICAL DIRECTION
+- Remove the dedicated Àríyá trigger from the Client Portal top navigation/topbar.
+- Do not reserve a full Àríyá section or bottom command strip inside Portal Home.
+- Client help should be persistently available through a floating launcher anchored to the lower-right of client Portal pages.
+- The launcher belongs to the client Portal shell so it is available consistently across Home, Properties, Projects, Support and Billing.
+- Preferred mental model is one help launcher with two clearly separated destinations/modes: **Ask Àríyá** and **Support**. Do not merge AI and human-support transcripts into one ambiguous conversation.
+- Desktop may use a compact pill/launcher; mobile may collapse to a circular button while preserving accessible labels and touch targets.
+- Àríyá should continue to use the existing shared `PortalAriyaPanel` rather than creating another AI implementation.
+- Support may initially route/open a support surface and later connect to the canonical support-chat implementation (e.g. Chatwoot) when that integration is intentionally built.
+- Floating launcher must respect safe-area insets, not cover critical content, and remain client-only. Do not add it to Admin or Auth unless separately requested.
+- This explicit owner request is a permitted narrow reopening of the otherwise frozen Portal shell visuals.
 
 ## DEV-PREVIEW-001 — Temporary development visual preview mode
 **ACCEPTED / CANONICAL FOR DEVELOPMENT / FROZEN UNTIL DEMO IDENTITY TRANSITION**
@@ -147,24 +157,27 @@ Required information hierarchy:
 4. **Your digital estate** — compact property health rows/table-like region with domains, state, and latest signal. Avoid individual property cards.
 5. **Recent movement** — editorial event stream/timeline with mono dates and restrained status markers.
 6. **Money + support** — one shared bordered region subdivided internally into billing and support, not separate floating cards.
-7. **Àríyá workspace bar** — a wide dark/charcoal bottom band or inset strip that feels like a contextual command surface, not another right-rail chatbot card. Existing shared Àríyá implementation remains authoritative; Home treatment may remain visual-only if opening it requires shell changes.
+
+Home must NOT include an Àríyá section/strip. Persistent Àríyá/support access belongs to the floating client help launcher owned by the Portal shell.
 
 Composition guidance:
 - use a primarily single broad content column with large subdivided regions; selective two-column subdivision only inside lower sections.
 - avoid a permanent right sidebar of stacked cards.
 - use strong horizontal rules, internal dividers, system lines/nodes and whitespace for hierarchy.
 - terracotta appears selectively for attention/action/current-stage emphasis.
-- warm charcoal is reserved for Àríyá or a deliberate inset, not automatically the project hero.
+- warm charcoal may be used selectively for deliberate inset/floating help surfaces, not automatically as a project hero.
 - use believable static demo content but do not invent domain persistence.
 - mobile becomes a linear briefing sequence preserving the same information priority.
 
 ## Sequencing
-1. CLIENT-VIS-HOME-R2 — fully redesign only `src/routes/_portal.index.tsx` using the Client Briefing Board thesis above.
-2. inspect/freeze the original Portal Home composition.
-3. propagate the accepted client grammar to Properties, Projects, Support and Billing in small slices; those pages must also be independently designed rather than cloned from attached samples.
-4. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
-5. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
-6. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
+1. CLIENT-HELP-001 — move client Àríyá access from the topbar to a persistent floating Àríyá/Support launcher while preserving the existing `PortalAriyaPanel`; no Home content redesign in this slice.
+2. inspect/freeze the help-launcher refinement.
+3. CLIENT-VIS-HOME-R2 — fully redesign only `src/routes/_portal.index.tsx` using the Client Briefing Board thesis above and no embedded Àríyá module.
+4. inspect/freeze the original Portal Home composition.
+5. propagate the accepted client grammar to Properties, Projects, Support and Billing in small slices; those pages must also be independently designed rather than cloned from attached samples.
+6. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
+7. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
+8. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
 
 ## Next action
-Run **CLIENT-VIS-HOME-R2 — Original Client Briefing Board**. Replace the current Home composition completely while preserving the frozen Airix client theme/shell and all security boundaries. Treat attached portal examples as reference vocabulary only, not a layout to reproduce.
+When prompting resumes, run **CLIENT-HELP-001 — Floating Àríyá/Support Launcher** first. Remove the client topbar Àríyá trigger, add one persistent lower-right client help launcher using the existing `PortalAriyaPanel` for Àríyá and a clearly separated Support destination/mode, and preserve all shell/security contracts. Then run **CLIENT-VIS-HOME-R2** without any embedded Àríyá section.
