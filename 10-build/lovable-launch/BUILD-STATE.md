@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS CONDITIONAL / GRANT-CLOSURE NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS CONDITIONAL / GRANT CLOSURE APPLIED IN CLOUD BUT MIGRATION MISSING FROM MAIN**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`.
@@ -75,7 +75,7 @@ Canonical auth UX includes `/login`, `/forgot-password`, `/reset-password`, `/au
 F1B authenticates identity only. It does not determine what the authenticated user may access.
 
 ## FOUND-001F2A — Minimal Identity Schema + Baseline RLS
-**CONDITIONAL — SCHEMA/POLICY SHAPE ACCEPTED; DETERMINISTIC GRANT BASELINE + SOURCE HYGIENE MUST CLOSE**
+**CONDITIONAL — SCHEMA/POLICIES ACCEPTED; CLOUD GRANT CLOSURE REPORTED CORRECT BUT VERSION-CONTROLLED CLOSURE MIGRATION IS MISSING FROM `main`**
 
 ### Verified schema
 Version-controlled migration:
@@ -99,29 +99,31 @@ RLS is enabled on all four public tables.
 Policy dependency is non-recursive: organisation policy reads membership; membership policy depends only on `user_id = auth.uid()`. No `SECURITY DEFINER` function exists. No seed identities/data or onboarding trigger exists.
 
 ### Generated types
-`src/integrations/supabase/types.ts` was regenerated and contains all four tables with the expected public relationships/nullability. References into `auth.users` are not emitted as public PostgREST relationships, which is expected.
+`src/integrations/supabase/types.ts` contains all four tables with the expected public relationships/nullability.
 
-### Blocking deterministic-grant issue
-The migration grants the intended narrow privileges but does **not first revoke** any pre-existing/default privileges from `anon` and `authenticated`.
+### Reported Cloud grant closure
+Lovable reports that migration `20260809052255_identity_grants_closure.sql` was applied successfully to the connected development project and produced the intended deterministic privilege matrix:
+- `anon`: no privileges on all four tables;
+- `authenticated.profiles`: SELECT, INSERT only `(id, display_name, avatar_url)`, UPDATE only `(display_name, avatar_url)`, no DELETE;
+- `authenticated.organisations`: SELECT only;
+- `authenticated.organisation_memberships`: SELECT only;
+- `authenticated.staff_members`: SELECT only;
+- `PUBLIC`: no meaningful DML privileges;
+- `service_role`: privileged backend table access retained;
+- generated `supabaseAdmin` remains quarantined/unused by application code.
 
-Supabase grants and RLS are separate security layers, and public-table default grants can vary by project/Data API configuration. A canonical portable migration must not depend on the connected Cloud project's current automatic-exposure setting.
+### Blocking source-control mismatch
+Direct canonical repository inspection of `thathman/re-solve-c560d62c` `main` cannot find:
+`supabase/migrations/20260809052255_identity_grants_closure.sql`
 
-Required closure in a NEW follow-up migration (do not rewrite already-applied migration history):
-- `REVOKE ALL` on the four identity tables from `anon` and `authenticated` first;
-- explicitly re-grant only the required authenticated privileges;
-- preserve column-level profile mutation grants (`INSERT(id, display_name, avatar_url)`, `UPDATE(display_name, avatar_url)`);
-- organisations/memberships/staff remain authenticated SELECT-only;
-- no authenticated DELETE anywhere;
-- anon receives no table privileges;
-- service-role treatment may remain explicit/privileged, but generated application service-role client stays quarantined and unused.
+Exact-path fetch returns 404 and repository code search finds no equivalent `REVOKE ALL PRIVILEGES` closure SQL. Therefore the Cloud privilege state is not currently reproducible from the canonical application repository.
 
-This ensures broad project defaults cannot silently defeat the intended column/table grant model even though RLS currently blocks unauthorized rows.
+This violates the canonical requirement that grants/policies/security configuration are version-controlled and reviewable. F2A cannot be frozen until the exact already-applied closure migration is present on `main`.
 
-### Source-hygiene issue
-The applied migration begins with a build-slice/supervisor comment naming `FOUND-001F2A`. Do not rewrite applied migration history solely to remove it. Instead, record this as noncanonical source-hygiene residue and ensure the corrective migration contains only concise database-purpose comments, with no supervisor/prompt/build-slice language. Future migrations must not repeat task IDs/instructions in source.
+Do not invent a second/different migration or reapply SQL to Cloud merely to fix source control. Restore/commit the exact migration corresponding to the already-applied Cloud change, then verify it matches the reported privilege matrix.
 
-### External primary-source alignment
-Current Supabase guidance treats Postgres grants and RLS as separate layers and recommends explicitly granting only required privileges. Supabase project defaults for automatically exposing new `public` tables have changed over time/configuration; therefore Re:Solve migrations must establish their own deterministic privilege baseline rather than rely on project defaults.
+### Source-hygiene residue
+The already-applied identity-foundation migration contains a build-slice comment. Do not rewrite migration history solely to remove it. Future migrations must contain database-purpose comments only.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
@@ -129,9 +131,9 @@ Current Supabase guidance treats Postgres grants and RLS as separate layers and 
 - Admin and Portal shells remain frozen.
 - Lovable Cloud/Supabase is active.
 - F1 auth transport + UX are frozen.
-- Four identity tables and baseline RLS now exist in Cloud and source control.
-- F2A is not frozen until explicit privilege revocation/regrant is applied through a follow-up version-controlled migration.
+- Four identity tables and baseline RLS exist in Cloud and source control.
+- Deterministic least-privilege grant closure is reported applied in Cloud but is not yet represented in canonical `main` source control.
 - No Admin/Portal route authorization, organisation selection, invitations, domain tables or broad RBAC exists yet.
 
 ## Next action
-Run one narrow **FOUND-001F2A-FIX — Deterministic Identity Grants Closure**. Add a new migration that revokes all table privileges from `anon` and `authenticated` on the four identity tables, then explicitly re-grants only the accepted least-privilege matrix. Do not modify the already-applied identity migration, policies, schema shape, generated auth code or UI. Re-regenerate types only if tooling changes them. If clean, freeze F2A and proceed to F2B application identity read primitives.
+Run one source-control-only **FOUND-001F2A-FIX2**. Restore/commit the exact already-applied `20260809052255_identity_grants_closure.sql` migration to canonical app `main`, without changing or reapplying database state. Verify its SQL matches the reported revoke/regrant matrix, that the original migration remains untouched, and that no other files change. If present and correct on `main`, freeze F2A and proceed to F2B application identity read primitives.
