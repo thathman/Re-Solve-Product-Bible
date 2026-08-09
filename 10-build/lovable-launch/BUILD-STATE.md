@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION CONDITIONAL / CACHE HEADER MICRO-FIX PENDING — VIS-001A TWO-COLUMN AUTH CONDITIONAL / PASSWORD-TOGGLE A11Y FIX NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION CONDITIONAL / CACHE HEADER MICRO-FIX NEXT — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -13,7 +13,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 ## Security memory
 **ACCEPTED / CANONICAL**
 - Authentication, roles, permissions and capabilities are server-controlled; browser metadata is never authoritative.
-- Route guards are UX gates only. Every future server function/server route returning private data must authorize independently at its own server boundary.
+- Route guards are UX gates only. Future private server functions/routes must independently authorize at their own server boundary.
 - RLS + least privilege are mandatory for persistence; grants/policies/security configuration are version-controlled.
 - Caller-scoped Supabase clients + explicit filters + RLS are the normal user-data path.
 - Generated `supabaseAdmin`/service-role client is PRESENT / GENERATED / QUARANTINED / UNUSED by Re:Solve application code.
@@ -27,7 +27,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 - No security vulnerability exceptions accepted.
 
 ## Frozen foundation / Core / shells
-**ACCEPTED / CANONICAL / FROZEN / CLOSED**
+**ACCEPTED / CANONICAL / FROZEN / CLOSED FUNCTIONALLY**
 - Foundation + Core UI phases C1-C5E remain frozen functionally.
 - `/ui` remains the dev-only Core gallery.
 - Admin shell lives under `/admin` and contains Home, Clients, CRM, Properties, Projects, Sales, Billing, Support, Platform.
@@ -46,7 +46,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 
 ## FOUND-001F0 — Identity / Auth Architecture
 **ACCEPTED / CANONICAL**
-Canonical identity facts are distinct: Auth User, Profile, Organisation, Organisation Membership, Staff Access.
+Canonical identity facts remain distinct: Auth User, Profile, Organisation, Organisation Membership, Staff Access.
 
 Surface direction:
 - `/admin` requires authenticated active staff access.
@@ -136,12 +136,14 @@ Verified-good behavior:
 - no Portal, database, auth transport, RBAC or service-role changes were introduced.
 
 Pending micro-fix:
-- `src/lib/identity/access.functions.ts` says the identity-dependent `getAdminAccess` response is `no-store`, but does not actually set the response cache header.
-- Before F3A freezes, implement real local TanStack response headers, at minimum `Cache-Control: private, no-store`, without changing global middleware or `src/start.ts`.
+- `src/lib/identity/access.functions.ts` currently claims `getAdminAccess` is `no-store`, but does not actually set the response header.
+- Close with the existing real TanStack Start server API already used elsewhere in the app: `setResponseHeader` from `@tanstack/react-start/server`.
+- Set at minimum `Cache-Control: private, no-store` locally on the identity-dependent access response; preserve appropriate `Vary` handling if added.
+- Do not touch global middleware or `src/start.ts`.
 
 ## Visual direction — clean reference-led Re:Solve system
 **APPROVED / STANDING PRODUCT REQUIREMENT**
-The owner-approved visual direction is not a one-off auth treatment. It is the visual system to be progressively propagated through Auth, Admin, then Portal while preserving functional/security boundaries.
+This is not a one-off auth treatment. It is the visual system to be progressively propagated through Auth, Admin, then Portal while preserving frozen behavior/security.
 
 Canonical visual grammar:
 - Inter remains the primary UI typeface unless a future supervised comparison proves a materially better choice;
@@ -154,14 +156,16 @@ Canonical visual grammar:
 - no generic AI blue/purple gradients, glassmorphism, neon borders, oversized marketing typography or decorative SaaS clutter;
 - Admin may be denser; Portal uses the same family with more breathing room and selective editorial warmth.
 
-The requested rollout remains:
+Standing rollout:
 1. two-column Auth family;
 2. Admin shell + Admin page visual system using the same approved card/font/icon grammar;
 3. Client Portal propagation with the same family at lower density;
 4. later domain screens continue the same system rather than inventing new styling per module.
 
+This rollout remains queued even when security/data slices temporarily take precedence.
+
 ## VIS-001A — Two-column Auth + visual language proof
-**CONDITIONAL — VISUAL DIRECTION IMPLEMENTED; PASSWORD-TOGGLE ACCESSIBILITY FIX REQUIRED**
+**ACCEPTED / CANONICAL / FROZEN VISUALLY**
 
 Verified runtime files:
 - `src/components/auth/AuthLayout.tsx`
@@ -171,39 +175,42 @@ Verified runtime files:
 - `src/components/auth/ResetPasswordForm.tsx`
 - `src/routes/auth.callback.tsx`
 
-Verified visual implementation:
-- desktop auth is now a genuine two-column full-height composition rather than the old centered floating Card;
-- left panel is approximately 45% width on desktop and uses a Re:Solve product preview rather than stock/marketing imagery;
+Canonical implementation:
+- desktop auth is a genuine full-height two-column composition rather than a centered floating card;
+- left panel is approximately 45% width on desktop and uses a Re:Solve operational product preview rather than stock/marketing imagery;
 - right form column is a restrained ~420px product-auth surface;
-- product preview uses Re:Solve metrics/activity, subtle borders, nested neutral surfaces, minimal shadows and Lucide icons;
-- Inter remains in use; no new font or visual dependency was added;
+- product preview uses Re:Solve metrics/activity, subtle borders, nested neutral surfaces, minimal shadows and disciplined Lucide icons;
+- Inter remains the UI typeface; no new visual dependency was introduced;
 - mobile intentionally collapses to a form-first single-column experience;
-- login, forgot-password, reset-password and auth callback share the same visual environment;
+- login, forgot-password, reset-password and auth callback share the same environment;
 - frozen auth transport/PKCE/reset/security behavior remains structurally unchanged.
 
-Pending accessibility closure:
-- login password visibility button and reset-password visibility button currently use `tabIndex={-1}` and have no accessible name;
-- these controls must be keyboard reachable, have an explicit accessible label reflecting Show/Hide password state, use the canonical focus-visible contract, and preserve the existing 44px input composition;
-- this is a UI accessibility correction only; do not change auth behavior.
+Accessibility closure accepted:
+- login and reset password visibility controls are in the normal keyboard tab sequence;
+- controls retain `type="button"` and therefore do not submit forms;
+- state-aware accessible labels are `Show password` / `Hide password`;
+- visibility controls use the canonical Re:Solve focus-visible variables;
+- interactive target is 36px within the existing 44px input composition; icon remains 16px.
 
-VIS-001A should freeze after that narrow fix.
+Do not materially redesign the Auth family again without a supervised visual requirement or concrete regression.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
 - Auth transport, auth behavior, identity persistence/RLS/grants and identity reads are frozen functionally.
+- VIS-001A is frozen as the first approved runtime example of the clean reference-led Re:Solve visual language.
 - Admin authorization exists directionally but F3A has one response-cache header micro-fix pending.
 - Portal authorization is not active yet.
 - No active-organisation selector, invitation/onboarding flow, domain tables or broad RBAC exists yet.
-- The visible clean redesign has begun in Auth; Admin and Portal propagation remain explicitly scheduled and are not forgotten.
+- Admin and Portal visual propagation remain standing requirements and are not considered complete merely because Auth is redesigned.
 
 ## Sequencing
-Continue supervised implementation in small slices. Visual requirements are standing requirements and remain queued even when security/data slices temporarily take precedence.
+Continue supervised implementation in small slices. Security/data work may temporarily precede visual propagation, but the approved visual rollout remains explicitly queued.
 
 Near-term order:
-1. close VIS-001A password-toggle accessibility;
-2. close F3A cache-header micro-fix;
-3. resume F3B/F3C Portal authorization and organisation-context foundation in small reviewed slices;
-4. continue the approved visual rollout into Admin and Portal without reopening frozen security behavior.
+1. close F3A route-facing cache-header micro-fix;
+2. resume F3B/F3C Portal authorization and organisation-context foundation in small reviewed slices;
+3. continue the approved visual rollout into Admin, then Portal;
+4. domain screens inherit the same approved visual language.
 
 ## Next action
-Run one narrow **VIS-001A-FIX — Password Toggle Accessibility Closure**. Change only the auth form visibility controls required to make them keyboard accessible, explicitly named for assistive technology and compliant with the canonical focus-visible treatment. Preserve the approved two-column composition and all frozen auth behavior. Then freeze VIS-001A.
+Run one narrow **FOUND-001F3A-FIX — Admin Access Cache-Control Closure**. Modify only the route-facing Admin access server function as needed to set real identity-dependent response cache headers using the existing TanStack Start server response API. Preserve the accepted Admin access model, route behavior, auth/identity boundaries, Portal state and UI. If clean, freeze F3A and proceed to F3B.
