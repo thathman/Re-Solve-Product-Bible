@@ -3,13 +3,13 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — VIS-COLOR-HELP-001 FUNCTIONALLY SAFE / VISUALLY CONDITIONAL — OWNER HAS REOPENED BOTH SHELLS FOR MODE CONTROL, ICON SEARCH, MOVABLE FLOATING ÀRÍYÁ, AND STRONGER CLIENT SURFACE RHYTHM**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — SHELL-CTRL-001 IMPLEMENTED / CONDITIONAL CLOSURE — CLIENT HOME R2 STRUCTURE RETAINED BUT OWNER HAS REOPENED VISUAL DEPTH — NEXT: ADMIN SIDEBAR SEARCH + CLIENT DARK ANCHOR / MOTION PASS**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
 - Current app: `thathman/re-solve-c560d62c` on `main`
 - Client-facing visual authority: `Airix360/AM-Client-Docs` Design System + `Airix360/airixmedia-web`
-- Owner-supplied mockups are reference material only unless an interaction/anatomy is explicitly promoted to canonical.
+- Owner-supplied mockups/HTML are reference material only unless a later decision explicitly promotes an interaction/anatomy to canonical.
 - Legacy/reference app: `thathman/Re-Solve` — untouched absent explicit owner approval.
 
 ## Frozen security / architecture
@@ -39,13 +39,13 @@ Keep this file updated after each supervised build review so future Lovable prom
 - Inter typography, neutral/graphite structure, restrained Lucide, subtle borders, low shadow, denser operational composition.
 - Existing Sidebar/AdminShell architecture remains canonical.
 - Account placeholder remains `Amara Okafor` / `Administrator`.
-- Controlled semantic color accents are allowed and desired without turning Admin into a rainbow dashboard.
+- Controlled semantic color accents are desired without turning Admin into a rainbow dashboard.
 
 ### Client-facing
 - Auth + Client Portal use the Airix/Re:Solve client dialect.
 - Space Grotesk = client UI/body; Instrument Serif italic = greetings/display; JetBrains Mono = currency/dates/identifiers/technical metadata selectively.
 - Warm paper/surface/ink remains the light-mode base, with terracotta as brand/action accent.
-- Client Portal now requires a deliberate scoped dark theme rather than remaining warm-light only.
+- Client Portal has a scoped warm-charcoal dark mode and must keep all client semantic/surface tokens coherent in that mode.
 - tool-like 3–6px radii; borders over shadows; elevation only for floating layers.
 - bundled/self-hosted fonts only.
 
@@ -63,10 +63,19 @@ Semantic family:
 Rules:
 - neutral/warm canvases remain dominant; color is punctuation, not wallpaper.
 - prefer tinted wells, section bands, status chips, dots, rails, progress segments, icon accents and selected indicators.
-- distinct regions may use subtle semantic or tonal background surfaces where they improve page rhythm and hierarchy.
+- distinct regions may use semantic or tonal background surfaces where they improve page rhythm and hierarchy.
 - do not assign random colors to navigation items.
-- no gradients, neon, rainbow card grids, glassmorphism or decorative color for its own sake.
+- no gradients, neon, rainbow card grids or glassmorphism.
 - preserve accessible contrast and frozen focus-visible behavior.
+
+### Client visual-depth rule
+**OWNER CLARIFICATION / CANONICAL**
+- Client pages should not be an uninterrupted field of paper/beige surfaces.
+- It is valid and desirable for a major client page to contain **one strong dark anchor region** when it clarifies hierarchy, status or current work.
+- The owner specifically likes the energy of the supplied Client Home HTML: dark featured surface, clear progress, layered contrast and motion. Those are design principles to reinterpret, not an instruction to copy its exact layout.
+- Use restrained motion for state/progress: short, one-shot/reveal transitions rather than looping decoration. Respect `prefers-reduced-motion`.
+- Dark anchors may use subtle technical line/grid texture, inverse typography and semantic accents, but must remain tool-like rather than promotional/hero marketing blocks.
+- Do not reintroduce an embedded Àríyá Home section; Àríyá remains a floating shell control.
 
 ## Reference-use rule
 **OWNER CORRECTION / CANONICAL**
@@ -97,76 +106,68 @@ Full authority: `10-build/lovable-launch/AI-SUPPORT-ARCHITECTURE.md`.
 - Separately, an individual client website/property may embed its own Chatwoot inbox. Captain may be enabled on that specific property-support inbox/site when the provider owns that support responsibility.
 - Do not cross these two domains.
 
-## Shared shell-controls direction
-**OWNER DIRECTION / CANONICAL**
-Applies to Admin and Client Portal shells.
-
-### Theme / appearance
-- Both shells must expose an accessible Light / Dark / System mode control using the existing canonical `ThemeProvider` / `useTheme` state.
-- Do not create a second theme persistence mechanism.
-- Admin already inherits the global light/dark semantic tokens.
-- Client Portal must add a coherent scoped `.dark .rs-client-theme` token set so dark mode is genuinely designed in the Airix/Re:Solve client dialect; do not let the light client override mask global dark mode.
-- Theme controls must remain compact and available on desktop and mobile.
-
-### Search
-- Replace wide topbar search fields in both Admin and Client Portal with compact search IconButtons.
-- The icon continues to open the existing shell-owned Command/Search experience.
-- Cmd/Ctrl+K behavior remains.
-- Do not remove or rebuild Command menus.
-
-### Àríyá launchers
-- Neither Admin nor Client Portal should keep a dedicated Àríyá topbar trigger.
-- Both shells use a floating Àríyá launcher that opens their EXISTING shell-owned Àríyá panel.
-- Floating launchers may be dragged freely within the visible viewport, constrained so they cannot be lost off-screen or under unsafe areas.
-- Drag must not accidentally open the panel; click/tap still opens it.
-- Preserve keyboard accessibility and the canonical focus-visible variable contract.
-- A browser-local position preference is acceptable because launcher position is non-sensitive UI preference only; do not store auth/domain/security context with it.
-- Use separate position keys per shell so Admin and Client placement do not overwrite each other.
-- Reset to a sensible lower-right default if a stored position is invalid after viewport resize/device change.
-- Floating movement should not become a springy/gimmicky animation. Reduced-motion rules remain respected.
-
-## VIS-COLOR-HELP-001 review
-**FUNCTIONALLY SAFE / VISUALLY CONDITIONAL — SUPERSEDED BY OWNER SHELL-CONTROL REFINEMENT**
-Verified app head: `14624370102d615792f1ac309b3a84a0cb0d124f`.
-Compared with prior Home R2 head `7e63646412b2b7c18d2faa8f5735cdad0ff68e7b`, only these files changed:
-- `src/styles.css`
+## SHELL-CTRL-001 review
+**IMPLEMENTED / FUNCTIONALLY SAFE / CONDITIONAL BEFORE FREEZE**
+Verified app head: `bc72318e0a492f61b18faf156bd1c56289bb5833`.
+Compared with `14624370102d615792f1ac309b3a84a0cb0d124f`, changed only shell/theme/Home visual files:
+- `src/components/shell/admin/AdminShell.tsx`
+- `src/components/shell/admin/AdminTopBar.tsx`
 - `src/components/shell/portal/PortalShell.tsx`
 - `src/components/shell/portal/PortalTopBar.tsx`
-- `src/components/shell/portal/PortalAriyaPanel.tsx`
-- `src/components/shell/portal/PortalHelpLauncher.tsx` (new)
+- removed `src/components/shell/portal/PortalHelpLauncher.tsx`
+- added `src/components/shell/shared/MovableAriyaLauncher.tsx`
+- added `src/components/shell/shared/ThemeModeMenu.tsx`
 - `src/routes/_portal.index.tsx`
-- `src/components/shell/admin/AdminSidebar.tsx`
-- `src/components/shell/admin/AdminTopBar.tsx`
+- `src/styles.css`
 
 Accepted implementation facts:
-- Client topbar Àríyá trigger removed.
-- Existing `PortalAriyaPanel` retained and receives future-ready human-support placeholder only; no Chatwoot integration was faked.
-- Persistent Client floating launcher added and opens the existing panel.
-- Home embedded Àríyá command strip removed.
-- Client Home semantic markers now distinguish info/warning/danger/success.
-- Admin received restrained terracotta/danger accents without layout redesign.
-- No auth/identity/server/Supabase/database/DEV-preview boundary changed.
+- shared Light/Dark/System menu uses canonical `useTheme()`; no second theme store.
+- Portal has scoped `.dark .rs-client-theme` foundation.
+- Client and Admin topbar Àríyá triggers removed.
+- both shells use one shared floating/movable Àríyá launcher and preserve their existing Àríyá panels.
+- separate local UI-position keys are used for Admin and Portal.
+- frozen focus-variable class contract is restored on the launcher.
+- wide topbar searches were removed; Client icon search is accepted.
+- Client Home embedded Àríyá remains removed.
+- no auth/identity/server/Supabase/database/DEV-preview boundary changed.
 
-Open visual/interaction issues:
-1. Client Portal still has no functional dark appearance because `.rs-client-theme` currently defines a warm-light token set after the global `.dark` tokens. Add a deliberate `.dark .rs-client-theme` palette.
-2. Neither Admin nor Client shell exposes a Light/Dark/System mode control.
-3. Both topbars still use more search chrome than the owner wants; reduce to search icon only while preserving Command behavior.
-4. Admin still has a topbar Àríyá trigger; move Admin Àríyá to floating launcher too.
-5. Floating Àríyá launcher must be draggable/movable on both shells.
-6. Current Client launcher hard-codes `ring-2` / `ring-offset-2` instead of the frozen focus variable contract; correct this before freeze.
-7. Client Home still feels too same-tone. Preserve the Briefing Board structure but introduce a small reusable vocabulary of distinct section backgrounds/bands/tinted wells so regions have stronger visual rhythm without card soup or gimmicky color.
+Conditional closure items / owner refinements:
+1. **Admin search placement changed again by owner:** remove search from AdminTopBar and restore the useful search *box* inside the expanded Admin Sidebar. It opens the existing `AdminCommandMenu`; collapsed Sidebar uses a discoverable icon-only form. Client keeps icon-only search in PortalTopBar.
+2. Clean now-unused AdminTopBar `onAriyaClick` prop/callback wiring after floating-Àríyá migration.
+3. Harden `MovableAriyaLauncher` persistence: current drag-end storage can capture stale React state. Persist the final/clamped pointer position reliably, clamp saved positions on initial mount as well as resize, and respect safe-area insets rather than only fixed pixel padding. Prefer unified Pointer Events if simplifying the implementation.
+4. Client dark scope is directionally correct but incomplete: ensure `surface-raised`, muted/disabled/selected states, borders and any semantic tokens used by Core overlays/components cannot leak light client values into dark mode.
+5. Client Home remains too pale/flat despite semantic tints. Add stronger depth using the client visual-depth rule below.
 
-## Client Portal Home R2
-**STRUCTURAL DIRECTION ACCEPTED / FUNCTIONALLY SAFE / VISUAL CLOSURE OPEN**
-Accepted structure:
+## Client Portal Home R2 -> R3 visual closure
+**R2 INFORMATION ARCHITECTURE RETAINED / VISUAL DEPTH REOPENED**
+Keep these R2 information regions:
 1. briefing header.
 2. segmented Needs Your Attention rail.
-3. Work in Motion workflow/system map.
-4. row-based Digital Estate.
-5. Recent Movement editorial timeline.
+3. Work in Motion / current project.
+4. Digital Estate.
+5. Recent Movement.
 6. shared Money + Support region.
 
-Do not redesign this structure again merely to add visual rhythm. Improve surface hierarchy/background treatments within the accepted composition.
+R3 visual direction:
+- reinterpret **Work in Motion** as the page's strong dark operational anchor rather than another pale box.
+- do not copy the supplied HTML's exact dark-card anatomy, two-column hierarchy, buttons or right rail.
+- keep the existing Briefing Board placement/composition while giving Work in Motion its own original systems-style internal layout.
+- introduce a visible 68% progress treatment with a short one-shot animated reveal on load; no endless pulsing/loading animation.
+- retain the systems-stage/node concept, but it may be redesigned inside the dark region for stronger legibility and rhythm.
+- completed stages = restrained success green; current stage = terracotta; future stages = muted inverse-neutral.
+- dark region may use subtle technical line/grid texture and warm charcoal depth.
+- Attention segments should use perceptible but soft blue/amber/coral tints, not near-invisible white-on-paper differences.
+- Money/Support may retain soft semantic tinted subdivisions.
+- Recent Movement can remain relatively open/light so the dark anchor has contrast.
+- Digital Estate remains row/system-oriented, not card soup.
+- all treatments need deliberate client dark-mode equivalents.
+
+## Shared shell-control direction
+- ThemeModeMenu remains shared in both shells.
+- Client search remains compact IconButton in PortalTopBar.
+- Admin search belongs in the Sidebar, not AdminTopBar.
+- Both shells retain movable floating Àríyá and existing panel ownership.
+- No embedded/full-page Àríyá block in Home.
 
 ## DEV-PREVIEW-001
 **ACCEPTED / FROZEN UNTIL DEMO IDENTITY TRANSITION**
@@ -181,18 +182,18 @@ Verified app commit: `1e673b2c042283c88e55e777f32d5c52c1890bfd`.
 Completed/frozen: A stack/repo, B tokens/UI stack, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/organisation context, DEV preview.
 
 Still required before umbrella FOUND-001 closure:
-1. shell-controls + visual closure described above.
+1. current shell/search/launcher + Client Home R3 visual closure.
 2. FOUND-001G PWA/accessibility/CI/testing/engineering hardening.
 3. FOUND-001R integrated review + self-host check + final PASS/CONDITIONAL/FAIL record.
 
 A rich Admin Home and client domain pages are not required to close the original FOUND-001 umbrella; they are post-foundation visual/domain slices.
 
 ## Sequencing
-1. **SHELL-CTRL-001** — Light/Dark/System controls + search icon only + movable floating Àríyá on Admin and Client + client scoped dark theme + Client Home surface-rhythm refinement.
-2. inspect/freeze both shell control systems and Client Home visual closure.
+1. **SHELL-VIS-002** — Admin Sidebar search; clean topbar wiring; harden movable launcher; complete Client dark semantic scope; Client Home R3 dark Work-in-Motion anchor + one-shot animated progress and stronger surface depth.
+2. inspect/freeze shell controls + Client Home visual closure.
 3. **FOUND-001G** — PWA/offline/cache, CI/tests and engineering hardening.
 4. **FOUND-001R** — integrated foundation review, self-host check, reconcile original demo-user acceptance criterion, final record.
 5. after FOUND-001 closes: original Admin Home, Client Properties, Projects, Support, Billing, Auth onboarding/expansion, real Àríyá human takeover, then property-specific Chatwoot/Captain integrations in separately supervised slices.
 
 ## Next action
-Run **SHELL-CTRL-001 — Shared Shell Controls + Client Surface Rhythm**. Preserve frozen security/auth/identity/DEV-preview behavior.
+Run **SHELL-VIS-002 — Admin Sidebar Search + Client Home Depth Pass**. Preserve frozen security/auth/identity/DEV-preview behavior.
