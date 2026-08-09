@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — FOUND-001G1B OFFLINE/CACHE/UPDATE BOUNDARY ACCEPTED/FROZEN — FOUND-001G2 ACCESSIBILITY/DEVICE QA IMPLEMENTED, CONDITIONAL ON TINY FOCUS/LIVE-REGION CLOSURE — NEXT AFTER CLOSURE: FOUND-001G3 TESTS / CI / ENGINEERING HARDENING**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A + G1B ACCEPTED/FROZEN — FOUND-001G2 ACCESSIBILITY/DEVICE QA FUNCTIONALLY COMPLETE BUT BLOCKED BY ONE OFFLINE-NOTICE CONTRAST DEFECT — NEXT AFTER CLOSURE: FOUND-001G3 TESTS / CI / ENGINEERING HARDENING**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -97,109 +97,71 @@ Accepted facts:
 - Home broad desktop composition waits until `xl`.
 - StatusBadge treatment and stronger semantic markers exist.
 - security/identity/server/DEV-preview boundaries were not changed.
-
-Subjective design polish remains deferred by owner direction.
+- subjective design polish remains deferred by owner direction.
 
 ## FOUND-001G1A — PWA installability
 **ACCEPTED / CANONICAL / FROZEN**
 Verified app head: `ec8df572306396215debf5f7cc022618358435de`.
-Net files:
-- `public/manifest.webmanifest`
-- `public/icons/resolve-180.png`
-- `public/icons/resolve-192.png`
-- `public/icons/resolve-512.png`
-- `src/routes/__root.tsx`
-
-Verified facts:
-- manifest declares id/name/short_name/description, `/` start URL/scope, standalone display, background/theme colors and `prefer_related_applications: false`.
-- root head links manifest + Apple touch icon and light/dark theme-color/mobile metadata.
-- icon dimensions verified as 180x180, 192x192 and 512x512.
-- temporary centered Re:Solve icon is replaceable and has substantial safe space.
-- no dependency/package changes.
-- no auth/identity/authorization/Supabase/domain/shell behavior changed.
-
-G1A does not authorize offline caching of authenticated content.
+- `public/manifest.webmanifest` plus 180/192/512 local icons exist.
+- root head links manifest, Apple touch icon and light/dark theme-color metadata.
+- `display: standalone`, same-origin `/` start URL/scope.
+- no new dependency and no security/domain behavior changes.
 
 ## FOUND-001G1B — Offline / cache / update boundary
 **ACCEPTED / CANONICAL / FROZEN**
-Latest verified app head: `0db19adc419d1b18cf1f29b3efedf387321b9990`.
-Final G1B runtime files include:
-- `public/offline.html`
-- `public/sw.js`
-- `src/lib/pwa/PwaRuntime.tsx`
-- root-mounted canonical `PwaRuntime`/Toaster from the earlier G1B slice
-- Admin-local duplicate Toaster removed
-
-Verified accepted facts:
-- cache name is `resolve-public-v1`.
-- exact positive precache allowlist is only `/offline.html`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/resolve-180.png`, `/icons/resolve-192.png`, `/icons/resolve-512.png`.
-- install precaches only that explicit safe list; no dynamic unknown-response cache path exists.
-- activate deletes only old `resolve-public-*` cache versions and calls `clients.claim()`.
-- `SKIP_WAITING` remains explicit/message-driven; install never activates a waiting worker automatically.
-- non-GET requests are network-only.
-- cross-origin requests are network-only.
-- explicit public allowlist assets are cache-first.
-- navigation/HTML is network-first and falls back to cached `/offline.html` only on network failure; successful navigation responses are never written to Cache Storage.
-- all other requests are network-only.
-- no route blacklist is needed or used; `/admin`, auth routes, Portal routes and organisation-selection navigation can receive only the generic offline fallback after network failure while their real responses remain uncached.
-- `PwaRuntime` registers the worker only in production and uses a fixed generic registration-failure diagnostic.
-- first worker activation/controller acquisition cannot force a page reload: `controllerchange` reload is gated by `refreshRequestedRef`, which is set only by the user's explicit Refresh action before sending `SKIP_WAITING`.
-- user-requested update reload remains one-shot.
-- no authenticated/private HTML, server-function/RPC response, Supabase/API response, auth/recovery payload, organisation/profile/project/property/billing/support data, notification, Àríyá/Chatwoot content, Vault data, token or session material is authorized to enter Cache Storage.
-- no Workbox/PWA plugin, background sync, offline mutation or business-data IndexedDB exists.
-- final G1B change set did not modify auth, identity, authorization, RLS, Supabase, database, Admin/Portal product behavior or DEV-PREVIEW-001.
-
-Security-memory handling:
-- canonical durable source remains `10-build/lovable-launch/SECURITY-MEMORY.md`.
-- Lovable reported `mem://security/rules.md` synchronized with that policy plus an explicit authenticated-navigation no-cache rule; `mem://` is editor/project memory and is not independently GitHub-verifiable.
+Verified app head: `0db19adc419d1b18cf1f29b3efedf387321b9990`.
+- cache name `resolve-public-v1`.
+- exact cache allowlist only: `/offline.html`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/resolve-180.png`, `/icons/resolve-192.png`, `/icons/resolve-512.png`.
+- install precaches only explicit public assets; no dynamic cache-default path.
+- activate removes only prior `resolve-public-*` versions and claims clients.
+- `SKIP_WAITING` is explicit/message-driven.
+- navigation/HTML is network-first with `/offline.html` fallback only; successful navigation is never cached.
+- all other unknown/private requests are network-only.
+- controller reload is gated by explicit user Refresh through `refreshRequestedRef`.
+- no authenticated/private HTML, server-function/RPC, Supabase/API, auth/recovery, organisation/profile/project/property/billing/support, notification, Àríyá/Chatwoot, Vault, token or session material is authorized in Cache Storage.
+- no Workbox/plugin/background sync/offline mutation/business-data IndexedDB.
 
 ## FOUND-001G2 — Accessibility / Device / Checklist QA
-**IMPLEMENTED / FUNCTIONALLY GOOD / CONDITIONAL ON TINY ACCESSIBILITY CLEANUP — DO NOT FULLY FREEZE YET**
-Latest reviewed app head: `b018bb9c0912dc61e7adf70e50ed4253685f7a94`.
-Compared with G1B head `0db19adc419d1b18cf1f29b3efedf387321b9990`, net changed files are:
-- `public/offline.html`
-- `src/components/core/feedback/Alert.tsx`
-- `src/components/shell/admin/AdminShell.tsx`
-- `src/components/shell/portal/PortalBottomNav.tsx`
-- `src/components/shell/portal/PortalShell.tsx`
-- `src/lib/pwa/PwaRuntime.tsx`
-- `src/routes/__root.tsx`
-- `src/routes/select-organisation.tsx`
+**FUNCTIONALLY COMPLETE / CONDITIONAL ON ONE CONTRAST FIX — DO NOT FREEZE YET**
+Latest verified app head: `b3394296efd6063fa5923945623e7ebadab4d870`.
 
 Verified accepted facts:
-- both Admin and Portal now expose a visible-on-focus `Skip to main content` link targeting the existing single main landmark.
-- Portal bottom nav now has `aria-label="Primary"`, retains `aria-current="page"`, adds ring-offset classes, and marks the decorative active indicator `aria-hidden`.
-- PWA offline/update notices now constrain phone width, account for bottom safe area, and gate entrance animation behind `motion-safe`.
-- `public/offline.html` adds a visible `:focus-visible` treatment for Try again.
-- organisation selection improves radio-label association and focus-within visibility.
-- existing Core `FormField` + `Input` already provide label/control association, required/invalid/description wiring; current Login already uses `type="email"`, `autoComplete="email"`, `autoComplete="current-password"`, semantic password visibility control and keyboard form submission.
-- Lovable's report says LoginForm was hardened in this slice, but canonical compare shows LoginForm itself was not changed; its key semantics were already present, so this is a reporting overstatement rather than a functional blocker.
-- no auth behavior, authorization, RLS, Supabase, DB, PWA cache policy, routes or DEV-preview security boundary changed.
+- Admin and Portal expose visible-on-focus skip links to the existing single main landmark.
+- both `#rs-main-content` targets now have `tabIndex={-1}`.
+- Portal bottom nav has `aria-label="Primary"`, `aria-current="page"`, complete frozen focus ring + ring-offset contract, and decorative active marker hidden from accessibility tree.
+- root Not Found/Error controls now use the frozen Re:Solve variable-based focus contract.
+- redundant explicit `aria-live` was removed from Core Alert; role semantics remain.
+- PWA offline/update notices constrain phone width, account for bottom safe-area and gate entrance animation behind `motion-safe`.
+- offline fallback Try again has visible keyboard focus.
+- organisation-selection label/focus association improved.
+- Core FormField/Input already provide label/control, required/invalid/error-description wiring; Login already has email/current-password autocomplete and accessible password reveal.
+- Lovable reports plain `bun run lint`, build and `tsc --noEmit` exit 0.
+- no auth/authorization/RLS/Supabase/DB/PWA-cache/route/DEV-preview behavior changed.
 
-### Tiny G2 closure items
-1. `src/routes/__root.tsx` introduced hard-coded `focus-visible:ring-2 focus-visible:ring-offset-2` on Not Found/Error actions. Replace these with the exact frozen variable-based focus-visible contract; do not establish a second focus system.
-2. Make both skip-link targets explicitly programmatically focusable with `tabIndex={-1}` on the existing Admin and Portal main landmarks so hash-based skip focus is robust across browser/screen-reader combinations. Do not add another main landmark.
-3. `Alert` now explicitly adds `aria-live` while `role="alert"` / `role="status"` already supply assertive/polite live-region semantics. Remove the redundant explicit `aria-live` unless there is a demonstrated compatibility reason; avoid duplicate/noisy announcements.
-4. Lovable's phrase "fixable lint" is ambiguous. G2 closure requires plain `bun run lint` to exit 0 without relying on a write/fix mode.
+### Sole G2 blocker from visual verification
+The owner-supplied light-mode Admin screenshot shows the global offline notice nearly unreadable: `PwaRuntime` currently combines the intentionally-soft `bg-rs-status-danger` surface with `text-white`. Canonical status semantics require the matching readable `rs-status-danger-foreground` on a soft danger surface. Dark mode is materially better, confirming this is a token pairing bug rather than a redesign request.
 
-These are accessibility-contract fixes, not subjective visual polish.
+Required closure:
+- change only the offline notice foreground/border semantics so it is readable in both light and dark themes;
+- preserve role/live behavior, safe-area positioning, motion-safe treatment and service-worker logic;
+- plain lint/build/typecheck must remain clean.
 
 ## FOUND-001 remaining closure
 Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability, G1B offline/cache/update boundary.
 
 Still required:
-1. **FOUND-001G2-FIX** — tiny focus/skip-target/live-region cleanup + confirm plain lint success.
+1. **FOUND-001G2-CONTRAST-FIX** — one offline-notice semantic color pairing fix, then freeze G2.
 2. **FOUND-001G3** — automated tests + CI + engineering hardening.
 3. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
 
 Rich Admin Home and real Client Properties/Projects/Support/Billing remain post-FOUND-001 work.
 
 ## Sequencing
-1. **FOUND-001G2-FIX — tiny accessibility closure only**.
+1. **FOUND-001G2-CONTRAST-FIX** only.
 2. inspect/freeze G2.
 3. FOUND-001G3 automated tests/CI/engineering hardening.
 4. FOUND-001R integrated closure.
 5. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
 
 ## Next action
-Run **FOUND-001G2-FIX** only. Do not use it for visual redesign or new product behavior.
+Run **FOUND-001G2-CONTRAST-FIX** only. Do not use it for visual redesign or new product behavior.
