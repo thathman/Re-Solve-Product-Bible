@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A/F1B AUTH ACCEPTED/FROZEN FUNCTIONALLY — FOUND-001F2A/F2B IDENTITY ACCEPTED/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION ACCEPTED/FROZEN — FOUND-001F3C TENANCY CONTEXT ACCEPTED/FROZEN — VIS-001B1 ADMIN SHELL VISUALS ACCEPTED/FROZEN — CLIENT VISUAL AUTHORITY SPLIT ACCEPTED — CLIENT AUTH/PORTAL AIRIX ROLLOUT NEXT**
+**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL CONDITIONAL ON SMALL CLOSURE — PORTAL HOME NEXT AFTER CLOSURE**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -11,153 +11,120 @@ Keep this file updated after each supervised build review so future Lovable prom
 - Client-facing visual references: `Airix360/AM-Client-Docs` Design system + `Airix360/airixmedia-web`
 - Legacy/reference app: `thathman/Re-Solve` — untouched absent explicit owner approval
 
-## Security invariants
+## Frozen security / architecture
 - Authentication, staff access, organisation access, roles/permissions and capabilities are server-controlled; browser metadata is never authoritative.
 - Route `beforeLoad` checks are UX gates only. Private server functions/routes independently authorize at their server boundary.
-- Normal user reads use caller-scoped Supabase + RLS; generated `supabaseAdmin` remains server-only, quarantined and unused by Re:Solve application authorization.
-- `SECURITY INVOKER` is default; `SECURITY DEFINER` requires narrow explicit review.
+- Normal user reads use caller-scoped Supabase + RLS; generated `supabaseAdmin` remains quarantined/unused by application authorization.
 - Preserve explicit `createCsrfMiddleware` in `src/start.ts`.
 - Runtime validation is required at consequential boundaries.
 - Raw auth/database/provider/Zod/access errors, tokens, sessions, secrets and privileged values are not logged or surfaced.
-- Active-organisation selection is context only, never authorization evidence. Organisation-specific server work freshly revalidates the exact requested organisation.
-- Consequential mutations eventually pass through an Action Registry/equivalent audited boundary.
-- Prompt/task/supervisor wording must never leak into runtime UI or source comments.
-- No security vulnerability exceptions accepted.
+- `requireActiveStaff()` / `getAdminAccess()` are frozen for `/admin`.
+- `requirePortalAccess()` / Portal parent access gate are frozen.
+- `requireActiveOrganisation(organisationId)` freshly revalidates exact active organisation access.
+- `rs_portal_org` is an untrusted UUID-only context pointer, never authorization evidence.
+- zero active Portal organisations => forbidden; exactly one => automatic context; multiple + absent/malformed/stale pointer => explicit selection.
+- no service-role application path, broad RBAC, domain data, seed/test users or public registration flow exists yet.
 
-## Frozen foundation / Core / functional shells
-**ACCEPTED / CANONICAL / FROZEN FUNCTIONALLY**
-- Foundation + Core UI C1-C5E remain frozen.
-- `/ui` remains the dev-only Core gallery.
+## Frozen functional surfaces
+- Foundation + Core UI C1-C5E are frozen.
+- `/ui` remains dev-only.
 - Admin routes: Home, Clients, CRM, Properties, Projects, Sales, Billing, Support, Platform.
 - Portal family: `/_portal` wrapping `/`, `/properties`, `/projects`, `/support`, `/billing`.
 - Auth routes: `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`.
+- `/select-organisation` remains outside `/_portal` and uses canonical `getSafeRedirect()`.
 
-## Security gate
-**ACCEPTED / CLOSED**
-- `@tanstack/react-router ^1.170.18`
-- `@tanstack/react-start ^1.168.32`
-- `@tanstack/router-plugin ^1.168.23`
-- `@tanstack/react-table 8.20.5`
-- `@supabase/supabase-js ^2.112.2`
-- `@supabase/ssr ^0.12.4`
-- top-level `overrides.js-yaml = 4.3.1`.
+## Admin visual authority
+**VIS-001B1 ACCEPTED / CANONICAL / FROZEN VISUALLY**
+- Admin stays on the established Lucid-style Re:Solve dialect.
+- Inter UI typography; neutral/graphite palette; restrained Lucide; subtle borders; low shadow; denser operational composition.
+- Existing Core Sidebar/AdminShell architecture remains canonical.
+- sidebar/topbar/search/notifications/Àríyá/account/mobile behavior remain preserved.
+- account placeholder is `Amara Okafor` / `Administrator`.
+- complete frozen focus-visible contract is restored.
+- Airix client styling must NOT leak into `/admin`.
 
-## Authentication / identity / authorization
-**ACCEPTED / CANONICAL / FROZEN FUNCTIONALLY**
-- Shared cookie-backed `@supabase/ssr` session is canonical for browser/SSR auth; validated identity uses `getClaims()`.
-- server-side PKCE exchange, safe internal redirects and neutral auth errors are frozen.
-- canonical redirect validator is `getSafeRedirect()` in `src/lib/auth.functions.ts`; do not duplicate it.
-- canonical identity tables: `profiles`, `organisations`, `organisation_memberships`, `staff_members` with least-privilege RLS/grants.
-- `readCurrentIdentity()` uses caller-scoped Supabase + RLS and fails closed on DB/status/integrity failure.
-- Admin: `requireActiveStaff()` / `checkAdminAccess()` / `getAdminAccess()` are frozen; parent `/admin` gates the full Admin family.
-- Portal: `requirePortalAccess()` / `checkPortalAccess()` are frozen; active organisation membership is required.
-- Exact tenancy: `requireActiveOrganisation(organisationId)` freshly revalidates exact active organisation access; `rs_portal_org` is an untrusted UUID-only context pointer.
-- zero active Portal organisations => forbidden; exactly one => automatic context; multiple + absent/malformed/stale pointer => explicit selection required.
-- no service-role application path, RBAC, domain data, seed/test users or invitation flow exists yet.
-
-## RUNTIME-DIAG-001 — `Error: aborted`
-**CLOSED / TRANSIENT EDITOR-HMR EVENT / NO APP CHANGE REQUIRED**
-- direct preview passed; no deterministic document/serverFn abort or redirect loop.
-- do not add generic AbortError swallowing/retries or weaken authorization.
-
-## VIS-001B1 — Admin Shell visual redesign
-**ACCEPTED / CANONICAL / FROZEN VISUALLY**
-- Existing Core Sidebar/AdminShell architecture was refined rather than replaced.
-- Admin remains the previously approved Lucid-style Re:Solve dialect: quiet neutral surfaces, restrained Inter typography, 16–18px Lucide icons, subtle borders, low shadow, denser operational composition.
-- sidebar, topbar, command search, notifications, Àríyá, account dropdown, responsive behavior and Admin authorization are preserved.
-- account placeholder remains `Amara Okafor` / `Administrator`; account trigger has the full frozen focus-visible contract.
-- Do not apply the Airix client visual system to Admin.
-- Do not reopen B1 absent concrete regression or explicit owner request.
-
-## Surface-specific visual authority
+## Client-facing visual authority
 **ACCEPTED / CANONICAL PRODUCT DECISION**
-
-Re:Solve now has TWO deliberate visual dialects sharing one functional/Core grammar.
-
-### A. Admin visual authority
-- Admin remains on the accepted/frozen Lucid-style Re:Solve system from VIS-001B1.
-- Inter remains Admin UI typography.
-- neutral/graphite palette, restrained 8–16px radii as already implemented, quiet selected nav, near-zero shadow, operational density.
-- Airix client-facing styling must NOT leak into `/admin`.
-
-### B. Client-facing visual authority
-Applies to:
-- `/login`
-- `/forgot-password`
-- `/reset-password`
-- `/auth/callback`
-- `/select-organisation`
-- `/access-denied` when reached as a client-facing surface
-- Portal shell and `/`, `/properties`, `/projects`, `/support`, `/billing`
+Applies to Auth/client entry surfaces and Client Portal only.
 
 Canonical sources:
-1. `Airix360/AM-Client-Docs` — Re:Solve Design System / Client Portal references supplied by owner.
-2. `Airix360/airixmedia-web` — supporting systems-first visual language and interaction reference.
+1. `Airix360/AM-Client-Docs` Re:Solve Design System + supplied Client Portal Home.
+2. `Airix360/airixmedia-web` as supporting systems/interaction reference.
 
-Client-facing grammar from the supplied design system:
+Client grammar:
 - warm paper canvas around `oklch(97% 0.012 60)`.
 - warm surface around `oklch(94% 0.014 60)`.
-- warm ink around `oklch(22% 0.02 55)` and muted text around `oklch(45% 0.02 55)`.
-- line/border around `oklch(88% 0.014 60)`.
-- primary accent is terracotta around `oklch(58% 0.14 35)`.
-- client dark/featured surfaces use warm charcoal around `oklch(17–22% 0.012–0.014 60)` with warm inverse ink.
-- status colour logic retains info/success/warning/danger semantics.
-- Space Grotesk is client UI/body type.
-- Instrument Serif italic is reserved for greetings, section-display moments and moments of address; never body copy, controls or data.
-- JetBrains Mono is used selectively for currency, dates, identifiers and technical data.
-- client control/card radius is deliberately tool-like, generally 3–6px; avoid the Admin's larger rounded SaaS treatment.
-- borders over shadows; elevation only for floating overlays/drawers/command/Àríyá.
-- spacing rhythm follows 4/8/12/16/24/32/48/64.
-- Lucide remains the icon family; client UI should remain restrained and editorial rather than icon-heavy.
+- warm ink around `oklch(22% 0.02 55)`; muted around `oklch(45% 0.02 55)`.
+- warm line around `oklch(88% 0.014 60)`.
+- terracotta accent around `oklch(58% 0.14 35)`.
+- warm charcoal featured surfaces around `oklch(17–22% 0.012–0.014 60)`.
+- Space Grotesk = client UI/body.
+- Instrument Serif italic = greetings/display/moments of address only.
+- JetBrains Mono = currency, identifiers, dates/technical data selectively.
+- tool-like 3–6px radii; borders over shadows; elevation only for floating layers.
+- Lucide remains the icon family.
+- implement as a scoped client theme, not a global token rewrite.
+- bundled/self-hosted fonts only; no runtime Google Fonts/CDN dependency.
+- no external stock-image dependency is canonical.
 
-### Client Portal Home reference anatomy
-The supplied Client Portal Home is the target direction, not merely inspiration:
-- horizontal top navigation rather than Admin-style sidebar.
-- Re:Solve display wordmark at left, active organisation context adjacent, then Home/Properties/Projects/Support/Billing.
-- compact workspace search, notifications and avatar at right.
-- warm editorial canvas with large Instrument Serif greeting.
-- prominent dark active-project panel with restrained technical pattern, progress, approval status and real-route actions.
-- recent activity rendered as simple editorial rows with mono date/time labels.
-- right column contains compact property incident, overdue invoice, support and Àríyá modules.
-- information is calm, sparse and client-oriented; do not clone Admin density.
+## Auth visual / capability plan
+**FUNCTIONAL AUTH FROZEN; VISUAL REFRESH + CAPABILITY EXPANSION TRACKED, NOT YET IMPLEMENTED**
+- Previous missing exact image asset is CLOSED/no-action; do not keep chasing it.
+- Current remote Unsplash Auth image is temporary and must be removed during the Airix Auth redesign.
+- No public registration.
+- Intended first-account flow: staff/admin creates account -> invite email/link -> authenticated onboarding -> set password -> optional passkey -> optional TOTP -> optionally link Google/GitHub -> finish onboarding -> authorized destination.
+- Google/GitHub sign-in must not create public accounts; identities are conveniences for existing invited users.
+- ALTCHA is planned for abuse-prone Auth operations.
+- planned sign-in methods: password, magic link, Google, GitHub, passkey; TOTP is MFA/AAL2.
+- WhatsApp authentication is a separate future preflight; official WhatsApp OTP is preferred for authentication, while Baileys remains a messaging/connector concern rather than the root of identity trust.
+- details tracked in `10-build/lovable-launch/AUTH-EXPANSION.md`.
+- no Auth capability prompt yet unless explicitly requested.
 
-## Client theme implementation boundary
-- Do NOT rewrite global Re:Solve semantic tokens in a way that changes Admin.
-- Implement the Airix client language as a scoped client theme/dialect applied inside Auth/Portal/client-facing wrappers.
-- Reuse Core behavior and accessibility contracts, but use client-specific composition and scoped visual variables/classes.
-- Fonts must be self-hosted/bundled. Remote Google Fonts/CDN/font runtime dependencies are not canonical.
-- Approved self-host route is Fontsource packages for Space Grotesk and Instrument Serif; existing JetBrains Mono remains available.
-- External runtime stock-image dependencies are not canonical.
+## CLIENT-VIS portal shell rollout
+**DIRECTION ACCEPTED / CONDITIONAL ON SMALL CLOSURE**
 
-## Auth visual state
-**FUNCTIONAL AUTH FROZEN; CURRENT REMOTE-IMAGE VERSION IS TEMPORARY / SUPERSEDED BY CLIENT VISUAL ROLLOUT**
-- Current `AuthLayout.tsx` has a 50/50 image-left/form-right composition and a remote Unsplash image.
-- The exact prior image asset was unavailable in Lovable; this is CLOSED as a missing-asset/no-action event, not an ongoing blocker.
-- Do not keep chasing the missing image.
-- The next Auth visual implementation should be redesigned under the Airix client-facing authority and remove the remote Unsplash runtime dependency.
-- Preserve all frozen authentication behavior, password accessibility, validation, sessions and safe redirects.
+Verified current files:
+- `src/components/shell/portal/PortalShell.tsx`
+- `src/components/shell/portal/PortalTopBar.tsx`
+- `src/components/shell/portal/PortalNavigation.tsx`
+- `src/routes/_portal.tsx`
+- `src/styles.css`
+- `package.json` / `bun.lock`
 
-## Current Portal state
-- Functional Portal shell is frozen and currently owns horizontal NavigationMenu, mobile Sheet nav, command search, notifications, shared Àríyá panel and account placeholder.
-- F3C now provides safe browser-facing active organisation context from `/_portal` but current shell still displays fictional `Chinedu Okeke / Acme Properties Ltd.` placeholders.
-- Portal Home remains a placeholder `StatePanel` and is ready for the supplied Airix/Re:Solve client-home visual proof.
-- Do not add real domain database data during the visual rollout; use believable static demonstration content only.
+Verified good:
+- Portal uses one existing shell; no parallel shell was created.
+- `.rs-client-theme` is scoped to `PortalShell`, so Admin structure remains separate.
+- local Fontsource packages for Space Grotesk and Instrument Serif were added.
+- topbar was restyled toward the supplied warm Airix/Re:Solve reference.
+- active organisation comes only from the safe `/_portal` route context and is passed into the shell for UX.
+- no new Supabase query or authorization shortcut was introduced.
+- desktop navigation, mobile Sheet, command search, notifications, Àríyá and account behavior remain in the existing architecture.
+- Lovable reported build/lint/typecheck success.
 
-## Current architecture facts
-- TanStack Start + React 19 + Bun + Tailwind v4.
-- Auth functionality, identity/RLS, Admin authorization, Portal authorization and tenancy context are frozen.
-- Admin shell visual grammar is frozen separately from the new client visual authority.
-- no invitation/onboarding flow, domain tables or broad RBAC exists yet.
+Blocking closure before the client Portal shell freezes:
+1. `.rs-client-theme` currently overrides `--font-sans` but does not set `font-family`, so normal Portal text can continue inheriting Inter from `body`. Apply Space Grotesk directly on the scoped wrapper/theme.
+2. `PortalTopBar` nests the organisation `<Link>` inside the Re:Solve brand `<Link>`. Split these into sibling links/elements; no nested anchors.
+3. `bg-rs-surface-dark` is used for active navigation but no Tailwind semantic mapping `--color-rs-surface-dark` exists. Add the scoped/semantic mapping or use a valid mapped semantic token; the active warm-charcoal surface must render reliably.
+4. Keep the client scope semantically complete enough that a global `.dark` class cannot leak mismatched Admin/global status/disabled/destructive colours into the warm client surface. Do not implement a broad client dark-mode redesign in this closure; just prevent partial mixed-theme inheritance where Portal Core components use these tokens.
+
+## Client Portal Home reference
+The supplied Client Portal Home is a layout specification for the next slice:
+- horizontal client navigation with Re:Solve + organisation context.
+- warm editorial canvas and large Instrument Serif greeting.
+- prominent warm-charcoal active-project panel with progress/approval state.
+- simple recent-activity rows with mono time/date labels.
+- compact property incident, overdue invoice, support and Àríyá modules in the right column.
+- client-oriented calm density; do not copy Admin dashboard density.
+- static believable demo data only until domain persistence is separately designed.
 
 ## Sequencing
-Continue in small supervised slices:
-1. CLIENT-VIS-001A — establish scoped Airix client theme + self-hosted client fonts and restyle Auth only; remove remote Unsplash dependency. Do not modify Admin or Portal yet.
-2. inspect/freeze client theme primitives and Auth application.
-3. CLIENT-VIS-001B — restyle Portal shell/top navigation under the same client theme while preserving F3B/F3C behavior.
-4. CLIENT-VIS-001C — implement supplied Client Portal Home reference using static demo data only.
-5. propagate the approved client grammar to Properties, Projects, Support, Billing in small slices.
-6. separately resume VIS-001B2 Admin Home when owner chooses; Admin remains Lucid-style.
-7. continue onboarding/invitations and domain work separately.
+1. CLIENT-VIS-SHELL-FIX — close the four scoped-theme/topbar issues above only.
+2. inspect and freeze Client Portal shell/theme primitives.
+3. CLIENT-VIS-HOME — implement the supplied Client Portal Home reference using static demo data only.
+4. inspect/freeze Portal Home.
+5. propagate client grammar to Properties, Projects, Support and Billing in small slices.
+6. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
+7. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
 
 ## Next action
-Run **CLIENT-VIS-001A — Scoped Airix Client Theme + Auth**. Create the client-only visual dialect without changing global Admin styling. Self-host Space Grotesk + Instrument Serif, retain JetBrains Mono, remove the remote Unsplash image dependency, and restyle only Auth/client entry surfaces under the warm Airix/Re:Solve grammar. Preserve all auth/security behavior and stop before Portal shell changes.
+Run one small **CLIENT-VIS-SHELL-FIX**. Do not begin Portal Home until the scoped client theme is actually applying Space Grotesk, active warm-charcoal navigation is backed by a real semantic utility/token, nested links are removed, and mixed global-dark token leakage is prevented. Preserve all security/auth/tenancy behavior and Admin visuals.
