@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — FOUND-001G1B IMPLEMENTED BUT CONDITIONAL: TWO SMALL LIFECYCLE/OFFLINE-FALLBACK FIXES REQUIRED BEFORE FREEZE**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — FOUND-001G1B OFFLINE/CACHE/UPDATE BOUNDARY ACCEPTED/FROZEN — NEXT: FOUND-001G2 ACCESSIBILITY / DEVICE / CHECKLIST QA**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -123,56 +123,55 @@ Verified facts:
 G1A does not authorize offline caching of authenticated content.
 
 ## FOUND-001G1B — Offline / cache / update boundary
-**IMPLEMENTED / SECURITY BOUNDARY GOOD / CONDITIONAL — TWO SMALL LOGIC FIXES REQUIRED**
-Latest reviewed app head: `c0b87950efd495d97b26019625635fc373bd9bf6`.
-Compared with prior G1B runtime head `157327548dfb378d7b0a98d819d31aa5d539fc91`, final net changes are exactly:
-- `public/offline.html` added.
-- `public/sw.js` added.
-- `src/lib/pwa/PwaRuntime.tsx` modified.
-- `src/routes/admin.tsx` modified to remove duplicate local Toaster.
+**ACCEPTED / CANONICAL / FROZEN**
+Latest verified app head: `0db19adc419d1b18cf1f29b3efedf387321b9990`.
+Final G1B runtime files include:
+- `public/offline.html`
+- `public/sw.js`
+- `src/lib/pwa/PwaRuntime.tsx`
+- root-mounted canonical `PwaRuntime`/Toaster from the earlier G1B slice
+- Admin-local duplicate Toaster removed
 
 Verified accepted facts:
-- `public/sw.js` and `public/offline.html` now physically exist in canonical source.
 - cache name is `resolve-public-v1`.
-- explicit precache assets are only `/offline.html`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/resolve-180.png`, `/icons/resolve-192.png`, `/icons/resolve-512.png`.
-- install uses `cache.addAll()` for that explicit list; a failed precache rejects installation rather than silently creating a partial worker.
-- activate deletes only prior `resolve-public-*` versions and then calls `clients.claim()`.
-- `SKIP_WAITING` is message-driven only; install does not call `skipWaiting()` automatically.
-- safe public assets are cache-first; the worker does not dynamically add unknown fetched responses to Cache Storage.
-- successful navigation/document responses are returned from network and never stored.
-- all non-allowlisted non-navigation requests are network-only.
-- offline document is self-contained and contains no user/organisation/private data.
-- registration is production-only and failure is handled with a fixed generic console label rather than raw error details.
-- root Toaster is canonical; Admin-local duplicate was removed.
-- no dependency, auth, identity, authorization, Supabase, RLS, DB, shell, DEV-preview or domain change was introduced.
+- exact positive precache allowlist is only `/offline.html`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/resolve-180.png`, `/icons/resolve-192.png`, `/icons/resolve-512.png`.
+- install precaches only that explicit safe list; no dynamic unknown-response cache path exists.
+- activate deletes only old `resolve-public-*` cache versions and calls `clients.claim()`.
+- `SKIP_WAITING` remains explicit/message-driven; install never activates a waiting worker automatically.
+- non-GET requests are network-only.
+- cross-origin requests are network-only.
+- explicit public allowlist assets are cache-first.
+- navigation/HTML is network-first and falls back to cached `/offline.html` only on network failure; successful navigation responses are never written to Cache Storage.
+- all other requests are network-only.
+- no route blacklist is needed or used; `/admin`, auth routes, Portal routes and organisation-selection navigation can receive only the generic offline fallback after network failure while their real responses remain uncached.
+- `PwaRuntime` registers the worker only in production and uses a fixed generic registration-failure diagnostic.
+- first worker activation/controller acquisition cannot force a page reload: `controllerchange` reload is gated by `refreshRequestedRef`, which is set only by the user's explicit Refresh action before sending `SKIP_WAITING`.
+- user-requested update reload remains one-shot.
+- no authenticated/private HTML, server-function/RPC response, Supabase/API response, auth/recovery payload, organisation/profile/project/property/billing/support data, notification, Àríyá/Chatwoot content, Vault data, token or session material is authorized to enter Cache Storage.
+- no Workbox/PWA plugin, background sync, offline mutation or business-data IndexedDB exists.
+- final G1B change set did not modify auth, identity, authorization, RLS, Supabase, database, Admin/Portal product behavior or DEV-PREVIEW-001.
+- Lovable reported build/lint/typecheck success.
 
-### G1B closure blockers
-1. **Update reload must be explicitly user-gated.** Current `PwaRuntime` reloads on any `navigator.serviceWorker.controllerchange`. Because `sw.js` calls `clients.claim()` during activation, first-time worker activation can trigger `controllerchange` without the user choosing Refresh. MDN documents that `clients.claim()` causes `controllerchange` for newly controlled clients. Keep `clients.claim()`, but reload only when a local `refreshRequested` ref/flag was set immediately before posting `SKIP_WAITING` from the user action. First install/controller acquisition must not force a reload.
-2. **Offline fallback ordering is wrong for sensitive navigation paths.** `NEVER_CACHE_URLS` returns before navigation handling, so `/admin`, `/login`, `/auth/*`, `/select-organisation`, etc. fail directly when offline instead of receiving the generic `/offline.html`. The blacklist is unnecessary because caching is already positive-allowlist only. Remove it, or handle navigation before any no-cache early return. Sensitive navigation may receive the generic cached offline document after network failure while still never being cached itself.
-
-### G1B security rule
-- Positive cache allowlist is the authority. Unknown requests are network-only.
-- No authenticated/private route HTML, server-function/RPC response, Supabase/API response, auth/recovery payload, organisation/profile/project/property/billing/support data, notification, Àríyá/Chatwoot content, Vault data, token or session material may enter Cache Storage.
-- No offline mutation, background sync or business-data IndexedDB exists at foundation stage.
+Security-memory handling:
+- canonical durable source remains `10-build/lovable-launch/SECURITY-MEMORY.md`.
+- Lovable reported `mem://security/rules.md` synchronized with that policy plus an explicit authenticated-navigation no-cache rule; `mem://` is editor/project memory and is not independently GitHub-verifiable.
 
 ## FOUND-001 remaining closure
-Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability.
+Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability, G1B offline/cache/update boundary.
 
 Still required:
-1. **FOUND-001G1B-FINAL** — user-gated update reload + universal generic navigation offline fallback without caching private HTML.
-2. FOUND-001G accessibility/device/Checklist QA.
-3. FOUND-001G automated tests + CI + engineering hardening.
-4. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
+1. **FOUND-001G2** — accessibility/device/Checklist QA and only blocking fixes.
+2. FOUND-001G automated tests + CI + engineering hardening.
+3. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
 
 Rich Admin Home and real Client Properties/Projects/Support/Billing remain post-FOUND-001 work.
 
 ## Sequencing
-1. **FOUND-001G1B-FINAL — two logic corrections only**.
-2. inspect/freeze G1B.
-3. accessibility/device/Checklist QA.
-4. automated tests/CI/engineering hardening.
-5. FOUND-001R integrated closure.
-6. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
+1. **FOUND-001G2 — Accessibility / Device / Checklist QA**.
+2. inspect/freeze G2.
+3. automated tests/CI/engineering hardening.
+4. FOUND-001R integrated closure.
+5. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
 
 ## Next action
-Run **FOUND-001G1B-FINAL** only. Also align Lovable/project `@security-memory` with `10-build/lovable-launch/SECURITY-MEMORY.md`; do not weaken any existing stricter rule without explicit review.
+Run **FOUND-001G2 — Accessibility / Device / Checklist QA**. Do not use it as a subjective visual-redesign pass; fix only accessibility, responsive usability, legibility, interaction-state, and core UX-completeness defects that materially block foundation quality.
