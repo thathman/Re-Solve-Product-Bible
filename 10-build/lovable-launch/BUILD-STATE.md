@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B CONDITIONAL / CALLBACK FIX NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`.
@@ -56,7 +56,6 @@ Surface direction:
 
 ## FOUND-001F1A — Lovable Cloud + Auth Transport
 **ACCEPTED / CANONICAL / FROZEN**
-
 Canonical F1A state:
 - Lovable Cloud/Supabase is activated and connected.
 - generated `src/integrations/supabase/**` and `supabase/config.toml` remain generated infrastructure and are not hand-edited.
@@ -65,68 +64,38 @@ Canonical F1A state:
 - generated `supabaseAdmin` service-role client is PRESENT / GENERATED / QUARANTINED / UNUSED by Re:Solve application code.
 - `src/start.ts` preserves error middleware + explicit `createCsrfMiddleware`; generated `attachSupabaseAuth` remains registered as function middleware.
 - `.env` / `.env.*` remain ignored except `.env.example`.
+- canonical cookie-backed SSR session uses `@supabase/ssr`, request-scoped server clients, shared browser/server cookie state, Supabase-provided cache directives, and validated `getClaims()` identity.
+- bearer serverFn transport remains a separate accepted stateless path.
 
-Re:Solve-owned auth boundaries under `src/lib/supabase/`:
-- `client.ts` exposes the generated tooling client separately from canonical `supabaseAuthBrowser` built with `createBrowserClient`.
-- `server.ts` provides request-scoped bearer clients and `getAuthenticatedUser()` with bearer-first then cookie fallback.
-- `session.server.ts` provides request-scoped cookie-backed `createServerClient` using TanStack `getCookies()` / `setCookie()` and validated `getClaims()` identity.
-
-Canonical dual-transport model:
-1. **Cookie-backed SSR session** — canonical Re:Solve browser/server auth session, available on initial server requests and future route boundaries.
-2. **Bearer serverFn transport** — retained generated Lovable path for stateless server-function RPCs.
-
-Cookie policy closure:
-- Supabase-managed auth cookies are **not** forcibly `HttpOnly`; browser `createBrowserClient` can share the session as required by `@supabase/ssr`.
-- Supabase-provided cookie attributes are preserved; safe fallbacks apply only for `SameSite=Lax`, production `Secure`, and `Path=/` when absent.
-- library-provided expiry/max-age attributes are not replaced.
-- installed `@supabase/ssr 0.12.4` `setAll(cookies, headers)` cache directives are forwarded through TanStack `setResponseHeader`, preserving private/no-cache/no-store/must-revalidate/max-age=0 behavior on token rotation.
-- authenticated identity is validated with `getClaims()`, not trusted from raw `getSession()` user state.
-
-F1A is frozen. Do not reopen transport unless a concrete auth/session regression is demonstrated.
+F1A is frozen. Do not reopen transport without a concrete auth/session regression.
 
 ## FOUND-001F1B — User-Facing Authentication Flows
-**CONDITIONAL — ROUTES/UI ACCEPTED DIRECTIONALLY; CALLBACK SESSION EXCHANGE + ERROR HYGIENE MUST BE FIXED**
+**ACCEPTED / CANONICAL / FROZEN**
+Canonical auth UX now includes:
+- `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`;
+- shared auth components under `src/components/auth/`;
+- login via canonical `supabaseAuthBrowser.auth.signInWithPassword()` with RHF/Zod validation and no public signup;
+- already-authenticated `/login` requests redirect to `/` based only on authenticated identity, with no staff/org assumption;
+- forgot-password uses neutral account-enumeration-safe success copy;
+- reset-password uses canonical browser auth client and stable provider-neutral failure copy;
+- reusable server-side `signOut` uses the request-scoped cookie-backed client;
+- shared `getSafeRedirect()` permits internal application paths only and rejects protocol-relative/external targets;
+- PKCE callback code exchange now runs through a server function backed by `createSsrSessionSupabase()`, so the resulting session is written into canonical HTTP cookies before redirect;
+- recovery callbacks redirect to `/reset-password`; general callbacks use safe internal redirects;
+- raw Supabase/AuthError objects, auth codes, tokens, sessions and password values are not logged or exposed to UI;
+- generated `src/integrations/supabase/**`, `src/start.ts`, CSRF, bearer middleware and service-role quarantine remain unchanged;
+- no profiles, organisations, memberships, staff records, RLS domain policies, MFA, invitations, organisation selection or Admin/Portal authorization were introduced.
 
-Verified-good F1B work:
-- `/login`, `/forgot-password`, `/reset-password`, `/auth/callback` exist as dedicated auth routes.
-- shared auth UI components exist under `src/components/auth/`.
-- login uses `supabaseAuthBrowser.auth.signInWithPassword()` with RHF/Zod validation, no public signup and a safe internal-only `returnTo` check.
-- forgot-password uses neutral success copy to avoid account enumeration.
-- reset-password uses the canonical auth client and requires matching new-password fields.
-- reusable server sign-out uses the cookie-backed SSR client.
-- `/login` checks the cookie-backed server session and redirects already-authenticated identities to `/` without inventing staff/org authorization.
-- no profiles/organisations/memberships/staff schema, RLS, Admin/Portal authorization, active-org selection or MFA implementation was introduced.
-
-### Blocking runtime issue — callback uses the browser client inside a route loader
-`src/routes/auth.callback.tsx` currently calls `supabaseAuthBrowser.auth.exchangeCodeForSession(code)` from the TanStack route loader.
-
-On an initial PKCE callback request, the loader can execute during SSR. The canonical F1A architecture requires the code exchange to use the request-scoped cookie-backed **server** Supabase client so the resulting access/refresh session is written into the HTTP response cookies. A browser client in the SSR loader is not the canonical request/response cookie boundary and can fail to establish the server-visible session reliably.
-
-Required closure:
-- perform callback code exchange through a Re:Solve server-only/server-function boundary backed by `createSsrSessionSupabase()`;
-- preserve safe internal redirect validation and recovery routing;
-- do not edit generated `src/integrations/supabase/**` files;
-- do not add staff/org authorization.
-
-### Error/log hygiene issues
-Current auth UI/callback code still logs raw Supabase/auth error objects with `console.error`, and reset-password currently displays `authError.message` directly.
-
-Required closure:
-- do not log raw auth provider error objects, tokens, sessions, codes or password-related state;
-- map callback/login/forgot/reset failures to stable user-facing messages;
-- reset-password must not surface raw provider error text.
-
-### External primary-source alignment
-Current Supabase SSR/PKCE guidance requires the auth code to be exchanged into a shared cookie-backed session for SSR applications. `@supabase/ssr` browser/server clients share cookie state; the server client is the canonical boundary for initial server requests and server-side session establishment. `getClaims()` remains the validated identity primitive.
+F1B authenticates identity only. It does not determine what the authenticated user is allowed to access.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
 - `/ui` remains dev-only gallery.
 - Admin and Portal shells remain frozen.
 - Lovable Cloud/Supabase is active.
-- F1A dual auth transport is frozen.
-- F1B auth UI exists but is not frozen until callback exchange and raw-error handling are corrected.
-- No application identity schema/RLS/surface authorization yet.
+- Cookie-backed SSR auth + bearer serverFn transport are frozen.
+- User-facing sign-in/password-recovery flows are frozen.
+- No application identity schema/RLS/surface authorization exists yet.
 
 ## Next action
-Run one narrow **FOUND-001F1B-FIX**. Move PKCE callback code exchange onto the canonical request-scoped cookie-backed server boundary, preserve recovery/general safe redirects, remove raw Supabase error-object logging and raw provider error display, and re-verify login/forgot/reset/sign-out behavior. Do not add identity schema, RLS, Admin/Portal guards, organisation selection, MFA or invitations yet. If clean, freeze F1B and proceed to F2 identity schema + baseline RLS.
+Begin **FOUND-001F2A — Minimal Identity Schema + Baseline RLS**. Introduce only the canonical identity records required by F0: profiles, organisations, organisation memberships and staff access. Create them through version-controlled Supabase migrations, enable RLS in the same slice, grant only the minimum self-readable/self-profile permissions required for future F3 access checks, regenerate database types, and do not wire UI or route guards yet. Do not create invitations, domain tables, broad RBAC/capability catalogues, organisation switcher, demo users or service-role application flows in F2A.
