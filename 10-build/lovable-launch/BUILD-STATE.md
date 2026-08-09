@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV VISUAL PREVIEW BYPASS NEXT — PORTAL HOME AFTER PREVIEW ACCESS**
+**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV-PREVIEW-001 ACCEPTED/FROZEN — CLIENT PORTAL HOME NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -97,41 +97,33 @@ Verified current implementation:
 
 Do not reopen the client shell absent a concrete regression or explicit owner visual request.
 
-## Temporary development visual preview mode
-**APPROVED / NEXT IMPLEMENTATION SLICE**
-Owner needs to inspect product surfaces in Lovable before demo identities/data exist.
+## DEV-PREVIEW-001 — Temporary development visual preview mode
+**ACCEPTED / CANONICAL FOR DEVELOPMENT / FROZEN UNTIL DEMO IDENTITY TRANSITION**
+Verified app commit: `1e673b2c042283c88e55e777f32d5c52c1890bfd`.
 
-Canonical rule:
-- development/Lovable preview may bypass ONLY parent route UX authentication redirects so static visual pages are directly browsable.
-- production must keep the frozen real Admin and Portal authorization gates.
-- use compile-time development gating (`import.meta.env.DEV` / equivalent Vite development flag), not a user-controlled cookie/localStorage value and not a production-enabled public query flag.
-- Portal development bypass may return a deterministic browser-only preview organisation such as `Adaeze Realty Group` to satisfy shell display context.
-- development preview context is presentation/demo context only and must never be consumed by private server functions as authorization evidence.
-- DO NOT weaken or bypass `requireActiveStaff`, `requirePortalAccess`, `requireActiveOrganisation`, RLS, server functions, service-role boundaries or CSRF.
-- future private server functions remain protected even when their route shell is visually accessible in development.
-- `/login` remains directly accessible for Auth visual work.
-- no test Supabase user or seed DB identity is required for this visual-preview phase.
+Verified current files:
+- `src/routes/admin.tsx` blob `56947b1d8e0c09092d97b44d2e02f1b26e0e8edd`.
+- `src/routes/_portal.tsx` blob `ee239d8bb1068bb9800469871577dc8aca1fd8ff`.
 
-Target development-visible routes after this slice:
-- `/`
-- `/properties`
-- `/projects`
-- `/support`
-- `/billing`
-- `/admin`
-- `/admin/clients`
-- `/admin/crm`
-- `/admin/properties`
-- `/admin/projects`
-- `/admin/sales`
-- `/admin/billing`
-- `/admin/support`
-- `/admin/platform`
+Canonical behavior:
+- only `import.meta.env.DEV` bypasses the parent route UX guards.
+- development `/admin` returns before `getAdminAccess()` so static Admin visual surfaces render without a login.
+- development Portal returns deterministic browser-only preview context: organisation id `00000000-0000-4000-8000-000000000001`, name `Adaeze Realty Group`.
+- production branches remain byte-structurally present and continue calling the frozen `getAdminAccess()` and `getPortalOrganisationContext()` authorization flows.
+- no localStorage/cookie/query-string/public production toggle exists.
+- no identity/RLS/server function/CSRF/service-role boundary was changed.
+- preview organisation context is presentation-only and is not authorization evidence.
+- `/login` remains independently accessible.
+- `/select-organisation` remains on its real authentication/context flow.
+- no database changes, seed identities or test users were introduced.
+- Lovable reported build/lint/typecheck success.
 
-`/select-organisation` can remain under its real Auth/context flow for now; it is not required to inspect the primary Portal/Admin visual surfaces.
+Development-visible visual routes include Portal `/`, `/properties`, `/projects`, `/support`, `/billing` and the full existing `/admin` route family.
+
+This bypass must be removed or explicitly replaced when canonical demo/test identities become part of the supervised build. It must never become a production feature flag.
 
 ## Client Portal Home reference
-The supplied Client Portal Home is a layout specification for the next visual slice after development preview access exists:
+The supplied Client Portal Home is a layout specification for the next visual slice:
 - horizontal client navigation with Re:Solve + organisation context.
 - warm editorial canvas and large Instrument Serif greeting.
 - prominent warm-charcoal active-project panel with progress/approval state.
@@ -141,13 +133,12 @@ The supplied Client Portal Home is a layout specification for the next visual sl
 - static believable demo data only until domain persistence is separately designed.
 
 ## Sequencing
-1. DEV-PREVIEW-001 — allow development-only direct browsing of Portal/Admin visual routes while production authorization remains unchanged.
-2. inspect/freeze preview boundary.
-3. CLIENT-VIS-HOME — implement supplied Client Portal Home reference using static demo data only.
-4. inspect/freeze Portal Home.
-5. propagate client grammar to Properties, Projects, Support and Billing in small slices.
-6. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
-7. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
+1. CLIENT-VIS-HOME — implement supplied Client Portal Home reference using static demo data only.
+2. inspect/freeze Portal Home.
+3. propagate client grammar to Properties, Projects, Support and Billing in small slices.
+4. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
+5. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
+6. replace/remove DEV-PREVIEW-001 only when canonical demo/test identity support is intentionally introduced.
 
 ## Next action
-Run **DEV-PREVIEW-001 — Development-only Visual Route Access**. Modify only parent route UX guards as needed so Portal and Admin route shells are browsable in Vite development/Lovable preview. Production must continue to execute the existing frozen authorization functions exactly as before. Do not weaken server-side authorization or add test identities/data.
+Run **CLIENT-VIS-HOME — Client Portal Home Reference Implementation**. Modify only the Portal Home visual content using static believable demo data and the supplied Client Portal Home as the layout specification. Preserve the frozen Airix client shell, frozen development preview boundary, all production authorization/server security, and the separate Lucid Admin visual dialect.
