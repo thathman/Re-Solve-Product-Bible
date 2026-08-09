@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so the next Product Bible prompt is based on actual application state rather than assumptions.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS CONDITIONAL / GRANT CLOSURE APPLIED IN CLOUD BUT MIGRATION MISSING FROM MAIN**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN — FOUND-001F2A IDENTITY SCHEMA + BASELINE RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`.
@@ -13,18 +13,18 @@ Keep this file updated after each supervised build review so the next Product Bi
 ## Security memory
 **ACCEPTED / CANONICAL**
 - Roles/permissions/capabilities are server-controlled; browser metadata is never authoritative.
-- Auth/authz is enforced at server-function/server-route boundaries and later by RLS, not only UI navigation.
-- Never invent helpers that do not exist.
-- RLS + least privilege when persistence begins; grants/policies/security config version-controlled.
-- Service-role credentials are server-only and never a shortcut around normal user RLS.
-- `SECURITY INVOKER` default; `SECURITY DEFINER` only narrow, justified, explicitly reviewed.
-- Runtime validation at consequential server boundaries.
-- Preserve `createCsrfMiddleware` in `src/start.ts`.
-- Vault secrets never browser storage/log/search/notifications/analytics/non-Vault surfaces.
-- QR only signed/scoped/short-lived references, never raw secrets.
-- Consequential mutations eventually use Action Registry/equivalent audited boundary.
+- Auth/authz is enforced at server-function/server-route boundaries and by RLS, not only UI navigation.
+- Never invent security helpers that do not exist; extend real server boundaries deliberately.
+- RLS + least privilege are mandatory for persistence; grants/policies/security configuration are version-controlled and reviewable.
+- Service-role credentials are server-only and never a shortcut around ordinary user RLS.
+- `SECURITY INVOKER` is the default; `SECURITY DEFINER` only when narrow, justified and explicitly reviewed.
+- Runtime validation is required at consequential server boundaries.
+- Preserve explicit `createCsrfMiddleware` in `src/start.ts`.
+- Vault secrets never appear in browser storage, logs, search, notifications, analytics or non-Vault surfaces.
+- QR only signed/scoped/short-lived references; never raw secrets.
+- Consequential mutations eventually use an Action Registry/equivalent audited boundary.
 - Sensitive values/tokens/secrets are not logged.
-- No vulnerability exceptions accepted.
+- No security vulnerability exceptions are accepted.
 
 ## SECURITY-GATE-001
 **ACCEPTED / CLOSED**
@@ -47,83 +47,115 @@ Foundation, Core UI, Admin shell and Client Portal shell remain frozen. `/admin`
 Canonical identity primitives remain distinct: Auth User, Profile, Organisation, Organisation Membership, Staff Access.
 
 Surface direction:
-- `/admin` eventually requires authenticated staff access.
+- `/admin` eventually requires authenticated active staff access.
 - Portal eventually requires authenticated active organisation membership.
-- one membership => automatic org context; multiple memberships => explicit selection;
-- active-org context is never authorization evidence;
+- exactly one active membership => automatic organisation context;
+- multiple active memberships => explicit organisation selection before organisation-scoped Portal work;
+- active-org selection is context only, never authorization evidence;
 - invite-oriented email/password foundation, MFA-ready; enterprise SSO deferred;
-- Supabase Auth remains portable across Lovable Cloud, managed Supabase and self-hosted Supabase.
+- a user may be staff, organisation member, both, or a member of multiple organisations.
 
 ## FOUND-001F1A — Lovable Cloud + Auth Transport
 **ACCEPTED / CANONICAL / FROZEN**
-Canonical F1A state:
 - Lovable Cloud/Supabase is activated and connected.
-- generated `src/integrations/supabase/**` and `supabase/config.toml` remain generated infrastructure and are not hand-edited.
-- env contract uses publishable-key naming; old `VITE_SUPABASE_ANON_KEY` is removed.
-- generated bearer serverFn transport remains intact: browser-generated client obtains the access token, `attachSupabaseAuth` forwards `Authorization: Bearer`, and generated server middleware validates with `auth.getClaims()`.
-- generated `supabaseAdmin` service-role client is PRESENT / GENERATED / QUARANTINED / UNUSED by Re:Solve application code.
-- `src/start.ts` preserves error middleware + explicit `createCsrfMiddleware`; generated `attachSupabaseAuth` remains registered as function middleware.
-- canonical cookie-backed SSR session uses `@supabase/ssr`, request-scoped server clients, shared browser/server cookie state, Supabase-provided cache directives, and validated `getClaims()` identity.
-- bearer serverFn transport remains a separate accepted stateless path.
-
-F1A is frozen. Do not reopen transport without a concrete auth/session regression.
+- generated `src/integrations/supabase/**` remains generated infrastructure.
+- canonical Re:Solve auth uses cookie-backed `@supabase/ssr` browser/server session state for SSR initial requests.
+- request-scoped server clients validate identity with `getClaims()`.
+- generated bearer serverFn transport remains an accepted separate stateless path.
+- generated `supabaseAdmin` is PRESENT / GENERATED / QUARANTINED / UNUSED by application code.
+- `src/start.ts` preserves error middleware + explicit CSRF middleware + generated auth attacher.
 
 ## FOUND-001F1B — User-Facing Authentication Flows
 **ACCEPTED / CANONICAL / FROZEN**
-Canonical auth UX includes `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`; canonical browser sign-in/reset actions; request-scoped server sign-out; server-side PKCE code exchange into cookie session state; safe internal redirects; provider-neutral errors; no public signup; and no staff/org authorization assumptions. Generated Supabase integration, CSRF, bearer transport and service-role quarantine remain unchanged.
+Canonical auth UX includes `/login`, `/forgot-password`, `/reset-password`, `/auth/callback`; canonical browser sign-in/reset actions; request-scoped server sign-out; server-side PKCE exchange into cookie state; safe internal redirects; provider-neutral errors; no public signup; and no staff/org authorization assumptions.
 
 F1B authenticates identity only. It does not determine what the authenticated user may access.
 
 ## FOUND-001F2A — Minimal Identity Schema + Baseline RLS
-**CONDITIONAL — SCHEMA/POLICIES ACCEPTED; CLOUD GRANT CLOSURE REPORTED CORRECT BUT VERSION-CONTROLLED CLOSURE MIGRATION IS MISSING FROM `main`**
+**ACCEPTED / CANONICAL / FROZEN**
 
-### Verified schema
-Version-controlled migration:
+### Canonical migrations
 `supabase/migrations/20260809051520_identity_foundation.sql`
+- creates only `organisations`, `profiles`, `organisation_memberships`, `staff_members`;
+- enables RLS on all four;
+- creates the baseline policies.
 
-Creates only:
-- `public.organisations(id, name, created_at)`;
-- `public.profiles(id -> auth.users, display_name, avatar_url, created_at)`;
-- `public.organisation_memberships(id, organisation_id -> organisations, user_id -> auth.users, status, created_at)` with unique `(organisation_id, user_id)` and indexes on user/org;
-- `public.staff_members(user_id -> auth.users, status, created_at)`.
+`supabase/migrations/20260809052255_identity_grants_closure.sql`
+- restores the already-applied Cloud grant closure to canonical source control;
+- revokes all privileges on all four identity tables from `anon`, `authenticated`, and `PUBLIC` before re-granting;
+- then applies the explicit least-privilege matrix;
+- explicitly leaves `service_role` privileged for backend bypass, while application use remains quarantined.
 
-Membership/staff statuses are constrained to `active | suspended`. User relationships remain independent: a user may be staff, organisation member, both, or member of multiple organisations.
+The original foundation migration is preserved unchanged in migration history. The grant-closure migration is now present on canonical app `main`; no additional Cloud migration was applied during source reconciliation.
 
-### Verified RLS policy shape
-RLS is enabled on all four public tables.
-- profiles: authenticated own-row SELECT, own-row INSERT, own-row UPDATE; no DELETE policy;
-- organisation_memberships: authenticated own-row SELECT only;
-- organisations: authenticated SELECT only where an active membership for `auth.uid()` exists;
-- staff_members: authenticated own-row SELECT only.
+### Canonical identity schema
+`public.profiles`
+- `id uuid primary key -> auth.users(id) on delete cascade`
+- `display_name text null`
+- `avatar_url text null`
+- `created_at timestamptz not null default now()`
 
-Policy dependency is non-recursive: organisation policy reads membership; membership policy depends only on `user_id = auth.uid()`. No `SECURITY DEFINER` function exists. No seed identities/data or onboarding trigger exists.
+`public.organisations`
+- `id uuid primary key default gen_random_uuid()`
+- `name text not null`
+- `created_at timestamptz not null default now()`
+
+`public.organisation_memberships`
+- UUID primary key;
+- organisation FK + user FK, both cascade on delete;
+- status constrained to `active | suspended`;
+- unique `(organisation_id, user_id)`;
+- indexes on `user_id` and `organisation_id`.
+
+`public.staff_members`
+- `user_id` primary key -> `auth.users(id)`;
+- status constrained to `active | suspended`;
+- created timestamp.
+
+No automatic auth-user profile trigger, invitation table, active-org column, role/capability catalogue, domain tables or seed users exist yet.
+
+### Canonical RLS
+- `profiles`: own-row SELECT, INSERT and UPDATE only; no DELETE policy.
+- `organisation_memberships`: own-row SELECT only.
+- `organisations`: SELECT only where `auth.uid()` has an `active` membership for that organisation.
+- `staff_members`: own-row SELECT only.
+- no anon policies.
+- no recursive policy path.
+- zero `SECURITY DEFINER` helpers.
+
+### Canonical grants
+`anon`
+- NONE on all four identity tables.
+
+`authenticated.profiles`
+- SELECT all columns allowed by RLS;
+- INSERT only `id`, `display_name`, `avatar_url`;
+- UPDATE only `display_name`, `avatar_url`;
+- no DELETE.
+
+`authenticated.organisations`
+- SELECT only.
+
+`authenticated.organisation_memberships`
+- SELECT only.
+
+`authenticated.staff_members`
+- SELECT only.
+
+`PUBLIC`
+- no table privileges on these identity tables.
+
+`service_role`
+- explicit privileged backend table access retained at the database role layer;
+- generated service-role application client remains quarantined/unused.
 
 ### Generated types
-`src/integrations/supabase/types.ts` contains all four tables with the expected public relationships/nullability.
+`src/integrations/supabase/types.ts` contains all four public tables with expected nullability and public FK relationship metadata.
 
-### Reported Cloud grant closure
-Lovable reports that migration `20260809052255_identity_grants_closure.sql` was applied successfully to the connected development project and produced the intended deterministic privilege matrix:
-- `anon`: no privileges on all four tables;
-- `authenticated.profiles`: SELECT, INSERT only `(id, display_name, avatar_url)`, UPDATE only `(display_name, avatar_url)`, no DELETE;
-- `authenticated.organisations`: SELECT only;
-- `authenticated.organisation_memberships`: SELECT only;
-- `authenticated.staff_members`: SELECT only;
-- `PUBLIC`: no meaningful DML privileges;
-- `service_role`: privileged backend table access retained;
-- generated `supabaseAdmin` remains quarantined/unused by application code.
+### Source-hygiene note
+The already-applied foundation migration contains one historical build-slice comment. Do not rewrite migration history solely to remove it. Future migrations use database-purpose comments only.
 
-### Blocking source-control mismatch
-Direct canonical repository inspection of `thathman/re-solve-c560d62c` `main` cannot find:
-`supabase/migrations/20260809052255_identity_grants_closure.sql`
-
-Exact-path fetch returns 404 and repository code search finds no equivalent `REVOKE ALL PRIVILEGES` closure SQL. Therefore the Cloud privilege state is not currently reproducible from the canonical application repository.
-
-This violates the canonical requirement that grants/policies/security configuration are version-controlled and reviewable. F2A cannot be frozen until the exact already-applied closure migration is present on `main`.
-
-Do not invent a second/different migration or reapply SQL to Cloud merely to fix source control. Restore/commit the exact migration corresponding to the already-applied Cloud change, then verify it matches the reported privilege matrix.
-
-### Source-hygiene residue
-The already-applied identity-foundation migration contains a build-slice comment. Do not rewrite migration history solely to remove it. Future migrations must contain database-purpose comments only.
+F2A is frozen. Do not alter the identity schema, policies or grants without a concrete requirement and supervised migration review.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
@@ -131,9 +163,8 @@ The already-applied identity-foundation migration contains a build-slice comment
 - Admin and Portal shells remain frozen.
 - Lovable Cloud/Supabase is active.
 - F1 auth transport + UX are frozen.
-- Four identity tables and baseline RLS exist in Cloud and source control.
-- Deterministic least-privilege grant closure is reported applied in Cloud but is not yet represented in canonical `main` source control.
-- No Admin/Portal route authorization, organisation selection, invitations, domain tables or broad RBAC exists yet.
+- Minimal identity persistence + baseline RLS + deterministic grants are frozen.
+- No Admin/Portal route authorization, active-organisation selector, invitation/onboarding flow, domain tables or broad RBAC exists yet.
 
 ## Next action
-Run one source-control-only **FOUND-001F2A-FIX2**. Restore/commit the exact already-applied `20260809052255_identity_grants_closure.sql` migration to canonical app `main`, without changing or reapplying database state. Verify its SQL matches the reported revoke/regrant matrix, that the original migration remains untouched, and that no other files change. If present and correct on `main`, freeze F2A and proceed to F2B application identity read primitives.
+Begin **FOUND-001F2B — Server-Owned Identity Read Primitives**. Add a small server-only/read-only application boundary that starts from validated authenticated identity and reads the caller's own Profile, Staff Access and Organisation Memberships through the caller-scoped Supabase client/RLS. It should expose enough typed information for future F3 route authorization without adding route guards, UI wiring, writes, service-role usage, active-org persistence or new database objects.
