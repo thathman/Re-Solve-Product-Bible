@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3C ACTIVE ORGANISATION CONTEXT ACCEPTED/CANONICAL/FROZEN — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — VIS-001B ADMIN VISUAL ROLLOUT NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3C ACTIVE ORGANISATION CONTEXT ACCEPTED/CANONICAL/FROZEN — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — VIS-001B1 ADMIN SHELL VISUALS CONDITIONAL / TWO-LINE CLOSURE NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -31,7 +31,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 - `/ui` remains the dev-only Core gallery.
 - Admin shell: `/admin` with Home, Clients, CRM, Properties, Projects, Sales, Billing, Support, Platform.
 - Client Portal shell: pathless `/_portal` wrapping `/`, `/properties`, `/projects`, `/support`, `/billing`.
-- Shells may reopen only for concrete regression or a separately supervised visual rollout.
+- Functional shells may reopen only for concrete regression or separately supervised visual rollout.
 
 ## SECURITY-GATE-001
 **ACCEPTED / CLOSED**
@@ -71,11 +71,7 @@ Canonical migrations:
 - `supabase/migrations/20260809051520_identity_foundation.sql`
 - `supabase/migrations/20260809052255_identity_grants_closure.sql`
 
-Tables:
-- `profiles`
-- `organisations`
-- `organisation_memberships`
-- `staff_members`
+Tables: `profiles`, `organisations`, `organisation_memberships`, `staff_members`.
 
 Canonical behavior:
 - least-privilege RLS/grants; no service-role application path, recursive policy, SECURITY DEFINER, seed identities, automatic profile trigger, RBAC or domain tables.
@@ -100,32 +96,12 @@ Canonical behavior:
 
 ## FOUND-001F3C — Active organisation context + exact-organisation revalidation
 **ACCEPTED / CANONICAL / FROZEN**
-Verified files:
-- `src/lib/identity/access.server.ts`
-- `src/lib/identity/organisation-context.server.ts`
-- `src/lib/identity/organisation-context.functions.ts`
-- `src/routes/_portal.tsx`
-- `src/routes/select-organisation.tsx`
-- generated `src/routeTree.gen.ts`
-
-Canonical tenancy boundary:
-- `requireActiveOrganisation(organisationId)` runtime-validates UUID input, obtains a fresh `requirePortalAccess()` identity, and matches the exact requested organisation against the newly resolved `activeOrganisations`.
-- invalid direct primitive UUID => stable 400; requested organisation no longer active => stable 403; identity/RLS/integrity failures propagate fail-closed.
+- `requireActiveOrganisation(organisationId)` runtime-validates UUID input, obtains a fresh `requirePortalAccess()` identity, and matches the exact requested organisation against newly resolved `activeOrganisations`.
 - `rs_portal_org` is an untrusted session pointer containing only organisation UUID; `httpOnly`, `SameSite=Lax`, production-secure, path `/`, no persistent expiry/max-age.
-- cookie validity never grants authorization.
-- zero active organisations => forbidden.
-- exactly one active organisation => resolves automatically; selector bypasses without writing a cookie.
-- multiple active organisations + absent/malformed/stale cookie => `selection_required`.
-- multiple active organisations + valid existing cookie => resolved context; explicit `/select-organisation` may be used to switch.
-- selection-required chooser starts with no organisation preselected; user must explicitly choose.
-- `selectPortalOrganisation` is POST + Zod UUID input and calls `requireActiveOrganisation()` before writing the cookie.
-- browser-safe context exposes organisation `{id,name}` only; `membershipId` stays server-side.
-- parent `/_portal` distinguishes unauthenticated, forbidden, selection-required and resolved states; resolved route context is UX context only.
+- zero active organisations => forbidden; exactly one => automatic context; multiple with absent/malformed/stale pointer => explicit selection required.
+- selection-required chooser starts unselected; `selectPortalOrganisation` authorizes the exact organisation before writing the cookie.
 - selector lives outside `/_portal`, uses canonical `getSafeRedirect()` from `auth.functions.ts`, and cannot form a redirect loop.
-- no duplicate `getSafeRedirect()` remains in `src/lib/utils.ts`.
-- no service role, DB changes, RBAC, domain data, test users or seed data were introduced.
-- runtime task-history wording from the F3C implementation was removed.
-- Lovable reported `bun run build` and `bunx tsc --noEmit` successful on the closure; full lint gate runs again in VIS-001B.
+- no service role, DB changes, RBAC, domain data, test users or seed data.
 
 ## RUNTIME-DIAG-001 — `Error: aborted`
 **CLOSED / TRANSIENT EDITOR-HMR TRANSPORT EVENT / NO APP CHANGE REQUIRED**
@@ -138,44 +114,68 @@ Canonical tenancy boundary:
 - desktop auth is a full-height two-column composition; left is a Re:Solve operational preview and right is a restrained form column.
 - Inter remains the UI typeface; subtle borders, nested neutral surfaces, near-zero shadow, restrained radii, disciplined Lucide usage.
 - mobile is form-first single-column.
-- login, forgot-password, reset-password and callback share the same environment.
 - password visibility controls are keyboard reachable, state-labelled, non-submitting and use the canonical focus-visible variables.
 - login helper description `Use your account credentials to continue.` is accepted.
 
 ## Standing visual direction
 **APPROVED / STANDING PRODUCT REQUIREMENT**
-The clean reference-led grammar now propagates through Admin, then Portal, then future domain screens. Auth is only the first proof.
+The clean reference-led grammar propagates through Admin, then Portal, then future domain screens.
 
 Canonical grammar:
 - restrained Inter sizing/weights;
 - Lucide generally 16–18px with thin technical treatment;
 - neutral light mode + charcoal/graphite dark mode;
-- subtle 1px borders, near-zero shadows, restrained 14–18px major radii;
+- subtle 1px borders, near-zero shadows, restrained major radii;
 - disciplined card anatomy, separators/inset regions and nested surfaces instead of card soup;
 - structured rows/tables/charts/metrics rather than generic dashboard grids;
 - meaningful accent colour concentrated in icon/status/data surfaces;
 - no generic AI gradients, glassmorphism, neon, giant marketing headings or decorative SaaS clutter.
 - Admin is denser and operational; Portal later uses the same family with more breathing room.
 
-## Current Admin visual baseline before VIS-001B
-- `AdminShell` already owns sidebar, topbar, command menu and shared Àríyá panel.
-- `AdminSidebar` is route-aware and collapsible; nav groups are Workspace / Operations / Platform.
-- `AdminTopBar` already owns search/Cmd-K, notifications, Àríyá and account controls.
-- Admin Home still renders a placeholder `StatePanel` and has no real visual-system proof yet.
-- Admin authorization and all shell functionality must remain unchanged during the visual rollout.
+## VIS-001B1 — Admin Shell visual redesign
+**CONDITIONAL — VISUAL ARCHITECTURE ACCEPTED; TWO SMALL TOPBAR CLOSURES REQUIRED**
+
+Verified current runtime files:
+- `src/components/shell/admin/AdminShell.tsx`
+- `src/components/shell/admin/AdminSidebar.tsx`
+- `src/components/shell/admin/AdminTopBar.tsx`
+- `src/components/shell/admin/AdminPageHeader.tsx`
+- `src/components/shell/admin/AdminBreadcrumbs.tsx`
+
+Verified-good visual/functional architecture:
+- existing Core Sidebar architecture remains in place; no parallel shell was created.
+- expanded sidebar continues to use the canonical 16rem/256px sidebar contract, within the approved 240–260px visual target.
+- sidebar now uses quiet primary surface, subtle border, 28px brand mark, 36px nav rows, ~13.5px labels and 18px Lucide icons.
+- selected nav remains route-aware and uses a restrained selected surface rather than a large brand-colour pill.
+- topbar remains the existing shared component and retains sidebar trigger, route context, Cmd/Ctrl+K search, notifications, Àríyá and account dropdown.
+- command menu remains unchanged and still binds Meta/Ctrl+K.
+- page header now uses restrained 28px/600 title treatment and 14px supporting copy.
+- shell content frame uses the available workspace with a max 1600px content frame and canonical responsive gutters.
+- `src/routes/admin.tsx` is unchanged; authoritative Admin access remains frozen.
+- Core implementations, styles.css, Portal/Auth, DB, identity and dependencies were not part of the visual change set.
+- Lovable reported build/lint/typecheck success.
+
+Blocking closure before B1 freezes:
+1. Account-menu trigger in `AdminTopBar.tsx` dropped the canonical focus offset classes. Restore the full frozen focus-visible contract, including `--rs-focus-offset-width` and `--rs-focus-offset-color`.
+2. Preserve the canonical fictional account placeholder exactly as `Amara Okafor` / `Administrator`; B1 shortened the role to `Admin`.
+
+No other B1 redesign is requested in the closure.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
 - Auth, identity persistence/RLS, identity reads, Admin authorization, Portal authorization and tenancy context are frozen.
+- Admin shell visual direction is implemented and awaits one tiny topbar closure.
+- Admin Home is still the placeholder StatePanel and is the next visible proof after B1 freezes.
 - No invitation/onboarding flow, domain tables or broad RBAC exists yet.
-- Admin visual propagation is NEXT; Portal visual propagation follows after Admin approval.
+- Portal visual propagation remains explicitly queued after Admin approval.
 
 ## Sequencing
-Continue in small supervised slices:
-1. VIS-001B — redesign only the Admin shell + Admin Home as the first full operational visual-system proof.
-2. inspect/freeze the Admin visual grammar before applying it to other Admin routes.
-3. propagate the approved family into Portal in a separate VIS slice.
-4. continue identity onboarding/invitation and domain work in separately reviewed slices.
+1. close VIS-001B1 account focus-contract + placeholder-role regressions only.
+2. freeze VIS-001B1.
+3. VIS-001B2 — replace only Admin Home placeholder with the approved operational dashboard proof.
+4. inspect/freeze Admin Home visual grammar.
+5. propagate the approved family into Portal in a separate VIS slice.
+6. continue identity onboarding/invitation and domain work separately.
 
 ## Next action
-Begin **VIS-001B — Admin Shell + Home Visual System Proof**. Preserve every frozen Admin authorization/navigation/search/notification/Àríyá/account behavior. Redesign the existing Admin shell rather than creating a parallel dashboard. Apply the approved reference-led typography, Lucide sizing, quiet sidebar/topbar, subtle borders, low-shadow nested surfaces and disciplined card anatomy. Replace only the Admin Home placeholder with static, believable Re:Solve operational demo content sufficient to prove the visual language; do not add domain data or database reads yet.
+Run one tiny **VIS-001B1-FIX — Account Trigger Closure**. Modify only `src/components/shell/admin/AdminTopBar.tsx`: restore the complete canonical focus-visible offset contract on the account trigger and restore the fictional role label to `Administrator`. Preserve all other B1 visuals and behavior. Then run the full build/lint/typecheck gate and stop.
