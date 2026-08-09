@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — FOUND-001G1B OFFLINE/CACHE/UPDATE BOUNDARY ACCEPTED/FROZEN — NEXT: FOUND-001G2 ACCESSIBILITY / DEVICE / CHECKLIST QA**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — FOUND-001G1B OFFLINE/CACHE/UPDATE BOUNDARY ACCEPTED/FROZEN — FOUND-001G2 ACCESSIBILITY/DEVICE QA IMPLEMENTED, CONDITIONAL ON TINY FOCUS/LIVE-REGION CLOSURE — NEXT AFTER CLOSURE: FOUND-001G3 TESTS / CI / ENGINEERING HARDENING**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -98,9 +98,7 @@ Accepted facts:
 - StatusBadge treatment and stronger semantic markers exist.
 - security/identity/server/DEV-preview boundaries were not changed.
 
-Deferred QA:
-- bottom-tab focus treatment recheck against frozen ring + ring-offset contract during accessibility QA.
-- subjective design polish remains deferred by owner direction.
+Subjective design polish remains deferred by owner direction.
 
 ## FOUND-001G1A — PWA installability
 **ACCEPTED / CANONICAL / FROZEN**
@@ -150,28 +148,58 @@ Verified accepted facts:
 - no authenticated/private HTML, server-function/RPC response, Supabase/API response, auth/recovery payload, organisation/profile/project/property/billing/support data, notification, Àríyá/Chatwoot content, Vault data, token or session material is authorized to enter Cache Storage.
 - no Workbox/PWA plugin, background sync, offline mutation or business-data IndexedDB exists.
 - final G1B change set did not modify auth, identity, authorization, RLS, Supabase, database, Admin/Portal product behavior or DEV-PREVIEW-001.
-- Lovable reported build/lint/typecheck success.
 
 Security-memory handling:
 - canonical durable source remains `10-build/lovable-launch/SECURITY-MEMORY.md`.
 - Lovable reported `mem://security/rules.md` synchronized with that policy plus an explicit authenticated-navigation no-cache rule; `mem://` is editor/project memory and is not independently GitHub-verifiable.
 
+## FOUND-001G2 — Accessibility / Device / Checklist QA
+**IMPLEMENTED / FUNCTIONALLY GOOD / CONDITIONAL ON TINY ACCESSIBILITY CLEANUP — DO NOT FULLY FREEZE YET**
+Latest reviewed app head: `b018bb9c0912dc61e7adf70e50ed4253685f7a94`.
+Compared with G1B head `0db19adc419d1b18cf1f29b3efedf387321b9990`, net changed files are:
+- `public/offline.html`
+- `src/components/core/feedback/Alert.tsx`
+- `src/components/shell/admin/AdminShell.tsx`
+- `src/components/shell/portal/PortalBottomNav.tsx`
+- `src/components/shell/portal/PortalShell.tsx`
+- `src/lib/pwa/PwaRuntime.tsx`
+- `src/routes/__root.tsx`
+- `src/routes/select-organisation.tsx`
+
+Verified accepted facts:
+- both Admin and Portal now expose a visible-on-focus `Skip to main content` link targeting the existing single main landmark.
+- Portal bottom nav now has `aria-label="Primary"`, retains `aria-current="page"`, adds ring-offset classes, and marks the decorative active indicator `aria-hidden`.
+- PWA offline/update notices now constrain phone width, account for bottom safe area, and gate entrance animation behind `motion-safe`.
+- `public/offline.html` adds a visible `:focus-visible` treatment for Try again.
+- organisation selection improves radio-label association and focus-within visibility.
+- existing Core `FormField` + `Input` already provide label/control association, required/invalid/description wiring; current Login already uses `type="email"`, `autoComplete="email"`, `autoComplete="current-password"`, semantic password visibility control and keyboard form submission.
+- Lovable's report says LoginForm was hardened in this slice, but canonical compare shows LoginForm itself was not changed; its key semantics were already present, so this is a reporting overstatement rather than a functional blocker.
+- no auth behavior, authorization, RLS, Supabase, DB, PWA cache policy, routes or DEV-preview security boundary changed.
+
+### Tiny G2 closure items
+1. `src/routes/__root.tsx` introduced hard-coded `focus-visible:ring-2 focus-visible:ring-offset-2` on Not Found/Error actions. Replace these with the exact frozen variable-based focus-visible contract; do not establish a second focus system.
+2. Make both skip-link targets explicitly programmatically focusable with `tabIndex={-1}` on the existing Admin and Portal main landmarks so hash-based skip focus is robust across browser/screen-reader combinations. Do not add another main landmark.
+3. `Alert` now explicitly adds `aria-live` while `role="alert"` / `role="status"` already supply assertive/polite live-region semantics. Remove the redundant explicit `aria-live` unless there is a demonstrated compatibility reason; avoid duplicate/noisy announcements.
+4. Lovable's phrase "fixable lint" is ambiguous. G2 closure requires plain `bun run lint` to exit 0 without relying on a write/fix mode.
+
+These are accessibility-contract fixes, not subjective visual polish.
+
 ## FOUND-001 remaining closure
 Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability, G1B offline/cache/update boundary.
 
 Still required:
-1. **FOUND-001G2** — accessibility/device/Checklist QA and only blocking fixes.
-2. FOUND-001G automated tests + CI + engineering hardening.
+1. **FOUND-001G2-FIX** — tiny focus/skip-target/live-region cleanup + confirm plain lint success.
+2. **FOUND-001G3** — automated tests + CI + engineering hardening.
 3. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
 
 Rich Admin Home and real Client Properties/Projects/Support/Billing remain post-FOUND-001 work.
 
 ## Sequencing
-1. **FOUND-001G2 — Accessibility / Device / Checklist QA**.
+1. **FOUND-001G2-FIX — tiny accessibility closure only**.
 2. inspect/freeze G2.
-3. automated tests/CI/engineering hardening.
+3. FOUND-001G3 automated tests/CI/engineering hardening.
 4. FOUND-001R integrated closure.
 5. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
 
 ## Next action
-Run **FOUND-001G2 — Accessibility / Device / Checklist QA**. Do not use it as a subjective visual-redesign pass; fix only accessibility, responsive usability, legibility, interaction-state, and core UX-completeness defects that materially block foundation quality.
+Run **FOUND-001G2-FIX** only. Do not use it for visual redesign or new product behavior.
