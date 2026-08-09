@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — FOUND-001F3C ACTIVE ORGANISATION CONTEXT CONDITIONAL / NARROW CLOSURE REQUIRED**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — FOUND-001F3C ACTIVE ORGANISATION CONTEXT ACCEPTED/CANONICAL/FROZEN — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — VIS-001B ADMIN VISUAL ROLLOUT NEXT**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -27,11 +27,11 @@ Keep this file updated after each supervised build review so future Lovable prom
 
 ## Frozen foundation / Core / shells
 **ACCEPTED / CANONICAL / FROZEN FUNCTIONALLY**
-- Foundation + Core UI C1-C5E remain frozen.
+- Foundation + Core UI C1-C5E remain frozen functionally.
 - `/ui` remains the dev-only Core gallery.
 - Admin shell: `/admin` with Home, Clients, CRM, Properties, Projects, Sales, Billing, Support, Platform.
 - Client Portal shell: pathless `/_portal` wrapping `/`, `/properties`, `/projects`, `/support`, `/billing`.
-- Shells may reopen only for concrete regression or separately supervised visual rollout.
+- Shells may reopen only for concrete regression or a separately supervised visual rollout.
 
 ## SECURITY-GATE-001
 **ACCEPTED / CLOSED**
@@ -50,7 +50,7 @@ Canonical identity facts are distinct: Auth User, Profile, Organisation, Organis
 Surface rules:
 - `/admin` requires authenticated active staff access.
 - Portal requires authenticated active organisation membership.
-- exactly one active organisation may resolve automatically as context.
+- exactly one active organisation resolves automatically as Portal context.
 - multiple active organisations require explicit selection before organisation-scoped Portal work.
 - selected organisation is context only; server/RLS revalidate authorization independently.
 - a user may be staff, organisation member, both, or member of multiple organisations.
@@ -63,48 +63,69 @@ Surface rules:
 - `/login`, `/forgot-password`, `/reset-password`, `/auth/callback` are canonical.
 - server-side PKCE exchange; safe internal redirects; neutral auth errors; no public signup/social login/MFA yet.
 - `src/start.ts` keeps error middleware + generated auth attacher + explicit CSRF middleware.
-- canonical redirect validator is `getSafeRedirect()` in `src/lib/auth.functions.ts`; do not create duplicates.
+- canonical redirect validator is `getSafeRedirect()` in `src/lib/auth.functions.ts`; do not duplicate it.
 
-## FOUND-001F2A — Identity schema + RLS
+## FOUND-001F2A/F2B — Identity persistence + server reads
 **ACCEPTED / CANONICAL / FROZEN**
 Canonical migrations:
 - `supabase/migrations/20260809051520_identity_foundation.sql`
 - `supabase/migrations/20260809052255_identity_grants_closure.sql`
 
 Tables:
-- `profiles(id -> auth.users, display_name, avatar_url, created_at)`
-- `organisations(id, name, created_at)`
-- `organisation_memberships(id, organisation_id, user_id, status active|suspended, created_at)` unique `(organisation_id,user_id)`
-- `staff_members(user_id, status active|suspended, created_at)`
+- `profiles`
+- `organisations`
+- `organisation_memberships`
+- `staff_members`
 
-RLS/grants remain least-privilege; no service-role application path, recursive policy, SECURITY DEFINER, seed identities, automatic profile trigger, RBAC or domain tables.
-
-## FOUND-001F2B — Server-owned identity reads
-**ACCEPTED / CANONICAL / FROZEN**
-- `readCurrentIdentity()` starts from real `getAuthenticatedUser()`.
-- all DB reads use caller-scoped Supabase + RLS.
-- snapshot distinguishes unauthenticated, nullable profile, staff absent/active/suspended, memberships active/suspended, and active organisations.
-- every active membership must resolve through organisation RLS before snapshot success.
-- DB/status/integrity failure fails closed using one stable error; raw provider details are not logged/surfaced.
-- no service role, writes, UI, RBAC or active-org persistence.
+Canonical behavior:
+- least-privilege RLS/grants; no service-role application path, recursive policy, SECURITY DEFINER, seed identities, automatic profile trigger, RBAC or domain tables.
+- `readCurrentIdentity()` starts from real `getAuthenticatedUser()` and uses caller-scoped Supabase + RLS only.
+- active memberships must resolve through organisation RLS before snapshot success; DB/status/integrity failure fails closed.
 
 ## FOUND-001F3A — Server-authoritative Admin access
 **ACCEPTED / CANONICAL / FROZEN**
-- reusable `requireActiveStaff()` and `checkAdminAccess()` derive from frozen identity reads.
+- `requireActiveStaff()` / `checkAdminAccess()` derive from frozen identity reads.
 - unauthenticated => 401; missing/suspended staff => 403; active staff => allowed; identity failure propagates fail-closed.
-- `getAdminAccess()` returns only `allowed | unauthenticated | forbidden`, with `Cache-Control: private, no-store` and `Vary: Cookie, Authorization`.
+- `getAdminAccess()` returns only `allowed | unauthenticated | forbidden` with `Cache-Control: private, no-store` and `Vary: Cookie, Authorization`.
 - parent `/admin` gate covers the complete Admin family.
 - future private Admin server data must independently call `requireActiveStaff()` or an approved derivative.
 
 ## FOUND-001F3B — Server-authoritative Portal access
 **ACCEPTED / CANONICAL / FROZEN**
-- reusable `requirePortalAccess()` and `checkPortalAccess()` derive from frozen identity reads.
+- `requirePortalAccess()` / `checkPortalAccess()` derive from frozen identity reads.
 - Portal eligibility requires authenticated identity plus at least one current active organisation.
 - zero/suspended-only memberships => forbidden; staff-only does not grant Portal access.
-- one or multiple active organisations => surface access allowed.
-- `getPortalAccess()` returns only `allowed | unauthenticated | forbidden`, with private/no-store + Cookie/Authorization Vary.
-- parent `/_portal` gate covers `/`, `/properties`, `/projects`, `/support`, `/billing`.
+- `getPortalAccess()` returns only minimal access status with private/no-store + Cookie/Authorization Vary.
 - identity failures propagate naturally; no raw caught-error logging.
+
+## FOUND-001F3C — Active organisation context + exact-organisation revalidation
+**ACCEPTED / CANONICAL / FROZEN**
+Verified files:
+- `src/lib/identity/access.server.ts`
+- `src/lib/identity/organisation-context.server.ts`
+- `src/lib/identity/organisation-context.functions.ts`
+- `src/routes/_portal.tsx`
+- `src/routes/select-organisation.tsx`
+- generated `src/routeTree.gen.ts`
+
+Canonical tenancy boundary:
+- `requireActiveOrganisation(organisationId)` runtime-validates UUID input, obtains a fresh `requirePortalAccess()` identity, and matches the exact requested organisation against the newly resolved `activeOrganisations`.
+- invalid direct primitive UUID => stable 400; requested organisation no longer active => stable 403; identity/RLS/integrity failures propagate fail-closed.
+- `rs_portal_org` is an untrusted session pointer containing only organisation UUID; `httpOnly`, `SameSite=Lax`, production-secure, path `/`, no persistent expiry/max-age.
+- cookie validity never grants authorization.
+- zero active organisations => forbidden.
+- exactly one active organisation => resolves automatically; selector bypasses without writing a cookie.
+- multiple active organisations + absent/malformed/stale cookie => `selection_required`.
+- multiple active organisations + valid existing cookie => resolved context; explicit `/select-organisation` may be used to switch.
+- selection-required chooser starts with no organisation preselected; user must explicitly choose.
+- `selectPortalOrganisation` is POST + Zod UUID input and calls `requireActiveOrganisation()` before writing the cookie.
+- browser-safe context exposes organisation `{id,name}` only; `membershipId` stays server-side.
+- parent `/_portal` distinguishes unauthenticated, forbidden, selection-required and resolved states; resolved route context is UX context only.
+- selector lives outside `/_portal`, uses canonical `getSafeRedirect()` from `auth.functions.ts`, and cannot form a redirect loop.
+- no duplicate `getSafeRedirect()` remains in `src/lib/utils.ts`.
+- no service role, DB changes, RBAC, domain data, test users or seed data were introduced.
+- runtime task-history wording from the F3C implementation was removed.
+- Lovable reported `bun run build` and `bunx tsc --noEmit` successful on the closure; full lint gate runs again in VIS-001B.
 
 ## RUNTIME-DIAG-001 — `Error: aborted`
 **CLOSED / TRANSIENT EDITOR-HMR TRANSPORT EVENT / NO APP CHANGE REQUIRED**
@@ -123,63 +144,38 @@ RLS/grants remain least-privilege; no service-role application path, recursive p
 
 ## Standing visual direction
 **APPROVED / STANDING PRODUCT REQUIREMENT**
-The clean reference-led grammar must later propagate through Admin, then Portal, then future domain screens. Auth is only the first proof.
+The clean reference-led grammar now propagates through Admin, then Portal, then future domain screens. Auth is only the first proof.
 
 Canonical grammar:
 - restrained Inter sizing/weights;
-- Lucide generally 16–18px;
+- Lucide generally 16–18px with thin technical treatment;
 - neutral light mode + charcoal/graphite dark mode;
 - subtle 1px borders, near-zero shadows, restrained 14–18px major radii;
-- disciplined card anatomy, separators and nested regions instead of card soup;
+- disciplined card anatomy, separators/inset regions and nested surfaces instead of card soup;
 - structured rows/tables/charts/metrics rather than generic dashboard grids;
-- meaningful accent colour only; no generic AI gradients, glassmorphism, neon or oversized marketing typography.
+- meaningful accent colour concentrated in icon/status/data surfaces;
+- no generic AI gradients, glassmorphism, neon, giant marketing headings or decorative SaaS clutter.
+- Admin is denser and operational; Portal later uses the same family with more breathing room.
 
-## FOUND-001F3C — Active organisation context + exact-organisation revalidation
-**CONDITIONAL — CORE TENANCY BOUNDARY ACCEPTED; SELECTOR/REDIRECT/SOURCE-HYGIENE CLOSURE REQUIRED**
-
-Verified implementation files:
-- `src/lib/identity/access.server.ts`
-- `src/lib/identity/organisation-context.server.ts`
-- `src/lib/identity/organisation-context.functions.ts`
-- `src/routes/_portal.tsx`
-- `src/routes/select-organisation.tsx`
-- generated `src/routeTree.gen.ts`
-- `src/lib/utils.ts` was also modified and requires rollback of the duplicate redirect helper.
-
-Verified-good architecture:
-- `requireActiveOrganisation(organisationId)` validates UUID input and obtains a fresh authoritative Portal identity through `requirePortalAccess()` before matching the requested ID against current `activeOrganisations`.
-- requested organisation not currently active => stable 403; invalid direct primitive UUID => stable 400; identity/RLS failures propagate fail-closed.
-- `rs_portal_org` stores only an organisation UUID and is `httpOnly`, `SameSite=Lax`, production-secure, path `/`, with no persistent expiry/max-age.
-- cookie is treated as an untrusted pointer: malformed/absent/stale values do not authorize access.
-- zero active organisations => forbidden.
-- exactly one active organisation resolves automatically and ignores any stale cookie.
-- multiple active organisations resolve only when the cookie points to a currently active organisation; otherwise context is `selection_required`.
-- browser-safe context exposes only organisation `{id,name}`; `membershipId` remains server-side.
-- `getPortalOrganisationContext()` is private/no-store and varies on Cookie/Authorization.
-- `selectPortalOrganisation` is POST + Zod UUID input; it calls `requireActiveOrganisation()` before writing the context cookie and returns only browser-safe selected organisation data.
-- parent `/_portal` now distinguishes unauthenticated, forbidden, selection-required and resolved context states; resolved route context is explicitly marked UX context only, never authorization evidence.
-- no domain reads, service role, RBAC, database migrations, seed/test users or Portal shell redesign were observed.
-
-Blocking closure:
-1. `src/lib/utils.ts` now contains a second `getSafeRedirect()`. Remove that new duplicate and import/reuse canonical `getSafeRedirect()` from `src/lib/auth.functions.ts` in the selector route.
-2. `/select-organisation` currently renders a chooser even when context has exactly one active organisation. Exactly-one must redirect directly to canonical safe `returnTo` (or `/`) because selection is unnecessary.
-3. when context is `selection_required`, the selector currently initializes the first organisation as selected. Do not preselect the first organisation; explicit multi-org selection must start unselected. A valid existing multi-org selection may remain preselected when the user explicitly visits the chooser to switch.
-4. remove task-history/source-leak wording such as `F3B legacy` from runtime comments. Prefer normal product-purpose comments; do not add FOUND/task/prompt/supervisor language.
-5. preserve all accepted cookie, exact-org authorization, context-resolution, cache, Admin/F3B and no-service-role behavior while closing the above.
+## Current Admin visual baseline before VIS-001B
+- `AdminShell` already owns sidebar, topbar, command menu and shared Àríyá panel.
+- `AdminSidebar` is route-aware and collapsible; nav groups are Workspace / Operations / Platform.
+- `AdminTopBar` already owns search/Cmd-K, notifications, Àríyá and account controls.
+- Admin Home still renders a placeholder `StatePanel` and has no real visual-system proof yet.
+- Admin authorization and all shell functionality must remain unchanged during the visual rollout.
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
-- Auth, identity persistence/RLS, identity reads, Admin authorization and Portal surface authorization are frozen.
-- F3C tenancy/context architecture exists but is conditional on one narrow selector/redirect/source-hygiene cleanup.
+- Auth, identity persistence/RLS, identity reads, Admin authorization, Portal authorization and tenancy context are frozen.
 - No invitation/onboarding flow, domain tables or broad RBAC exists yet.
-- Admin and Portal visual propagation remain explicitly queued.
+- Admin visual propagation is NEXT; Portal visual propagation follows after Admin approval.
 
 ## Sequencing
 Continue in small supervised slices:
-1. close FOUND-001F3C selector/redirect/source-hygiene issues only.
-2. if clean, freeze F3C tenancy boundary.
-3. resume approved visual rollout into Admin, then Portal.
+1. VIS-001B — redesign only the Admin shell + Admin Home as the first full operational visual-system proof.
+2. inspect/freeze the Admin visual grammar before applying it to other Admin routes.
+3. propagate the approved family into Portal in a separate VIS slice.
 4. continue identity onboarding/invitation and domain work in separately reviewed slices.
 
 ## Next action
-Run one narrow **FOUND-001F3C-FIX — Selector Explicitness + Canonical Redirect Closure**. Remove the duplicate redirect helper, make exactly-one organisation bypass the chooser, ensure multi-org selection-required state begins unselected, remove task-history comments, and preserve all accepted exact-organisation authorization/cookie/context behavior. Do not add domain data, database changes, service-role usage, RBAC, test users or broad visual changes.
+Begin **VIS-001B — Admin Shell + Home Visual System Proof**. Preserve every frozen Admin authorization/navigation/search/notification/Àríyá/account behavior. Redesign the existing Admin shell rather than creating a parallel dashboard. Apply the approved reference-led typography, Lucide sizing, quiet sidebar/topbar, subtle borders, low-shadow nested surfaces and disciplined card anatomy. Replace only the Admin Home placeholder with static, believable Re:Solve operational demo content sufficient to prove the visual language; do not add domain data or database reads yet.
