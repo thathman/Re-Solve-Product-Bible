@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL CONDITIONAL ON SMALL CLOSURE — PORTAL HOME NEXT AFTER CLOSURE**
+**FOUNDATION / CORE / SECURITY / IDENTITY / ADMIN AUTH / PORTAL AUTH / TENANCY FROZEN — VIS-001B1 ADMIN SHELL FROZEN — CLIENT VISUAL AUTHORITY SPLIT FROZEN — CLIENT PORTAL AIRIX SHELL ACCEPTED/FROZEN — DEV VISUAL PREVIEW BYPASS NEXT — PORTAL HOME AFTER PREVIEW ACCESS**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -18,8 +18,8 @@ Keep this file updated after each supervised build review so future Lovable prom
 - Preserve explicit `createCsrfMiddleware` in `src/start.ts`.
 - Runtime validation is required at consequential boundaries.
 - Raw auth/database/provider/Zod/access errors, tokens, sessions, secrets and privileged values are not logged or surfaced.
-- `requireActiveStaff()` / `getAdminAccess()` are frozen for `/admin`.
-- `requirePortalAccess()` / Portal parent access gate are frozen.
+- `requireActiveStaff()` / `getAdminAccess()` are frozen for production `/admin` authorization.
+- `requirePortalAccess()` / Portal parent access gate are frozen for production Portal authorization.
 - `requireActiveOrganisation(organisationId)` freshly revalidates exact active organisation access.
 - `rs_portal_org` is an untrusted UUID-only context pointer, never authorization evidence.
 - zero active Portal organisations => forbidden; exactly one => automatic context; multiple + absent/malformed/stale pointer => explicit selection.
@@ -81,34 +81,57 @@ Client grammar:
 - no Auth capability prompt yet unless explicitly requested.
 
 ## CLIENT-VIS portal shell rollout
-**DIRECTION ACCEPTED / CONDITIONAL ON SMALL CLOSURE**
-
-Verified current files:
-- `src/components/shell/portal/PortalShell.tsx`
-- `src/components/shell/portal/PortalTopBar.tsx`
-- `src/components/shell/portal/PortalNavigation.tsx`
-- `src/routes/_portal.tsx`
-- `src/styles.css`
-- `package.json` / `bun.lock`
-
-Verified good:
-- Portal uses one existing shell; no parallel shell was created.
-- `.rs-client-theme` is scoped to `PortalShell`, so Admin structure remains separate.
-- local Fontsource packages for Space Grotesk and Instrument Serif were added.
-- topbar was restyled toward the supplied warm Airix/Re:Solve reference.
-- active organisation comes only from the safe `/_portal` route context and is passed into the shell for UX.
+**ACCEPTED / CANONICAL / FROZEN VISUALLY**
+Verified current implementation:
+- one existing `PortalShell`; no parallel shell.
+- `.rs-client-theme` is scoped to Portal and applies Space Grotesk directly via `font-family`.
+- Fontsource Space Grotesk and Instrument Serif are bundled locally; JetBrains Mono remains existing technical/data font.
+- `--color-rs-surface-dark` is mapped to the semantic `--rs-surface-dark` variable, so active warm-charcoal nav utilities are real Tailwind theme utilities.
+- client scope explicitly owns selected/disabled/destructive semantics required to avoid partial global-dark leakage.
+- `PortalTopBar` brand and organisation controls are sibling links, not nested anchors, and both preserve the frozen focus-visible contract.
+- active organisation comes only from the safe `/_portal` route context and remains UX context only.
 - no new Supabase query or authorization shortcut was introduced.
 - desktop navigation, mobile Sheet, command search, notifications, Àríyá and account behavior remain in the existing architecture.
-- Lovable reported build/lint/typecheck success.
+- Admin visual files remain untouched by the client theme rollout.
+- Lovable reported build/lint success; source review found no remaining shell blocker.
 
-Blocking closure before the client Portal shell freezes:
-1. `.rs-client-theme` currently overrides `--font-sans` but does not set `font-family`, so normal Portal text can continue inheriting Inter from `body`. Apply Space Grotesk directly on the scoped wrapper/theme.
-2. `PortalTopBar` nests the organisation `<Link>` inside the Re:Solve brand `<Link>`. Split these into sibling links/elements; no nested anchors.
-3. `bg-rs-surface-dark` is used for active navigation but no Tailwind semantic mapping `--color-rs-surface-dark` exists. Add the scoped/semantic mapping or use a valid mapped semantic token; the active warm-charcoal surface must render reliably.
-4. Keep the client scope semantically complete enough that a global `.dark` class cannot leak mismatched Admin/global status/disabled/destructive colours into the warm client surface. Do not implement a broad client dark-mode redesign in this closure; just prevent partial mixed-theme inheritance where Portal Core components use these tokens.
+Do not reopen the client shell absent a concrete regression or explicit owner visual request.
+
+## Temporary development visual preview mode
+**APPROVED / NEXT IMPLEMENTATION SLICE**
+Owner needs to inspect product surfaces in Lovable before demo identities/data exist.
+
+Canonical rule:
+- development/Lovable preview may bypass ONLY parent route UX authentication redirects so static visual pages are directly browsable.
+- production must keep the frozen real Admin and Portal authorization gates.
+- use compile-time development gating (`import.meta.env.DEV` / equivalent Vite development flag), not a user-controlled cookie/localStorage value and not a production-enabled public query flag.
+- Portal development bypass may return a deterministic browser-only preview organisation such as `Adaeze Realty Group` to satisfy shell display context.
+- development preview context is presentation/demo context only and must never be consumed by private server functions as authorization evidence.
+- DO NOT weaken or bypass `requireActiveStaff`, `requirePortalAccess`, `requireActiveOrganisation`, RLS, server functions, service-role boundaries or CSRF.
+- future private server functions remain protected even when their route shell is visually accessible in development.
+- `/login` remains directly accessible for Auth visual work.
+- no test Supabase user or seed DB identity is required for this visual-preview phase.
+
+Target development-visible routes after this slice:
+- `/`
+- `/properties`
+- `/projects`
+- `/support`
+- `/billing`
+- `/admin`
+- `/admin/clients`
+- `/admin/crm`
+- `/admin/properties`
+- `/admin/projects`
+- `/admin/sales`
+- `/admin/billing`
+- `/admin/support`
+- `/admin/platform`
+
+`/select-organisation` can remain under its real Auth/context flow for now; it is not required to inspect the primary Portal/Admin visual surfaces.
 
 ## Client Portal Home reference
-The supplied Client Portal Home is a layout specification for the next slice:
+The supplied Client Portal Home is a layout specification for the next visual slice after development preview access exists:
 - horizontal client navigation with Re:Solve + organisation context.
 - warm editorial canvas and large Instrument Serif greeting.
 - prominent warm-charcoal active-project panel with progress/approval state.
@@ -118,13 +141,13 @@ The supplied Client Portal Home is a layout specification for the next slice:
 - static believable demo data only until domain persistence is separately designed.
 
 ## Sequencing
-1. CLIENT-VIS-SHELL-FIX — close the four scoped-theme/topbar issues above only.
-2. inspect and freeze Client Portal shell/theme primitives.
-3. CLIENT-VIS-HOME — implement the supplied Client Portal Home reference using static demo data only.
+1. DEV-PREVIEW-001 — allow development-only direct browsing of Portal/Admin visual routes while production authorization remains unchanged.
+2. inspect/freeze preview boundary.
+3. CLIENT-VIS-HOME — implement supplied Client Portal Home reference using static demo data only.
 4. inspect/freeze Portal Home.
 5. propagate client grammar to Properties, Projects, Support and Billing in small slices.
 6. later return to Auth visual redesign and Auth capability/onboarding work in separately supervised slices.
 7. Admin Home VIS-001B2 can resume separately; Admin remains Lucid-style.
 
 ## Next action
-Run one small **CLIENT-VIS-SHELL-FIX**. Do not begin Portal Home until the scoped client theme is actually applying Space Grotesk, active warm-charcoal navigation is backed by a real semantic utility/token, nested links are removed, and mixed global-dark token leakage is prevented. Preserve all security/auth/tenancy behavior and Admin visuals.
+Run **DEV-PREVIEW-001 — Development-only Visual Route Access**. Modify only parent route UX guards as needed so Portal and Admin route shells are browsable in Vite development/Lovable preview. Production must continue to execute the existing frozen authorization functions exactly as before. Do not weaken server-side authorization or add test identities/data.
