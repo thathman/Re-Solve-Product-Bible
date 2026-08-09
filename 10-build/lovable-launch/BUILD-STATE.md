@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — SHELL-CTRL-001 IMPLEMENTED / CONDITIONAL CLOSURE — CLIENT HOME R2 STRUCTURE RETAINED BUT OWNER HAS REOPENED VISUAL DEPTH — NEXT: ADMIN SIDEBAR SEARCH + CLIENT DARK ANCHOR / MOTION PASS**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN SIDEBAR SEARCH CLEANUP ACCEPTED — CLIENT HOME R3 STRUCTURE/DARK ANCHOR IMPLEMENTED BUT VISUAL/RESPONSIVE CLOSURE OPEN — NEXT: CLIENT PWA-STYLE RESPONSIVE SHELL + STATUS/CONTRAST + ÀRÍYÁ INITIALIZATION FIX**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -75,6 +75,7 @@ Rules:
 - The owner specifically likes the energy of the supplied Client Home HTML: dark featured surface, clear progress, layered contrast and motion. Those are design principles to reinterpret, not an instruction to copy its exact layout.
 - Use restrained motion for state/progress: short, one-shot/reveal transitions rather than looping decoration. Respect `prefers-reduced-motion`.
 - Dark anchors may use subtle technical line/grid texture, inverse typography and semantic accents, but must remain tool-like rather than promotional/hero marketing blocks.
+- In light mode the dark Work-in-Motion anchor should sit directly on the page: no extra pale/tinted wrapper, halo, or decorative background around the box. The dark region itself supplies the contrast.
 - Do not reintroduce an embedded Àríyá Home section; Àríyá remains a floating shell control.
 
 ## Reference-use rule
@@ -83,6 +84,13 @@ Rules:
 - Samples provide visual vocabulary, content clues and useful interaction ideas; they are not automatic layout specifications.
 - Re:Solve surfaces must be independently designed from product hierarchy and workflows.
 - Before freezing a page, verify it is not merely a React transcription of a mockup.
+
+## Checklist.design QA rule
+**OWNER-REQUESTED / CANONICAL QA REFERENCE**
+- `checklist.design` is a UX completeness / pre-freeze QA reference, not a Re:Solve visual authority.
+- Use the relevant component/flow checklist before freezing meaningful surfaces: states, focus, responsiveness, dark mode, search behavior, loading/error feedback, copy clarity, forms, support, payments, auth/recovery, and other applicable flow checks.
+- Do not copy Checklist Design layouts or styling.
+- Product Bible + Re:Solve Core/visual dialect remain authoritative when a checklist recommendation conflicts with a product/security decision.
 
 ## Auth capability plan
 **FUNCTIONAL AUTH FROZEN; EXPANSION TRACKED, NOT YET IMPLEMENTED**
@@ -107,7 +115,7 @@ Full authority: `10-build/lovable-launch/AI-SUPPORT-ARCHITECTURE.md`.
 - Do not cross these two domains.
 
 ## SHELL-CTRL-001 review
-**IMPLEMENTED / FUNCTIONALLY SAFE / CONDITIONAL BEFORE FREEZE**
+**IMPLEMENTED / FUNCTIONALLY SAFE / SUPERSEDED BY LATER VISUAL CLOSURE PASSES**
 Verified app head: `bc72318e0a492f61b18faf156bd1c56289bb5833`.
 Compared with `14624370102d615792f1ac309b3a84a0cb0d124f`, changed only shell/theme/Home visual files:
 - `src/components/shell/admin/AdminShell.tsx`
@@ -127,47 +135,67 @@ Accepted implementation facts:
 - both shells use one shared floating/movable Àríyá launcher and preserve their existing Àríyá panels.
 - separate local UI-position keys are used for Admin and Portal.
 - frozen focus-variable class contract is restored on the launcher.
-- wide topbar searches were removed; Client icon search is accepted.
+- Client search is compact icon-only.
 - Client Home embedded Àríyá remains removed.
 - no auth/identity/server/Supabase/database/DEV-preview boundary changed.
 
-Conditional closure items / owner refinements:
-1. **Admin search placement changed again by owner:** remove search from AdminTopBar and restore the useful search *box* inside the expanded Admin Sidebar. It opens the existing `AdminCommandMenu`; collapsed Sidebar uses a discoverable icon-only form. Client keeps icon-only search in PortalTopBar.
-2. Clean now-unused AdminTopBar `onAriyaClick` prop/callback wiring after floating-Àríyá migration.
-3. Harden `MovableAriyaLauncher` persistence: current drag-end storage can capture stale React state. Persist the final/clamped pointer position reliably, clamp saved positions on initial mount as well as resize, and respect safe-area insets rather than only fixed pixel padding. Prefer unified Pointer Events if simplifying the implementation.
-4. Client dark scope is directionally correct but incomplete: ensure `surface-raised`, muted/disabled/selected states, borders and any semantic tokens used by Core overlays/components cannot leak light client values into dark mode.
-5. Client Home remains too pale/flat despite semantic tints. Add stronger depth using the client visual-depth rule below.
+## SHELL-VIS-002 + closure-fix review
+**ADMIN CLEANUP ACCEPTED / CLIENT VISUAL + RESPONSIVE CLOSURE OPEN**
+Latest verified app head: `78b1be35afac07f68ee09b498d72d38bbdd9fc7c`.
+The closure-fix after `5bd8f62a3593271257ec40b84da9975e60086ea0` changed only:
+- `src/components/shell/admin/AdminSidebar.tsx`
+- `src/components/shell/admin/AdminTopBar.tsx`
+- `src/components/shell/shared/MovableAriyaLauncher.tsx`
+- generated `src/routeTree.gen.ts`
 
-## Client Portal Home R2 -> R3 visual closure
-**R2 INFORMATION ARCHITECTURE RETAINED / VISUAL DEPTH REOPENED**
-Keep these R2 information regions:
+Accepted:
+- Admin search is now in the expanded Sidebar and opens the existing Command menu; collapsed Sidebar keeps the icon form.
+- AdminTopBar no longer carries the empty props interface/suppression.
+- shared launcher uses Pointer Events and retains frozen focus classes, separate non-sensitive position keys, and safe-area/resize clamping intent.
+- Client Home R3 keeps the Briefing Board information architecture and has the requested dark Work-in-Motion anchor with visible progress/stage treatment.
+- no auth/identity/server/Supabase/database/DEV-preview boundary changed.
+
+Open blockers found from code + owner screenshots:
+1. **Àríyá initial-position flash/jump:** `MovableAriyaLauncher` still renders visibly at `{x:0,y:0}` and only computes the default lower-right coordinate in an effect. On load it can visibly appear top-left and then jump across the viewport. Position must be resolved before the launcher becomes visible; do not animate `left/top` during initialization.
+2. **Àríyá final-position persistence remains fragile:** pointer-up still writes React `position` state directly. Use an explicit latest-position ref/final-clamped coordinate so storage cannot lag the final pointer frame.
+3. **On-dark semantic clash:** Work-in-Motion and the launcher use ordinary `text-primary`/`text-inverse` semantics against `surface-dark`. Client dark mode deliberately makes `text-inverse` dark, so launcher text can disappear; in client light mode `text-primary` is dark, so Work-in-Motion content can become dark-on-dark. Add a dedicated always-light on-dark text/border vocabulary and use it for dark anchors/launchers/active dark navigation surfaces.
+4. **Statuses need surfaced treatment:** owner wants operational states such as `HEALTHY`, `DEGRADED`, `OVERDUE`, `BUILD`, approval/support state, etc. presented with soft semantic background chips/wells similar to the existing `Awaiting reply from Re:Solve` treatment. Prefer the existing Core `StatusBadge` where appropriate; do not rely on color-only text.
+5. **Client mobile/tablet is still compressed desktop:** current mobile PortalTopBar relies on hamburger + Sheet and the Home layout simply stacks desktop regions. Redesign client-only mobile/tablet composition to feel like a PWA/app while preserving desktop anatomy. Actual manifest/offline installability remains FOUND-001G.
+6. **Work-in-Motion light-mode framing:** keep the dark anchor itself, but remove any additional light/tinted wrapper/halo/shadow-like background around it in light mode. The surrounding grid cell/page stays transparent/canvas.
+7. **Responsive/color QA:** screenshots show cramped tiny metadata, weak dark-mode contrast, and status/action text that can disappear. Validate 390px phone, common tablet widths, desktop, Light/Dark/System, safe areas, and no accidental horizontal overflow.
+
+## Client Portal Home R3 retained structure
+Keep these information regions unless an explicit later owner decision changes them:
 1. briefing header.
-2. segmented Needs Your Attention rail.
-3. Work in Motion / current project.
+2. Needs Your Attention.
+3. Work in Motion/current project dark anchor.
 4. Digital Estate.
 5. Recent Movement.
-6. shared Money + Support region.
+6. Money + Support.
 
-R3 visual direction:
-- reinterpret **Work in Motion** as the page's strong dark operational anchor rather than another pale box.
-- do not copy the supplied HTML's exact dark-card anatomy, two-column hierarchy, buttons or right rail.
-- keep the existing Briefing Board placement/composition while giving Work in Motion its own original systems-style internal layout.
-- introduce a visible 68% progress treatment with a short one-shot animated reveal on load; no endless pulsing/loading animation.
-- retain the systems-stage/node concept, but it may be redesigned inside the dark region for stronger legibility and rhythm.
-- completed stages = restrained success green; current stage = terracotta; future stages = muted inverse-neutral.
-- dark region may use subtle technical line/grid texture and warm charcoal depth.
-- Attention segments should use perceptible but soft blue/amber/coral tints, not near-invisible white-on-paper differences.
-- Money/Support may retain soft semantic tinted subdivisions.
-- Recent Movement can remain relatively open/light so the dark anchor has contrast.
-- Digital Estate remains row/system-oriented, not card soup.
-- all treatments need deliberate client dark-mode equivalents.
+Visual rules:
+- original Re:Solve composition, not a copy of the supplied HTML.
+- dark Work-in-Motion is the main contrast anchor; short one-shot progress animation, no looping decoration.
+- semantic status chips/backgrounds should be visible and readable in both themes.
+- Digital Estate remains row/system-oriented on desktop, but may be recomposed into touch-friendly app rows on mobile/tablet.
+- Recent Movement stays timeline/editorial in spirit but may be reflowed for app ergonomics.
+- Money + Support remains conceptually one operational area but may reflow on small screens.
+- no embedded Àríyá Home section.
 
 ## Shared shell-control direction
 - ThemeModeMenu remains shared in both shells.
-- Client search remains compact IconButton in PortalTopBar.
+- Client search remains compact IconButton in PortalTopBar/app bar.
 - Admin search belongs in the Sidebar, not AdminTopBar.
 - Both shells retain movable floating Àríyá and existing panel ownership.
 - No embedded/full-page Àríyá block in Home.
+
+## Client mobile/PWA visual direction
+**OWNER REQUEST / CANONICAL**
+- Client Portal mobile/tablet should be intentionally designed as an app/PWA surface, not merely stacked desktop content.
+- Compact app bar, touch-friendly controls, clear safe-area handling, persistent route access, and deliberate mobile information hierarchy are desired.
+- A mobile bottom-tab navigation pattern is allowed/preferred for the five primary Portal destinations if it improves app ergonomics; desktop horizontal navigation remains a separate presentation.
+- Avoid redundant hamburger navigation when primary destinations are already persistently reachable in an app-style bottom bar.
+- Installed-PWA infrastructure (manifest, icons, service worker/offline/update lifecycle/cache policy) is still implemented and reviewed under FOUND-001G; this section governs visual/interaction anatomy only.
 
 ## DEV-PREVIEW-001
 **ACCEPTED / FROZEN UNTIL DEMO IDENTITY TRANSITION**
@@ -179,21 +207,21 @@ Verified app commit: `1e673b2c042283c88e55e777f32d5c52c1890bfd`.
 - must be removed/replaced when canonical demo/test identities are intentionally introduced.
 
 ## FOUND-001 remaining closure
-Completed/frozen: A stack/repo, B tokens/UI stack, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/organisation context, DEV preview.
+Completed/frozen: A stack/repo, B tokens/UI stack, C Core C1-C5E, D/E functional shell architecture, F auth/identity/RLS/authorization/organisation context, DEV preview.
 
 Still required before umbrella FOUND-001 closure:
-1. current shell/search/launcher + Client Home R3 visual closure.
+1. client shell/Home visual-responsive closure described above.
 2. FOUND-001G PWA/accessibility/CI/testing/engineering hardening.
 3. FOUND-001R integrated review + self-host check + final PASS/CONDITIONAL/FAIL record.
 
 A rich Admin Home and client domain pages are not required to close the original FOUND-001 umbrella; they are post-foundation visual/domain slices.
 
 ## Sequencing
-1. **SHELL-VIS-002** — Admin Sidebar search; clean topbar wiring; harden movable launcher; complete Client dark semantic scope; Client Home R3 dark Work-in-Motion anchor + one-shot animated progress and stronger surface depth.
-2. inspect/freeze shell controls + Client Home visual closure.
-3. **FOUND-001G** — PWA/offline/cache, CI/tests and engineering hardening.
+1. **CLIENT-PWA-VIS-001** — fix status surfaces/on-dark contrast; eliminate Àríyá initialization/persistence jump; PWA-style Client mobile/tablet shell and Home reflow; remove extra Work-in-Motion light-mode framing.
+2. inspect/freeze Client shell controls + Home responsive/visual closure.
+3. **FOUND-001G** — real PWA manifest/offline/cache, CI/tests and engineering hardening, using Checklist.design as a QA reference where applicable.
 4. **FOUND-001R** — integrated foundation review, self-host check, reconcile original demo-user acceptance criterion, final record.
 5. after FOUND-001 closes: original Admin Home, Client Properties, Projects, Support, Billing, Auth onboarding/expansion, real Àríyá human takeover, then property-specific Chatwoot/Captain integrations in separately supervised slices.
 
 ## Next action
-Run **SHELL-VIS-002 — Admin Sidebar Search + Client Home Depth Pass**. Preserve frozen security/auth/identity/DEV-preview behavior.
+Run **CLIENT-PWA-VIS-001 — Client Mobile/PWA Visual Closure**. Preserve frozen security/auth/identity/DEV-preview behavior.
