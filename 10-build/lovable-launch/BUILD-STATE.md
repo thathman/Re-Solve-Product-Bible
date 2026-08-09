@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN MODEL — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION CONDITIONAL / RAW ACCESS-ERROR LOGGING FIX NEXT**
+**FOUND-001A-B ACCEPTED/CLOSED — FOUND-001C1-C5E ACCEPTED/FROZEN/CLOSED — SECURITY-GATE-001 ACCEPTED/CLOSED — FOUND-001D ADMIN SHELL ACCEPTED/CLOSED/FROZEN — FOUND-001E CLIENT PORTAL SHELL ACCEPTED/CLOSED/FROZEN FUNCTIONALLY — FOUND-001F0 ACCEPTED/CANONICAL — FOUND-001F1A AUTH TRANSPORT ACCEPTED/CANONICAL/FROZEN — FOUND-001F1B AUTH UX ACCEPTED/CANONICAL/FROZEN FUNCTIONALLY — FOUND-001F2A IDENTITY SCHEMA/RLS ACCEPTED/CANONICAL/FROZEN — FOUND-001F2B IDENTITY READS ACCEPTED/CANONICAL/FROZEN — FOUND-001F3A ADMIN AUTHORIZATION ACCEPTED/CANONICAL/FROZEN — VIS-001A TWO-COLUMN AUTH ACCEPTED/CANONICAL/FROZEN — FOUND-001F3B PORTAL AUTHORIZATION CODE CLOSURE VERIFIED / RUNTIME ABORT DIAGNOSTIC BLOCKER**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -19,7 +19,7 @@ Keep this file updated after each supervised build review so future Lovable prom
 - `SECURITY INVOKER` is the default. `SECURITY DEFINER` requires narrow explicit review.
 - Preserve explicit `createCsrfMiddleware` in `src/start.ts`.
 - Runtime validation is required at consequential boundaries.
-- Raw auth/database/provider/Zod/access errors, tokens, sessions, secrets and privileged values are not logged or surfaced.
+- Raw auth/database/provider/Zod/access errors, tokens, sessions, secrets and privileged values are not logged or surfaced from authorization boundaries.
 - Active-organisation selection is context only and is never authorization evidence.
 - Consequential mutations eventually pass through an Action Registry/equivalent audited boundary.
 - No security vulnerability exceptions accepted.
@@ -94,48 +94,52 @@ RLS/grants:
 - no service role, writes, UI, RBAC or active-org persistence.
 
 ## FOUND-001F3A — Server-authoritative Admin access
-**ACCESS MODEL ACCEPTED / CANONICAL / FROZEN; SHARED WRAPPER CURRENTLY HAS A REGRESSION INTRODUCED DURING F3B**
-Canonical model remains:
+**ACCEPTED / CANONICAL / FROZEN**
 - `requireActiveStaff()` derives from frozen `readCurrentIdentity()`; unauthenticated => 401; missing/suspended staff => 403; active staff => allowed; identity failure propagates fail-closed.
 - `checkAdminAccess()` returns only `allowed | unauthenticated | forbidden`.
 - `getAdminAccess()` returns only the minimal status and sets `Cache-Control: private, no-store` plus `Vary: Cookie, Authorization`.
 - parent `/admin` `beforeLoad` gates the entire Admin family; anonymous => `/login` with internal `returnTo`; authenticated forbidden => `/access-denied`.
 - route gate is UX only; future private Admin server data must independently call `requireActiveStaff()` or an approved derivative.
-
-F3B modified the shared `src/lib/identity/access.functions.ts` and introduced `console.error(..., error)` around `getAdminAccess()`. This raw caught-error logging violates the canonical security invariant. Remove the raw logging without changing the accepted F3A access model or cache headers.
+- F3B's temporary raw-error logging regression has been removed from `getAdminAccess()`; shared wrapper compliance is restored.
 
 ## FOUND-001F3B — Server-authoritative Portal access
-**CONDITIONAL — ACCESS MODEL ACCEPTED; RAW ERROR LOGGING MUST CLOSE**
+**CODE CLOSURE VERIFIED / DO NOT FREEZE UNTIL RUNTIME ABORT IS DIAGNOSED**
 Verified files:
 - `src/lib/identity/access.server.ts`
 - `src/lib/identity/access.functions.ts`
 - `src/routes/_portal.tsx`
 
-Verified-good architecture:
-- shared access module now has `requirePortalAccess()` and `checkPortalAccess()` built on frozen `readCurrentIdentity()`.
+Verified architecture:
+- shared access module contains `requirePortalAccess()` and `checkPortalAccess()` built on frozen `readCurrentIdentity()`.
 - Portal eligibility requires authenticated identity plus `identity.activeOrganisations.length > 0`.
 - zero memberships or suspended-only memberships => forbidden; staff-only does not grant Portal access.
 - one or multiple active organisations => Portal allowed; no organisation is automatically selected or persisted.
 - staff + active client membership may coexist; staff status neither grants nor blocks Portal access.
 - `getPortalAccess()` returns only `allowed | unauthenticated | forbidden` and sets `Cache-Control: private, no-store` plus `Vary: Cookie, Authorization`.
 - parent `/_portal` `beforeLoad` gates `/`, `/properties`, `/projects`, `/support`, `/billing`; anonymous => `/login` with router-derived `returnTo`; authenticated forbidden => `/access-denied`.
-- identity-read failures are allowed to propagate rather than being normalized into access states.
+- identity-read failures propagate rather than being normalized into access states.
+- raw caught-error logging was removed from both `getPortalAccess()` and `getAdminAccess()`; the route-facing access wrapper now naturally propagates failures without logging the caught object.
 - `supabaseAdmin` remains confined to generated `src/integrations/supabase/client.server.ts`.
 - no active-organisation context/selector/persistence was introduced; no Portal visual, database, auth transport, RBAC or dependency changes were observed.
 
-### Blocking closure
-`src/lib/identity/access.functions.ts` currently catches errors in both `getAdminAccess()` and `getPortalAccess()` and logs the raw caught object:
-- `console.error("[getAdminAccess] Access check failed:", error)`
-- `console.error("[getPortalAccess] Access check failed:", error)`
+### Runtime blocker reported after F3B closure
+Lovable reported a runtime blank screen with:
+- `Error: aborted`
+- stack rooted in Node `abortIncoming` / `socketOnClose` from `node:_http_server`
+- no application filename/line number.
 
-This can expose internal identity/database/validation/provider detail in server logs and regresses the previously accepted error-hygiene contract.
+Source inspection does not show an application-level `abort()` introduced by F3B. The stack shape is consistent with an incoming HTTP request being cancelled/connection closing, which can be transient during navigation, HMR or preview restart, but the reported blank screen means it must be reproduced and classified before F3B freezes.
 
-Required closure:
-- remove raw caught-error logging from both server functions;
-- simplest accepted implementation is to remove the unnecessary try/catch entirely and let failures propagate naturally;
-- alternatively, a fixed non-sensitive event label with no attached error object is acceptable, but no logging is preferred here;
-- preserve cache headers and minimal response shapes exactly;
-- do not change `access.server.ts`, Admin route, Portal route, auth, database, visuals or dependencies.
+Diagnostic requirement:
+- do not modify code first;
+- restart/stabilize the dev preview and reproduce across `/login`, `/access-denied`, `/`, `/properties` and `/admin` as applicable without creating test users;
+- identify whether the abort belongs to the document request, a `/_serverFn/` request, HMR/editor transport, or another request;
+- determine whether it reproduces after a clean server restart and hard navigation, or only during hot reload/editor refresh;
+- verify there is no redirect loop and that anonymous Portal navigation reaches `/login` normally;
+- inspect server/browser network status immediately before the abort;
+- only propose a code change if a deterministic application trigger is proven.
+
+Do not weaken authorization, remove the Portal guard, disable SSR/CSRF, add retries, swallow errors, or upgrade packages merely to make the symptom disappear.
 
 ## VIS-001A — Two-column Auth + visual language proof
 **ACCEPTED / CANONICAL / FROZEN VISUALLY**
@@ -161,19 +165,18 @@ Canonical grammar:
 
 ## Current architecture facts
 - TanStack Start + React 19 + Bun + Tailwind v4.
-- Auth, identity persistence/RLS and identity reads are frozen.
-- Admin authorization model is accepted; shared access serverFn wrapper has a narrow raw-error logging regression from F3B.
-- Portal surface authorization is implemented directionally and awaits only the same raw-error logging closure.
+- Auth, identity persistence/RLS, identity reads and Admin authorization are frozen.
+- F3B code-level authorization and error-hygiene closure are verified, but a reported blank-screen `Error: aborted` runtime event must be classified before F3B freezes.
 - active-organisation selection/context, invitations/onboarding, domain tables and broad RBAC do not exist yet.
 - Admin and Portal visual propagation remain explicitly queued.
 
 ## Sequencing
 Continue in small supervised slices:
-1. FOUND-001F3B-FIX — remove raw caught-error logging from the shared route-facing access server functions only.
-2. If clean, freeze F3B and restore F3A wrapper compliance.
-3. FOUND-001F3C — active-organisation context/selection + server revalidation.
-4. Resume approved visual rollout into Admin, then Portal.
-5. Continue identity onboarding/invitation and domain work in separately reviewed slices.
+1. RUNTIME-DIAG-001 — reproduce/classify the reported `Error: aborted` without speculative code changes.
+2. If transient/editor/HMR-only and stable navigation is healthy, freeze F3B.
+3. If deterministic app-triggered, make one narrow root-cause fix and re-verify F3B.
+4. FOUND-001F3C — active-organisation context/selection + server revalidation.
+5. Resume approved visual rollout into Admin, then Portal.
 
 ## Next action
-Run one narrow **FOUND-001F3B-FIX — Shared Access Error-Hygiene Closure**. Modify only `src/lib/identity/access.functions.ts` to remove raw caught-error logging from both Admin and Portal route-facing access functions while preserving their cache headers, minimal status responses and natural fail-closed propagation. Do not modify access decisions, routes, auth, database, visuals, active-org context or dependencies.
+Run **RUNTIME-DIAG-001 — Classify `Error: aborted` Blank Screen**. Diagnosis first, no speculative implementation changes. F3C is blocked until the runtime result is understood.
