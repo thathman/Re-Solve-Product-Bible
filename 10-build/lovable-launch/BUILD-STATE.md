@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — OWNER HAS DEFERRED NON-BLOCKING VISUAL POLISH UNTIL PRODUCT LOGIC IS SET — NEXT: FOUND-001G1A PWA INSTALLABILITY BASELINE**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — OWNER HAS DEFERRED NON-BLOCKING VISUAL POLISH UNTIL PRODUCT LOGIC IS SET — FOUND-001G1A PWA INSTALLABILITY ACCEPTED/FROZEN — NEXT: FOUND-001G1B OFFLINE/CACHE/UPDATE BOUNDARY**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -110,37 +110,55 @@ Verified implementation facts:
 
 Deferred QA/polish items:
 - Bottom-tab focus treatment should be rechecked during FOUND-001G accessibility QA against the full frozen ring + ring-offset contract.
-- Lovable explicitly reported build and `tsc --noEmit` success; lint should be re-run as part of G/CI even though the narrative summary was ambiguous about whether lint ran in this final closure.
 - Remaining subjective client visual flaws are tracked but do not block engineering progression under the owner direction above.
 
+## FOUND-001G1A — PWA installability baseline
+**ACCEPTED / CANONICAL / FROZEN**
+Latest verified app head: `ec8df572306396215debf5f7cc022618358435de`.
+Compared with prior verified app head `73c303bcdc71a9a9a3fca907641770e51178bdb4`, final net changes are only:
+- `public/manifest.webmanifest`
+- `public/icons/resolve-180.png`
+- `public/icons/resolve-192.png`
+- `public/icons/resolve-512.png`
+- `src/routes/__root.tsx`
+
+Verified implementation facts:
+- manifest declares `id`, `name`, `short_name`, description, `/` start URL, `/` scope, `display: standalone`, background/theme colors and `prefer_related_applications: false`.
+- root head links the manifest and Apple touch icon and adds light/dark `theme-color` plus mobile/Apple standalone metadata.
+- PNG headers verify actual icon dimensions: 180x180, 192x192 and 512x512.
+- current centered Re:Solve mark has substantial safe space and is acceptable as a temporary replaceable app icon; manifest exposes normal and maskable entries.
+- no dependency/package change was introduced.
+- canonical code search found no service-worker, Workbox, Cache API or PWA-plugin implementation.
+- Auth, identity, authorization, Supabase, RLS, database, Admin shell, Portal shell/Home and Àríyá behavior were not modified by the final net G1A change set.
+- Lovable reported frozen install/build/lint/typecheck verification success.
+
+G1A does **not** authorize offline caching of authenticated application content. Installability and cache policy remain separate security concerns.
+
 ## PWA implementation boundary
-**FOUND-001G starts here.**
-- Split installability metadata from service-worker/offline caching so cache policy receives an explicit security review.
-- G1A: manifest + install metadata + local app icons + standalone metadata only. No service worker/caching yet.
-- G1B: service-worker/offline/update/cache policy in a separate supervised slice.
-- PWA is one Re:Solve application origin for now; do not invent separate Admin/Portal manifests unless a later product decision requires it.
-- No custom install banner is required in G1A.
+- One Re:Solve application origin/manifest for now; do not invent separate Admin/Portal manifests unless a later product decision requires it.
+- No custom install banner is required at foundation stage.
+- **G1B must remain conservative:** authenticated navigation/document responses, server-function/RPC responses, Supabase/API responses, auth callbacks, login/recovery flows, organisation-private data, Vault/secrets, notifications and other identity-dependent payloads are network-only and must not enter Cache Storage.
+- If a service worker is introduced, its first foundation role is bounded lifecycle/update control and caching only immutable/public static assets whose safety is explicit.
+- Offline business-data access is not a FOUND-001 requirement and must not be invented in G1B.
 
 ## FOUND-001 remaining closure
-Completed/frozen: A stack/repo, B tokens/UI stack, C Core C1-C5E, D/E functional shell architecture, F auth/identity/RLS/authorization/organisation context, DEV preview, shell functional closure.
+Completed/frozen: A stack/repo, B tokens/UI stack, C Core C1-C5E, D/E functional shell architecture, F auth/identity/RLS/authorization/organisation context, DEV preview, shell functional closure, G1A PWA installability.
 
 Still required:
-1. **FOUND-001G1A** — PWA installability baseline.
-2. **FOUND-001G1B** — conservative service worker/offline/update/cache boundary.
-3. FOUND-001G accessibility/device/Checklist QA.
-4. FOUND-001G automated tests + CI + engineering hardening.
-5. **FOUND-001R** — integrated review, self-host check, reconcile original demo-user criterion, final PASS/CONDITIONAL/FAIL record.
+1. **FOUND-001G1B** — conservative service-worker/offline/update/cache boundary.
+2. FOUND-001G accessibility/device/Checklist QA.
+3. FOUND-001G automated tests + CI + engineering hardening.
+4. **FOUND-001R** — integrated review, self-host check, reconcile original demo-user criterion, final PASS/CONDITIONAL/FAIL record.
 
 Rich Admin Home and real Client Properties/Projects/Support/Billing domain implementations remain post-FOUND-001 work.
 
 ## Sequencing
-1. **FOUND-001G1A — PWA Installability Baseline**.
-2. inspect/freeze G1A.
-3. **FOUND-001G1B — Offline + Cache + Update Boundary**.
-4. accessibility/device/Checklist QA.
-5. automated tests/CI/engineering hardening.
-6. FOUND-001R integrated closure.
-7. after FOUND-001: continue real operational/domain logic; return to deferred visual polish when appropriate.
+1. **FOUND-001G1B — Offline + Cache + Update Boundary**.
+2. inspect/freeze G1B.
+3. accessibility/device/Checklist QA.
+4. automated tests/CI/engineering hardening.
+5. FOUND-001R integrated closure.
+6. after FOUND-001: continue real operational/domain logic; return to deferred visual polish when appropriate.
 
 ## Next action
-Run **FOUND-001G1A — PWA Installability Baseline**. Do not add a service worker or cache policy in this slice.
+Run **FOUND-001G1B — Offline + Cache + Update Boundary** only. Do not add offline business-data storage or cache authenticated/private application responses.
