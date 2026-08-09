@@ -3,7 +3,7 @@
 Keep this file updated after each supervised build review so future Lovable prompts are based on actual application state.
 
 ## Current stage
-**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A + G1B ACCEPTED/FROZEN — FOUND-001G2 ACCESSIBILITY/DEVICE QA FUNCTIONALLY COMPLETE BUT BLOCKED BY ONE OFFLINE-NOTICE CONTRAST DEFECT — NEXT AFTER CLOSURE: FOUND-001G3 TESTS / CI / ENGINEERING HARDENING**
+**FOUNDATION / CORE / SECURITY / IDENTITY / AUTHORIZATION FROZEN — DEV-PREVIEW-001 FROZEN — ADMIN + CLIENT SHELL FUNCTIONAL CLOSURE ACCEPTED — NON-BLOCKING VISUAL POLISH DEFERRED — FOUND-001G1A + G1B + G2 ACCEPTED/FROZEN — NEXT: FOUND-001G3A TEST HARNESS + FOUNDATION/SECURITY REGRESSION TESTS**
 
 ## Canonical repositories
 - Product Bible: `thathman/Re-Solve-Product-Bible`
@@ -122,46 +122,49 @@ Verified app head: `0db19adc419d1b18cf1f29b3efedf387321b9990`.
 - no Workbox/plugin/background sync/offline mutation/business-data IndexedDB.
 
 ## FOUND-001G2 — Accessibility / Device / Checklist QA
-**FUNCTIONALLY COMPLETE / CONDITIONAL ON ONE CONTRAST FIX — DO NOT FREEZE YET**
-Latest verified app head: `b3394296efd6063fa5923945623e7ebadab4d870`.
+**ACCEPTED / CANONICAL / FROZEN**
+Latest verified app head: `03f8f10a4b4ef762aa0ebadc32293bbe4e1643d2`.
 
 Verified accepted facts:
 - Admin and Portal expose visible-on-focus skip links to the existing single main landmark.
-- both `#rs-main-content` targets now have `tabIndex={-1}`.
-- Portal bottom nav has `aria-label="Primary"`, `aria-current="page"`, complete frozen focus ring + ring-offset contract, and decorative active marker hidden from accessibility tree.
-- root Not Found/Error controls now use the frozen Re:Solve variable-based focus contract.
-- redundant explicit `aria-live` was removed from Core Alert; role semantics remain.
-- PWA offline/update notices constrain phone width, account for bottom safe-area and gate entrance animation behind `motion-safe`.
+- both `#rs-main-content` targets have `tabIndex={-1}`.
+- Portal bottom nav has `aria-label="Primary"`, `aria-current="page"`, complete frozen focus ring + ring-offset contract, and decorative active marker hidden from the accessibility tree.
+- root Not Found/Error controls use the frozen Re:Solve variable-based focus contract.
+- Core Alert relies on its `role="alert"` / `role="status"` semantics without redundant explicit `aria-live`.
+- PWA offline/update notices constrain phone width, account for bottom safe area and gate entrance animation behind `motion-safe`.
 - offline fallback Try again has visible keyboard focus.
 - organisation-selection label/focus association improved.
-- Core FormField/Input already provide label/control, required/invalid/error-description wiring; Login already has email/current-password autocomplete and accessible password reveal.
-- Lovable reports plain `bun run lint`, build and `tsc --noEmit` exit 0.
+- Core FormField/Input provide label/control, required/invalid/error-description wiring; Login has email/current-password autocomplete and accessible password reveal.
+- final offline notice uses the canonical soft danger surface with readable `text-rs-status-danger-foreground` and a restrained matching border in both themes.
+- the extra final `Alert.tsx` change was whitespace cleanup only; no Alert behavior changed.
+- Lovable reports plain lint/build/typecheck exit 0.
 - no auth/authorization/RLS/Supabase/DB/PWA-cache/route/DEV-preview behavior changed.
 
-### Sole G2 blocker from visual verification
-The owner-supplied light-mode Admin screenshot shows the global offline notice nearly unreadable: `PwaRuntime` currently combines the intentionally-soft `bg-rs-status-danger` surface with `text-white`. Canonical status semantics require the matching readable `rs-status-danger-foreground` on a soft danger surface. Dark mode is materially better, confirming this is a token pairing bug rather than a redesign request.
-
-Required closure:
-- change only the offline notice foreground/border semantics so it is readable in both light and dark themes;
-- preserve role/live behavior, safe-area positioning, motion-safe treatment and service-worker logic;
-- plain lint/build/typecheck must remain clean.
+## FOUND-001G3 plan
+Split into small supervised slices:
+1. **G3A — test harness + high-value foundation/security regression tests.** Establish a canonical local test command and test the most consequential pure/frozen contracts without changing product behavior.
+2. **G3B — GitHub Actions CI.** Clean Bun install, tests, lint, typecheck and production build with no production secrets required.
+3. **G3C — engineering/portability hardening.** Dependency/provenance audit, environment/secrets review, production-build portability and remaining engineering addendum checks.
 
 ## FOUND-001 remaining closure
-Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability, G1B offline/cache/update boundary.
+Completed/frozen: A stack/repo, B UI stack/tokens, C Core C1-C5E, D/E shell architecture, F auth/identity/RLS/authorization/org context, DEV preview, shell functional closure, G1A installability, G1B offline/cache/update boundary, G2 accessibility/device/Checklist QA.
 
 Still required:
-1. **FOUND-001G2-CONTRAST-FIX** — one offline-notice semantic color pairing fix, then freeze G2.
-2. **FOUND-001G3** — automated tests + CI + engineering hardening.
-3. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
+1. **FOUND-001G3A** — test harness + foundation/security regression tests.
+2. **FOUND-001G3B** — CI.
+3. **FOUND-001G3C** — engineering/portability hardening.
+4. **FOUND-001R** — integrated review + self-host check + reconcile original demo-user criterion + final PASS/CONDITIONAL/FAIL record.
 
 Rich Admin Home and real Client Properties/Projects/Support/Billing remain post-FOUND-001 work.
 
 ## Sequencing
-1. **FOUND-001G2-CONTRAST-FIX** only.
-2. inspect/freeze G2.
-3. FOUND-001G3 automated tests/CI/engineering hardening.
-4. FOUND-001R integrated closure.
-5. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
+1. **FOUND-001G3A**.
+2. inspect/freeze G3A.
+3. FOUND-001G3B.
+4. inspect/freeze G3B.
+5. FOUND-001G3C.
+6. FOUND-001R integrated closure.
+7. after FOUND-001: continue operational/domain logic; return to deferred visual polish when appropriate.
 
 ## Next action
-Run **FOUND-001G2-CONTRAST-FIX** only. Do not use it for visual redesign or new product behavior.
+Run **FOUND-001G3A — test harness + high-value foundation/security regression tests**. Do not use it for visual redesign, CI, domain features, or auth behavior changes.
