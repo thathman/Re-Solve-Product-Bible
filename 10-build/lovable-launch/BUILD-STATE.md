@@ -140,6 +140,7 @@ Final-review cleanup / verification items — DO NOT spend a separate Lovable cr
 4. Plain lint reportedly exits 0 with 15 Fast Refresh warnings. FOUND-001R should record warning count and only fix meaningful foundation warnings; warnings alone need not block if framework-standard/non-actionable.
 5. Self-host docs call the PWA fallback a “public shell”; actual policy is a generic offline fallback for failed navigation with no private cached HTML. Correct wording if still inaccurate.
 6. Run/check final portability contract: no product-critical Lovable runtime/build dependency in current source/package/lock/config, while Lovable remains an optional development environment.
+7. **Production runtime environment blocker:** current Dockerfile sets `NODE_ENV=production` only in the build stage, while `.env.example` defaults to `NODE_ENV=development` and self-host docs tell operators to pass that file into `docker run`. `writePortalContextCookie()` sets `secure` from `process.env.NODE_ENV === "production"`, so a production container accidentally running with `NODE_ENV=development` could lose the production `Secure` cookie flag. FOUND-001R must set `NODE_ENV=production` explicitly in the release image/runtime guidance and ensure example self-host instructions cannot override it back to development.
 
 ## Original demo-user criterion
 The original FOUND-001 review requested fictional staff/client demo accounts. This was intentionally superseded by:
