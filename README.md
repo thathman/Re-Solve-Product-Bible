@@ -171,6 +171,8 @@ Uptime Kuma is optional compatibility connector territory; Re:Solve has a native
 - [Lovable Setup Sequence](10-build/lovable-setup-sequence.md)
 - [Build Slice Protocol](10-build/build-slice-protocol.md)
 - [Phase Execution & Checkpoint Protocol](10-build/phase-execution-protocol.md)
+- [Revised Implementation Roadmap — 2026-08](10-build/revised-implementation-roadmap-2026-08.md)
+- [Phase 3B — Commercial Completion Atomic Ledger](10-build/phase-3b-commercial-completion.md)
 - [Architecture & Portability Checklist](10-build/architecture-portability-checklist.md)
 - [Demo Data Blueprint](10-build/demo-data-blueprint.md)
 - [FOUND-001 — Application + Core UI Foundation](10-build/prompts/FOUND-001-foundation.md)
