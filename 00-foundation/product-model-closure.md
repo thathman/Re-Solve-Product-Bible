@@ -1,11 +1,13 @@
-# Re:Solve Product Model Closure Decisions
+# Re:Solve Product Model Baseline Decisions
 
 ## Status
-**Canonical closure of the 2026-08 product-model review.**
+**Canonical baseline from the 2026-08 product-model review.**
 
-These decisions complete the current broad feature-discovery/brainstorming pass. They supplement `canonical-expansion-decisions.md` and must be included when the remaining implementation phases are rebuilt.
+These decisions complete the current broad feature-discovery/brainstorming pass and establish the base product model from which the remaining implementation phases are rebuilt. They supplement `canonical-expansion-decisions.md`.
 
-Implementation remains frozen until the revised phase roadmap/atomic ledgers are produced.
+This is **not a permanent feature freeze**. Re:Solve is expected to improve as it is built. Real workflow gaps, missing implementations, necessary supporting capabilities and valuable features discovered during engineering, browser testing or actual use should be captured, assessed and implemented in the correct place.
+
+Implementation remains paused only until the revised phase roadmap/atomic ledgers are produced.
 
 ## 1. Universal Template Center
 Re:Solve has one cross-domain Template Center for discovery/governance of reusable templates while each source domain remains authoritative.
@@ -113,7 +115,7 @@ This prevents commercial requests from becoming Support tickets and keeps the sa
 Canonical spec: `03-platform/requests.md`.
 
 ## Boundaries reaffirmed
-The closure pass does **not** add:
+The baseline does **not** add:
 - HR/payroll/recruitment/leave/attendance/performance management;
 - Timesheets/Time Tracking/work timers;
 - employee utilization/resource planning based on hours;
@@ -124,16 +126,34 @@ The closure pass does **not** add:
 - marketing campaign suite;
 - CMS in the current run.
 
-## Feature-discovery freeze
-After this closure, ordinary phase planning should **stop broad competitor-feature hunting**.
+These remain explicit boundaries unless the owner later changes product direction.
 
-New features discovered during implementation are handled through the Product Oversight process and must satisfy at least one of:
-- required to complete an already-defined workflow correctly;
-- required for security/data integrity/compliance/portability;
-- clearly removes a major operational gap revealed by real use/testing;
-- explicitly requested/approved by the owner.
+## Continuous product discovery during implementation
+This review is a **base, not a ceiling**.
 
-Do not reopen horizontal feature expansion merely because another ERP has another module.
+As Re:Solve is built, every phase should actively look for gaps exposed by implementation, integration, testing and real workflows. When a useful or necessary gap is discovered:
+1. capture it immediately in Product Oversight or the relevant Bible spec;
+2. determine whether it blocks the active task/phase or belongs later;
+3. design the root-cause implementation rather than a workaround;
+4. add or amend atomic phase tasks when the feature belongs in the current phase;
+5. preserve dependencies, security, data authority, UX and portability contracts;
+6. implement and test it when appropriate;
+7. reconcile the Bible and phase ledger at checkpoint/closure.
+
+Valid discoveries include:
+- a missing capability required to make an existing workflow complete;
+- a feature that materially improves the workflow once the real implementation makes the need clear;
+- security/data-integrity/reliability/portability requirements;
+- missing Admin/Portal UX needed for real operation;
+- cross-domain orchestration that becomes necessary during integration;
+- implementation details that deserve promotion into a reusable platform primitive;
+- explicit new owner requirements.
+
+Do **not** avoid a good feature merely because it was not in this baseline. Likewise, do not derail a phase by impulsively copying unrelated competitor modules. Use Product Oversight and phase governance to place discoveries deliberately.
+
+The governing mindset is:
+
+> **Build from this baseline, learn from the build, fix gaps as they become real, and continuously improve the product model.**
 
 ## Next product-planning action
 Rebuild the remaining Re:Solve phases from the complete Product Bible, then present the **full expanded atomic ledger of the next phase before implementation resumes**, per `10-build/phase-execution-protocol.md`.

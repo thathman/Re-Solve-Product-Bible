@@ -8,7 +8,7 @@ The product may be specified comprehensively here, but implementation is deliver
 - [Product Thesis](00-foundation/product-thesis.md)
 - [Product Principles](00-foundation/principles.md)
 - [Canonical Expansion Decisions](00-foundation/canonical-expansion-decisions.md)
-- [Product Model Closure Decisions](00-foundation/product-model-closure.md)
+- [Product Model Baseline Decisions](00-foundation/product-model-closure.md)
 - [Terminology](00-foundation/terminology.md)
 - [Actors, Principals, Roles and Access](00-foundation/actors-and-roles.md)
 - [Domain Model](00-foundation/domain-model.md)
@@ -40,7 +40,7 @@ The product may be specified comprehensively here, but implementation is deliver
 - Public/headless CMS is distant-future only and explicitly outside the current development run.
 - No HR, payroll, attendance/leave/recruitment/performance, Timesheets/Time Tracking/work timers or Client Service Consumption metering.
 
-The 2026-08 broad feature-discovery pass is now **closed**. New product gaps discovered during implementation use Product Oversight and do not restart horizontal competitor-feature hunting unless explicitly approved.
+The 2026-08 review establishes the **baseline product model, not a ceiling**. As implementation exposes real gaps or better features, they should be captured through Product Oversight, placed deliberately into the current or a later phase, implemented when appropriate, and reconciled back into the Bible and phase ledger.
 
 ## Design & Core UI
 - [Design Direction](09-design/design-direction.md)
