@@ -1,143 +1,66 @@
 # Planned Optional Domain Extensions
 
 ## Purpose
-Re:Solve is intentionally broad in architecture but should not force every specialist domain into core. This document records capabilities we expect may eventually be delivered as first-party/private Plugins so current architecture preserves the right extension points without prematurely implementing them.
+Re:Solve is intentionally broad in architecture but should not force every specialist domain into core. This document records capabilities that may eventually be delivered as first-party/private Plugins or future product expansions so current architecture preserves extension points without prematurely implementing them.
 
-These are roadmap/spec acknowledgements, not FOUND-001 scope.
+These are roadmap/spec acknowledgements, not current-run scope unless another canonical phase explicitly absorbs them.
 
 ## Advanced Accounting
-Potential scope:
-- chart of accounts;
-- journals/ledger;
-- vendor/customer accounting;
-- statutory reports;
-- bank feeds/reconciliation depth;
-- jurisdiction extensions.
-
-Core Billing remains operational receivables/payments/credits/statements and does not depend on a full accounting ledger.
+Potential chart of accounts, journals/ledger, statutory reports, bank-feed depth and jurisdiction extensions. Core Billing remains operational receivables/payments/credits/statements and does not depend on full accounting.
 
 ## Procurement & Vendor Operations
-Potential scope:
-- supplier/vendor Organisations;
-- purchase requests;
-- purchase orders;
-- vendor bills;
-- approvals;
-- recurring vendor commitments;
-- receiving/evidence;
-- cost allocation to Organisation/Property/Project/Service;
-- procurement reporting.
-
-Core Operational Spend/Expenses provides lightweight cost visibility until this depth is needed.
-
-No payroll/employee expense/HR workflow is implied.
+Potential suppliers/vendors, purchase requests/orders, vendor bills, approvals, recurring vendor commitments, receiving/evidence and cost allocation. Core Spend/Expenses remains lightweight. No payroll/HR implication.
 
 ## Hosting Operations
-Potential scope:
-- hosting accounts/plans;
-- servers/resources;
-- provisioning;
-- backup/restore operations;
-- usage/capacity from hosting providers;
-- maintenance;
-- renewal/provider cost;
-- Property Posture signals;
-- controlled Actions.
-
-Hosting operational metrics are infrastructure/provider data, not Client Service Consumption.
+Potential hosting accounts/plans, servers/resources, provisioning, backup/restore operations, capacity/provider metrics, maintenance, renewal/provider cost, Property Health signals and controlled Actions. Infrastructure usage is not Client Service Consumption.
 
 ## OJS / Journal Operations
-Potential scope:
-- OJS installation management;
-- journals/publications;
-- version/update posture;
-- scheduler/jobs;
-- publishing workflows;
-- approved submission/editorial metadata;
-- release/update/maintenance operations;
-- journal-specific reporting.
-
-Privacy/blind-review/editorial confidentiality remain strict.
+Potential OJS installation/journal/version/update posture, scheduler/jobs, publishing workflows, approved editorial metadata, maintenance and reporting with strict confidentiality.
 
 ## WordPress / Website Operations
-Potential scope:
-- WordPress inventory;
-- plugins/themes;
-- update/health posture;
-- backups;
-- content/maintenance operations;
-- website reports;
-- security/maintenance Actions.
+Potential WordPress inventory, plugins/themes, updates/health, backups, maintenance operations, reports and security Actions.
 
 ## WooCommerce / Commerce Operations
-Potential scope:
-- orders;
-- fulfilment/delivery;
-- catalogue/product context;
-- customer mappings;
-- refunds/commerce operations;
-- store health;
-- reporting.
-
-Provider/commerce payment state does not automatically replace Re:Solve Billing truth.
+Potential orders, fulfilment/delivery, catalogue/customer mapping, refunds/commerce operations, store health and reporting. Provider commerce payment state does not automatically replace Re:Solve Billing truth.
 
 ## SEO / Growth Operations
-Potential scope:
-- SEO audits;
-- keyword/page tracking;
-- technical checks;
-- recommendations;
-- client reports;
-- campaign/project integration.
-
-Specialist search/analytics providers integrate through Connectors.
+Potential SEO audits, keyword/page tracking, technical checks, recommendations and client reports through specialist connectors.
 
 ## Marketing / Campaign Operations
-Sophisticated newsletters, automations, campaigns, segments and deliverability should normally remain specialist-system territory such as Brevo or future providers.
-
-A Re:Solve Marketing Plugin could provide:
-- campaign planning/context;
-- audience/segment references;
-- approval;
-- launch through Marketing Connector;
-- provider result/report references;
-- client/project relationship.
-
-Re:Solve should not casually become a bulk email marketing engine.
+Sophisticated newsletters/campaigns/segments/deliverability remain specialist-system territory. A future Re:Solve Marketing Plugin may provide planning/context/approval/provider launch/result references without rebuilding a bulk email marketing engine.
 
 ## Asset / Inventory Operations
-Potential client/internal asset tracking where a deployment needs non-Property physical/business assets.
+Potential non-Property physical/business asset tracking. Property remains the native digital/operational asset model.
 
-Property remains the native digital/operational asset model and should not be diluted to accommodate every physical inventory use case.
-
-## Structured/E-Invoice Document Formats
-Country/industry-specific invoice schemas, XML/JSON/e-invoice export, fiscal integrations and compliance validation can be supplied by jurisdiction/provider Plugins/Connectors while Billing and Document Studio remain provider-neutral.
+## Structured / E-Invoice Formats
+Country/industry-specific invoice schemas, XML/JSON/e-invoice export, fiscal integrations and compliance validation through Plugins/Connectors while Billing/Document Studio remain provider-neutral.
 
 ## Advanced Reporting / BI
-Potential custom datasets, scheduled reporting packs, warehouse/BI connectors and richer visualization beyond core Reports.
-
-No unrestricted SQL is exposed to ordinary users/agents.
+Potential custom datasets, scheduled reporting packs, warehouse/BI connectors and richer visualization. No unrestricted SQL for ordinary users/agents.
 
 ## Data Import Packs
-Specialized migration packages for Perfex, HubSpot, EspoCRM, ERPNext, Odoo or other legacy systems may register importers, transformations and reconciliation checks using the core Import/Data Quality platform.
+Specialized migration packages for Perfex, HubSpot, EspoCRM, ERPNext, Odoo and other legacy systems may register importers/transformations/reconciliation checks using core Import/Data Quality.
+
+## Distant Future — Headless CMS / Public Content Platform
+A future Re:Solve expansion may provide a structured headless CMS for external public frontends, including Pages/Collections, reusable blocks, navigation, media, SEO metadata, redirects, draft/version/preview, scheduled publishing, approval and a read-only public content API/webhooks.
+
+**This CMS is explicitly not part of the current development run.**
+
+Current-run rules:
+- no CMS schemas/migrations;
+- no CMS Admin/Portal routes;
+- no page builder;
+- no public content API work;
+- no CMS phase dependency;
+- no attempt to migrate the separate Airix frontend into Re:Solve.
+
+The architecture should merely avoid choices that make a later headless-CMS/plugin expansion impossible.
 
 ## Airix Food Operations
-A future first-party Plugin may add food-order/event/fulfilment operational domains while reusing Re:Solve identity, clients, Billing, Notifications, Documents, Connectors, API/MCP and Core UI where appropriate.
+A future first-party Plugin may add food-order/event/fulfilment domains while reusing Re:Solve identity, clients, Billing, Notifications, Documents, Connectors, API/MCP and Core UI where appropriate.
 
 ## Extension UX rules
-Every planned domain extension must:
-- use Core UI Component Framework;
-- respect simple navigation governance;
-- prefer tabs/views/contextual Actions over adding root navigation;
-- use canonical Principal/permission/Action/Audit contracts;
-- integrate Attention/Notifications rather than inventing parallel inboxes;
-- declare data provenance/Connector truth;
-- remain responsive/PWA/accessibility compatible.
+Every planned extension must use Core UI, respect simple navigation, prefer contextual tabs/views/actions over root-nav sprawl, use canonical Principal/permission/Action/Audit contracts, integrate Attention/Notifications, declare data provenance and remain responsive/PWA/accessibility compatible.
 
 ## Explicit exclusions
-Even as optional extensions, the current Re:Solve product direction does **not** plan:
-- HR/payroll/recruitment/leave/attendance/employee performance;
-- Timesheets/Time Tracking;
-- Client Service Consumption / remaining-hours/credits metering.
-
-Adding one of those would require a new explicit product decision rather than being treated as an assumed future extension.
+Even as optional extensions, the current product direction does not plan HR/payroll/recruitment/leave/attendance/performance review, Timesheets/Time Tracking/work timers, or Client Service Consumption/remaining-hours/credit metering. Adding one requires a new explicit owner product decision.

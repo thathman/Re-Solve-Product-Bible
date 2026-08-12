@@ -7,47 +7,29 @@ This document defines the conceptual Re:Solve domain model without locking datab
 
 ```text
 Workspace
-├── Operating Entities
-│   └── Brands
-├── Principals
-│   ├── Human Users
-│   ├── Service Accounts
-│   ├── API Clients
-│   ├── MCP Clients
-│   ├── Plugins
-│   └── Connectors
-├── Roles / Permissions / Access Grants
-├── Teams
-├── Organisations
-│   ├── Contacts
-│   ├── Memberships
-│   ├── Account Team
-│   ├── Properties
-│   ├── Client Services
+├── Operating Entities / Brands
+├── Principals / Roles / Access Grants
+├── Human Users / Teams
+├── Organisations / Contacts / Memberships
 │   ├── Opportunities
-│   ├── Projects
-│   ├── Requests
-│   ├── Commercial Records
-│   ├── Billing Records
-│   ├── Support Context
-│   ├── Files
-│   ├── Vault Items
-│   ├── Knowledge
-│   └── Connector Mappings
-├── Attention
-├── Notifications
-├── Collaboration / Activity
-├── Approvals
-├── Documents
+│   ├── Properties / Property Health
+│   ├── Client Services / Recurring Arrangements
+│   ├── Projects / Tasks / Requests / Approvals
+│   ├── Proposals / Contracts
+│   ├── Billing / Adjustments / Payments
+│   ├── Forms / Form Requests / Submissions
+│   ├── Communications
+│   ├── Files / Vault / Knowledge
+│   └── Portal Access
+├── Attention / Notifications / Activity / Audit
+├── Documents / Signed PDF Snapshots
 ├── Monitoring / Renewals / Incidents
-├── Automations / Actions / Reminders
-├── Saved Views / Favorites / Recents
-├── Custom Fields / Taxonomy
+├── Automations / Actions / Reminders / Calendar
+├── Saved Views / Custom Fields / Taxonomy
 ├── Imports / Exports / Data Quality
-├── Plugins / Connectors
-├── Àríyá / AI
-├── Audit
-└── System Configuration
+├── Plugins / Connectors / API / MCP
+├── Ariya / AI
+└── System Configuration / Installation State
 ```
 
 ## 1. Workspace, Operating Entity and Brand
@@ -68,44 +50,19 @@ General authorization actor. Principal subtypes include Human User, Service Acco
 Authenticated person. Staff/client/contractor behavior is derived from memberships/access rather than separate authentication species.
 
 ### Organisation Membership
-Links a User to an Organisation with status, role, permissions and scope.
+Links a User to an Organisation with state, role/capabilities and scope. Canonical lifecycle is conceptually `invited -> active -> suspended -> revoked`; no Membership exists before invite.
 
-### Team
-Operational grouping for assignment/routing/ownership/access defaults. It is not an HR record.
+Portal Membership is normally invited after Proposal acceptance/commercial commitment. A Contact is not a Portal identity by itself.
 
-### Role
-Named permission bundle.
-
-### Permission
-Stable capability using canonical grammar `domain.action` or `domain.resource.action`.
-
-### Access Grant
-Explicit scoped authorization assignment targeting a Principal and resource scope.
-
-Potential fields:
-- principal
-- scope type/id
-- permissions/role
-- inheritance
-- source/grantor
-- starts/expires
-- revoked
+### Team / Role / Permission / Access Grant
+Operational grouping and scoped authorization. These are access/work concepts, not HR records.
 
 ## 3. Organisation and CRM
 ### Organisation
 Central relationship entity representing prospect, client, partner, vendor or another organisation.
 
-Important dimensions:
-- relationship/lifecycle
-- account team
-- health/risk
-- tags/segments
-- billing profile
-- portal state
-- Operating Entity relationship
-
 ### Contact
-Person associated with an Organisation.
+Canonical person associated with one or more Organisations through explicit relationships.
 
 ### Lead
 Early commercial lead that may exist before complete Organisation/Contact records are established.
@@ -114,291 +71,268 @@ Early commercial lead that may exist before complete Organisation/Contact record
 Qualified commercial opportunity and its configurable sales process.
 
 ### Account Team Assignment
-Named operational responsibility such as Account Owner or Technical Owner. Not HR.
+Named business responsibility such as Account Owner or Technical Owner. Not HR.
 
-### Client Lifecycle / Relationship Review
-Cross-domain onboarding/active/offboarding state and periodic account-review records.
-
-## 4. Property and Operations
+## 4. Property, Monitoring and Operations
 ### Property
-First-class digital/operational asset.
+First-class digital/operational asset owned by one Organisation.
 
-Base attributes may include Organisation, name, type, status, description, owner/team, parent, URL/identifier, environment, posture summary, lifecycle dates, tags and custom fields.
-
-### Property Relationship
-Typed relationship beyond parent-child.
-
-### Property Access Grant
-Property/descendant access scope.
+### Property Relationship / Access Grant
+Typed relationships and scoped access.
 
 ### Monitor
 Configured native/external check definition.
 
 ### Monitoring Signal
-Time-bound observed result from a probe/connector.
+Observed result with source, timestamp, freshness and evidence.
 
-### Property Posture
-Derived explainable health state assembled from current evidence.
+### Property Health / Posture
+Derived explainable current health assembled from monitoring signals, obligations, incidents and connector evidence.
 
 ### Renewal / Expiry Obligation
-First-class obligation for Domain, Hosting, Certificate, Service, Contract, license or other managed dependency.
+First-class obligation for Domain, Hosting, Certificate, Service, Contract, license or another managed dependency.
 
 ### Maintenance Window
 Planned operational maintenance/suppression context.
 
 ### Incident
-Operational service-impact event related to one or more Properties/signals/support references.
+Operational service-impact event related to one or more Properties/signals/support references, with start/recovery/duration/evidence.
 
-## 5. Service Domain
+## 5. Service Catalogue and recurring relationships
 ### Service Catalogue Item
-Reusable service offering.
+Reusable service/product offering.
 
-Fields may include name, category, description, pricing model, default price/currency, billing frequency, taxable behavior, default SLA, default deliverables and property applicability.
+Key commercial dimensions may include:
+- name/code/category;
+- descriptions;
+- pricing basis: `flat`, `quantity`, or `duration`;
+- default amount/currency;
+- quantity unit where applicable;
+- duration unit/default duration where applicable (`day`, `week`, `month`, `quarter`, `year`);
+- tax behavior;
+- renewal/recurring eligibility;
+- default Project/onboarding template;
+- Support Entitlement;
+- Property applicability.
+
+### Price Book / Rate Card
+Reusable effective-dated pricing for an Operating Entity, client class or specific Organisation. Accepted historical pricing remains stable.
+
+### Service Package
+Commercial bundle/option composed from Catalogue items while activation can still create clear underlying Client Service relationships.
 
 ### Client Service
-Instantiated service relationship linking Organisation, catalogue item, properties, contract, billing, support entitlement, owner, start/end/renewal and status.
+Client-specific service relationship linking Organisation, Catalogue item, Properties, Proposal/Contract, price/currency, Support Entitlement, delivery and renewal.
+
+### Recurring Arrangement
+Commercial/operational recurrence such as maintenance, hosting or retainer. It defines frequency, effective dates, linked service lines, next billing/renewal behavior and lifecycle. It is distinct from a duration-priced one-time line and from an external provider subscription mapping.
 
 ### Service Entitlement
 Defines included rights/scope/SLA, not usage-credit consumption.
 
-**There is no core Client Service Consumption meter.**
-
 ## 6. Projects and Delivery
 ### Project
-Bounded body of work linked to Organisation, Properties, Services and relevant commercial/billing records.
+Bounded body of work linked to Organisation, Properties, Client Services and relevant commercial/billing records.
 
-### Project Member
-Participant/project-level responsibility.
+### Project Template
+Reusable delivery blueprint for Milestones, Tasks, Approvals, default durations, visibility and contextual resources.
 
 ### Task / Recurring Task Definition
-Actionable work plus optional recurrence template that generates ordinary task occurrences.
+Canonical actionable human work. The former `My Work` concept is not a separate domain; personal views are Task/work projections.
 
 ### Milestone / Deliverable / Client Action
 Delivery checkpoints, outputs and explicit client dependencies.
 
 ### Approval Request / Approval Decision
-Generic approval workflow and decision evidence.
+Generic approval workflow and evidence.
 
-### Change Request
-Structured change to scope/timing/deliverables.
-
-### Risk / Issue
-Project risk/blocker/decision tracking.
+### Change Request / Risk / Issue
+Structured delivery-change/risk records.
 
 ### Expense
-Optional operational/project/client cost record.
+Operational/project/client cost record. No labor-time costing is required.
 
-**No Time Entry or Timesheet domain exists.**
-
-## 7. Requests
+## 7. Requests and Forms
 ### Request
-Structured ask awaiting/under triage or fulfillment.
+Structured ask awaiting/under triage or fulfilment.
 
 ### Request Type
 Configurable request classification/intake behavior.
 
-### Request Conversion/Link
-Traceability from Request to resulting Task, Project, Change Request, Approval, Opportunity/Estimate, Chatwoot support reference, Vault request or plugin record.
+### Form Template / Form Version
+Reusable structured form definition and immutable version lineage.
 
-## 8. Commercial and Document Domain
-### Proposal / Estimate / Quote / Contract
-First-class commercial records.
+### Form Request / Assignment
+Specific invitation/assignment of a Form to a recipient/context with related Organisation/Project/Property, due date, expiry and access mode.
 
+### Submission
+Submitted answers and linked Files, preserving the exact Form Version and provenance.
+
+### Form Mapping / Routing
+Explicit mapping from Submission data into authoritative domain records through validation/Action Registry/Automation.
+
+Forms power discovery, Project questionnaires, onboarding, surveys, feedback, review requests and other structured intake without becoming a shadow CRM/Project engine.
+
+## 8. Commercial domain
+### Proposal
+The single first-class commercial-offer record. `Quote` and `Estimate` are presentation styles/migration aliases, not separate current domains.
+
+A Proposal may contain narrative sections, scope, deliverables, options/packages, line items, optional items, flat/quantity/duration pricing, discounts, taxes, terms, validity, attachments, comments and acceptance evidence.
+
+### Proposal Revision / Decision
+Sent commercial content is versioned. Acceptance/decline applies to an exact immutable revision and stores decision evidence/snapshot.
+
+### Contract
+Agreement lifecycle/metadata linked to Organisation, Proposal, Services, Project and Billing as appropriate.
+
+### Commercial Approval
+Approval for exceptional discounts, payment terms, high-risk actions or nonstandard commercial conditions.
+
+## 9. Documents and signatures
 ### Document Template / Template Version
-Reusable branded structure/merge schema.
+Reusable Operating Entity/Brand-aware structure and variable contract.
 
 ### Document Draft / Document Version
-Rendered/editable representation tied to a business record.
+Rendered editable/review representation tied to authoritative business data.
 
-### Final Snapshot
-Immutable exact content accepted/executed by a recipient.
+### Final Signed PDF Snapshot
+Immutable exact issued PDF containing/storing:
+- business/document reference;
+- rendered bytes/version;
+- template/brand version;
+- issuer/signatory and title;
+- immutable signature snapshot;
+- issued timestamp;
+- cryptographic hash;
+- verification reference/code;
+- recipient/delivery evidence;
+- counterparty signatures where required.
+
+Every final generated PDF is issuer-signed. Counterparty e-signature is additional where the business record requires it.
+
+### Staff Email Signature / Staff Document Signature
+Separate profile configurations. HTML email signature does not double as PDF signature.
 
 ### Signature Envelope Reference
-External SignatureConnector transaction mapping.
+Optional external SignatureConnector transaction for counterparty/legal signing or future cryptographic signing integrations.
 
 ### Secure External Access Grant
 Narrow expiring/revocable guest access to a specific document/action.
 
-## 9. Billing and Spend
+## 10. Billing, Adjustments and Spend
 ### Invoice / Invoice Line
-Receivable record and line items.
+Receivable record and line items. Lines can preserve flat, quantity or duration pricing semantics from Proposal/Service source.
+
+### Invoice/Commercial Adjustment
+Append-only or controlled adjustment representing late fee, penalty, service charge, discount correction, credit/write-off or another approved amount-due change. It records type, calculation basis, reason, source, actor and timestamp.
 
 ### Payment / Payment Allocation
-Confirmed monetary transaction and allocation.
+Confirmed monetary transaction/evidence and allocation. Payment does not carry late fees/penalties as mutations.
 
 ### Payment Attempt / Provider Event
-Provider lifecycle event/attempt.
+Provider lifecycle attempt/event.
 
 ### Credit Note / Refund / Receipt
-Financial adjustment/refund/proof-of-payment records.
+Financial correction/refund/proof-of-payment records.
 
-### Subscription
-Recurring commercial billing agreement owned by Re:Solve.
-
-### Provider Subscription Mapping
-External provider mapping.
+### Billing Schedule / Provider Subscription Mapping
+Recurring financial behavior; distinct from Client Service and Recurring Arrangement.
 
 ### Reconciliation Record
 Expected-versus-external financial matching.
 
 ### Payment Schedule / Deposit
-Planned installment/deposit terms linked to commercial/billing records.
+Planned installment/deposit terms linked to Proposal/Contract/Billing.
 
 ### Account Statement
-Generated client financial statement assembled from billing truth through Document Studio.
+Generated from authoritative Billing truth through Document Studio.
 
 ### Expense / Recurring Cost
 Operational/vendor cost tracking where enabled. No payroll.
 
-## 10. Support Operations
-Chatwoot owns support conversation/message truth.
-
-Re:Solve owns:
-- Support Mapping
-- Support Entitlement
-- Support Summary
-- Incident
-- commercial/operational SLA context
-
 ## 11. Communications
-### Message Template / Outbound Message / Delivery Attempt / Sender Identity
-Shared operational messaging metadata for email, WhatsApp, SMS and other channels.
+### Connected Mailbox
+Provider-neutral email mailbox/inbox configuration and sync authority.
+
+### Communication Thread / Message
+Inbound/outbound business communication with real external identifiers/thread headers, sender/recipients, Organisation/Contact and related-record links, Files and provenance.
+
+### Message Template / Template Version
+Declared-variable body content used within universal email composition.
+
+### Sender Identity
+Workspace/Operating Entity/Brand/system sender identity.
+
+### Staff HTML Email Signature
+Per-staff sanitized HTML signature applied separately from system/Operating Entity signature.
+
+### Delivery Attempt
+Provider delivery evidence/retry/failure state.
+
+### Inbox Triage
+Uncertain/unrouted inbound communication awaiting classification/linking.
+
+### Review Request
+Operational request for client feedback/review with destination, recipient, related record, reminders, click/evidence and status.
 
 ### Announcement
-Controlled staff/client operational notice, distinct from marketing campaigns.
+Controlled operational notice, not bulk marketing.
 
-## 12. Notification and Attention
-### Notification / Notification Delivery / Preference / Policy / Digest
-Durable awareness and channel-delivery model.
+Portal live chat uses Ariya and Chatwoot rather than a duplicate Communication-message console.
 
-### Attention Item
-Current condition still requiring awareness/action.
+## 12. Support operations
+Re:Solve owns its provider-neutral Support records/context and may bridge human live conversation through Chatwoot. Ariya can classify/route inbound email or Portal chat into Support under policy. Chatwoot Captain remains a separate system AI.
 
-Attention resolves from underlying condition, not merely notification-read state.
-
-## 13. Collaboration and Activity
-### Comment / Internal Note / Mention / Follow
-Shared collaboration model with explicit audience and record scope.
-
-### Activity
-User-readable timeline event.
-
-Activity is separate from Audit.
+## 13. Notification, Attention, Collaboration and Activity
+Notification = awareness/delivery. Attention = unresolved actionable condition. Comment/Internal Note/Mention/Follow = collaboration. Activity = readable timeline. All remain distinct from Audit.
 
 ## 14. Files and Vault
-### File / File Version / File Link / Share
-Ordinary managed file domain.
-
-### Vault Item / Secret Version / Vault File Content / Grant / Access Request / Access Event / Rotation
-Protected confidential domain.
-
-A protected confidential document is represented as a Vault Item and must not retain a parallel ordinary File access path.
-
-Both domains may use the same provider-neutral storage infrastructure.
+File/File Version/File Link/File Request/Share represent ordinary managed files. Vault Item/Secret Version/Vault File/Grant/Access Event represent protected confidential content. Protected content must not retain an ordinary bypass path.
 
 ## 15. Knowledge
-Knowledge Space, Article, Category, Revision, Source and Access Policy.
+Knowledge Space, Article, Category, Revision, Source and Access Policy. Re:Solve Knowledge remains separate from Chatwoot support Knowledge.
 
-Re:Solve Knowledge is separate from Chatwoot support Knowledge.
+## 16. Actions, Automations, Reminders and Calendar
+Action Definition centralizes consequential operations across UI/API/MCP/Ariya/Automations. Automation Workflow/Run, Reminder, Cadence, Scheduled Job and Calendar/Event provide orchestration/time context.
 
-## 16. Actions, Automations, Reminders and Cadences
-### Action Definition
-Registered business operation with permission, scope, risk/confirmation/approval, input/output and interface availability.
+## 17. Views and extensibility
+Saved View, Favorite/Recent, Custom Field Definition/Value, Tag/Taxonomy and controlled future custom/plugin records extend the OS without replacing core domains.
 
-### Domain Event
-Structured internal fact.
+## 18. Data provenance, import and quality
+Provenance Metadata, Import/Migration Batch, Export Job, Data Quality Issue and Merge Record preserve source/authority/freshness and audited reconciliation.
 
-### Automation Workflow / Trigger / Condition / Step / Run
-Controlled workflow orchestration.
+## 19. Plugin, Connector, API and MCP
+Plugins add capability. Connectors integrate external systems. API/MCP expose curated scoped resources/actions; neither grants arbitrary SQL/Vault access.
 
-### Reminder
-Lightweight future attention instruction.
+## 20. Ariya / AI
+AI Provider Configuration/Profile/Session/Tool/Run/Usage records support Ariya.
 
-### Cadence / Activity Plan
-Reusable sequence of follow-up steps using shared actions/automations.
+Ariya is the intelligence fabric across authorised domains with operating modes Ask, Draft, Act, Watch, Investigate and Recommend. It consumes controlled tools/evidence and never expands caller authority.
 
-### Scheduled Job
-System/plugin recurring background work.
+## 21. Setup and System
+### Installation / Setup State
+Tracks uninitialized/in-progress/locked setup state, migration/readiness checks and bootstrap evidence. Successful setup locks bootstrap ownership creation.
 
-## 17. Views and Extensibility
-### Saved View
-Saved query/presentation state with private/team/workspace/system visibility.
-
-### Favorite / Recent Record
-Personal quick-access metadata; does not grant access.
-
-### Custom Field Definition / Value
-Typed deployment-specific field data.
-
-### Tag / Taxonomy
-Flexible labels versus controlled vocabularies.
-
-### Custom Record Type
-Advanced future extensibility, never a substitute for core domains.
-
-## 18. Data Provenance, Import and Quality
-### Provenance Metadata
-Source, authority, freshness, connector/import/run and derived/native state.
-
-### Import Batch / Migration Batch
-Mapped validated ingestion job.
-
-### Export Job
-Permission-aware generated export.
-
-### Data Quality Issue
-Duplicate/stale/orphan/mapping/missing-data issue requiring review/fix.
-
-### Merge Record
-Audited merge decision preserving relationships/mappings/aliases.
-
-## 19. Plugin and Connector
-### Plugin Definition / Installation / Configuration / Permission Grant / Migration / Extension Registration
-Installable product-capability extension lifecycle.
-
-### Connector Definition / Instance / Credential Reference / Mapping / Integration Event / Health / Action
-External-system integration lifecycle.
-
-Optional provider plugins may register connector implementations.
-
-## 20. Àríyá / AI
-### AI Provider Configuration / Profile / Session / Tool / Run / Usage Record
-Technical AI runtime records.
-
-Àríyá is the user-facing assistant identity and consumes controlled Action/Data tools under caller permission.
-
-## 21. API / MCP
-API Client, API Credential/Scope, Webhook Subscription/Delivery, MCP Client, Tool Registration and MCP Audit Event.
+### System Health / Job / Worker / Backup / Update records
+Support ongoing operations after installation.
 
 ## 22. Audit
-### Audit Event
-Append-only accountability/security evidence with actor Principal, action, target, scope/context, timestamp, source/interface, correlation, summarized changes and outcome.
+Audit Event is append-only accountability/security evidence with actor Principal, action, target, scope/context, timestamp, source/interface, correlation, summarized change and outcome.
 
 ## 23. Settings
-Settings are typed/scoped definitions rather than an unstructured global blob.
-
-Scopes may include Workspace, Operating Entity, Brand, user preferences, organisation defaults, property type, plugin and connector instance.
+Typed/scoped definitions rather than an unstructured global blob. Scopes may include Workspace, Operating Entity, Brand, user profile, Organisation default, Property Type, plugin or connector instance.
 
 ## Cross-domain principles
 - Organisation is the major relationship root for clients/prospects/vendors.
 - Operating Entity represents the business doing the work.
 - Property is the major operational asset context.
-- Attention is current actionable state; Notification is awareness/delivery.
-- Activity is narrative; Audit is append-only accountability.
-- External identifiers live in mappings.
-- Provider-specific SDK concepts stay behind Connectors.
-- confidential content stays behind Vault controls.
-- derived/synced/AI data exposes provenance/freshness when material.
-- Action Registry centralizes consequential operations across UI/API/MCP/Àríyá/Automations.
+- Proposal is the canonical commercial offer.
+- Tasks is the canonical human work surface/domain.
+- Payment is transaction evidence; adjustments change amount due separately.
+- every issued PDF is signed and immutable.
+- Ariya consumes authorised truth across the OS and acts only through controlled capabilities.
+- external identifiers live in mappings; provider SDK concepts stay behind Connectors.
+- derived/synced/AI data exposes provenance/freshness where material.
 
 ## Explicit exclusions
-Do not create core domains for:
-- HR
-- payroll
-- attendance/leave/recruitment
-- employee performance management
-- timesheets/time tracking
-- Client Service Consumption/credit-hour usage metering
-
-## Deferred technical decisions
-Exact database schema, tenant implementation, polymorphic relation mechanics, search/indexing technology, event transport, object storage, monitoring-worker deployment and final auth-provider architecture remain implementation decisions.
+Do not create core domains for HR, payroll, attendance/leave/recruitment, employee performance management, Timesheets/Time Tracking/work timers, Client Service Consumption/credit-hour usage metering, or the distant-future CMS during the current run.

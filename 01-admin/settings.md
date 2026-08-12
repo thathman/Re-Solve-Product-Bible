@@ -1,568 +1,347 @@
 # Settings
 
 ## Purpose
-Settings is the control plane for Re:Solve. It exposes configuration deliberately with ownership, validation, audit, diagnostics, permissions and safe defaults.
+Settings is the control plane for Re:Solve. It exposes configuration deliberately with ownership, validation, Audit, diagnostics, permissions and safe defaults.
 
 Settings must not become a miscellaneous dumping ground. Every setting belongs to a domain, has a scope and defined consequences.
 
 ## Information architecture
-Top-level Settings groups:
+Top-level searchable groups:
 1. General / Workspace
 2. Operating Entities & Brands
 3. People & Access
 4. Client Portal
-5. CRM
-6. Clients & Lifecycle
-7. Properties
-8. Monitoring & Renewals
-9. Projects
-10. Sales & Documents
-11. Billing & Spend
-12. Support
-13. Requests & Forms
-14. Notifications
-15. Communications
-16. Àríyá / AI
-17. Vault
-18. Files
-19. Automations
-20. Data & Customization
-21. Plugins
-22. Connectors
-23. API & MCP
-24. Security & Privacy
-25. System
+5. CRM / Clients
+6. Properties / Monitoring / Renewals
+7. Projects / Tasks / Delivery
+8. Sales / Services / Proposals / Contracts
+9. Billing / Spend / Adjustments
+10. Forms / Requests / Reviews
+11. Communications / Email
+12. Documents / PDF Signatures
+13. Notifications
+14. Ariya / AI
+15. Files / Vault
+16. Automations
+17. Data & Customization
+18. Plugins / Connectors
+19. API & MCP
+20. Security & Privacy
+21. System / Setup / Health
 
-Settings navigation should be searchable and simple. On desktop use a clear settings sidebar/index; on mobile use an index/drill-down flow rather than another dense permanent sidebar.
+Settings navigation is searchable. Desktop uses a clean Settings index/sidebar; mobile uses index/drill-down. Search should deep-link directly to a setting such as `late fee`, `SMTP`, `PDF signature`, or `Portal invite`.
 
 ## Shared setting contract
-Every setting should define:
-- scope: Workspace, Operating Entity, Brand, user, team, client default, Property Type, plugin or connector instance;
-- current/inherited/default value;
-- validation;
-- required permission;
-- sensitivity;
-- immediate/save/review-changes behavior;
-- audit requirement;
-- whether existing records are affected;
-- rollback/recovery where applicable;
-- health/diagnostic state.
+Every setting declares scope (Workspace, Operating Entity, Brand, user, Team, client default, Property Type, plugin/connector instance), effective/inherited/default value, validation, permission, sensitivity, save/review behavior, Audit requirements, effect on existing records, rollback/recovery and health/diagnostics where applicable.
 
 ## Save model
-Use:
-- immediate save for low-risk personal preferences;
-- explicit Save for grouped configuration;
-- Review changes for high-impact settings;
-- test-before-save for provider connections;
-- step-up for highly sensitive changes.
-
-Unsaved material changes must be visible and protected against accidental loss.
+Use immediate save for low-risk personal preferences; explicit Save for grouped config; Review Changes for high-impact settings; test-before-save for providers; step-up for highly sensitive changes.
 
 ## Configuration health
-Major sections can report configured, partially configured, needs attention, disabled, degraded or healthy. Settings Home should prioritize action needed rather than show identical cards for every section.
+Major groups may report configured, partial, attention required, disabled, degraded or healthy. Unknown/stale must not be called healthy.
 
 # A. General / Workspace
-- Workspace name/code
-- locale/timezone/date/number formats
-- base/enabled currencies
-- default ownership/archive behavior
-- system identity
-- default record references/numbering links
-- default retention links
-- feature defaults that do not belong to another domain
-
-One Workspace always exists even when multi-workspace SaaS is not enabled.
+- Workspace name/code;
+- locale/timezone/date/number formats;
+- base/enabled currencies;
+- default archive/retention links;
+- system identity;
+- numbering framework defaults;
+- module visibility/defaults where not domain-specific.
 
 # B. Operating Entities & Brands
+## Entity identity
+- legal/trading name;
+- registration/tax identifiers;
+- addresses/contact details;
+- default currency/locale;
+- billing/remittance identity;
+- status/default Brand.
 
-## Entities
-- legal/trading name
-- registration/tax identifiers where applicable
-- addresses/contact details
-- default currency/locale
-- commercial/document identity
-- billing/remittance identity
-- default Brand
-- status
+## Brand
+- logos/app icons;
+- approved tokens;
+- Portal/auth identity;
+- email identity;
+- Document Studio theme;
+- support identity;
+- sender mappings.
 
-## Brands
-- logo variants
-- favicon/app icon
-- approved accent token
-- Portal/auth identity
-- email identity
-- Document Studio theme
-- support identity
-- sender identity mappings
-- accessibility preview
-
-Brand customization cannot override core semantic accessibility.
+## Operating Entity communication shell
+Configurable independently:
+- universal email HTML head/approved style tokens;
+- email header;
+- automated/system signature;
+- email footer/legal text;
+- default sender/reply-to;
+- document header/footer/brand;
+- default document signatory policies.
 
 # C. People & Access
+## Staff / Human User profile
+Access/security settings plus operational identity:
+- active/invited/suspended;
+- Roles/Teams/scopes;
+- sessions/MFA/security;
+- **personal HTML Email Signature** editor/source with sanitization/preview;
+- **personal Document/PDF Signature** asset;
+- printed signatory name/title;
+- which Operating Entities/document families the user may sign for;
+- email/document signature enabled state.
 
-## Staff / Human Users
-- active/invited/suspended
-- role/team memberships
-- last sign-in
-- MFA state
-- security/session summary
-- deactivate/reactivate
-- responsibility reassignment before deactivation
+Email signature and PDF signature are separate fields/contracts. These are business identity/signing settings, not HR fields.
 
-This is access administration, not HR. Do not add payroll, leave, attendance, recruitment, employee reviews or Timesheets.
-
-## Teams
-- name/purpose
-- lead/owner if useful
-- members
-- assignment/routing eligibility
-- access defaults
-- notification defaults
-
-## Roles / Permissions
-- system/custom roles
-- clone/compare
-- capability matrix
-- high-risk permission warnings
-- assigned principals/users
-- effective-permission explanation
-
-Canonical permission grammar: `domain.action` or `domain.resource.action`.
-
-## Invitations / Sessions
-- expiry/resend/revoke
-- default role/team
-- active sessions/devices
-- revoke/reauthentication
-- privileged-action step-up duration
+## Teams / Roles / Permissions / Invitations / Sessions
+Use scoped canonical capabilities, effective-access explanation, step-up/Approval for high-risk changes and responsibility reassignment before deactivation.
 
 # D. Client Portal
-- Portal enabled
-- default visible destinations
-- Home defaults
-- client-safe terminology
-- support entry behavior
-- Portal announcement/banner
-- client roles/permissions
-- invitations/self-registration/domain policy
-- client-admin invitation rights
-- Branding/Operating Entity defaults
-- Vault destination shown only when authorized
-- Requests destination policy
-- optional Portal Àríyá policy
+- Portal enabled;
+- default navigation/module visibility;
+- client-safe terminology;
+- Home/Needs Your Attention defaults;
+- client roles/permissions;
+- invitation policy;
+- **default invitation trigger: Proposal acceptance/commercial commitment**;
+- manual earlier invitation policy;
+- Membership state/invitation expiry/resend/revoke;
+- `Preview as Client` permission/policy;
+- Organisation admin invitation rights;
+- support/live-chat path through Ariya/Chatwoot;
+- optional Portal Ariya policy;
+- Brand/Operating Entity defaults.
 
-# E. CRM
-- lead sources
-- pipelines/stages/probability
-- activity types
-- loss reasons
-- cadences/activity-plan defaults
-- follow-up/reminder defaults
-- segmentation
-- import policy
-- duplicate matching
-- custom fields/taxonomies
-- sales forecast defaults
+No public registration is implied.
 
-# F. Clients & Lifecycle
-- client lifecycle statuses
-- onboarding templates
-- offboarding templates
-- Account Team responsibility labels
-- relationship review cadence/defaults
-- client-health rules/thresholds
-- former-client archive policy
+# E. CRM / Clients
+- Lead sources;
+- Opportunity pipelines/stages/probabilities;
+- activity types/loss reasons;
+- cadences/follow-up;
+- segments;
+- duplicate matching/merge policy;
+- Client lifecycle/onboarding/offboarding;
+- Account Team responsibility labels;
+- relationship review cadence;
+- client-health rules;
+- custom fields/taxonomies.
 
-Health must remain explainable rather than opaque scoring.
+# F. Properties / Monitoring / Renewals
+## Properties
+Property Types, relationships, statuses, client-safe mapping, custom fields, hierarchy and archive behavior.
 
-# G. Properties
-- Property Types
-- relationship types
-- statuses
-- client-visible state mapping
-- custom fields
-- hierarchy/inheritance rules
-- maintenance defaults
-- archive behavior
+## Native Monitoring
+Enabled/default monitor policy, intervals/timeouts, failure/recovery thresholds, retention, maintenance, probe registration, client notification defaults.
 
-# H. Monitoring & Renewals
-
-## Native monitoring
-- enabled/default monitor policy
-- default intervals/timeouts
-- failure/recovery thresholds
-- monitor retention
-- maintenance behavior
-- probe/worker registration policy
-- client-notification defaults
-
-## Property Posture
-- evidence categories
-- posture thresholds/rules
-- stale-source policy
-- client-safe posture mapping
+## Property Health/Posture
+Evidence categories, stale-source rules, posture mapping, client-safe exposure and optional status-page policy.
 
 ## Renewals
-- obligation types
-- reminder windows
-- ownership defaults
-- unknown auto-renew policy
-- verification requirements
-- client decision/payment workflow
+Obligation types, reminder windows, ownership, auto-renew state, verification, client decision/payment workflow.
 
-External sources such as Cloudflare or optional Uptime Kuma are configured under Connectors, not hard-coded here.
+# G. Projects / Tasks / Delivery
+- Project statuses/priorities/templates;
+- Task types/defaults/recurrence;
+- Milestone/Deliverable/Approval defaults;
+- Requests/Change Requests;
+- client visibility;
+- Saved Views/default Task views;
+- Project financial display policy.
 
-# I. Projects
-- statuses
-- priorities
-- task types
-- recurring task defaults
-- templates
-- milestones/deliverable defaults
-- approval behavior
-- Client Action defaults
-- Change Request defaults
-- client visibility
-- cost/commercial display policy
+No `My Work` setting namespace, Timesheets or work timers exist.
 
-**No Time Tracking/Timesheet settings exist.**
-
-# J. Sales & Documents
-
+# H. Sales / Services / Proposals / Contracts
 ## Service Catalogue
-- categories
-- pricing models
-- default taxes
-- billing cadence
-- default Project template
-- default Support Entitlement
-- Property applicability
+- categories;
+- pricing basis `flat`, `quantity`, `duration`;
+- quantity units;
+- duration units/defaults (day/week/month/quarter/year);
+- taxes;
+- recurring/renewal eligibility;
+- default Project Template/Support Entitlement;
+- Property applicability;
+- Price Books/Rate Cards;
+- Service Packages/options.
 
-No Client Service Consumption/allowance-meter settings.
+## Proposals
+There are no separate Quote/Estimate settings.
 
-## Proposal / Estimate / Quote
-- numbering
-- validity/expiry
-- templates
-- optional/add-on item behavior
-- discounts/taxes
-- acceptance policy
-- Secure External Access policy
-- reminders
+Configure:
+- numbering;
+- default presentation style;
+- validity/expiry;
+- templates;
+- packages/options/add-ons;
+- line/document discount rules;
+- taxes;
+- acceptance policy/evidence;
+- Portal invitation trigger;
+- Secure External Access;
+- reminders;
+- downstream Contract/Project/Invoice/Recurring Arrangement behavior;
+- Proposal view evidence policy.
 
 ## Contracts
-- numbering
-- templates
-- SignatureConnector
-- signature/expiry/renewal policy
-- deposit requirements
-- client visibility
+Numbering, templates, counterparty SignatureConnector, expiry/renewal, deposit requirements, client visibility.
 
-## Document Studio
-- template management
-- brand/entity defaults
-- web/PDF output
-- A4/Letter defaults
-- variable catalogue
-- version/final-snapshot policy
-- external-view policy
-- retention
-
-# K. Billing & Spend
-
+# I. Billing / Spend / Adjustments
 ## Invoices
-- numbering
-- due/payment terms
-- line defaults
-- notes/terms
-- Document Studio template
+- numbering;
+- due/payment terms;
+- line defaults;
+- signed Document Studio template/signatory rule.
 
 ## Taxes / Currencies
-- tax definitions/effective dates
-- inclusive/exclusive behavior
-- exemptions
-- currency/rounding/exchange policy
+Tax definitions/effective dates, inclusive/exclusive behavior, exemptions, currency/rounding/exchange policy.
 
-## Payment providers
-Payment capability is connector-based. Show installed/configured PaymentConnector instances with environment, methods/currencies, connection/webhook health and reconciliation behavior.
+## Discounts / Adjustments / Late fees
+- allowed Adjustment types;
+- fixed/percentage calculation rules;
+- grace period;
+- once/recurring policy;
+- caps;
+- eligible Invoice states;
+- Approval/waiver rules;
+- client-safe notice wording;
+- write-off policy.
 
-## Recurring billing / Subscriptions
-- cadence
-- renewal generation
-- pause/cancel timing
-- proration/trial only where product requires
-- payment failure/grace policy
+A policy creates real Adjustment records; it never mutates Payment truth.
 
-## Deposits / payment schedules
-- deposit defaults
-- milestone/installment rules
-- conversion to invoice schedule
+## Payment providers / reconciliation
+Connector-based provider instances, methods/currencies, webhook/connection health, verification and reconciliation behavior.
 
-## Credit control
-- overdue thresholds
-- reminder/escalation
-- account hold/deposit policy where enabled
-- client-safe messaging
+## Recurring / deposits / schedules / credit control
+Cadence, generation/issue policy, pause/cancel, deposits/installments, dunning/escalation/account-hold policy.
 
-## Receipts / Credit Notes / Refunds / Statements
-- numbering
-- templates
-- generation/approval
-- client notification
+## Receipts / Credits / Refunds / Statements
+Numbering, signed templates, approval/generation and client notification.
 
-## Spend / Expenses
-- categories
-- approval policy
-- billable-expense conversion policy
-- recurring vendor cost categories
+## Spend
+Expense categories, approval, billable conversion, recurring vendor cost categories. No payroll/employee-expense assumptions.
 
-No payroll/employee expense/HR assumptions.
-
-# L. Support
-Chatwoot remains the support engine.
-
-Settings expose Re:Solve-specific:
-- Chatwoot connector shortcut/health
-- mappings
-- Support Plans/Entitlements
-- SLA/commercial context
-- business hours
-- categories/routing context
-- client-safe support summary policy
-- incident relationship
-
-Do not reproduce Chatwoot's full inbox/agent/team/Captain administration.
-
-# M. Requests & Forms
-
+# J. Forms / Requests / Reviews
 ## Requests
-- request types/categories
-- statuses
-- default owner/team
-- Portal/public availability
-- triage routing
-- conversion options
-- SLA/response expectations where applicable
+Types, statuses, default owner/team, Portal/public access, routing/conversion and response expectations.
 
 ## Forms
-- form templates
-- public/Portal/secure-link policy
-- submission retention
-- spam/abuse protection
-- file policy
-- routing
-- mapping into core/custom fields
+Templates, public/Portal/Secure External policy, Form Request deadlines/expiry, retention, abuse/file policy, routing, custom-field mappings.
 
-# N. Notifications
-- channels
-- event policies
-- recipient defaults
-- priority
-- grouping/dedupe
-- templates
-- digests
-- quiet hours
-- mandatory events
-- retries/failure
-- retention
-- Test Center
+## Review Requests
+- eligible triggers such as Project complete/Support resolved/full Payment/manual;
+- delay/reminder policy;
+- destinations: Google/Facebook/Clutch/Trustpilot/custom;
+- template;
+- tracking/evidence policy.
 
-Attention is configured separately by domain rules; reading Notifications does not resolve Attention automatically.
+# K. Communications / Email
+## Connected Mailboxes
+Provider Connector, inbound/outbound state, sender identity, sync direction, health/freshness, retention.
 
-# O. Communications
+## Email composition
+- universal head/styles;
+- Operating Entity/Brand header;
+- template body/subject/variables;
+- staff HTML signature or entity/system signature;
+- footer/legal content;
+- preview/test.
 
-## Email
-- provider connector
-- sender identities
-- from/reply-to
-- verification/health
-- test
-- delivery/bounce diagnostics
+## Inbound routing / Ariya
+Configure allowed classifications, auto-route confidence threshold, eligible actions, Inbox Triage policy, Support/CRM/Project/Billing mapping and data-provider/privacy policy.
 
-## WhatsApp/Baileys
-- instance/session
-- approved operational categories
-- destination/eligibility policy
-- quiet hours
-- retry/media policy
-- test/reconnect
-- audit
+## Delivery
+Retries/failure, bounce/delivery diagnostics, quiet hours, mandatory versus optional communication.
 
-Not a client-customer support inbox.
+## Chatwoot
+Portal live-chat/human handoff connector and health. Do not reproduce Chatwoot agent administration.
 
-## SMS
-Optional connector.
+# L. Documents / PDF Signatures
+## Document Studio
+- template/version management;
+- Brand/Operating Entity defaults;
+- web/PDF output;
+- A4/Letter;
+- variable catalogue;
+- retention/final snapshot;
+- Secure External view policy.
 
-## Announcements
-- audience defaults
-- allowed channels/surfaces
-- expiry
-- client/staff policy
+## Mandatory issuer signature
+Every final generated PDF is signed. Configure:
+- default signatory by document family;
+- named staff / issuing staff / record owner / entity-authorised signature mode;
+- allowed staff signatories;
+- signature snapshot rules;
+- hash algorithm/version;
+- verification URL/code/QR policy;
+- public-safe verification fields.
 
-Bulk marketing/campaign configuration belongs to specialist integrations/plugins.
+Invoice and Receipt final PDFs are included.
 
-# P. Àríyá / AI
-- provider/AIConnector
-- model profiles/routing
-- features
-- registered tools/actions
-- read/write risk
-- confirmation/approval
-- Knowledge sources
-- provider data-class policy
-- usage/budgets/rate limits
-- retention/audit
-- Portal Àríyá
-- disabled organisations/properties
+## Counterparty signatures
+Configure which Proposal/Contract/Approval document families require counterparty e-signature and which SignatureConnector is used.
 
-User-facing name is always Àríyá. Chatwoot Captain remains separate.
+# M. Notifications
+Channels, event policies, recipient defaults, priority, grouping/dedupe, templates, digests, quiet hours, mandatory events, retries/failure, retention and test center.
 
-# Q. Vault
-- item types/categories
-- classifications
-- access policy
-- client sharing
-- temporary grants
-- access requests/approvals
-- reveal/copy/download policy
-- step-up
-- retention
-- rotation/expiry defaults
+# N. Ariya / AI
+- provider/AIConnector/model profiles;
+- feature/data-class routing;
+- registered tools/actions;
+- Ask/Draft/Act/Watch/Investigate/Recommend capabilities;
+- read/write/autonomy limits;
+- confirmation/Approval/step-up;
+- Property Health monitoring tools;
+- Communications/email classification thresholds;
+- Knowledge sources;
+- Vault secret-handle policy;
+- usage/budgets/rate limits;
+- retention/Audit;
+- Portal Ariya;
+- disabled Organisations/Properties/features.
 
-# R. Files
-- storage provider
-- limits/types
-- public/private defaults
-- scan/processing policy
-- versions
-- retention/trash
-- sharing
+Ariya remains subject to caller scope; settings cannot grant model-level bypass authority.
 
-Protected confidential documents should route to Vault rather than preserve ordinary File access.
+# O. Files / Vault
+Storage, file requests, type/size/scan, versions, retention/trash/sharing and protected Vault classification/access/rotation/step-up.
 
-# S. Automations
-- enabled/limits
-- concurrency/run duration
-- retries
-- recursion protection
-- schedule/timezone behavior
-- failure/dead-letter policy
-- Action Registry permissions
-- AI-step policy
+# P. Automations
+Enabled/limits, concurrency, retries, recursion, timezone, dead-letter, Action permissions, Ariya AI-step/Watch policy.
 
-# T. Data & Customization
+# Q. Data & Customization
+Custom Fields, Tags/Taxonomy, Saved Views, configurable dashboards/module visibility, Imports/Exports, Data Quality, numbering, archive/trash/restore.
 
-## Custom Fields
-- supported record types
-- field types
-- validation
-- dynamic display/required rules
-- sensitivity
-- Portal/API/search/report policy
+# R. Plugins / Connectors
+Instances, auth, mappings, capability grants, sync direction/authority/conflict, health, events, retry/dead-letter, credential references, diagnostics and provider-specific configuration.
 
-## Tags / Taxonomy
-- tag/category administration
-- merge/archive
-- scope
+# S. API & MCP
+API clients/tokens/scopes/webhooks/rate limits, MCP clients/tool grants/read-write policy/confirmation/Audit.
 
-## Saved Views
-- shared-view permission
-- default views
+# T. Security & Privacy
+Authentication, MFA, sessions, step-up, abuse/rate controls, security events, Secure External Access, consent/data rights, retention/holds/export/deletion review.
 
-## Imports / Exports
-- allowed formats
-- file limits
-- duplicate rules
-- dry-run requirements
-- export scope/retention
+# U. System / Setup / Health
+- first-run Setup state/readiness;
+- installer locked/unlocked state;
+- runtime/database/storage/job/worker health;
+- migrations;
+- logs/diagnostics;
+- backups/restore tests;
+- updates/version;
+- delivery diagnostics;
+- feature rollout state;
+- redacted diagnostics bundle.
 
-## Data Quality
-- issue types
-- duplicate thresholds
-- stale/missing/mapping rules
-
-## Record lifecycle / numbering
-- prefixes/sequences
-- archive/trash/purge defaults
-- retention/hold integration
-
-# U. Plugins
-- installed/sources
-- permissions
-- compatibility
-- update/rollback
-- development-source policy
-- extension/navigation rules
-
-# V. Connectors
-- instances
-- authentication
-- mappings
-- capability grants
-- sync direction/authority/conflict policy
-- health
-- events
-- retry/dead-letter
-- credentials references
-- rate limits
-- diagnostics
-
-Specific connector settings may include Chatwoot, Cloudflare, payment providers, OpenRouter, Documenso, optional Uptime Kuma, OJS, WordPress, WooCommerce, email/calendar/storage.
-
-# W. API & MCP
-- REST API
-- API clients/tokens
-- scopes
-- webhooks
-- rate limits
-- MCP clients
-- tool grants
-- read/write policy
-- confirmation/approval
-- audit
-
-# X. Security & Privacy
-- authentication
-- MFA
-- password/session policy
-- devices
-- step-up
-- IP/rate controls where used
-- security events
-- Secure External Access policy
-- privacy/consent
-- data-right workflows
-- retention/legal/operational hold
-- export/deletion/anonymization
-
-# Y. System
-- health
-- jobs/queues
-- Monitoring Worker health
-- logs/diagnostics
-- storage health
-- backups
-- updates
-- feature flags
-- delivery diagnostics
-- redacted diagnostic bundle
-- About/version
+First-run Setup is a dedicated guided workflow. Post-install System Settings may inspect/repair configuration but cannot silently re-open owner bootstrap.
 
 ## Explicit exclusions
-Settings must not contain or imply:
-- HR
-- payroll
-- recruitment
-- leave/attendance
-- performance review
-- Timesheets/Time Tracking
-- Client Service Consumption/usage credits/hours remaining
+Settings must not contain or imply HR, payroll, recruitment, leave/attendance, performance review, Timesheets/Time Tracking/work timers, Client Service Consumption/usage credits/hours remaining, or current-run CMS configuration.
 
 ## Acceptance criteria
 - settings are searchable and domain-owned;
-- high-risk settings expose consequences and audit;
-- Operating Entity/Brand supports multi-brand future without complicating ordinary use;
-- monitoring is native with external connectors optional;
-- Àríyá is named consistently;
-- navigation remains simple even though Settings is deep;
-- excluded HR/timesheet/consumption features are absent.
+- staff HTML email signature and PDF signature are separate;
+- email head/header/body/signature/footer layers are independently configurable;
+- Proposal is the only offer settings domain;
+- duration pricing/discount/late-fee policies are explicit;
+- every final PDF signatory rule is configurable but mandatory;
+- Portal invitation defaults to commercial commitment;
+- Ariya autonomy remains permission/Action constrained;
+- first-run setup can be inspected but owner bootstrap cannot be reopened casually;
+- excluded domains are absent.

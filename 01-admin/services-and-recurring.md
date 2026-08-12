@@ -1,18 +1,21 @@
 # Admin — Service Catalogue & Client Services
 
 ## Purpose
-Model what an Operating Entity sells and continuously delivers, separating reusable Service Catalogue definitions from client-specific Client Service instances.
+Model what an Operating Entity sells and continuously delivers, separating reusable Catalogue definitions from client-specific Services and Recurring Arrangements.
 
 ## Service Catalogue Item
-A reusable commercial/operational offering.
+A reusable commercial/operational product or service offering.
 
 Fields may include:
 - name/code/category;
 - client-facing/internal description;
-- pricing model/base price/currency;
+- pricing basis;
+- base price/currency;
+- quantity unit where applicable;
+- duration unit/default duration where applicable;
 - tax defaults;
-- available billing cadence;
 - setup fee;
+- recurring/renewal eligibility;
 - included contractual scope;
 - default SLA/Support Entitlement;
 - default Project/onboarding template;
@@ -22,131 +25,121 @@ Fields may include:
 - status;
 - plugin extensions/custom fields.
 
-**Do not define consumption limits, remaining hours/credits or usage meters as a core Service capability.** Contractual scope can still describe what is included in natural/structured terms.
+## Pricing basis
+Canonical bases:
+- `flat` — one fixed amount;
+- `quantity` — quantity × unit price;
+- `duration` — duration × rate.
+
+Duration units support at least day, week, month, quarter and year.
+
+Examples:
+- logo design: flat;
+- five social graphics: quantity × unit price;
+- hosting for 12 months: 12 × monthly rate;
+- domain for 2 years: 2 × yearly rate.
+
+A duration-priced line is a measurement/pricing choice and **does not automatically create recurrence**.
+
+Manual custom lines remain allowed in Proposals/Invoices where policy permits.
+
+## Price Books / Rate Cards
+Reusable price books can define:
+- Operating Entity/Brand scope;
+- Catalogue item;
+- effective dates;
+- currency;
+- flat/quantity/duration rate;
+- client class or specific Organisation override;
+- active state.
+
+Historical accepted Proposal prices remain immutable when a Rate Card later changes.
+
+## Service Packages / Options
+Packages may bundle Catalogue items for Proposal convenience and may be presented as mutually exclusive options or selectable add-ons. Activation still creates clear underlying Client Service relationships where needed.
 
 ## Client Service
 A client-specific service relationship links:
 - Operating Entity;
 - Organisation;
-- Service Catalogue Item;
+- Catalogue Item/package source;
 - one or more Properties;
-- Proposal/Estimate/Contract source;
+- Proposal/Contract source;
 - start/end/renewal dates;
-- agreed price/currency;
-- Billing Schedule/Subscription where applicable;
-- tax/payment terms;
+- agreed price/currency/pricing basis snapshot;
+- Billing Schedule where applicable;
 - Support Entitlement;
-- service owner/Account Team context;
+- owner/Account Team context;
 - lifecycle status;
-- related Projects/Requests;
-- related Invoices;
-- Connector/Plugin configuration references.
+- Projects/Requests/Invoices;
+- Connector/Plugin references.
 
-## Lifecycle
-Suggested:
-Draft -> Pending Activation -> Active -> Suspended -> Pending Renewal -> Ended/Cancelled.
+Suggested lifecycle: Draft -> Pending Activation -> Active -> Suspended -> Pending Renewal -> Ended/Cancelled.
 
-Custom states may be controlled, but core semantics remain clear.
+## Recurring Arrangement
+A first-class recurring commercial/operational arrangement such as hosting, maintenance or retainer.
+
+It may define:
+- Organisation/Operating Entity;
+- linked Client Services/Catalogue lines;
+- Properties;
+- Contract/accepted Proposal;
+- frequency;
+- start/end;
+- next billing/renewal date;
+- billing mode: auto-create draft, auto-issue only if explicitly configured, or manual;
+- payment terms;
+- pause/cancel rules;
+- renewal behavior;
+- status.
+
+A Recurring Arrangement is not synonymous with an external payment-provider subscription. Provider subscription is only a billing integration mapping.
 
 ## Activation
-Activation can orchestrate existing domains via Client Lifecycle/Automations:
-- onboarding plan;
+Activation can orchestrate existing domains via Automations/Action Registry:
+- Portal invitation/onboarding pack;
 - Property association/intake;
-- Project creation;
-- Requests/Client Actions;
+- Project creation from template;
+- Tasks/Requests/Client Actions;
 - Billing Schedule;
 - Support Entitlement;
-- Portal access;
-- Chatwoot mapping;
+- Chatwoot/Ariya mapping;
 - Monitoring setup;
 - Connector provisioning;
 - Knowledge/runbook setup.
 
 Do not create a second hidden service-work engine.
 
-## Recurring billing relationship
-A Client Service may recur commercially, while Subscription/Billing Schedule describes recurring financial behavior.
-
-`Client Service` and `Subscription` are not synonyms:
-- Client Service = service relationship/scope;
-- Subscription/Billing Schedule = recurring commercial billing arrangement.
-
-A one-time Client Service may have no Subscription. A recurring Client Service may be manually invoiced without an external provider subscription.
-
 ## Renewal
-Service renewal uses the shared Renewal/Expiry Obligation and commercial workflow.
+Service/Recurring Arrangement renewal can involve notice windows, owner, client decision, price/scope revision, Proposal, Contract/signature, Billing/payment dependency, continuation/suspension/end and verification.
 
-Renewal can involve:
-- notice windows;
-- responsible owner;
-- client decision;
-- price/scope revision;
-- Proposal/Estimate;
-- Contract/signature;
-- Billing/payment dependency;
-- continuation/suspension/end;
-- verification/completion.
+Property-specific Domain/Hosting/Certificate expiry obligations remain linked but separate.
 
-Property-specific expiry obligations such as Domain/Hosting/Certificate remain linked but separate from Client Service renewal.
+## Project Templates
+Catalogue items/packages may reference a default Project Template so accepted work can instantiate repeatable Milestones, Tasks, Approvals and client-visible defaults without hardcoding delivery into Sales.
 
-## Service packages
-Catalogue packages may bundle multiple Service Catalogue Items/pricing lines for commercial convenience while activation still creates clear underlying Client Service relationships as required.
+## Portal
+Portal may show service name/description, status, covered Properties, support entitlement, start/renewal date, related signed commercial documents, Billing state and client responsibilities. No usage/remaining allowance display exists.
 
-## Client visibility
-Portal may show:
-- Service name/description;
-- status;
-- covered Properties;
-- Support Entitlement summary;
-- start/renewal date;
-- related commercial documents;
-- Billing status/next action;
-- client responsibilities/Requests.
-
-No usage/remaining allowance summary is shown.
-
-## Attention / Notifications
-Attention:
-- activation blocked;
-- renewal approaching with no action;
-- client decision/payment required;
-- Service suspended/at risk;
-- required setup/Connector missing.
-
-Notifications cover material activation/renewal/change/suspension/end events according to policy.
-
-## Automations
-Examples:
-- Contract executed -> create Pending Activation Client Service;
-- Service activated -> create onboarding steps / Support mapping / Monitoring setup;
-- renewal window -> create Renewal Obligation/Opportunity;
-- Service ended -> begin appropriate offboarding/access review.
-
-## API / MCP / Àríyá
-Examples:
-- list_service_catalogue
-- get_client_services
-- get_service_renewals
-- create_client_service
-- activate_client_service
-- change_client_service_status
-
-Commercial mutations use Action Registry, permission and Audit.
-Àríyá may explain a Service's scope/status/renewal using authorized contract/catalogue context.
+## Ariya
+Ariya may explain Service scope/status/renewal, recommend Catalogue/Package choices from authorised discovery context, surface pricing anomalies, Watch renewals and create controlled Tasks/Proposals through registered actions.
 
 ## Product exclusions
-Service features must not introduce:
-- Client Service Consumption;
-- remaining-hours/credits dashboards;
-- usage/retainer consumption ledgers;
-- Timesheet-derived service usage;
-- HR/workforce utilization.
+Do not define consumption limits, remaining hours/credits, usage meters, Timesheet-derived usage, work timers or HR/workforce utilization.
 
-If a future specialist product genuinely needs metered usage, it must be a deliberate plugin/domain decision rather than a hidden core assumption.
+## Acceptance criteria
+- pricing basis is explicit and supports duration;
+- duration does not imply recurrence;
+- Price Books/packages preserve accepted historical prices;
+- Client Service and Recurring Arrangement are distinct;
+- external provider subscription is only a Connector/Billing mapping;
+- activation reuses shared domains;
+- no consumption/time/HR feature is introduced.
 
-## Lovable build slices
-1. Service Catalogue list/detail/editor.
-2. Client Service workspace.
-3. activation/onboarding relationships.
-4. Billing/Support/Property relationships.
-5. Renewal workflow + Portal exposure.
+## Build slices
+1. Catalogue list/detail/editor + pricing basis.
+2. Price Books/Rate Cards + packages/options.
+3. Client Service workspace.
+4. Recurring Arrangement lifecycle/Billing relationship.
+5. activation/onboarding/Project Template relationships.
+6. Renewal + Portal exposure.

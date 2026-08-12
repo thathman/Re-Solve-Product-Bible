@@ -1,258 +1,167 @@
 # Billing & Finance Operations
 
 ## Purpose
-Billing converts commercial commitments into invoices, payments, receipts, credits, refunds, recurring charges and operational financial visibility without hard-coding any payment provider or becoming a full statutory accounting/ERP suite.
+Billing converts commercial commitments into Invoices, Payments, Receipts, Credits, Adjustments, Refunds, recurring charges and operational financial visibility without hard-coding a payment provider or becoming a full statutory accounting/ERP suite.
 
 ## Core records
-Invoice, Invoice Item, Payment, Payment Allocation, Receipt, Credit Note, Refund, Subscription, Billing Schedule, Payment Schedule, Deposit Requirement, Payment Method Reference, Reconciliation Record, Tax Snapshot, Currency Snapshot, Dunning Event, Account Statement Reference and Credit-Control Action.
-
-Client Service remains linked from the Service domain. A recurring Client Service may have a Billing Schedule/Subscription, but Re:Solve does **not** maintain Client Service Consumption, hours used/remaining or usage-credit ledgers.
+Invoice, Invoice Item, Invoice/Commercial Adjustment, Payment, Payment Allocation, Receipt, Credit Note, Refund, Billing Schedule, Provider Subscription Mapping, Payment Schedule, Deposit Requirement, Payment Method Reference, Reconciliation Record, Tax Snapshot, Currency Snapshot, Dunning Event, Account Statement Reference and Credit-Control Action.
 
 ## Principles
 - financial records preserve immutable history where financially consequential;
+- Payment is evidence of money received, not a container for penalties/discounts;
 - provider callbacks/events do not establish truth without verification;
 - payment capability is provider-neutral through PaymentConnector implementations;
-- optional provider packages may be Plugins that register PaymentConnector implementations;
-- amounts use precise money representation;
-- numbering, tax, currency and terms are configurable;
+- amounts use precise integer minor-unit representation;
+- unlike currencies are never silently aggregated;
 - material writes are audited;
-- billing does not depend on Timesheets/Time Tracking;
-- generated invoice/receipt/statement presentation uses Document Studio.
+- generated final Billing PDFs are signed through Document Studio;
+- Billing does not depend on Timesheets/Time Tracking/work timers/Client Service Consumption.
 
 ## Navigation
-Within Billing:
-`Overview | Invoices | Payments | Receipts | Credit Notes | Recurring | Reconciliation | Statements / Credit Control`
+`Overview | Invoices | Payments | Receipts | Credit Notes & Adjustments | Recurring | Reconciliation | Statements / Credit Control`
 
-Refunds and advanced actions can live contextually rather than bloating top-level navigation.
-
-## Billing overview
-Prioritize operational decisions:
-- outstanding receivables;
-- overdue receivables;
-- due soon;
-- payments received;
-- failed/unmatched payments;
-- recurring invoices/charges upcoming;
-- deposits/payment milestones due;
-- credit/refund activity;
-- aging buckets;
-- clients requiring credit-control attention;
-- reconciliation issues.
-
-Use Tremor-style metrics/trackers/charts only when they add real decision value.
+Refunds, deposits and advanced actions can live contextually rather than bloating top-level navigation.
 
 ## Invoices
-Fields may include human reference/number, Operating Entity, Organisation, billing Contact, currency, issue/due dates, status, lines, tax snapshot, discounts, subtotal/total, paid/balance, payment terms, linked Contract/Proposal/Project/Client Service, notes/client memo, Document Studio version and delivery history.
+Fields may include human reference/number, Operating Entity, Organisation, Billing Contact, currency, issue/due dates, status, lines, tax snapshot, discounts, adjustments, subtotal/total, paid/balance, payment terms, linked Contract/Proposal/Project/Client Service, notes/client memo, signed Document Studio snapshot and delivery history.
 
-States: Draft -> Approved -> Issued -> Partially Paid -> Paid, plus Overdue, Void and Written Off where permitted.
+Suggested lifecycle: Draft -> Approved -> Issued -> Partially Paid -> Paid, plus Overdue, Void and Written Off where permitted.
 
-Issued invoices are not edited in place when financial meaning changes. Use controlled adjustment, Credit Note, void/reissue or approved correction rules.
+Issued Invoices are not edited in place when financial meaning changes. Use controlled Adjustment, Credit Note, void/reissue or approved correction rules.
 
-## Document rendering
-Invoice, Receipt, Credit Note and Account Statement documents use Document Studio templates/versioning/branding.
+## Invoice line pricing
+An Invoice line may preserve pricing semantics from its Proposal/Service source:
+- flat amount;
+- quantity × unit price;
+- duration × rate.
 
-A historical issued financial document must always be reproducible from its stored snapshot/context and must not silently change because a template was edited later.
+Duration units support at least day, week, month, quarter and year. Calculations remain database/server authoritative and precise.
+
+## Discounts
+Discounts can be explicit line-level or Invoice-level fixed/percentage values where allowed. The reason/source may be required by policy and material discounts may require Approval.
+
+Discounts must remain visible financial inputs; do not hide them inside Payment or tax calculations.
+
+## Commercial / Invoice Adjustments
+Adjustments represent amount-due changes that are not Payments.
+
+Potential types:
+- late fee;
+- penalty;
+- service charge;
+- approved discount correction;
+- write-off;
+- credit application;
+- refund adjustment;
+- other approved fee/correction.
+
+Adjustment evidence includes Invoice, type, fixed/percentage/calculation basis, amount/currency, reason, source/policy, actor, timestamp, approval where required, reversal/supersession link where applicable and Audit.
+
+Historical Adjustments are corrected with new compensating evidence rather than silent destructive edits.
+
+## Late-fee / penalty policy
+Settings may define policies such as:
+- grace period;
+- fixed or percentage fee;
+- once versus permitted recurrence;
+- maximum/cap;
+- eligible Invoice states/types;
+- client-safe notice text;
+- approval/waiver rules.
+
+When a policy fires, it creates a real Adjustment. It does not mutate the original Payment or fabricate a Payment.
+
+## Authoritative balance
+Invoice amount due/balance derives from authoritative lines, taxes, explicit discounts, Adjustments/Credit Notes and effective Payment allocations. It is not independently editable shadow truth.
 
 ## Payments
-Payments may originate from PaymentConnector events, approved manual bank/cash/offline recording, reconciliation import or approved adjustment.
+Payments may originate from verified provider events, approved manual bank/cash/offline recording, reconciliation import or another approved source.
 
-Fields include provider/Connector Instance, external reference, payer, amount/currency, received/verified timestamps, status, allocations, fees where known, evidence, reconciliation state, source/provenance and correlation.
+Fields include provider/Connector Instance, external reference, payer, amount/currency, received/verified timestamps, status, allocations, provider fees where known, evidence, reconciliation state, source/provenance and correlation.
 
-States may include Pending, Verified, Partially Allocated, Allocated, Failed, Reversed and Refunded.
+Suggested states include Pending, Verified, Partially Allocated, Allocated, Failed, Reversed and Refunded.
 
-**Browser return/success pages never establish payment truth.**
+**Browser return/success pages and inbound email text never establish Payment truth.**
+
+Ariya may recognize a payment-proof email and route it to reconciliation review, but cannot mark the Payment verified from prose/attachment alone without the configured evidence workflow.
 
 ## Payment provider contract
-Payment providers implement the provider-neutral PaymentConnector contract.
+Payment providers implement a provider-neutral PaymentConnector. Capabilities may include create payment intent/link, query transaction, verify/normalize provider event, refund, settlement/reconciliation metadata and health.
 
-Capabilities may include:
-- create payment intent/link;
-- query/get transaction;
-- verify/normalize provider event;
-- refund where supported and permitted;
-- settlement/reconciliation metadata;
-- health.
-
-Provider-specific configuration/UI belongs to the provider package/Connector Instance, not scattered across Billing records.
+Provider-specific UI/configuration belongs to Connector instances/packages, not scattered Billing state.
 
 ## Reconciliation
-Support:
-- unmatched payment queue;
-- suggested matches;
-- manual matching;
-- split allocation;
-- overpayment/credit handling where enabled;
-- duplicate detection;
-- provider/bank import through approved connector/importers;
-- provenance and reconciliation Audit.
-
-Suggestions must not silently mutate financial records.
+Support unmatched payment queue, suggested matches, manual matching, split allocation, overpayment/credit handling, duplicate detection and provider/bank import. Suggestions do not silently mutate financial records.
 
 ## Receipts
-Generated only from verified/approved Payment truth. A Receipt has its own human reference, linked Payment allocations, issue timestamp, Document Studio snapshot and delivery history.
+Generated only from verified/approved Payment truth. Receipt has its own reference, linked allocations, issue timestamp, **signed immutable PDF snapshot** and delivery history.
 
-## Credit Notes
-Controlled reason, amount/lines, linked Invoice and resulting balance/refund/credit behavior. Historical meaning remains immutable.
+## Credit Notes and Refunds
+Credit Notes preserve issued-Invoice history through controlled reason/amount/lines and balance/refund/credit behavior.
 
-## Refunds
-Request -> Approval where required -> provider/manual execution -> verification -> allocation/accounting result.
+Refund lifecycle: Request -> Approval where required -> provider/manual execution -> verification -> allocation/financial result. Failed attempts remain visible.
 
-Failed attempts remain visible. Re:Solve never marks refund complete solely because a browser/provider UI returned success.
+## Recurring billing / arrangements
+A Recurring Arrangement/Client Service may link to a Billing Schedule. The schedule can define price/currency, frequency, start/end, tax, payment terms, Properties and Contract/Proposal source.
 
-## Recurring billing / Subscriptions
-A recurring Client Service may link to a Subscription/Billing Schedule containing:
-- Organisation;
-- Client Service;
-- price/currency;
-- billing frequency;
-- start/end/renewal;
-- quantity when commercially meaningful;
-- tax;
-- payment terms;
-- related Properties;
-- Contract;
-- Support Entitlement;
-- state.
-
-Schedules generate Invoice drafts or provider charges according to policy. Do not auto-issue/auto-charge unless explicitly configured.
-
-No consumption-meter/remaining-hours feature exists.
+Schedules may create Invoice drafts or provider charges according to explicit policy. Auto-issue/auto-charge is never assumed.
 
 ## Deposits and payment schedules
-Commercial terms may define:
-- deposit amount/percentage;
-- due event/date;
-- milestone installment;
-- remaining balance schedule;
-- invoice-generation rule;
-- completion/payment state.
-
-Deposits/payment schedules remain linked to Proposal/Estimate/Contract and downstream Invoices rather than becoming disconnected records.
+Accepted Proposals/Contracts may define percentage or fixed deposit, milestone installment, selected-line billing or remaining-balance schedule. Downstream Invoice generation is idempotent and linked to the originating terms.
 
 ## Dunning and credit control
-Configurable stages can include:
-- due soon;
-- due;
-- overdue;
-- escalation;
-- account/service risk warning;
-- payment-plan discussion;
-- final handling.
+Configurable stages can include due soon, due, overdue, escalation, account/service risk warning, payment-plan discussion and final handling.
 
-Credit-control context may include:
-- overdue exposure;
-- aging;
-- client risk/hold policy;
-- deposit/prepayment requirement;
-- responsible Account/Finance owner;
-- latest communication/action;
-- next action.
-
-Any service/account hold is a deliberate registered Action and should not be triggered by one noisy provider event.
+Service/account hold is a deliberate registered Action and should not be triggered by one noisy event.
 
 ## Account Statements
-Generate client-facing statements from authoritative Invoice, Payment, Credit Note and balance data using Document Studio.
-
-Statement period, opening/closing balance, transactions and outstanding items must be reproducible and permission-scoped.
+Generate signed client-facing statements from authoritative Invoice, Payment, Credit Note and Adjustment truth. Period/opening/closing balance and transactions must be reproducible.
 
 ## Operational spend linkage
-Approved Expense records may be associated with Organisation/Project/Property/Service and may be proposed for Invoice conversion where contractually allowed.
+Approved Expense records may be associated with Organisation/Project/Property/Service and proposed for Invoice conversion where contractually allowed. Project financial reporting may compare committed revenue/approved scope against explicit expenses/costs without Timesheet labor costing.
 
-Billing does not include payroll, employee expenses or labor-time costing.
+## Signed Billing documents
+Every final/issued Invoice, Receipt, Credit Note and Account Statement PDF must carry issuer signature and immutable Document Studio evidence:
+- exact rendered version;
+- Operating Entity/Brand;
+- authorised signatory/signature snapshot;
+- issue timestamp;
+- document hash;
+- verification reference/code.
+
+Invoices/Receipts normally need issuer signature only, not client signature.
 
 ## Portal
-Clients can view permitted:
-- Invoices;
-- Payment status/history;
-- Receipts;
-- Credit Notes;
-- available payment action;
-- recurring billing/active services;
-- deposits/payment milestones;
-- Account Statements;
-- renewals requiring payment/decision.
+Clients can view permitted signed Invoices, Payment status/history, Receipts, Credit Notes/Adjustments safe for client, available payment action, recurring arrangements/active services, deposits/payment milestones, Account Statements and renewals requiring payment/decision.
 
-Client Service Consumption is not shown because the product does not track it.
+## Attention / Notifications
+Examples: Invoice overdue, late-fee policy pending/applied, deposit overdue, unmatched Payment, failed refund, provider auth issue, credit-control review, recurring-generation failure.
 
-## Attention
-Examples:
-- invoice overdue;
-- deposit overdue;
-- unmatched payment requiring reconciliation;
-- failed refund requiring action;
-- payment-provider authentication issue;
-- client over credit threshold/hold review;
-- recurring billing generation failure.
+Avoid duplicate reminders; Attention resolves only when source condition resolves.
 
-Attention resolves from the underlying condition.
-
-## Notifications
-Invoice approved/issued/due/overdue, payment verified/failed/unmatched, receipt issued, Credit Note, refund lifecycle, recurring billing upcoming and renewal/payment action events.
-
-Use preference/dunning policy and avoid duplicate reminders.
-
-## Automations
-Examples:
-- executed Contract -> create approved Billing Schedule;
-- schedule due -> draft Invoice;
-- Invoice overdue -> dunning Attention/notifications;
-- verified Payment -> deterministic allocation + Receipt where policy allows;
-- unmatched Payment -> Finance Attention;
-- full Payment -> update linked commercial state through registered action when configured.
+## Ariya
+Ariya may explain balances and why they changed, summarize receivables, identify overdue risk, draft collection messages, recognize incoming payment evidence for triage, and recommend reconciliation matches. It must cite authoritative evidence and never fabricate Payment truth.
 
 ## Permissions
-Canonical examples:
-- `billing.read`
-- `billing.manage`
-- `billing.invoices.create`
-- `billing.invoices.approve`
-- `billing.invoices.issue`
-- `billing.payments.read`
-- `billing.payments.record`
-- `billing.payments.reconcile`
-- `billing.credits.manage`
-- `billing.refunds.request`
-- `billing.refunds.approve`
-- `billing.subscriptions.manage`
-- `billing.pricing_sensitive.read`
-- `billing.settings.manage`
-
-## API / MCP / Àríyá
-Versioned API exposes provider-neutral Billing resources/actions with idempotency and Audit.
-
-Candidate MCP tools:
-- get_invoice
-- list_overdue_invoices
-- get_client_balance
-- get_payment_status
-- list_unmatched_payments
-- get_subscription
-- get_account_statement_summary
-- draft_invoice
-
-Issuing, recording, refunding, crediting, holding an account or changing financial records uses Action Registry + high-trust scope/confirmation.
-
-Àríyá may explain balances, reconcile context or draft client follow-up using evidence, but never fabricates Payment truth.
-
-## PWA/mobile
-Mobile supports invoice/statement review, payment summary, reconciliation triage, receipt lookup, client payment view and approvals. High-impact finance actions require connectivity and stronger confirmation where configured.
+Examples include `billing.read`, `billing.manage`, `billing.invoices.create`, `billing.invoices.approve`, `billing.invoices.issue`, `billing.payments.record`, `billing.payments.reconcile`, `billing.adjustments.manage`, `billing.credits.manage`, `billing.refunds.request`, `billing.refunds.approve`, `billing.recurring.manage` and `billing.settings.manage`.
 
 ## Acceptance criteria
-- browser return pages never establish Payment truth;
+- browser/email text never establishes Payment truth;
 - duplicate provider events do not duplicate Payments;
 - Receipt cannot exist without verified/approved Payment;
-- issued financial records preserve history;
-- Document Studio rendering cannot rewrite historical issued content;
+- Payment is not mutated to hold penalties/discounts;
+- late fees/penalties are real audited Adjustments;
+- Invoice balance is derived from authoritative components;
+- every issued Billing PDF is signed and immutable;
+- historical templates/signatures cannot rewrite old documents;
 - cross-client access is denied server-side;
-- provider outage does not corrupt core records;
-- Account Statements derive from authoritative Billing data;
-- no Timesheet, HR or Client Service Consumption dependency exists.
+- no Timesheet/work-timer/HR/consumption dependency exists.
 
-## Lovable build slices
+## Build slices
 1. Billing overview + Invoice list/workspace.
-2. Invoice creation/approval/issue + Document Studio rendering.
-3. Payment records + allocations + Receipts.
-4. PaymentConnector contract + demo provider.
-5. Recurring billing + deposits/payment schedules + dunning.
-6. Reconciliation + Credits + Refunds.
-7. Account Statements + credit-control operations.
+2. Invoice creation/approval/issue + signed Document Studio output.
+3. Adjustment/Credit model + discount/late-fee policy.
+4. Payment records/allocations/Receipts/reconciliation.
+5. PaymentConnector + provider evidence.
+6. Recurring Billing + deposits/payment schedules + dunning.
+7. Refunds/Statements/project-financial context.

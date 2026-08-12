@@ -2,7 +2,7 @@
 
 The Product Bible is the canonical source of truth for Re:Solve product behavior, flows, roles, states, permissions, information architecture, integrations, extension points, design system, build discipline and acceptance criteria.
 
-The product may be specified comprehensively here, but implementation is delivered in small, reviewable Lovable build slices.
+The product may be specified comprehensively here, but implementation is delivered in small, reviewable build slices inside owner-visible phases with complete atomic ledgers.
 
 ## Canonical Foundation
 - [Product Thesis](00-foundation/product-thesis.md)
@@ -14,23 +14,42 @@ The product may be specified comprehensively here, but implementation is deliver
 - [Information Architecture](00-foundation/information-architecture.md)
 - [Operating Entities & Brands](00-foundation/operating-entities-and-brands.md)
 
+### Current canonical product decisions
+- **Tasks** is the staff execution surface; `My Work` is deprecated.
+- **Proposal** unifies Proposal/Quote/Estimate into one offer domain with presentation styles.
+- Service pricing supports flat, quantity and **duration** bases.
+- Payment remains transaction evidence; late fees/penalties/credits/write-offs use explicit Adjustments/Credit/Refund records.
+- Forms is a shared platform primitive for discovery, Project questionnaires, onboarding, surveys, feedback/reviews and intake.
+- Communications includes Connected Mailboxes, inbound/outbound email, Shared Inbox/Triage, staff HTML signatures, templates and review requests.
+- **Ariya (Àríyá)** is baked into the OS as the intelligence fabric across authorised domains with Ask/Draft/Act/Watch/Investigate/Recommend modes.
+- Portal live chat uses `Portal -> Ariya -> Chatwoot -> Ariya -> Client`.
+- Native Property Health/Monitoring is first-class and Ariya can Watch/investigate it through controlled capabilities.
+- **Every issued/final generated PDF is issuer-signed**, including Invoices and Receipts, with immutable signature snapshot/hash/verification evidence.
+- Default Portal invitation occurs at commercial commitment, normally Proposal acceptance; pre-commitment flows can use Secure External Access.
+- First-run setup/installation is built into the product and locks after bootstrap.
+- Admin and Client Portal require a deliberate experience redesign before product completion.
+- Public/headless CMS is distant-future only and explicitly outside the current development run.
+- No HR, payroll, attendance/leave/recruitment/performance, Timesheets/Time Tracking/work timers or Client Service Consumption metering.
+
 ## Design & Core UI
 - [Design Direction](09-design/design-direction.md)
 - [Design System](09-design/design-system.md)
 - [Core UI Component Framework](09-design/core-ui-framework.md)
 - [Navigation & Application Chrome](09-design/navigation-and-application-chrome.md)
+- [Admin and Client Portal Experience Reset](09-design/admin-and-portal-experience-reset.md)
 - [Performance, Device & Design QA](09-design/performance-device-and-design-qa.md)
 
 ### Non-negotiable UI direction
 Re:Solve's Core UI Framework is source-owned and heavily influenced/implemented from shadcn/ui, Untitled UI React, Tremor, React Aria/Base UI/Radix, TanStack Table/Query and approved specialist libraries where justified.
 
-Navigation remains simple and business-readable, closer to straightforward Perfex/Brevo-style clarity than Odoo app launchers or Twenty-style object/module navigation.
+Navigation remains simple and business-readable, closer to straightforward service-CRM clarity than app-launcher/module-grid systems. The experience-reset document overrides any assumption that the current Admin/Portal shells are final visual authority.
 
 ## Admin OS
 ### Shell and Home
 - [Admin OS Shell](01-admin/shell.md)
 - [Admin Dashboard](01-admin/dashboard.md)
-- [My Work](01-admin/my-work.md)
+- [Tasks](01-admin/tasks.md)
+- [`My Work` — deprecated compatibility note](01-admin/my-work.md)
 
 ### Clients / CRM / Delivery
 - [Organisations and Contacts](01-admin/organisations-and-contacts.md)
@@ -61,7 +80,7 @@ Navigation remains simple and business-readable, closer to straightforward Perfe
 - [Billing](02-portal/billing.md)
 - [Support](02-portal/support.md)
 - [Files, Vault & Knowledge](02-portal/files-vault-knowledge.md)
-- [Organisation & Account](02-portal/organisation-and-account.md)
+- [Organisation & Account / Portal Activation](02-portal/organisation-and-account.md)
 
 ## Platform Primitives
 ### Attention, Actions and Workflows
@@ -79,16 +98,19 @@ Navigation remains simple and business-readable, closer to straightforward Perfe
 - [Collaboration & Following](03-platform/collaboration-and-following.md)
 - [Booking & Public Scheduling](03-platform/booking-and-public-scheduling.md)
 - [Feedback, Surveys & Business Goals](03-platform/feedback-surveys-and-business-goals.md)
-- [Operational Communications & Announcements](03-platform/operational-communications-and-announcements.md)
+- [Communications & Announcements](03-platform/operational-communications-and-announcements.md)
 
 ### Documents, Files and Knowledge
-- [Document Studio](03-platform/document-studio.md)
+- [Document Studio / Signed PDFs](03-platform/document-studio.md)
 - [Files Platform](03-platform/files.md)
 - [Re:Solve Knowledge Platform](03-platform/knowledge.md)
 - [Secure External Access](03-platform/secure-external-access.md)
 
 ### Properties / Monitoring
 - [Native Monitoring Engine](03-platform/monitoring-engine.md)
+
+### Installation / System foundation
+- [First-Run Setup and Installation](03-platform/first-run-setup-and-installation.md)
 
 ### Notifications / Navigation / Data
 - [Notifications Platform](03-platform/notifications.md)
@@ -101,16 +123,18 @@ Navigation remains simple and business-readable, closer to straightforward Perfe
 - [Privacy, Consent & Data Rights](03-platform/privacy-consent-and-data-rights.md)
 - [PWA & Responsive Experience](03-platform/pwa.md)
 
-## Àríyá / AI
-- [Àríyá — Re:Solve AI](04-ai/re-solve-ai.md)
-- [Àríyá Product Identity & Experience](04-ai/ariya-experience.md)
+## Ariya / AI
+- [Ariya — Re:Solve Intelligence Fabric](04-ai/re-solve-ai.md)
+- [Ariya Product Identity & Experience](04-ai/ariya-experience.md)
 
-Chatwoot Captain remains a separate support AI owned by Chatwoot.
+Ariya is separate from Chatwoot Captain. Portal human-support chat uses Ariya/Chatwoot integration rather than a duplicate Re:Solve live-chat console.
 
 ## Extensions
 - [Plugin Platform](05-extensions/plugins.md)
 - [Connector Platform](05-extensions/connectors.md)
 - [Planned Domain Extensions](05-extensions/planned-domain-extensions.md)
+
+The headless CMS is recorded only as a distant-future expansion in Planned Domain Extensions.
 
 ## Connector Contracts
 - [Core Connector Contracts](06-connectors/core-connectors.md)
@@ -125,15 +149,27 @@ Uptime Kuma is optional compatibility connector territory; Re:Solve has a native
 ## Security
 - [Security Architecture](08-security/security-architecture.md)
 
-# Lovable Build System
+# Build System
 - [Lovable Development Environment](10-build/lovable-environment.md)
 - [Lovable Persistent Knowledge — detailed source](10-build/lovable-knowledge.md)
 - [Lovable Skills Catalogue](10-build/lovable-skills.md)
 - [Lovable Setup Sequence](10-build/lovable-setup-sequence.md)
 - [Build Slice Protocol](10-build/build-slice-protocol.md)
+- [Phase Execution & Checkpoint Protocol](10-build/phase-execution-protocol.md)
 - [Architecture & Portability Checklist](10-build/architecture-portability-checklist.md)
 - [Demo Data Blueprint](10-build/demo-data-blueprint.md)
 - [FOUND-001 — Application + Core UI Foundation](10-build/prompts/FOUND-001-foundation.md)
+
+## Phase governance — non-negotiable
+Before **every** implementation phase begins:
+1. expand it into a complete stable numbered atomic ledger;
+2. show the entire expansion to the owner;
+3. absorb/assign relevant Product Oversight items;
+4. only then execute build slices.
+
+Every meaningful checkpoint/completion summary must show the **full current-phase task ledger** with all complete, active, pending and deliberately deferred tasks. Broad roadmap Steps do not replace the phase ledger.
+
+See [Phase Execution & Checkpoint Protocol](10-build/phase-execution-protocol.md).
 
 ## Lovable Launch Pack
 Start here when the Product Bible is merged and the first Lovable build is ready:
@@ -206,24 +242,27 @@ Planning/build sequence:
 2. define actors/Principals, goal, scope, states, permissions and flows;
 3. specify the complete product experience;
 4. validate flow completeness/cross-domain ownership;
-5. prototype high-impact interactions where needed;
-6. define acceptance criteria;
-7. break implementation into small Lovable build slices;
-8. configure Project Knowledge and relevant canonical skills;
-9. build one slice;
-10. run functional/security/responsive/PWA/accessibility/Core UI/design/portability review;
-11. update Product Bible first if implementation reveals genuine new product truth;
-12. only then proceed to the next slice.
+5. expand the implementation phase into its full numbered ledger and show the owner;
+6. prototype high-impact interactions where needed;
+7. define acceptance criteria;
+8. break implementation into small build slices;
+9. configure Project Knowledge and relevant canonical skills;
+10. build one slice;
+11. run functional/security/responsive/PWA/accessibility/Core UI/design/portability review;
+12. update Product Bible first if implementation reveals genuine new product truth;
+13. update the full owner-visible phase checklist/checkpoint;
+14. only then proceed to the next slice/phase.
 
 ## Explicit Product Exclusions
-Re:Solve core does **not** include:
+Re:Solve core/current run does **not** include:
 - HR management;
 - payroll;
 - recruitment;
 - leave/attendance;
 - employee performance reviews;
-- Timesheets / Time Tracking;
-- Client Service Consumption / remaining-hours/credits usage metering.
+- Timesheets / Time Tracking / work timers;
+- Client Service Consumption / remaining-hours/credits usage metering;
+- the distant-future CMS/public content platform.
 
 Teams, assignments, Account Teams, Project deadlines, Reminders, Booking and operational Expenses are allowed business capabilities but must not drift into HR/Timesheet systems.
 
@@ -242,4 +281,4 @@ Teams, assignments, Account Teams, Project deadlines, Reminders, Booking and ope
 10-build/
 ```
 
-The Product Bible can remain expansive. Lovable implementation remains intentionally gradual and slice-bound.
+The Product Bible can remain expansive. Implementation remains intentionally phase-led, slice-bound and evidence-driven.

@@ -1,282 +1,249 @@
 # Re:Solve Terminology
 
-This document defines canonical product language. Feature specs must reuse these terms unless a deliberate Product Bible decision changes them.
+This document defines canonical product language. Feature specs and implementation must reuse these terms unless a later deliberate Product Bible decision changes them.
 
 ## Workspace
-The top-level Re:Solve installation boundary. The first deployment has exactly one Workspace even though multi-workspace SaaS behavior is not required.
+Top-level Re:Solve installation boundary. The first deployment has exactly one Workspace.
 
 ## Operating Entity
-A legal/operational business using Re:Solve to deliver services and issue commercial documents. Airix Media is an Operating Entity in the first deployment, not an ordinary client Organisation.
+Legal/operational business using Re:Solve to deliver services and issue commercial documents. Airix Media is an Operating Entity in the first deployment, not an ordinary client Organisation.
 
 ## Brand
-A customer-facing identity belonging to an Operating Entity, controlling approved portal/document/communication identity.
+Customer-facing identity belonging to an Operating Entity, controlling approved Portal/document/communication identity.
 
 ## Principal
-Any actor that can receive authorization or perform a Re:Solve action.
-
-Principal types may include Human User, Service Account, API Client, MCP Client, Plugin and Connector.
+Any actor that can receive authorization or perform a Re:Solve action: Human User, Service Account, API Client, MCP Client, Plugin or Connector.
 
 ## User
-An authenticated human identity. A User may operate as staff, client member or contractor depending on memberships/grants.
+Authenticated human identity. A User may operate as staff, client member or contractor depending on grants/Memberships.
 
 ## Organisation
-A client, prospect, partner, vendor or other relationship entity represented in Re:Solve.
-
-`Client` is a lifecycle/business relationship state, not a separate database identity from Organisation.
+Client, prospect, partner, vendor or other relationship entity. `Client` is a relationship/lifecycle state, not a separate identity from Organisation.
 
 ## Contact
-A person associated with an Organisation or, where appropriate, acting independently. Contact and User are related but not identical.
+Canonical business person record associated with one or more Organisations. Contact and User are related but not identical.
 
 ## Membership
-A User's relationship to an Organisation/Workspace context including role, permissions, status and scope.
+A User's access relationship to an Organisation/Workspace context including role/capabilities, state and scope. Portal Membership is normally invited at commercial commitment, usually Proposal acceptance.
 
-## Team
-A group of Users used for assignment, routing, ownership, notifications, reporting or access defaults. Team is not an HR employee-management record.
+## Team / Account Team
+Team groups Users for assignment/routing/ownership/access defaults. Account Team represents named client responsibilities. Neither is HR.
 
-## Account Team
-Named operational responsibilities for a client Organisation, such as Account Owner, Technical Owner, Finance Owner or Delivery Owner.
-
-## Role
-A named bundle of permissions.
-
-## Permission
-A stable capability identifier granted to a Principal under a scope.
-
-Canonical grammar is `domain.action` or `domain.resource.action`.
-
-## Access Grant
-An explicit permission/role assignment scoped to a Workspace, Organisation, Property, Project, Vault Item or another protected resource.
+## Role / Permission / Access Grant
+Role is a permission bundle. Permission uses canonical `domain.action` or `domain.resource.action`. Access Grant scopes capability to a protected context.
 
 ## Property
-A first-class digital or operational asset that an Organisation owns, operates, publishes, hosts, manages or depends on.
+First-class digital/operational asset an Organisation owns, operates, publishes, hosts, manages or depends on: Website, Journal, OJS installation, Domain, Server, Hosting, Store, Application, etc.
 
-Examples include Website, Journal, OJS Installation, Domain, Server, Hosting, Store and Application.
+## Property Type / Relationship
+Configurable classification and typed relationship between Properties.
 
-Properties may be nested and may also have typed relationships.
+## Monitor / Monitoring Signal
+Monitor is a configured native/external check. Monitoring Signal is a time-bound observation with source/freshness/evidence.
 
-## Property Type
-A configurable classification describing a Property's operational meaning and expected capabilities.
-
-## Property Relationship
-A typed relationship such as parent/child, hosted on, published by, domain for, depends on or monitored by.
-
-## Monitoring Signal
-A time-bound observation from a native Re:Solve probe or external Monitoring Connector.
-
-## Monitor
-A configured native/external check of a Property target.
-
-## Property Posture
-A Re:Solve-derived, explainable operational health state assembled from monitoring, renewals, connectors, incidents, backups, application signals and other current evidence.
+## Property Health / Property Posture
+Re:Solve-derived explainable operational health assembled from Monitoring, renewals, Incidents, backups, application/Connector signals and other current evidence. `Property Health` is the business-readable concept; `Posture` may be used for the richer evidence model.
 
 ## Renewal / Expiry Obligation
-A first-class obligation to renew, verify or act on an expiring Domain, Hosting service, Certificate, Contract, Client Service, license or other managed dependency.
+First-class obligation to renew, verify or act on an expiring Domain, Hosting service, Certificate, Contract, Client Service, license or dependency.
 
 ## Incident
-An operational event representing service degradation, outage, security issue or another condition requiring coordinated response.
+Operational event representing degradation/outage/security/other coordinated response with evidence and start/recovery lifecycle.
 
 ## Service Catalogue Item
-A reusable definition of a service offered by an Operating Entity.
+Reusable product/service offering. It may define pricing basis, price/currency, tax, renewal behavior, default Project template, Support Entitlement and Property applicability.
+
+## Pricing Basis
+How a Catalogue/Proposal/Invoice line is measured:
+- `flat` — fixed amount;
+- `quantity` — quantity × unit price;
+- `duration` — duration × rate.
+
+Duration units include at least day, week, month, quarter and year. Duration pricing does not itself imply recurrence.
+
+## Price Book / Rate Card
+Effective-dated reusable pricing for Catalogue items by Operating Entity/client class/Organisation.
+
+## Service Package
+Commercial bundle/option composed from Catalogue items.
 
 ## Client Service
-An active service relationship between an Operating Entity and a client Organisation. It may define scope, price, billing cadence, SLA, properties, support entitlement, renewal, owner and status.
+Active/client-specific service relationship between an Operating Entity and Organisation, with scope, price, Properties, Support Entitlement, renewal and status. No consumption-hours/credits meter exists.
 
-Client Service Consumption/credits/hours-used metering is not a core Re:Solve feature.
+## Recurring Arrangement
+Recurring commercial/operational relationship such as hosting, maintenance or retainer, with cadence, dates, linked services/properties and billing/renewal behavior. It is distinct from one-time duration pricing and from a provider subscription mapping.
 
 ## Support Entitlement
-The support level a client/service/property is entitled to receive, potentially including SLA, channels, categories, business hours and escalation.
+Support level/scope a client/service/property is entitled to receive, potentially including SLA, channels/categories/business hours/escalation.
 
 ## Lead
-An early potential commercial relationship that has not matured into a qualified Opportunity. A Lead may exist before a complete Organisation is known.
+Early potential commercial relationship before a qualified Opportunity.
 
 ## Opportunity
-A qualified potential sale represented within a Pipeline.
+Qualified potential sale within a Pipeline.
 
 ## Pipeline
-A configurable sequence of commercial stages.
+Configurable sequence of Opportunity stages.
 
 ## Proposal
-A first-class commercial record describing an offered solution, scope, terms and/or price before acceptance.
+**The single canonical commercial-offer record.** It may contain narrative scope, pricing, options, terms and acceptance evidence.
 
-## Estimate / Quote
-A priced commercial offer or estimate. Display terminology may vary by deployment while the underlying record remains semantically clear.
+A Proposal may be rendered in detailed, quote-style or estimate-style presentation. `Quote` and `Estimate` are not separate current first-class records/modules.
+
+## Quote / Estimate
+Deprecated as separate product domains. These words may remain as client-facing presentation labels, import aliases or historical terminology for a Proposal.
+
+## Proposal Revision / Decision
+Versioned sent Proposal content and the exact accepted/declined evidence tied to one immutable revision.
 
 ## Contract
-A first-class commercial agreement record. Signing may be executed through a Signature Connector while Re:Solve retains contract lifecycle and final snapshot references.
+First-class commercial agreement record. Re:Solve retains lifecycle/final signed snapshot; counterparty signing may use a SignatureConnector.
 
-## Document Template
-A versioned template used by Document Studio to render a supported business document.
+## Commercial / Invoice Adjustment
+Explicit amount-due change such as late fee, penalty, service charge, approved correction, write-off or other policy-based adjustment. It is separate from Payment.
 
-## Document Version
-A rendered/draft version associated with a business record.
+## Document Template / Template Version
+Reusable versioned Document Studio rendering definition.
 
-## Final Snapshot
-An immutable representation of the exact proposal/estimate/contract or other document content accepted/executed by a recipient.
+## Document Draft / Version
+Rendered/reviewable document representation tied to an authoritative business record.
+
+## Final Signed PDF Snapshot
+Immutable exact issued PDF including document/business revision, Template/Brand version, issuer/signatory snapshot, issue timestamp, cryptographic hash, verification reference and counterparty-signature evidence where required.
+
+Every final generated PDF has issuer signature. Draft previews may remain unsigned and visibly marked DRAFT.
+
+## Staff HTML Email Signature
+Sanitized personal HTML signature configured on a staff User profile for email composition.
+
+## Staff Document/PDF Signature
+Separate staff profile signature asset/name/title/authorization used for official PDF issuer signing. It is not the email signature.
 
 ## Project
-A bounded body of work for an Organisation, normally including outcomes, dates, participants, tasks, milestones, deliverables, files and client-facing visibility.
+Bounded body of delivery work for an Organisation including dates, participants, Tasks, Milestones, Deliverables, Files and client visibility. No Timesheet/work timer exists.
 
-Re:Solve Projects do not include Timesheet/Time Tracking functionality.
+## Project Template
+Reusable Project delivery blueprint for Milestones, Tasks, Approvals, defaults and supporting context.
 
 ## Task
-A unit of actionable work assigned to responsible Users/Teams with status, priority, dates, dependencies and context.
+Canonical unit/surface for actionable human work. **`My Work` is deprecated product terminology.** Personal views such as Focus/Today/Overdue are Task/work projections.
 
 ## Recurring Task
-A recurrence definition that creates ordinary Task occurrences on a controlled schedule.
+Definition that creates ordinary Task occurrences on a controlled schedule.
 
-## Milestone
-A significant Project checkpoint or phase boundary.
-
-## Deliverable
-A defined output intended for completion, delivery, review or acceptance.
-
-## Client Action
-An explicit action required from a client before work can progress/close.
+## Milestone / Deliverable / Client Action
+Project checkpoint, defined output, or explicit client dependency.
 
 ## Request
-A structured ask requiring triage before or while it is fulfilled. A Request may convert/link to a Task, Project, Change Request, Approval, Opportunity/Estimate, Chatwoot support conversation, Vault access request or other record.
+Structured ask requiring triage/fulfilment and potentially linking/converting to Task, Project, Change Request, Approval, Opportunity/Proposal, Support or another authoritative record.
 
-## Approval
-A structured decision request with outcomes such as approve, reject or request changes.
+## Approval / Change Request
+Structured decision request and structured change to agreed Project/Service scope/timing/deliverables.
 
-## Change Request
-A structured request to alter agreed project/service scope, timing, deliverables or implementation.
+## Form Template / Form Version
+Reusable structured form definition and immutable historical version.
 
-## Reminder
-A lightweight future attention instruction for a User, optionally attached to a record.
+## Form Request / Assignment
+A specific request for a recipient to complete a Form in a particular Organisation/Project/Property context with due/expiry/access conditions.
 
-## Cadence / Activity Plan
-A reusable sequence of follow-up steps for Sales, onboarding, renewals or client-success processes, built on shared Automation/Action primitives.
+## Submission
+Submitted answers and Files tied to the exact Form Version and provenance.
+
+## Review Request
+Operational request asking a client/contact for feedback or an external review, with destination/reminders/evidence. Completion is only recorded when supported by evidence.
+
+## Reminder / Cadence
+Future attention instruction and reusable follow-up sequence.
 
 ## Invoice
-A first-class billing record requesting payment.
+First-class receivable requesting payment.
 
 ## Payment
-A confirmed monetary transaction or recorded payment event allocated against invoices/receivables.
+Confirmed monetary transaction/evidence allocated against receivables. Payment is not mutated to represent late fees/penalties/discounts.
 
-## Payment Provider
-An external provider that moves/confirms money behind a PaymentConnector capability.
+## Payment Provider / PaymentConnector
+External provider behind provider-neutral payment capability.
 
-Provider packages may be delivered as Plugins that register Connector implementations.
+## Billing Schedule / Provider Subscription Mapping
+Recurring Billing behavior and optional mapping to an external provider subscription.
 
-## Subscription
-A recurring commercial billing arrangement owned by Re:Solve and distinct from provider-specific subscription objects.
-
-## Recurring Service
-A Client Service with recurring billing/renewal behavior. It does not imply consumption metering.
-
-## Credit Note
-A financial record reducing/reversing all or part of an Invoice.
-
-## Receipt
-A proof-of-payment document generated from confirmed Payment truth.
+## Credit Note / Refund / Receipt
+Financial correction, returned-money record and proof-of-payment document generated from verified Payment truth.
 
 ## Expense
-An operational/client/project/vendor cost record where enabled. Expenses do not imply payroll/HR.
+Operational/client/project/vendor cost record where enabled. No payroll/employee assumption.
 
-## Support Conversation
-A support interaction whose conversation/message truth lives in Chatwoot. Re:Solve retains references/context/summaries/metrics as needed.
+## Connected Mailbox
+Provider-neutral configured email mailbox/inbox with declared inbound/outbound/sync authority.
+
+## Communication Thread / Message
+Record-linked inbound/outbound communication carrying external message/thread identity and provenance.
+
+## Inbox Triage
+Uncertain/unrouted inbound Communications awaiting confirmation/routing, often with Ariya classification evidence.
+
+## Support
+Re:Solve's provider-neutral support/case/context domain. Portal human live conversation bridges through Chatwoot according to `Portal -> Ariya -> Chatwoot -> Ariya -> Client`.
+
+## Chatwoot
+External conversation/human-support transport. Chatwoot Captain remains separate from Ariya.
 
 ## Notification
-A durable user-awareness item generated from an event and delivered through one or more channels according to policy/preferences.
+Durable awareness item delivered through configured surfaces/channels.
 
 ## Attention Item
-A current condition that still requires awareness/action. Attention remains unresolved until its source condition is resolved, not merely because a Notification was read.
+Current condition that still requires awareness/action. Reading a Notification does not resolve Attention.
 
-## Domain Event
-A structured fact that something meaningful happened in Re:Solve.
+## Domain Event / Automation / Action
+Structured fact; configured workflow; and registered business operation with permissions/risk/confirmation/Approval policy.
 
-## Automation
-A configured workflow triggered by event, schedule, manual invocation, webhook, connector condition or another approved trigger, executing controlled actions.
+## Watch
+Ariya/Automation mode that continuously observes an explicit condition and reacts according to registered policy. A user's Follow/Watch subscription to record updates may still be described contextually; it never grants access.
 
-## Action
-A registered business operation with permissions, context, risk class, confirmation/approval policy and interface availability.
-
-## Plugin
-An installable extension that adds business/product capability through supported extension points.
-
-## Connector
-An integration implementation connecting Re:Solve to an external system/provider.
-
-## Connector Type
-The reusable provider/capability definition such as Chatwoot, Cloudflare, Bachs or OJS.
-
-## Connector Instance
-A configured connection to a specific external account/system/site.
-
-## Connector Mapping
-A first-class relationship between a Re:Solve record and an external provider identifier.
-
-## Integration Event
-An inbound/outbound external event processed with verification, idempotency, retry, status and audit metadata.
+## Plugin / Connector
+Plugin adds product/business capability. Connector integrates an external system/provider.
 
 ## Data Provenance
-Metadata describing a fact's source, authority, freshness, sync/import/run and derived/native status.
+Metadata describing source, authority, freshness, sync/import/run and derived/native/AI state.
 
-## Secure Vault
-The protected subsystem for controlled storage/sharing of confidential information and files.
+## Secure Vault / Vault Item
+Protected subsystem/item for confidential credentials, secrets, notes, documents or files. A protected document must not retain an ordinary File bypass.
 
-## Vault Item
-A protected confidential record such as credential, secret, note, document or file.
-
-A protected confidential document is a Vault Item rather than simultaneously an ordinary File record with a second access path.
-
-## File
-A managed ordinary binary/document object with metadata, relationships, storage abstraction and versioning where required.
+## File / File Request
+Ordinary managed binary/document and a structured request for an authorised recipient to upload one or more Files.
 
 ## Knowledge Article
-A structured Re:Solve knowledge record for internal or controlled client use, separate from Chatwoot Support Knowledge.
+Structured Re:Solve Knowledge record for internal/client use, separate from Chatwoot support Knowledge.
 
-## Comment
-A collaboration item attached to a supported record with explicit visibility.
-
-## Mention
-A reference to an authorized User/Team inside Collaboration.
-
-## Follow / Watch
-A user's subscription to meaningful updates for a record. Following does not grant access.
+## Comment / Internal Note / Mention / Follow
+Collaboration primitives with explicit audience/scope. Following never grants authority.
 
 ## Activity
-A human-readable business timeline event. Activity is optimized for understanding.
+Human-readable business timeline event.
 
 ## Audit Event
-An append-only accountability/security record of a consequential action. Corrections create new evidence rather than mutating history.
+Append-only accountability/security evidence. Corrections create subsequent evidence rather than rewrite history.
 
 ## Saved View
-A saved filter/sort/column/presentation definition that may be private, team-shared, workspace-shared or system-provided.
+Saved filter/sort/column/presentation definition with private/team/workspace/system visibility.
 
 ## Secure External Access
-A narrow, revocable, expiring external grant used for a specific document/view/action without requiring a full Portal account.
+Narrow, revocable, expiring external grant for a specific document/Form/File/action without requiring full Portal account.
 
-## API Client
-A non-human Principal authorized to use Re:Solve APIs through scoped credentials.
+## API Client / MCP Client / MCP Tool
+Scoped machine Principals and curated Model Context Protocol operations.
 
-## MCP Client
-An AI/agent Principal authorized to access approved Re:Solve MCP tools/resources under explicit scope/audit rules.
+## Ariya (Àríyá)
+Re:Solve's built-in intelligence fabric and user-facing AI operator. Ariya can **Ask, Draft, Act, Watch, Investigate and Recommend** within caller authority and source evidence. It is independent from Chatwoot Captain.
 
-## MCP Tool
-A controlled Re:Solve operation exposed through Model Context Protocol.
+## Setup Mode / Installation State
+First-run guarded product workflow/state used to bootstrap the initial Owner/Workspace/Operating Entity and verify dependencies. Successful setup becomes locked and cannot be casually reopened.
 
-## Àríyá
-The user-facing name of Re:Solve's built-in AI operator. Àríyá is independent from Chatwoot Captain.
-
-Internal technical concepts may use AI Provider, AI Profile, AI Run, AI Tool and AI Connector terminology.
-
-## Admin OS
-The staff-facing Re:Solve experience.
-
-## Client Portal
-The authenticated client-facing Re:Solve experience.
+## Admin OS / Client Portal
+Staff-facing and authenticated client-facing Re:Solve experiences. The Portal is not a reduced Admin clone.
 
 ## Product Bible
-The canonical specification set defining Re:Solve product truth, behavior, flows, rules, states, acceptance criteria and planned build slices.
+Canonical specification set defining product truth, behavior, flows, rules, states, acceptance criteria and build/phase governance.
 
 ## Explicit exclusions
-The following are not Re:Solve product domains:
-- HR management
-- payroll
-- recruitment
-- leave/attendance
-- employee performance reviews
-- timesheets/time tracking
-- Client Service Consumption/credit-hour usage metering
+Not current Re:Solve product domains: HR management, payroll, recruitment, leave/attendance, employee performance reviews, Timesheets/Time Tracking/work timers, Client Service Consumption/credit-hour metering, or the distant-future CMS during the current development run.

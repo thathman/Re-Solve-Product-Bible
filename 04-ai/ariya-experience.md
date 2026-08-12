@@ -1,164 +1,134 @@
-# Àríyá — Product Identity and Experience
+# Ariya (Àríyá) — Product Identity and Experience
 
 ## Purpose
-**Àríyá** is the user-facing name of Re:Solve's built-in AI operator. It helps users understand the business, find information, draft work, summarize state and propose controlled actions.
-
-Àríyá is native to Re:Solve. It is separate from Chatwoot Captain.
+Ariya is the user-facing identity of Re:Solve's built-in intelligence fabric. It should feel like the OS understands its own authorised state and can help operate it, not like a chatbot bolted onto a dashboard.
 
 ## Product role
-Àríyá should feel like an intelligent operator inside the system, not a chatbot bolted onto a dashboard.
-
 Primary jobs:
-- operational briefing
-- contextual questions
-- cross-record search and synthesis
-- drafting
-- analysis
-- explanation
-- safe action proposals
-- controlled tool execution
+- Ask — explain/search authorised truth;
+- Draft — prepare content/work;
+- Act — run controlled registered actions;
+- Watch — monitor conditions and react through policy;
+- Investigate — correlate evidence and explain likely causes;
+- Recommend — proactively surface useful next actions.
 
-## Personality
-Àríyá should be:
-- concise by default
-- calm
-- capable
-- clear about uncertainty
-- operational rather than theatrical
-- willing to cite the records/evidence behind an answer
-- explicit about actions and consequences
-- client-safe when used in Portal
+## Experience principles
+Ariya should be concise by default, capable, evidence-aware, clear about uncertainty, operational rather than theatrical, explicit about actions/consequences and client-safe in Portal.
 
-Avoid excessive anthropomorphism, fake emotions, magic/sparkle language and chatty interruptions.
+Avoid excessive anthropomorphism, fake emotions, magic/sparkle language and unsolicited chatty interruptions.
 
-## Global presence
-Àríyá has a strong, stable global entry in the application chrome.
+## Baked-in presence
+Ariya is available across the OS through:
+- global Search/Command/assistant entry;
+- Home/operational briefing;
+- contextual `Ask Ariya` / `Explain` / `Draft` actions;
+- record-aware assistant panel/workspace;
+- Attention/Task recommendations;
+- Automation/Watch surfaces;
+- Portal live-chat experience.
 
-Supported patterns:
-- TopBar trigger
-- command palette entry
-- keyboard shortcut where appropriate
-- Dashboard briefing
-- contextual `Ask Àríyá` actions
-- record-aware assistant panel/workspace
+Ariya is not a required root-navigation destination. Users should benefit from it where they are working.
 
-Avoid a floating assistant bubble that covers product content.
+The final launcher/panel/top-bar implementation is deliberately reopened for the Admin/Portal experience redesign. No fixed prior shell detail is final visual authority. Whatever pattern is chosen must never cover/obstruct critical content on desktop or mobile.
 
 ## Assistant workspace
-AriyaPanel should support:
-- conversation/question history where enabled
-- clear current context
-- context controls when more than one record is relevant
-- source/evidence references
-- tool/action cards
-- confirmation/approval UI
-- generated draft preview
-- copy/save/use-draft actions
-- loading/streaming/failure/retry states
-- provider unavailable state
-- usage/budget state if relevant
+Should support:
+- conversation/question history where enabled;
+- visible active context;
+- context controls;
+- source/evidence references;
+- tool/action cards;
+- confirmation/Approval UI;
+- draft preview/use/save actions;
+- Watch/Automation creation preview;
+- loading/streaming/failure/retry;
+- provider unavailable/budget state.
 
 ## Context awareness
-Àríyá may receive explicit application context such as:
-- current Organisation
-- current Property
-- current Project
-- current document
-- current report/filter/view
-
-Context is assembled through controlled data services/tools. Do not give Àríyá unrestricted DOM/database access.
-
-Users should be able to understand what context is active and remove/change it where practical.
+Ariya receives explicit authorised context such as Organisation, Property, Project, Task, Proposal, Invoice, Form Submission, Communication thread or current Saved View. Context is assembled through controlled services/tools, never unrestricted DOM/database scraping.
 
 ## Sources and evidence
-Business answers should show evidence where material:
-- source record links
-- timestamps/freshness
-- deterministic facts versus AI inference
-- connector/source provenance when relevant
+Business answers should surface source records, timestamps/freshness, provider/Connector provenance and fact-vs-inference distinction without hiding all evidence in a developer panel.
 
-The UI should not bury all citations in a technical debug panel.
+An Ariya recommendation should answer: **Why are you recommending this?**
 
-## Action model
-Àríyá can invoke only actions registered through the Command and Action Registry.
+## Actions
+Ariya invokes only registered Actions and always shows the meaningful target/effect before confirmation where policy requires it.
 
-Before consequential writes, show:
-- proposed action
-- target
-- meaningful changed fields/effect
-- confirmation requirement
-- approval requirement if any
+Financial, security, Vault, Connector, destructive, signature and legal/commercial actions follow stronger policies.
 
-Financial, security, Vault, connector and destructive actions follow their stronger policies.
+## Proactive recommendations
+Ariya may surface recommendations from real conditions such as:
+- Property Health degradation;
+- domain/SSL/hosting renewal approaching;
+- client email unanswered;
+- Project blocked/approval waiting;
+- overdue Invoice;
+- stale Opportunity;
+- Form Request overdue;
+- failed job/Connector.
+
+Recommendations are grounded in evidence and do not become arbitrary notification spam. Persistent deterministic conditions belong to Attention; Ariya explains/recommends around them.
+
+## Property Health
+On Property/Monitoring surfaces Ariya should be able to explain what is wrong, when it started, which evidence is fresh/stale, whether this is confirmed target failure versus monitor/provider failure, and which registered remediation/support actions are available.
+
+## Communications
+Inside Shared Inbox/record timelines Ariya can summarize a thread, identify intent/client/property/project, draft reply, explain routing confidence and propose/create the appropriate Support/CRM/Project/Billing triage action.
+
+## Portal live chat
+Canonical client flow is:
+`Portal -> Ariya -> Chatwoot -> Ariya -> Client`.
+
+Ariya answers from client-safe Re:Solve context, and Chatwoot provides the human-support transport when escalation is needed. The client experience should remain one coherent conversation.
+
+Portal Ariya can explain own Projects/Invoices/Property Health, locate client-visible Knowledge, create Support work and help complete client actions. It never exposes staff-only data.
 
 ## Drafting
-Àríyá may draft:
-- proposal content
-- contract/SOW narrative
-- project updates
-- client emails/WhatsApp messages
-- knowledge drafts
-- reports
-- summaries
-- notes
+May draft Proposal/Contract narrative, Project/client updates, emails, review requests, Knowledge, reports, summaries and Notes. Output remains a draft until deliberately applied/sent/published unless an explicit approved Automation governs the next action.
 
-Draft output remains a draft until the user deliberately applies/sends/publishes it unless an approved automation explicitly governs the action.
+## Watch
+Watch creation should be understandable as a monitored condition + trigger + intended action/notification, not mysterious autonomous behavior.
 
-## Briefings
-Àríyá briefings consume permitted Attention, My Work, Property Posture, Projects, Finance, Renewals and Notifications.
+Example:
+> Watch this domain and create a Task if expiry is within 30 days.
 
-Every important briefing item should deep-link to source context.
-
-## Client Portal
-Portal Àríyá is optional and narrower.
-
-Potential client use:
-- explain own invoice
-- summarize own project
-- explain own property/incident status
-- find client-visible knowledge
-- explain an approval/action required
-
-Portal Àríyá must never reveal internal notes, internal risk scoring, hidden properties, other clients, staff-only knowledge or Vault values.
+The UI shows source, cadence/event trigger, permissions, recipient/action and current status.
 
 ## Visual identity
-Àríyá needs its own recognizable mark/icon treatment within the Re:Solve visual system, but it must not become a competing brand.
+Ariya needs a recognizable Re:Solve-native mark/treatment without becoming a competing brand.
 
 Rules:
-- no default purple AI gradient requirement
-- no generic sparkle icon as the sole identity
-- use Core UI tokens
-- restrained motion
-- excellent dark/light behavior
-- unmistakable active/listening/working state
+- no mandatory purple AI gradient;
+- no generic sparkle as sole identity;
+- use Core UI tokens;
+- restrained motion;
+- excellent dark/light/client themes;
+- unmistakable working/attention/action states.
 
-The final mark should be prototyped during the Core UI phase.
-
-## Notifications
-Àríyá does not generate arbitrary notification delivery. It may summarize notifications and propose an event/action; the Notification Platform remains authoritative.
-
-## Audit and privacy
-Track provider/model/tool usage according to AI policy without retaining unnecessary sensitive prompt content.
-
-Àríyá inherits caller permissions and scope at tool execution time.
+## Privacy / Audit
+Track provider/model/tool usage according to AI policy without unnecessary sensitive prompt retention. Ariya inherits caller permission and source scope at execution time.
 
 ## Failure language
-Àríyá should clearly distinguish:
-- I do not have access
-- source is unavailable/stale
-- provider failed
-- I cannot verify this
-- action requires confirmation
-- action is not available
+Ariya clearly distinguishes:
+- no access;
+- unavailable/stale source;
+- provider/Connector failed;
+- cannot verify;
+- inference only;
+- action requires confirmation/Approval;
+- action unavailable;
+- completed action with evidence.
 
 Never fabricate success.
 
 ## Acceptance criteria
-- Àríyá is the user-facing AI name throughout Re:Solve
-- Chatwoot Captain remains separate
-- global and contextual entry points are coherent
-- source evidence and freshness are visible
-- user can distinguish fact from inference
-- write actions route through Action Registry and permissions
-- Portal behavior is strictly client-scoped
-- visual treatment feels native and distinctive without generic AI clichés
+- Ariya feels native/baked-in rather than a separate chatbot product;
+- Ask/Draft/Act/Watch/Investigate/Recommend are coherent;
+- source evidence/freshness are visible;
+- fact and inference are distinguishable;
+- write actions use Action Registry/permissions;
+- Property Health and Communications are first-class contexts;
+- Portal live chat follows Ariya -> Chatwoot -> Ariya;
+- final UI placement is reconsidered during the experience reset rather than inherited blindly;
+- client scope is strict.

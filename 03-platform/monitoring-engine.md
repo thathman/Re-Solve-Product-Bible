@@ -1,234 +1,145 @@
-# Native Monitoring Engine and Property Posture
+# Native Monitoring Engine and Property Health / Posture
 
 ## Purpose
-Re:Solve includes its own monitoring capability for the common checks required to operate client Properties. External monitoring products are optional signal sources, not required infrastructure.
+Re:Solve includes native monitoring for common checks required to operate client Properties. External monitoring products are optional signal sources, not required infrastructure.
 
-The Monitoring Engine answers whether a Property is reachable/healthy. Property Posture answers whether it is operationally safe and well-maintained.
+The Monitoring Engine answers whether a Property/target is reachable/healthy. Property Health/Posture answers whether it is operationally safe, current and well-maintained. Ariya consumes both as first-class OS intelligence.
 
 ## Architecture
 
 ```text
-Native Re:Solve Probes        External Connector Signals       Property Obligations
-HTTP/HTTPS                    Cloudflare                       Domain expiry
-SSL/certificate               Uptime Kuma                      Hosting expiry
-DNS/TCP                       Hosting providers                Renewal status
-Heartbeat                     WordPress/OJS                    Backup freshness
-Content check                 future monitors                  Service coverage
-        \                         |                            /
-         -> normalized Monitoring Signal / Posture Evidence <-
-                              |
-                        Property Posture
-                              |
-              Attention / Incident / Notification
+Native Re:Solve Probes      External Connector Signals      Property Obligations
+HTTP/HTTPS                  Cloudflare                      Domain expiry
+SSL/certificate             Uptime Kuma                     Hosting expiry
+DNS/TCP                     Hosting providers               Renewal status
+Heartbeat                   WordPress/OJS                   Backup freshness
+Keyword/JSON/API check      future monitors                 Service coverage
+       \                         |                           /
+        -> normalized Monitoring Signal / Health Evidence <-
+                             |
+                    Property Health / Posture
+                             |
+          Attention / Incident / Notification / Ariya
 ```
 
 ## Native checks
-Build incrementally.
+### Initial/core
+- HTTP/HTTPS availability;
+- expected status-code range;
+- request timeout;
+- response latency;
+- redirect behavior;
+- SSL certificate validity/expiry;
+- domain expiry/registration where a reliable source exists;
+- consecutive failure/recovery confirmation;
+- maintenance windows.
 
-### Initial
-- HTTP/HTTPS availability
-- expected status-code range
-- request timeout
-- response latency
-- redirect behavior
-- SSL certificate validity
-- certificate expiry
-- domain expiry/registration state where a reliable source is available
-- consecutive failure/recovery confirmation
-- maintenance windows
-
-### Later
-- DNS resolution
-- nameserver checks
-- DNSSEC signal
-- TCP/port check
-- content/keyword expectation
-- heartbeat/dead-man check for backup/cron/jobs
-- backup freshness
-- more advanced certificate chain checks
-- independent probe locations
+### Expanded
+- DNS resolution/nameserver expectations/DNSSEC signal;
+- TCP/port check;
+- content/keyword expectation;
+- JSON/API response expectation;
+- heartbeat/dead-man checks for backup/cron/jobs;
+- backup freshness;
+- certificate-chain depth;
+- WordPress/OJS/application health;
+- hosting/server/container connector signals;
+- independent probe locations.
 
 ## Probe runtime
-Monitoring execution must not depend solely on the main web request process.
+Monitoring execution must not depend solely on the main web request process. Architecture supports separately deployable scoped Monitoring Workers/Probes that receive definitions, execute checks and return authenticated results.
 
-The architecture should support a separately deployable Re:Solve Monitoring Worker/Probe that:
-- receives monitor definitions
-- executes checks
-- returns signed/authenticated results
-- survives ordinary UI/API process restarts
-- can later run in multiple regions
-
-FOUND-001 does not build this worker.
+A Probe is a narrow Service Account Principal, not broad database/application authority.
 
 ## Monitor definition
-Fields may include:
-- property
-- check type
-- target
-- interval
-- timeout
-- expected result
-- failure threshold
-- recovery threshold
-- enabled state
-- maintenance policy
-- client-visible policy
-- responsible team/user
-- tags
-- probe location/pool
+May include Property, check type, target, interval, timeout, expected result, failure/recovery thresholds, enabled state, maintenance policy, client-visible policy, responsible Team/User, tags and probe location/pool.
 
-Credentials or private monitor auth values are protected through the Vault/secret abstraction.
+Private auth values use Vault/secret capability abstractions.
 
-## Monitoring signal
-A signal records:
-- monitor
-- property
-- source
-- observed state
-- observed value
-- checked at
-- duration/latency
-- evidence/error category
-- consecutive state count
-- freshness
-- correlation id
+## Monitoring Signal
+Records monitor/property/source, observed state/value, checked time, latency, evidence/error category, consecutive state count, freshness and correlation.
 
-High-volume raw samples may have a separate retention policy from business incidents/attention.
+High-volume samples can have separate retention from durable Incidents/Attention.
 
-## Availability state
-Suggested monitor states:
-- UP
-- DEGRADED
-- DOWN
-- MAINTENANCE
-- UNKNOWN
-- DISABLED
+## Availability states
+Suggested: UP, DEGRADED, DOWN, MAINTENANCE, UNKNOWN, DISABLED.
 
-Do not declare a Property down because a connector itself is unavailable. Unknown provider state and confirmed target failure are different.
+Connector/probe failure is not target failure. Unknown/stale and confirmed DOWN are distinct.
 
-## Property Posture
-Property Posture aggregates explainable evidence such as:
-- availability
-- latency/performance
-- SSL/certificate
-- domain registration/expiry
-- DNS health
-- hosting expiry/status
-- backup freshness
-- application version/update state
-- WordPress/OJS health signals
-- active incidents
-- unresolved maintenance
-- credential rotation where relevant
-- connector freshness
+## Property Health / Posture
+Aggregates explainable evidence such as availability, latency, SSL, domain registration/expiry, DNS, hosting status, backup freshness, application version/update state, WordPress/OJS health, Incidents, maintenance, credential/Connector freshness and renewals.
 
-Posture states may be:
-- HEALTHY
-- ATTENTION
-- DEGRADED
-- CRITICAL
-- MAINTENANCE
-- UNKNOWN
+Suggested states: HEALTHY, ATTENTION, DEGRADED, CRITICAL, MAINTENANCE, UNKNOWN.
 
-Each state must expose the reasons and source freshness that produced it.
+Every state exposes reasons/source freshness; no opaque score may become authority.
 
 ## Renewal/expiry obligations
-Domain, hosting, SSL, license and other expiry concerns should use first-class Renewal/Expiry Obligation records rather than isolated date fields.
+Domain, hosting, SSL, license, Client Service and other expiry concerns use first-class Renewal/Expiry Obligation records with provider/source, expiry, auto-renew state, owner, responsible client/contact, related service/contract, cost where known, approval/payment state, reminder policy, status and last verified evidence.
 
-A renewal should know:
-- property/asset
-- obligation type
-- provider/vendor
-- source
-- expiry date
-- auto-renew state
-- renewal owner
-- responsible client/contact
-- related service/contract
-- estimated/actual cost where known
-- approval requirement
-- payment/billing state where relevant
-- reminder policy
-- status
-- last verified
-- evidence after renewal
+## Incidents
+Qualifying outage/degradation creates or attaches to a real Incident with affected Properties, start, impact, evidence, updates, recovery timestamp/duration and postmortem links as appropriate.
 
-## Renewal Desk
-Admin should have a Renewal Desk focused on:
-- overdue renewals
-- next 7/30/60/90 days
-- auto-renew disabled
-- unknown renewal state
-- client decision required
-- payment required
-- renewal completed but not verified
+Incident is not just a monitor alert.
 
-## Incident integration
-Qualifying outages/degradation may create or attach to an Incident.
+## Noise controls
+Consecutive-failure/recovery thresholds, grouping/dedupe, maintenance suppression, dependency awareness, escalation windows and flapping detection prevent noisy false client alerts.
 
-Incident state remains a business/operational record, not simply a monitor alert.
+## Ariya — Watch / Investigate / Recommend
+Ariya is a first-class consumer of Monitoring/Posture evidence.
 
-## Alert noise controls
-Support:
-- consecutive-failure threshold
-- recovery threshold
-- grouping
-- deduplication
-- maintenance suppression
-- dependency awareness where useful
-- escalation windows
-- flapping detection
+It may:
+- explain why a Property is Healthy/Degraded/Critical;
+- cite the exact monitors/Connector signals/renewals and freshness;
+- Watch for failures, expiry windows, backup staleness and recovery;
+- correlate recurring failures or simultaneous signals;
+- Investigate likely cause while labeling inference;
+- recommend remediation;
+- create/attach a Task, Incident or Support item through an approved Automation/Action policy;
+- draft staff/client incident updates;
+- recognize when the monitor/Connector itself is stale rather than calling the Property down.
 
-## Notifications
-Property events can trigger staff/client notifications based on policy:
-- outage
-- recovery
-- prolonged degradation
-- domain/hosting/SSL expiry
-- failed/stale backup
-- monitoring worker failure
-- renewal/client decision due
+Ariya cannot invent health facts or bypass target credentials/permissions.
 
-Do not send client alerts for transient unconfirmed failures by default.
+## Notifications / Attention / Tasks
+Confirmed outage/recovery, prolonged degradation, domain/hosting/SSL expiry, failed backup, Worker failure and renewal/client decision can generate policy-controlled notifications.
 
-## Attention
-Monitoring/Posture should produce Attention Items when a condition remains actionable.
+Persistent actionable conditions generate Attention. Assigned remediation can surface in Tasks.
 
 ## Connectors
-External systems can contribute normalized signals through `MonitoringConnector` or more specialized capability contracts.
-
-Initial relevant connectors:
-- Cloudflare
-- Uptime Kuma optional
-- WordPress
-- OJS
-- hosting providers
-
-## API/MCP/Àríyá
-Expose safe operations such as:
-- get_property_posture
-- list_active_outages
-- list_expiring_properties
-- get_monitor_history
-- acknowledge_incident_attention
-
-Àríyá can explain Posture using source evidence and freshness, but must not invent health facts.
+External systems contribute normalized signals through MonitoringConnector/specialized capabilities. Relevant sources include Cloudflare, optional Uptime Kuma, WordPress, OJS and hosting providers.
 
 ## Client Portal
-Portal shows a simplified client-safe posture:
-- status
-- active incident
-- planned maintenance
-- renewal action if client involvement is required
-- last updated/source-safe explanation
+Portal shows simplified client-safe Health:
+- status;
+- active Incident;
+- planned maintenance;
+- renewal action if client involvement is required;
+- approved explanation/last updated.
 
-Do not expose internal endpoints, sensitive topology or security details.
+Do not expose sensitive topology/endpoints/security details.
+
+## Optional status pages
+A deployment may expose client/public status pages for selected Properties/services/incidents using only explicitly approved client/public-safe Health/Incident data. This is optional and must not reveal internal monitor details.
+
+## API / MCP
+Safe operations may include `get_property_health`, `list_active_outages`, `list_expiring_properties`, `get_monitor_history`, `get_incident` and controlled acknowledgement/remediation Actions.
 
 ## Acceptance criteria
-- fresh Re:Solve installation can perform basic monitoring without Uptime Kuma
-- external monitoring systems remain optional connector sources
-- confirmed target failure and connector failure are distinct
-- expiry/renewal is actionable workflow, not a date badge
-- posture is explainable down to evidence and freshness
-- monitoring can later run independently of the main app process
-- client-visible alerts are policy-controlled and noise-resistant
+- fresh installation can perform basic monitoring without Uptime Kuma;
+- external systems remain optional sources;
+- connector/probe failure and confirmed target failure are distinct;
+- renewals are workflow, not date badges;
+- Health/Posture is explainable down to evidence/freshness;
+- Ariya can Watch/investigate using real evidence;
+- monitoring can run independently of main app;
+- client/public exposure is policy-controlled/noise-resistant;
+- no sensitive topology/secret leaks.
+
+## Build slices
+1. HTTP/HTTPS + latency/SSL native monitoring.
+2. Posture/Health derivation + evidence/freshness.
+3. Incidents + Attention/Tasks/notifications.
+4. Worker/Probe runtime.
+5. DNS/TCP/content/JSON/heartbeat/backups.
+6. Ariya Watch/Investigate/Recommend.
+7. Connector signals + client-safe Portal/status page.

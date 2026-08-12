@@ -1,175 +1,114 @@
 # Client Portal — Organisation and Account
 
 ## Purpose
-Let authorized client Users manage permitted Organisation profile, memberships/access, communication/privacy preferences and personal account/security without exposing staff/platform administration.
+Let authorized client Users manage permitted Organisation profile, Membership/access, communication/privacy preferences and personal account/security without exposing staff/platform administration.
 
-## Navigation
-Keep Portal navigation simple. `Organisation` may contain:
-- Profile
-- Team & Access
-- Invitations
-- Billing / Approver designations
-- Communication Preferences
+## Portal activation rule
+A business Contact does **not** automatically receive a Portal account because they exist as a Lead, Contact, Organisation member or Opportunity participant.
 
-Personal `Account` is reached through the global Avatar/AccountMenu rather than adding another heavy root destination.
+Default lifecycle:
+1. prospect/Contact interacts through public or Secure External Access;
+2. Discovery/Form Request and Proposal may be completed without Portal Membership;
+3. Proposal acceptance/commercial commitment triggers the default Portal Invitation workflow;
+4. Contact accepts invitation into their existing/new Human User identity;
+5. Membership becomes active for the exact Organisation/scope.
+
+Staff may manually invite earlier where a legitimate workflow requires it.
+
+Conceptual Membership states: `none -> invited -> active -> suspended -> revoked`.
+
+Suspended/revoked Membership grants no Portal data access.
+
+## Invitations
+Lifecycle includes Created/Draft, Sent, Accepted, Expired and Revoked. Support resend, expiry, cancellation and duplicate/existing-User detection.
+
+Invitation accepts into one Human User identity; do not create a duplicate auth identity per Organisation.
+
+The Proposal-acceptance trigger must be idempotent and must not send duplicate active Invitations on retry.
 
 ## Organisation Profile
-Editable fields are deployment/policy controlled and may include approved:
-- display/legal name;
-- business/contact information;
-- address;
-- billing/profile details;
-- public/client metadata;
-- custom fields explicitly client-editable.
-
-Operating Entity/Brand identity is staff configuration and not client-editable.
+Editable fields are policy controlled and may include approved legal/display/business/contact/address/billing/custom fields. Operating Entity/Brand identity is staff-owned and not client-editable.
 
 ## Team & Access
 Authorized Organisation Owner/Admin can understand:
 - who has Portal access;
-- role template;
+- role template/capabilities;
 - Property scope;
 - Project/Approver/Billing designations;
 - Vault authorization summary;
-- status/last sign-in where policy permits;
+- Membership state/last sign-in where policy permits;
 - pending Invitations;
-- access expiry/temporary grants where relevant.
+- temporary/expiring Grants.
 
-The client access UI should answer common questions plainly:
-- Who can see this Property?
-- Who can approve this work?
-- Who receives Billing?
-- Who can manage other client users?
-- Who has protected Vault access?
+The UI should answer plainly: Who can see this Property? Who can approve? Who receives Billing? Who can invite others? Who has protected Vault access?
 
-Do not expose internal staff Roles or platform permissions irrelevant to client administration.
+## Client roles/designations
+Default templates may include Organisation Owner, Organisation Admin, Billing Contact, Project Collaborator, Approver, Property Manager, Vault User and Read-only Member.
 
-## Invitations
-Lifecycle:
-- Draft/created
-- Sent
-- Accepted
-- Expired
-- Revoked
+Designations such as Billing Contact, Project Approver, Technical/Property Contact and escalation Contact are relationship/access responsibilities, not HR roles.
 
-Support resend, expiry, cancellation and duplicate/existing Membership detection.
+## Property/record access
+Client admins with authority can grant/revoke permitted Property/record access according to policy. Hidden records/children never leak through selectors/counts. Property access does not imply Vault access.
 
-Invitation accepts into one human User identity; do not create duplicate user identities for each Organisation.
-
-## Client Roles
-Default role templates may include:
-- Organisation Owner
-- Organisation Admin
-- Billing Contact
-- Project Collaborator
-- Approver
-- Property Manager
-- Vault User
-- Read-only Member
-
-Roles are bundles over canonical client-safe capabilities. Actual access also depends on Property/record scope.
-
-## Property Access
-Client admins with authority can grant/revoke permitted Property access, including descendant behavior where allowed by policy.
-
-Hidden Properties/children cannot leak through selectors/counts.
-
-High-sensitivity capabilities such as Vault access require explicit assignment and clear warnings; ordinary Property access does not imply Vault access.
-
-## Designations
-A client Contact/User may be designated for operational responsibility such as:
-- Billing Contact;
-- Project Approver;
-- Technical/Property Contact;
-- escalation Contact.
-
-These are relationship/access responsibilities, not HR roles.
-
-## Organisation communication preferences
-Where client admins are allowed, manage Organisation-level operational communication defaults such as:
-- billing destinations;
-- renewal notices;
-- maintenance/incident contacts;
-- support/escalation contacts;
-- approved WhatsApp/email destinations.
-
-Individual User preferences and mandatory security/billing rules still apply.
-
-Marketing/newsletter consent remains separate from required service/operational communication.
+## Communication preferences
+Where allowed, manage Organisation operational destinations such as billing, renewals, maintenance/incident, support/escalation and approved email/WhatsApp. Individual preferences and mandatory security/billing/service rules still apply. Marketing consent is separate.
 
 ## Personal Account
-Global AccountMenu leads to:
-- Profile
-- Sign-in & Security
-- MFA / supported stronger auth
-- Active Sessions / Devices
-- Notification Preferences
-- Communication Preferences
-- Appearance / Accessibility
-- connected identity methods
-- Privacy / Data Requests where available
+Reached from global Account/Avatar rather than heavy root navigation:
+- Profile;
+- Sign-in & Security;
+- MFA/passkeys where supported;
+- Sessions/Devices;
+- Notification Preferences;
+- Communication Preferences;
+- Appearance/Accessibility;
+- connected identity methods;
+- Privacy/Data Requests.
 
-A User can belong to multiple Organisations without duplicating account identity. Organisation context switch is explicit and isolated.
+A User can belong to multiple Organisations with explicit isolated context switching.
 
-## Notification Preferences
-Allow per-user optional event/channel/digest/quiet-hour preferences while clearly marking mandatory security/system/client-admin notices that cannot be disabled.
+## Portal live chat / Ariya
+Portal Ariya is strictly bound to active Membership + current Organisation/record scope. Canonical live-chat path is:
+`Portal -> Ariya -> Chatwoot -> Ariya -> Client`.
 
-## Privacy / data rights
-Where enabled, Account can support:
-- review/update personal profile data;
-- communication preferences/consent;
-- request data access/export;
-- request correction;
-- request deletion/anonymization review where applicable.
+Ariya may explain the User's permitted access, Projects, Billing or Property Health; help locate settings; create Support work; and hand off to Chatwoot. It cannot reveal hidden memberships/records or make privileged access changes without registered Action/confirmation.
 
-These become verified Privacy workflows, not instant destructive actions.
+## Preview as Client
+Authorized staff need a read-only `Preview as Client` capability for a specific Organisation/User/scope to verify what the Portal actually exposes.
+
+Preview:
+- uses real authorization/visibility evaluation;
+- clearly indicates preview mode;
+- cannot perform client mutations/signatures/payments/approvals merely because the staff user is previewing;
+- is audited where sensitivity justifies it.
 
 ## Security
-Sensitive operations such as role/property/Vault access change, Organisation ownership transfer or own MFA/security changes may require recent reauthentication/step-up.
-
-Access mutation is server-authorized and append-only audited.
+Sensitive role/Property/Vault access changes, ownership transfer or own MFA/security changes may require recent reauthentication/step-up. Access mutation is server-authorized and audited.
 
 ## Attention / Notifications
-Meaningful events:
-- Invitation sent/expiring/accepted/revoked;
-- role/property access changed;
-- ownership/client-admin change;
-- Vault access granted/revoked;
-- new session/device;
-- MFA/security change;
-- data-right request update.
+Meaningful events include Invitation sent/expiring/accepted/revoked, role/Property access changed, ownership/admin change, Vault access, new session/device, security change and data-right request update.
 
-An access/security condition requiring action may also create Attention.
-
-## Àríyá
-Portal Àríyá may explain the current User's permitted access or help locate settings, but cannot reveal hidden memberships/Properties or make privileged access changes without registered Action/confirmation.
-
-## API / MCP
-Organisation-management APIs require appropriate client-admin capability and current scope.
-
-MCP/client-agent access should default read-only for memberships/access; privileged mutation requires explicit high-trust capability/Action and Audit.
-
-## PWA/mobile
-Team/access/invitations use clear lists/cards/drawers rather than forcing a wide permission matrix onto phone. Security/MFA/session flows must work in installed PWA mode.
-
-## Accessibility / Core UI
-Use canonical ResolveAvatar/AccountMenu, form, role/status, dialog/sheet and permission components. Permission meaning must be textual, not dependent on icon/color alone.
+## Responsive/accessibility
+Membership/access/invitation flows use clear lists/cards/drill-downs on phone rather than impossible permission matrices. Permission meaning is textual, not color/icon-only.
 
 ## Acceptance criteria
-- client User identity is not duplicated per Organisation;
+- Lead/Contact/Opportunity does not automatically create Portal account;
+- Proposal acceptance is the default idempotent invite trigger;
+- secure guest flows work before Membership;
+- one Human User identity can belong to multiple Organisations;
+- suspended/revoked Membership grants no data authority;
 - client admins understand effective access;
+- hidden records do not leak;
 - Property access does not imply Vault access;
-- hidden Properties never leak through administration UI;
-- security/access changes are server-authorized and audited;
-- individual versus Organisation communication preferences are clear;
-- Privacy requests are controlled workflows;
-- mobile access administration is genuinely usable;
-- no HR/employee-management capability appears.
+- Preview as Client is accurate and read-only;
+- Ariya/Chatwoot live chat stays client-scoped;
+- access/security changes are server-authorized/audited;
+- no HR capability appears.
 
-## Lovable build slices
-1. Organisation profile + Team list.
-2. Invitations.
-3. role/designation/Property access.
-4. personal Account/security/sessions.
-5. Notification/communication/privacy preferences.
-6. access Audit/step-up/mobile polish.
+## Build slices
+1. Invitation/activation lifecycle + Proposal-acceptance trigger.
+2. Organisation profile + Team/access list.
+3. client roles/designations/Property scope.
+4. personal Account/security/preferences.
+5. Preview as Client.
+6. Ariya/Chatwoot Portal integration + mobile polish.

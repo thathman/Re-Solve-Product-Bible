@@ -1,164 +1,166 @@
 # Sales & Commercial
 
 ## Purpose
-Sales & Commercial manages the journey from potential work to an agreed commercial commitment while preserving context through proposal, estimate, contract, service activation, project delivery, billing and renewal.
+Sales & Commercial manages the journey from potential work to agreed commercial commitment while preserving context through Opportunity, Discovery, Proposal, Contract/Client Service, delivery, Billing and renewal.
 
-## Core records
-Lead, Opportunity, Pipeline, Stage, Service Catalogue Item, Service Package, Proposal, Estimate/Quote, Contract, Commercial Approval, Price Book Item, Discount Rule, Tax Reference, Sales Activity, Cadence and Renewal Opportunity.
+## Canonical records
+Lead, Opportunity, Pipeline, Stage, Service Catalogue Item, Service Package, Proposal, Proposal Revision/Decision, Contract, Commercial Approval, Price Book/Rate Card, Discount Rule, Tax Reference, Sales Activity, Cadence, Recurring Arrangement and Renewal Opportunity.
+
+**Proposal is the only first-class commercial offer. Quote and Estimate are presentation styles/migration aliases, not separate product records or modules.**
 
 Document rendering/version/delivery uses shared Document Studio.
 
 ## Principles
 - never duplicate Organisation/Contact truth;
-- preserve links across Opportunity -> Proposal/Estimate -> Contract -> Client Service -> Project -> Billing/Renewal;
-- accepted commercial content gets an immutable Final Snapshot;
-- pricing history is versioned after acceptance;
+- preserve links across Opportunity -> Discovery/Form -> Proposal -> Contract/Service -> Project -> Billing/Renewal;
+- accepted Proposal content gets an immutable Final Snapshot;
+- sent Proposal revisions are versioned rather than silently edited;
 - payment providers remain Connector implementations;
-- client documents never expose internal notes/margin by accident;
-- no Client Service Consumption/usage-credit metering;
-- no Timesheet dependency.
-
-## Lead conversion
-A Lead may exist before a complete Organisation is known. Qualification should search/link/create Organisation and Contact deliberately with duplicate review rather than blindly create records.
+- client documents never expose internal notes/margin;
+- no Timesheet/work-timer/Client Service Consumption dependency.
 
 ## Opportunity lifecycle
-New -> Qualified -> Discovery -> Solutioning -> Proposal -> Negotiation -> Verbal Commit -> Won / Lost / Dormant.
+Suggested default: New -> Qualified -> Discovery -> Solutioning -> Proposal -> Negotiation -> Verbal Commit -> Won / Lost / Dormant.
 
-Pipelines/stages are configurable. Stage changes may require fields/approvals. Track expected close, stage age, probability, next action, loss reason and owner.
+Pipelines/stages may be configurable. Track expected close, stage age, probability, next action, loss reason, owner and related Organisations/Contacts/Properties/Services.
 
-## Opportunity workspace
-Tabs:
-- Overview
-- Contacts
-- Needs & Notes
-- Activities / Cadence
-- Solution
-- Proposal / Estimate
-- Contract
-- Files
-- Collaboration / Activity
+## Discovery
+Discovery may use Notes, Activities, Files and the shared Forms engine. Project questionnaires/briefs can be sent before Portal activation using Secure External Access.
 
-Summary: value, probability, expected close, stage age, source, client, properties/service interests, next action, risks and latest activity.
+Ariya may summarize discovery responses, extract requirements and propose Service Catalogue items, Proposal structure, risks and next actions.
 
-## Service Catalogue
-Fields may include name, code, category, description, delivery model, pricing model, default price/currency, billing frequency, tax behavior, lead time, default Project template, renewal behavior, Support Entitlement, Property applicability, client-facing description and active state.
+## Service Catalogue and pricing
+Catalogue items may define:
+- name/code/category/descriptions;
+- pricing basis `flat`, `quantity`, or `duration`;
+- default price/currency;
+- quantity unit or duration unit/default duration;
+- tax behavior;
+- renewal/recurring eligibility;
+- default Project/onboarding template;
+- Support Entitlement and Property applicability.
 
-Core pricing models may include:
-- fixed one-time;
-- recurring fixed;
-- milestone/installment;
-- package/bundle;
-- custom quote.
+Duration supports at least day, week, month, quarter and year. A duration-priced item is not automatically recurring.
 
-Manual quantity/unit-price lines can still exist in Estimates/Invoices, but Re:Solve does not require automated usage metering or Timesheet-derived hourly billing.
+Price Books/Rate Cards can provide Operating Entity, client-class or Organisation-specific prices with effective dates. Accepted historical prices remain stable.
 
-## Price lists / client pricing
-Support reusable price-book items, client-specific agreed prices, packages and effective dates where needed. Historical accepted prices remain stable.
+Service Packages may bundle items or provide Proposal options such as Starter/Growth/Commerce while activation preserves clear underlying service relationships.
 
-## Proposals
-Proposal is a first-class commercial record rendered/delivered through Document Studio.
+## Proposal — unified offer engine
+A Proposal can present as:
+- **Detailed Proposal** — narrative problem/solution/scope/deliverables/timeline/pricing/terms;
+- **Quote-style Proposal** — concise commercial line-item offer;
+- **Estimate-style Proposal** — indicative pricing presentation where uncertainty is explicit.
 
-Builder/content may support:
-- reusable template/sections;
-- services/packages;
-- pricing table;
-- optional/add-on items;
-- recurring + one-time charges;
-- assumptions/exclusions;
+All styles share one record, numbering, lifecycle, revision history, acceptance evidence and downstream conversion.
+
+### Proposal content
+May include:
+- title/cover/introduction/executive summary;
+- scope/deliverables/exclusions/assumptions;
 - timeline/milestones;
-- terms;
+- services/packages/options;
+- flat, quantity or duration line items;
+- optional/add-on items;
+- line/document fixed or percentage discounts;
+- taxes;
+- deposit/payment schedule;
+- terms/validity;
 - attachments;
 - client comments/questions;
-- versions;
-- expiration;
-- Secure External Access/Portal delivery;
-- accept/decline.
+- acceptance/decline.
 
-States: Draft -> Internal Review -> Sent -> Viewed -> Negotiation -> Accepted / Declined / Expired / Withdrawn.
+### Lifecycle
+Suggested:
+`Draft -> Internal Review/Ready -> Sent -> Viewed -> Negotiation/Revision -> Accepted / Declined / Expired / Withdrawn`.
 
-Accepted content receives immutable Final Snapshot.
+`Viewed` is recorded only from real access/provider evidence and is not equivalent to acceptance.
 
-Àríyá may draft proposal scope/narrative from authorized context. User review remains required before send.
+Once sent, commercially meaningful edits create a new Proposal Revision. Acceptance/decline references the exact immutable revision the recipient saw.
 
-## Estimates / Quotes
-Structured priced offers supporting line items, quantity/unit price, discounts, taxes, optional items, validity, deposit, payment schedule, currency and conversion workflow.
+### Acceptance evidence
+Store recipient/User/Contact, exact revision snapshot, accepted/declined timestamp, secure-session/auth evidence, terms/version and Audit. Optional counterparty e-signature may be required by policy; authenticated acceptance can remain sufficient where configured.
 
-An Estimate may be standalone or referenced by a Proposal.
+Every final Proposal PDF is issuer-signed through Document Studio.
+
+## Proposal downstream handoff
+Proposal acceptance is the default commercial commitment gate and normally triggers the Portal invitation workflow for the accepting/selected Contact.
+
+Depending on Proposal/template policy, acceptance may create/link idempotently:
+- Contract;
+- Project from a Project Template;
+- Client Service;
+- Recurring Arrangement;
+- Invoice for full amount;
+- percentage/fixed deposit Invoice;
+- selected Proposal items;
+- milestone/payment schedule;
+- onboarding pack/journey.
+
+Retries must not duplicate downstream records. The accepted Proposal remains linked as source truth.
 
 ## Contracts
-Re:Solve owns Contract lifecycle/metadata/commercial relationship and Final Snapshot. Actual signing uses a SignatureConnector such as Documenso.
+Re:Solve owns Contract lifecycle, metadata, commercial relationships and immutable signed final snapshot. Counterparty signing may use a SignatureConnector.
 
-States: Draft -> Review -> Ready for Signature -> Sent -> Partially Signed -> Executed -> Active -> Expired / Terminated / Superseded.
+Suggested states: Draft -> Review -> Ready for Signature -> Sent -> Partially Signed -> Executed -> Active -> Expired / Terminated / Superseded.
 
-## Document Studio
-Document Studio owns templates, rendering, versions, web/PDF output, branded Secure External Access and delivery evidence. It does not replace Proposal/Estimate/Contract business records.
+Every final Contract PDF includes issuer signature; executed Contracts additionally preserve required counterparty signature evidence.
 
-## Deposits / payment schedules
-Commercial terms may define:
-- deposit amount/percentage;
-- milestone installments;
-- scheduled payments;
-- due offsets;
-- invoice-generation rules after acceptance/execution.
+## Recurring Arrangements
+First-class commercial arrangements for hosting, maintenance, retainers and similar services define frequency, start/end/renewal, Catalogue lines, Properties, Contract, next billing date, pause/cancel and billing behavior.
 
-Unusual schedules may require Commercial Approval.
+Recurring Arrangement is distinct from one-time duration pricing and from external provider subscriptions.
+
+## Deposits and payment schedules
+Commercial terms may define deposit amount/percentage, milestone installments, scheduled payments, due offsets and Invoice-generation rules after acceptance/execution. Unusual schedules may require Commercial Approval.
 
 ## Commercial approvals
-Use shared Approval for high discounts, nonstandard terms, write-offs, unusual payment schedules, high-value proposals or sensitive services.
+Use shared Approval for high discounts, nonstandard terms, write-offs, unusual payment schedules, high-value Proposals or sensitive services.
 
-## Cadences / reminders
-Sales follow-up can use shared Cadence/Reminder primitives for lead/opportunity/proposal follow-up without building a separate workflow engine.
+## Forms / public intake
+Public/Portal Forms may create Lead/Request/Opportunity/Discovery flows with duplicate review and preserved Submission provenance. Forms do not create shadow Quote/Estimate records.
 
-## Forecasting and goals
-Sales can provide weighted Pipeline forecast using expected close/value/stage probability and business-goal comparison. Assumptions remain visible.
-
-## Renewals
-Client Services/Contracts may generate Renewal Opportunities ahead of renewal with owner, value, risk, client decision and proposed changes.
-
-Property expiry obligations belong to Renewal Desk but may create commercial Opportunities when paid work/renewal is required.
-
-## Requests / public intake
-Public/Portal Forms may create quote/service Requests that triage into Leads/Opportunities/Estimates according to routing and duplicate rules.
-
-## Permissions
-Canonical capabilities may include sales.read, leads.manage, opportunities.manage, proposals.manage, proposals.send, estimates.manage, contracts.manage, contracts.send, commercial.approve, services.manage, pricing.manage and renewals.manage.
+## Portal / Secure External Access
+Before commitment, Proposal/Discovery can use narrow secure guest access. Proposal acceptance normally creates/invites Portal Membership. Manual earlier invitation remains allowed for legitimate workflows.
 
 ## Attention / Notifications
-Attention examples: stale Opportunity, expiring Proposal, contract signature waiting, Renewal Opportunity with no action.
+Examples: stale Opportunity, unanswered discovery, Proposal expiring, Proposal viewed but no response, contract signature waiting, recurring/renewal decision required.
 
-Notifications include assignment, approval, proposal delivery/view where policy permits, expiry, comment, accept/decline, signature/execution and renewal events.
+## Ariya
+Ariya may:
+- summarize discovery/communication;
+- recommend next action;
+- draft Proposal narrative/scope/exclusions;
+- suggest Catalogue items/packages based on authorised context;
+- compare similar historical work without leaking client scope;
+- flag unusual pricing/discounts;
+- prepare follow-up/review requests;
+- Watch stale Opportunities/expiring Proposals.
 
-## Automations
-- qualified Lead -> Opportunity;
-- Proposal accepted -> approved Contract/Service/Project path;
-- Contract executed -> activate Service/billing workflow;
-- renewal window -> Renewal Opportunity;
-- inactive Opportunity -> Reminder/Attention;
-- lost Opportunity -> require reason/optional cadence stop.
+Draft/send/accept/financial actions follow normal Action Registry/Approval rules.
 
-## API / MCP / Àríyá
-Expose scoped commercial resources/actions with version/final-snapshot rules.
+## Permissions
+Canonical capabilities may include `sales.read`, `leads.manage`, `opportunities.manage`, `proposals.manage`, `proposals.send`, `contracts.manage`, `contracts.send`, `commercial.approve`, `services.manage`, `pricing.manage` and `renewals.manage`.
 
-MCP candidates: search_opportunities, get_opportunity, list_stale_opportunities, draft_proposal_outline, get_service_catalogue, get_contract_status and list_upcoming_renewals.
-
-Sending/accepting/signing/financially consequential changes use Action Registry and stronger confirmation/approval.
-
-## PWA/mobile
-Mobile supports pipeline review, opportunity detail, follow-up, proposal/contract review/status, approvals and renewal actions. Deep document authoring may optimize for larger screens while rendered documents remain excellent on phone.
+Do not introduce new `quotes.*` or `estimates.*` permissions except temporary migration compatibility.
 
 ## Acceptance criteria
-- accepted/executed commercial content is immutable;
-- conversions preserve source links;
-- discounts/schedules cannot bypass Approval policy;
-- internal notes/margin never leak to clients;
-- all material send/view/accept/decline/signature events are traceable;
-- Document Studio is shared rather than custom per document type;
-- no Timesheet or Client Service Consumption dependency exists.
+- Proposal is the only current offer domain;
+- detailed/quote-style/estimate-style presentations share one lifecycle;
+- accepted content/pricing is immutable;
+- duration pricing calculates explicitly and does not imply recurrence;
+- discounts are explicit;
+- downstream acceptance handoffs are idempotent;
+- Portal invitation occurs at configured commitment gate;
+- internal notes/margin never leak;
+- every final Proposal/Contract PDF is signed;
+- no Timesheet/work-timer/consumption dependency exists.
 
-## Lovable build slices
-1. Pipeline + Opportunity workspace.
-2. Service Catalogue + pricing.
-3. Document Studio template foundation + Estimates.
-4. Proposals + Secure External Access/acceptance.
-5. Contracts + SignatureConnector states.
-6. Approvals + deposits/payment schedules + renewals + forecast/cadences.
+## Build slices
+1. Opportunity/pipeline + Discovery/Forms relationships.
+2. Service Catalogue + pricing basis + Price Books/packages.
+3. Proposal unified data model + migration from historical Quote/Estimate truth.
+4. Proposal builder/presentation/revisions + Secure External Access.
+5. acceptance evidence + Portal invitation + idempotent handoff.
+6. Contracts + signatures.
+7. Recurring Arrangements + deposits/payment schedules + renewals/forecast/cadences.
