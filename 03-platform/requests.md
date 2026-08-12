@@ -1,52 +1,57 @@
 # Request Management
 
 ## Purpose
-A Request is a structured ask that may require triage before it becomes a Task, Project, Support Conversation, Approval, Service Order or another record.
+A Request is a structured ask that may require triage before it becomes a Task, Project, Support case/Chatwoot conversation, Approval, Opportunity/Proposal, Service activation/order or another authoritative record.
 
-Requests fill the gap between free-form support and formal project/commercial workflows.
+Requests fill the gap between free-form support and formal Project/commercial workflows.
 
-## Examples
-- update website content
-- add a journal
-- request domain/DNS change
-- change billing contact
-- request a new user/access grant
-- request credential access
-- request a quote
-- request additional service
-- request a project change
-- request file/document
-- request maintenance window
+## Request families / examples
+- website/content change;
+- add a journal/site/service;
+- domain/DNS change;
+- billing contact/profile change;
+- access/user request;
+- credential/Vault access request;
+- **request a service / commercial change**;
+- request a Proposal;
+- Project change;
+- File/document request;
+- maintenance window;
+- client operational request;
+- plugin-defined request.
 
 ## Sources
 Requests may originate from:
-- Client Portal
-- public/secure form
-- staff entry
-- email/WhatsApp conversion where a connector/workflow supports it
-- Àríyá proposal
-- plugin
-- API
+- Client Portal;
+- public/Secure External Form;
+- staff entry;
+- inbound email/WhatsApp conversion where a connector/workflow supports it;
+- Ariya proposal/routing;
+- Client Journey;
+- plugin;
+- API/MCP where permitted.
 
 ## Request fields
-- id/reference
-- type/category
-- title
-- description
-- requester
-- organisation/property/project/service context
-- source
-- priority
-- state
-- owner/team
-- requested date/deadline
-- attachments
-- client-visible status
-- related support reference
-- related commercial entitlement
-- triage outcome
-- converted/linked records
-- activity/comments
+Potential fields:
+- id/reference;
+- Request Type/category;
+- title/description;
+- requester;
+- Organisation/Contact;
+- Property/Project/Client Service context;
+- source/provenance;
+- priority;
+- state;
+- owner/team;
+- requested date/deadline;
+- Files;
+- client-visible state;
+- related Support reference;
+- entitlement/commercial context;
+- triage outcome;
+- converted/linked records;
+- Activity/Comments;
+- Form Submission reference where applicable.
 
 ## States
 Suggested:
@@ -60,63 +65,129 @@ Suggested:
 - DECLINED
 - CANCELLED
 
-Request status is not the same as a Chatwoot conversation status.
+Request status is not Chatwoot conversation status.
 
 ## Triage outcomes
 A Request can:
-- remain a standalone request
-- create/link a Task
-- create/link a Project
-- create/link a Change Request
-- create an Approval
-- create/link an Opportunity/Estimate
-- create/open a Chatwoot support conversation where support is the appropriate channel
-- create a Vault access request
-- create an onboarding/offboarding step
-- be declined with reason
+- remain a standalone Request;
+- create/link a Task;
+- create/link a Project;
+- create/link a Change Request;
+- create an Approval;
+- create/link an Opportunity;
+- start a Proposal workflow;
+- create/activate/link a Client Service only through the proper commercial/approval path;
+- create/open a Support case/Chatwoot conversation when Support is the right channel;
+- create a Vault access Request;
+- create a Client Journey/onboarding step;
+- be declined with reason.
 
-Do not duplicate the converted record; preserve traceability.
+Do not duplicate the converted record; preserve durable source/result links.
+
+## Portal — Request Something
+Client Portal should provide a clear **Request Something / Services** entry that prevents clients using Support for ordinary commercial/service requests.
+
+Examples presented in client language:
+- New website / redesign;
+- New landing page;
+- Domain registration/renewal;
+- Hosting change/upgrade;
+- Additional journal/site;
+- Additional service;
+- Project change;
+- Other request.
+
+The list may be driven by enabled Service Catalogue categories/Request Types without exposing internal Catalogue complexity.
+
+A client flow should:
+1. choose what they need;
+2. select relevant Property/Project where applicable;
+3. answer a short Form/question set if needed;
+4. attach Files;
+5. understand whether the request is Support, included service work, or likely commercial work;
+6. submit;
+7. see status/clarification;
+8. see linked outcome when client-visible.
+
+## Service Request -> Opportunity -> Proposal
+When a Portal Request represents **new paid work / scope**, triage should normally preserve this chain:
+
+`Service Request -> Opportunity -> Discovery/Form if needed -> Proposal`
+
+It must not automatically create an Invoice/Project just because a client clicked a service category.
+
+Potential behavior:
+- create/link Opportunity idempotently;
+- carry Organisation/Contact/Property/Service interest/source;
+- preserve Request answers/Files;
+- assign commercial owner;
+- use Ariya to summarize requirements;
+- recommend Catalogue items/Package/Proposal Template;
+- create Proposal draft through a registered Action when policy permits.
+
+Existing-client commercial requests therefore stay distinct from Support cases.
+
+## Entitlement-aware triage
+A Request can inspect Client Service/Support Entitlement to help determine:
+- included operational Request;
+- Support case;
+- Change Request;
+- billable/new commercial Opportunity;
+- client clarification required.
+
+Entitlement informs routing; Re:Solve does not track consumed-hours/credits.
 
 ## Forms
-Forms may create Requests using a routing rule and mapped fields.
+Forms can create Requests through explicit routing. Form Submission provenance remains attached to the resulting Request/Opportunity/other record.
 
-## Client Portal
-Portal Request experience should be simple:
-- choose understandable request type
-- provide context/property
-- explain what happens next
-- attach files
-- submit
-- see status
-- respond to clarification
-- view linked outcome when client-visible
+## Client Journey
+A Request/Client Action may appear as one step in a Journey. Journey completion follows authoritative Request state; the Journey does not mark it complete independently.
 
-## Entitlement awareness
-A Request may consult Client Service/Support Entitlement to inform triage, but Re:Solve does not maintain Client Service Consumption balances.
+## Ariya
+Ariya may:
+- classify Request intent;
+- distinguish Support versus new commercial work using authorised context;
+- summarize requirements;
+- ask/draft clarification;
+- recommend triage outcome;
+- propose Opportunity/Proposal creation;
+- identify relevant Service Catalogue items;
+- Watch overdue/stalled Requests.
 
-## Notifications and Attention
-- new request assigned
-- needs client information
-- request overdue
-- request accepted/declined
-- linked outcome ready
+Consequential conversions remain registered Actions with normal permission/Approval/idempotency.
 
-## Collaboration
-Requests use the shared comments/mentions/follow model, with explicit internal/client-visible communication boundaries.
-
-## API/MCP/Àríyá
+## Attention / Notifications / Tasks
 Examples:
-- create_request
-- get_request
-- list_requests
-- triage_request
-- request_more_information
+- new Request assigned;
+- Request awaiting triage;
+- needs client information;
+- overdue/stale Request;
+- accepted/declined;
+- linked Proposal/Project/outcome ready.
 
-Àríyá may help classify/draft/triage, but consequential conversions remain registered actions.
+Assigned operational work may project into Tasks. Persistent unresolved Request state may create Attention.
+
+## Bulk Actions
+Where safe, staff may bulk assign/tag/archive or send clarification/Form Requests. Commercial conversion is evaluated per Request and should not become a blind mass `create Proposal` action without preview/eligibility.
+
+## Test / routing simulation
+Request Types/routing policies can use the shared Dry-Run framework to show likely classification/outcome without creating downstream records.
+
+## API / MCP
+Examples:
+- `create_request`;
+- `get_request`;
+- `list_requests`;
+- `triage_request`;
+- `request_more_information`;
+- `convert_request_to_opportunity`.
 
 ## Acceptance criteria
-- Requests do not duplicate Chatwoot helpdesk
-- triage preserves a durable link to resulting records
-- client-facing request types use understandable language
-- entitlement can inform routing without service-consumption metering
-- permissions and property scope are enforced
+- Requests do not duplicate Chatwoot helpdesk;
+- existing clients can clearly request additional services without opening Support tickets;
+- commercial Service Request routes to Opportunity -> Proposal rather than instant Project/Invoice;
+- triage preserves durable source/result links;
+- entitlement informs routing without consumption metering;
+- Portal Request Types use understandable language;
+- Ariya cannot silently convert/bill without Action policy;
+- permissions/Property scope are enforced.

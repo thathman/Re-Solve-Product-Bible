@@ -8,6 +8,7 @@ The product may be specified comprehensively here, but implementation is deliver
 - [Product Thesis](00-foundation/product-thesis.md)
 - [Product Principles](00-foundation/principles.md)
 - [Canonical Expansion Decisions](00-foundation/canonical-expansion-decisions.md)
+- [Product Model Closure Decisions](00-foundation/product-model-closure.md)
 - [Terminology](00-foundation/terminology.md)
 - [Actors, Principals, Roles and Access](00-foundation/actors-and-roles.md)
 - [Domain Model](00-foundation/domain-model.md)
@@ -27,9 +28,19 @@ The product may be specified comprehensively here, but implementation is deliver
 - **Every issued/final generated PDF is issuer-signed**, including Invoices and Receipts, with immutable signature snapshot/hash/verification evidence.
 - Default Portal invitation occurs at commercial commitment, normally Proposal acceptance; pre-commitment flows can use Secure External Access.
 - First-run setup/installation is built into the product and locks after bootstrap.
+- **Template Center** governs reusable domain-owned templates with versioning, preview/test and dependency visibility.
+- **Client Journeys** orchestrate onboarding, activation, handover, renewal and offboarding using real underlying records.
+- Projects have an agency-focused **Financial Plan** using commercial/Billing/Expense truth without staff time tracking.
+- Approval is policy-driven with single, any-one, all, sequential, parallel and conditional routing.
+- Record lifecycle uses deliberate Archive/Trash/Restore/Purge semantics with Dependency/Impact inspection.
+- High-impact configuration/workflows support **Preview/Test/Dry Run** before execution.
+- Bulk Actions are explicit, permission-aware and impact-previewed rather than automatically available for selectable rows.
+- Portal Service Requests for new paid scope route `Request -> Opportunity -> Proposal` rather than Support or instant Invoice/Project.
 - Admin and Client Portal require a deliberate experience redesign before product completion.
 - Public/headless CMS is distant-future only and explicitly outside the current development run.
 - No HR, payroll, attendance/leave/recruitment/performance, Timesheets/Time Tracking/work timers or Client Service Consumption metering.
+
+The 2026-08 broad feature-discovery pass is now **closed**. New product gaps discovered during implementation use Product Oversight and do not restart horizontal competitor-feature hunting unless explicitly approved.
 
 ## Design & Core UI
 - [Design Direction](09-design/design-direction.md)
@@ -56,6 +67,7 @@ Navigation remains simple and business-readable, closer to straightforward servi
 - [Client Success & Account Operations](01-admin/client-success.md)
 - [Properties](01-admin/properties.md)
 - [Projects](01-admin/projects.md)
+- [Project Financial Plan & Commercial Health](01-admin/project-financials.md)
 - [Sales & Commercial](01-admin/sales-and-commercial.md)
 - [Service Catalogue & Client Services](01-admin/services-and-recurring.md)
 
@@ -86,13 +98,15 @@ Navigation remains simple and business-readable, closer to straightforward servi
 ### Attention, Actions and Workflows
 - [Attention Engine](03-platform/attention-engine.md)
 - [Command & Action Registry](03-platform/action-registry.md)
-- [Approvals](03-platform/approvals.md)
+- [Approvals & Approval Policies](03-platform/approvals.md)
 - [Automations](03-platform/automations.md)
+- [Test, Preview & Dry-Run Framework](03-platform/testing-and-simulation.md)
 - [Reminders, Cadences & Recurring Work](03-platform/reminders-cadences-and-recurring-work.md)
 - [Calendar, Agenda & Time-Based Commitments](03-platform/calendar-and-reminders.md)
 
 ### Client / Intake / Collaboration
 - [Client Lifecycle](03-platform/client-lifecycle.md)
+- [Client Journeys & Onboarding Packs](03-platform/client-journeys.md)
 - [Request Management](03-platform/requests.md)
 - [Forms](03-platform/forms.md)
 - [Collaboration & Following](03-platform/collaboration-and-following.md)
@@ -100,7 +114,8 @@ Navigation remains simple and business-readable, closer to straightforward servi
 - [Feedback, Surveys & Business Goals](03-platform/feedback-surveys-and-business-goals.md)
 - [Communications & Announcements](03-platform/operational-communications-and-announcements.md)
 
-### Documents, Files and Knowledge
+### Templates, Documents, Files and Knowledge
+- [Template Center](03-platform/template-center.md)
 - [Document Studio / Signed PDFs](03-platform/document-studio.md)
 - [Files Platform](03-platform/files.md)
 - [Re:Solve Knowledge Platform](03-platform/knowledge.md)
